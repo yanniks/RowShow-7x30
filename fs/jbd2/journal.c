@@ -1125,8 +1125,11 @@ static int journal_reset(journal_t *journal)
 			journal->j_errno);
 		journal->j_flags |= JBD2_FLUSHED;
 	} else {
+		/* Lock here to make assertions happy... */
+		mutex_lock(&journal->j_checkpoint_mutex);
 		/* Add the dynamic fields and write it to disk. */
 		jbd2_journal_update_sb_log_tail(journal);
+		mutex_unlock(&journal->j_checkpoint_mutex);
 	}
 	return jbd2_journal_start_thread(journal);
 }
@@ -1175,6 +1178,7 @@ void jbd2_journal_update_sb_log_tail(journal_t *journal)
 {
 	journal_superblock_t *sb = journal->j_superblock;
 
+	BUG_ON(!mutex_is_locked(&journal->j_checkpoint_mutex));
 	read_lock(&journal->j_state_lock);
 	jbd_debug(1, "JBD2: updating superblock (start %ld, seq %d)\n",
 		  journal->j_tail, journal->j_tail_sequence);
@@ -1203,6 +1207,7 @@ static void jbd2_mark_journal_empty(journal_t *journal)
 {
 	journal_superblock_t *sb = journal->j_superblock;
 
+	BUG_ON(!mutex_is_locked(&journal->j_checkpoint_mutex));
 	read_lock(&journal->j_state_lock);
 	jbd_debug(1, "JBD2: Marking journal as empty (seq %d)\n",
 		  journal->j_tail_sequence);
@@ -1436,9 +1441,11 @@ int jbd2_journal_destroy(journal_t *journal)
 	spin_unlock(&journal->j_list_lock);
 
 	if (journal->j_sb_buffer) {
-		if (!is_journal_aborted(journal))
+		if (!is_journal_aborted(journal)) {
+			mutex_lock(&journal->j_checkpoint_mutex);
 			jbd2_mark_journal_empty(journal);
-		else
+			mutex_unlock(&journal->j_checkpoint_mutex);
+		} else
 			err = -EIO;
 		brelse(journal->j_sb_buffer);
 	}
@@ -1687,6 +1694,7 @@ int jbd2_journal_flush(journal_t *journal)
 	if (is_journal_aborted(journal))
 		return -EIO;
 
+	mutex_lock(&journal->j_checkpoint_mutex);
 	jbd2_cleanup_journal_tail(journal);
 
 	/* Finally, mark the journal as really needing no recovery.
@@ -1695,6 +1703,7 @@ int jbd2_journal_flush(journal_t *journal)
 	 * commits of data to the journal will restore the current
 	 * s_start value. */
 	jbd2_mark_journal_empty(journal);
+	mutex_unlock(&journal->j_checkpoint_mutex);
 	write_lock(&journal->j_state_lock);
 	J_ASSERT(!journal->j_running_transaction);
 	J_ASSERT(!journal->j_committing_transaction);
@@ -1735,8 +1744,12 @@ int jbd2_journal_wipe(journal_t *journal, int write)
 		write ? "Clearing" : "Ignoring");
 
 	err = jbd2_journal_skip_recovery(journal);
-	if (write)
+	if (write) {
+		/* Lock to make assertions happy... */
+		mutex_lock(&journal->j_checkpoint_mutex);
 		jbd2_mark_journal_empty(journal);
+		mutex_unlock(&journal->j_checkpoint_mutex);
+	}
 
  no_recovery:
 	return err;
