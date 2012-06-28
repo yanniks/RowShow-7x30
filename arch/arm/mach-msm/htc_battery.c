@@ -640,11 +640,15 @@ static int htc_cable_status_update(int status)
 	last_source = htc_batt_info.rep.charging_source;
 	if (status == CHARGER_USB && g_usb_online == 0) {
 #ifdef CONFIG_FORCE_FAST_CHARGE
-		if (force_fast_charge == 1) {
-			BATT_LOG("cable USB forced fast charge");
+		/* If forced fast charge is enabled "always" or if no USB device detected, go AC */
+		if ((force_fast_charge == FAST_CHARGE_FORCE_AC) ||
+		    (force_fast_charge == FAST_CHARGE_FORCE_AC_IF_NO_USB &&
+                     USB_peripheral_detected == USB_ACC_NOT_DETECTED        )) {
+			BATT_LOG("cable USB forced to AC");
 			htc_set_smem_cable_type(CHARGER_AC);
 			htc_batt_info.rep.charging_source = CHARGER_AC;
 		} else {
+                        BATT_LOG("cable USB not forced to AC");
 			htc_set_smem_cable_type(CHARGER_USB);
 			htc_batt_info.rep.charging_source = CHARGER_USB;
 		}
