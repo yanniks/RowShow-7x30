@@ -236,7 +236,7 @@ static int acpuclk_7x30_set_rate(int cpu, unsigned long rate,
 		goto out;
 	}
 
-	if (reason == SETRATE_CPUFREQ) {
+	if (reason == SETRATE_CPUFREQ || reason == SETRATE_INIT) {
 		/* Increase VDD if needed. */
 		if (tgt_s->vdd_mv > strt_s->vdd_mv) {
 			rc = acpuclk_set_acpu_vdd(tgt_s);
@@ -517,6 +517,10 @@ static int __init acpuclk_7x30_init(struct acpuclk_soc_data *soc_data)
 	lpj_init();
 	setup_cpufreq_table();
 	acpuclk_register(&acpuclk_7x30_data);
+
+#ifdef CONFIG_BOOT_CLOCK_OC
+	acpuclk_8x60_set_rate(cpu, 1516800, SETRATE_INIT);
+#endif
 
 	return 0;
 }

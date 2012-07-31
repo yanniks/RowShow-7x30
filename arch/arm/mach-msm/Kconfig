@@ -1604,6 +1604,14 @@ config MSM_CPU_FREQ_ONDEMAND_MIN
 
 endif # PERFLOCK
 
+config BOOT_CLOCK_OC
+	bool "Enable OverClocking at Boot"
+	default n
+	depends on CPU_FREQ && !PERFLOCK
+	depends on ARCH_MSM7X30
+	help
+	  This sets a clock of 1.516GHz for a faster boot.
+
 config ACPUCLOCK_OVERCLOCKING
 	bool "Enable support for CPU overclocking"
 	default n
