@@ -519,7 +519,7 @@ static int __init acpuclk_7x30_init(struct acpuclk_soc_data *soc_data)
 	acpuclk_register(&acpuclk_7x30_data);
 
 #ifdef CONFIG_BOOT_CLOCK_OC
-	acpuclk_8x60_set_rate(cpu, 1516800, SETRATE_INIT);
+	acpuclk_set_rate(cpu, 1516800, SETRATE_INIT);
 #endif
 
 	return 0;
