@@ -461,7 +461,6 @@ obj-$(CONFIG_MACH_SPADE) += board-spade.o
 obj-$(CONFIG_MACH_SPADE) += board-spade-microp.o board-spade-rfkill.o
 obj-$(CONFIG_MACH_SPADE) += board-spade-keypad.o board-spade-audio.o
 obj-$(CONFIG_MACH_SPADE) += board-spade-mmc.o board-spade-wifi.o
-obj-$(CONFIG_MACH_SPADE) += display/spade-panel.o
 obj-$(CONFIG_MACH_SPADE) += htc_bdaddress.o
 obj-$(CONFIG_MACH_VISION) += board-vision.o
 obj-$(CONFIG_MACH_VISION) += board-vision-microp.o
