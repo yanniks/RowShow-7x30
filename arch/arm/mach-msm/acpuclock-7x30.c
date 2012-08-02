@@ -54,11 +54,7 @@
 /* mv = (750mV + (raw * 25mV)) * (2 - VREF_SEL) */
 #define VDD_RAW(mv) (((MV(mv) / V_STEP) - 30) | VREG_DATA)
 
-#ifdef CONFIG_AXI_HIGH_OC
-#define MAX_AXI_KHZ 201600
-#else
 #define MAX_AXI_KHZ 192000
-#endif
 
 struct clock_state {
 	struct clkctl_acpu_speed	*current_speed;
@@ -138,23 +134,13 @@ static struct clkctl_acpu_speed acpu_freq_tbl[] = {
 	{ 1, 1401600, PLL_2, 3, 0, 192000000, 1250, VDD_RAW(1250), &pll2_tbl[3]},
 	{ 1, 1516800, PLL_2, 3, 0, 192000000, 1300, VDD_RAW(1300), &pll2_tbl[4]},
 #ifdef CONFIG_ACPU_HIGH_OC
-#ifdef CONFIG_AXI_HIGH_OC
-	{ 1, 1612800, PLL_2, 3, 0, 201600000, 1325, VDD_RAW(1325), &pll2_tbl[4]},
-	{ 1, 1689600, PLL_2, 3, 0, 201600000, 1375, VDD_RAW(1375), &pll2_tbl[4]},
-	{ 1, 1766400, PLL_2, 3, 0, 201600000, 1425, VDD_RAW(1425), &pll2_tbl[4]},
-	{ 1, 1843200, PLL_2, 3, 0, 201600000, 1450, VDD_RAW(1450), &pll2_tbl[4]},
-	{ 1, 1920000, PLL_2, 3, 0, 201600000, 1500, VDD_RAW(1500), &pll2_tbl[4]},
-	{ 1, 1996800, PLL_2, 3, 0, 201600000, 1525, VDD_RAW(1525), &pll2_tbl[4]},
-	{ 1, 2016000, PLL_2, 3, 0, 201600000, 1550, VDD_RAW(1550), &pll2_tbl[4]},
-#else
-        { 1, 1612800, PLL_2, 3, 0, 192000000, 1325, VDD_RAW(1325), &pll2_tbl[4]},
-        { 1, 1689600, PLL_2, 3, 0, 192000000, 1375, VDD_RAW(1375), &pll2_tbl[4]},
-        { 1, 1766400, PLL_2, 3, 0, 192000000, 1425, VDD_RAW(1425), &pll2_tbl[4]},
-        { 1, 1843200, PLL_2, 3, 0, 192000000, 1450, VDD_RAW(1450), &pll2_tbl[4]},
-        { 1, 1920000, PLL_2, 3, 0, 192000000, 1500, VDD_RAW(1500), &pll2_tbl[4]},
-        { 1, 1996800, PLL_2, 3, 0, 192000000, 1525, VDD_RAW(1525), &pll2_tbl[4]},
-        { 1, 2016000, PLL_2, 3, 0, 192000000, 1550, VDD_RAW(1550), &pll2_tbl[4]},
-#endif /* CONFIG_AXI_HIGH_OC */
+	{ 1, 1612800, PLL_2, 3, 0, 192000000, 1325, VDD_RAW(1325), &pll2_tbl[4]},
+	{ 1, 1689600, PLL_2, 3, 0, 192000000, 1375, VDD_RAW(1375), &pll2_tbl[4]},
+	{ 1, 1766400, PLL_2, 3, 0, 192000000, 1425, VDD_RAW(1425), &pll2_tbl[4]},
+	{ 1, 1843200, PLL_2, 3, 0, 192000000, 1450, VDD_RAW(1450), &pll2_tbl[4]},
+	{ 1, 1920000, PLL_2, 3, 0, 192000000, 1500, VDD_RAW(1500), &pll2_tbl[4]},
+	{ 1, 1996800, PLL_2, 3, 0, 192000000, 1525, VDD_RAW(1525), &pll2_tbl[4]},
+	{ 1, 2016000, PLL_2, 3, 0, 192000000, 1550, VDD_RAW(1550), &pll2_tbl[4]},
 #endif /* CONFIG_ACPU_HIGH_OC */
 	{ 0 }
 };
