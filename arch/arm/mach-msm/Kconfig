@@ -1612,6 +1612,13 @@ config BOOT_CLOCK_OC
 	help
 	  This sets a clock of 1.516GHz for a faster boot.
 
+config ACPU_HIGH_OC
+	bool "Enable Higher ACPU OC"
+	default n
+	depends on ACPUCLOCK_OVERCLOCKING && ARCH_MSM7X30
+	help
+	  Allow max 2GHz acpu overclock for Spade ARM devices.
+
 config ACPUCLOCK_OVERCLOCKING
 	bool "Enable support for CPU overclocking"
 	default n
