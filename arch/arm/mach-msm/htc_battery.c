@@ -639,7 +639,7 @@ static int htc_cable_status_update(int status)
 	 * if receives AC notification */
 	last_source = htc_batt_info.rep.charging_source;
 	if (status == CHARGER_USB && g_usb_online == 0) {
-		htc_set_smem_cable_type(CHARGER_USB);
+		htc_set_smem_cable_type(CHARGER_AC);
 		htc_batt_info.rep.charging_source = CHARGER_USB;
 	} else {
 		htc_set_smem_cable_type(status);
@@ -649,7 +649,7 @@ static int htc_cable_status_update(int status)
 			g_usb_online = 0;
 	}
 
-	msm_hsusb_set_vbus_state(status == CHARGER_USB);
+	msm_hsusb_set_vbus_state(status == CHARGER_AC);
 	if (htc_batt_info.guage_driver == GUAGE_DS2784 ||
 		htc_batt_info.guage_driver == GUAGE_DS2746)
 		blocking_notifier_call_chain(&cable_status_notifier_list,
@@ -677,7 +677,7 @@ static int htc_cable_status_update(int status)
 		if (htc_batt_info.rep.charging_source == CHARGER_BATTERY || last_source == CHARGER_BATTERY)
 			power_supply_changed(&htc_power_supplies[BATTERY_SUPPLY]);
 		if (htc_batt_info.rep.charging_source == CHARGER_USB || last_source == CHARGER_USB)
-			power_supply_changed(&htc_power_supplies[USB_SUPPLY]);
+			power_supply_changed(&htc_power_supplies[AC_SUPPLY]);
 		if (htc_batt_info.rep.charging_source == CHARGER_AC || last_source == CHARGER_AC)
 			power_supply_changed(&htc_power_supplies[AC_SUPPLY]);
 		if (htc_batt_debug_mask & HTC_BATT_DEBUG_UEVT)
