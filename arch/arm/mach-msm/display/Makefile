@@ -9,3 +9,4 @@ ifeq ($(CONFIG_MICROP_COMMON),y)
 	obj-$(CONFIG_ARCH_MSM7X30) += panel-sonywvga-s6d16a0x21-7x30.o
 endif
 endif
+obj-$(CONFIG_MACH_VISION) += vision-panel.o
