@@ -161,7 +161,7 @@ static unsigned int spade_sdslot_status(struct device *dev)
 	return (!status);
 }
 
-#define SPADE_MMC_VDD		(MMC_VDD_28_29 | MMC_VDD_29_30)
+#define SPADE_MMC_VDD		(MMC_VDD_24_25 | MMC_VDD_25_26)
 
 static unsigned int spade_sdslot_type = MMC_TYPE_SD;
 
