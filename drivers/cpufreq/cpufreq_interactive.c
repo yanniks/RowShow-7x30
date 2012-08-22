@@ -30,9 +30,12 @@
 #include <linux/slab.h>
 #include <linux/input.h>
 #include <asm/cputime.h>
+#include <linux/earlysuspend.h>
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/cpufreq_interactive.h>
+
+static unsigned int suspended = 0;
 
 static atomic_t active_count = ATOMIC_INIT(0);
 
@@ -58,13 +61,11 @@ static DEFINE_PER_CPU(struct cpufreq_interactive_cpuinfo, cpuinfo);
 
 /* Workqueues handle frequency scaling */
 static struct task_struct *up_task;
-static struct workqueue_struct *down_wq;
 static struct work_struct freq_scale_down_work;
 static cpumask_t up_cpumask;
 static spinlock_t up_cpumask_lock;
 static cpumask_t down_cpumask;
 static spinlock_t down_cpumask_lock;
-static struct mutex set_speed_lock;
 
 /* Hi speed to bump to from lo speed when load burst (default max) */
 static u64 hispeed_freq;
@@ -110,6 +111,12 @@ static struct cpufreq_interactive_inputopen inputopen;
  */
 
 static int boost_val;
+
+/*
+ * Early suspend max frequency
+ */
+#define DEFAULT_SCREEN_OFF_MAX 594000
+static unsigned long screen_off_max;
 
 static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 		unsigned int event);
@@ -266,7 +273,7 @@ static void cpufreq_interactive_timer(unsigned long data)
 		spin_lock_irqsave(&down_cpumask_lock, flags);
 		cpumask_set_cpu(data, &down_cpumask);
 		spin_unlock_irqrestore(&down_cpumask_lock, flags);
-		queue_work(down_wq, &freq_scale_down_work);
+		schedule_work(&freq_scale_down_work);
 	} else {
 		pcpu->target_freq = new_freq;
 		spin_lock_irqsave(&up_cpumask_lock, flags);
@@ -420,30 +427,22 @@ static int cpufreq_interactive_up_task(void *data)
 		spin_unlock_irqrestore(&up_cpumask_lock, flags);
 
 		for_each_cpu(cpu, &tmp_mask) {
-			unsigned int j;
 			unsigned int max_freq = 0;
-
 			pcpu = &per_cpu(cpuinfo, cpu);
+
 			smp_rmb();
 
 			if (!pcpu->governor_enabled)
 				continue;
 
-			mutex_lock(&set_speed_lock);
+			max_freq = pcpu->target_freq;
+			if (suspended && (max_freq > screen_off_max))
+                               max_freq = screen_off_max;
 
-			for_each_cpu(j, pcpu->policy->cpus) {
-				struct cpufreq_interactive_cpuinfo *pjcpu =
-					&per_cpu(cpuinfo, j);
+			__cpufreq_driver_target(pcpu->policy,
+						max_freq,
+						CPUFREQ_RELATION_H);
 
-				if (pjcpu->target_freq > max_freq)
-					max_freq = pjcpu->target_freq;
-			}
-
-			if (max_freq != pcpu->policy->cur)
-				__cpufreq_driver_target(pcpu->policy,
-							max_freq,
-							CPUFREQ_RELATION_H);
-			mutex_unlock(&set_speed_lock);
 			trace_cpufreq_interactive_up(cpu, pcpu->target_freq,
 						     pcpu->policy->cur);
 		}
@@ -465,30 +464,22 @@ static void cpufreq_interactive_freq_down(struct work_struct *work)
 	spin_unlock_irqrestore(&down_cpumask_lock, flags);
 
 	for_each_cpu(cpu, &tmp_mask) {
-		unsigned int j;
 		unsigned int max_freq = 0;
-
 		pcpu = &per_cpu(cpuinfo, cpu);
+
 		smp_rmb();
 
 		if (!pcpu->governor_enabled)
 			continue;
 
-		mutex_lock(&set_speed_lock);
+		max_freq = pcpu->target_freq;
+		if (suspended && (max_freq > screen_off_max))
+			max_freq = screen_off_max;
 
-		for_each_cpu(j, pcpu->policy->cpus) {
-			struct cpufreq_interactive_cpuinfo *pjcpu =
-				&per_cpu(cpuinfo, j);
+		__cpufreq_driver_target(pcpu->policy, 
+					max_freq,
+					CPUFREQ_RELATION_H);
 
-			if (pjcpu->target_freq > max_freq)
-				max_freq = pjcpu->target_freq;
-		}
-
-		if (max_freq != pcpu->policy->cur)
-			__cpufreq_driver_target(pcpu->policy, max_freq,
-						CPUFREQ_RELATION_H);
-
-		mutex_unlock(&set_speed_lock);
 		trace_cpufreq_interactive_down(cpu, pcpu->target_freq,
 					       pcpu->policy->cur);
 	}
@@ -579,7 +570,7 @@ static int cpufreq_interactive_input_connect(struct input_handler *handler,
 		goto err;
 
 	inputopen.handle = handle;
-	queue_work(down_wq, &inputopen.inputopen_work);
+	schedule_work(&inputopen.inputopen_work);
 	return 0;
 err:
 	kfree(handle);
@@ -801,6 +792,30 @@ static ssize_t store_boostpulse(struct kobject *kobj, struct attribute *attr,
 static struct global_attr boostpulse =
 	__ATTR(boostpulse, 0200, NULL, store_boostpulse);
 
+static ssize_t show_screen_off_maxfreq(struct kobject *kobj,
+                                        struct attribute *attr, char *buf)
+{
+        return sprintf(buf, "%lu\n", screen_off_max);
+}
+
+static ssize_t store_screen_off_maxfreq(struct kobject *kobj,
+                                         struct attribute *attr,
+                                         const char *buf, size_t count)
+{
+        int ret;
+        unsigned long val;
+
+        ret = strict_strtoul(buf, 0, &val);
+        if (ret < 0) return ret;
+	if (val < 384000) screen_off_max = 1512000;
+        else screen_off_max = val;
+        return count;
+}
+
+static struct global_attr screen_off_maxfreq =
+	__ATTR(screen_off_maxfreq, 0666, show_screen_off_maxfreq, 
+		store_screen_off_maxfreq);
+
 static struct attribute *interactive_attributes[] = {
 	&hispeed_freq_attr.attr,
 	&go_hispeed_load_attr.attr,
@@ -810,12 +825,29 @@ static struct attribute *interactive_attributes[] = {
 	&input_boost.attr,
 	&boost.attr,
 	&boostpulse.attr,
+	&screen_off_maxfreq.attr,
 	NULL,
 };
 
 static struct attribute_group interactive_attr_group = {
 	.attrs = interactive_attributes,
 	.name = "interactive",
+};
+
+static void interactive_early_suspend(struct early_suspend *handler) {
+	suspended = 1;
+	pr_info("[imoseyon] interactive early suspend\n");
+}
+
+static void interactive_late_resume(struct early_suspend *handler) {
+	suspended = 0;
+	pr_info("[imoseyon] interactive late resume\n");
+}
+
+static struct early_suspend interactive_power_suspend = {
+        .suspend = interactive_early_suspend,
+        .resume = interactive_late_resume,
+        .level = EARLY_SUSPEND_LEVEL_DISABLE_FB + 1,
 };
 
 static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
@@ -871,6 +903,9 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 			pr_warn("%s: failed to register input handler\n",
 				__func__);
 
+                register_early_suspend(&interactive_power_suspend);
+                pr_info("[imoseyon] interactive start\n");
+
 		break;
 
 	case CPUFREQ_GOV_STOP:
@@ -896,6 +931,9 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 		input_unregister_handler(&cpufreq_interactive_input_handler);
 		sysfs_remove_group(cpufreq_global_kobject,
 				&interactive_attr_group);
+
+                unregister_early_suspend(&interactive_power_suspend);
+                pr_info("[imoseyon] interactive inactive\n");
 
 		break;
 
@@ -941,6 +979,7 @@ static int __init cpufreq_interactive_init(void)
 	min_sample_time = DEFAULT_MIN_SAMPLE_TIME;
 	above_hispeed_delay_val = DEFAULT_ABOVE_HISPEED_DELAY;
 	timer_rate = DEFAULT_TIMER_RATE;
+	screen_off_max = DEFAULT_SCREEN_OFF_MAX;
 
 	/* Initalize per-cpu timers */
 	for_each_possible_cpu(i) {
@@ -958,27 +997,15 @@ static int __init cpufreq_interactive_init(void)
 	sched_setscheduler_nocheck(up_task, SCHED_FIFO, &param);
 	get_task_struct(up_task);
 
-	/* No rescuer thread, bind to CPU queuing the work for possibly
-	   warm cache (probably doesn't matter much). */
-	down_wq = alloc_workqueue("knteractive_down", 0, 1);
-
-	if (!down_wq)
-		goto err_freeuptask;
-
 	INIT_WORK(&freq_scale_down_work,
 		  cpufreq_interactive_freq_down);
 
 	spin_lock_init(&up_cpumask_lock);
 	spin_lock_init(&down_cpumask_lock);
-	mutex_init(&set_speed_lock);
 
 	idle_notifier_register(&cpufreq_interactive_idle_nb);
 	INIT_WORK(&inputopen.inputopen_work, cpufreq_interactive_input_open);
 	return cpufreq_register_governor(&cpufreq_gov_interactive);
-
-err_freeuptask:
-	put_task_struct(up_task);
-	return -ENOMEM;
 }
 
 #ifdef CONFIG_CPU_FREQ_DEFAULT_GOV_INTERACTIVE
@@ -992,7 +1019,6 @@ static void __exit cpufreq_interactive_exit(void)
 	cpufreq_unregister_governor(&cpufreq_gov_interactive);
 	kthread_stop(up_task);
 	put_task_struct(up_task);
-	destroy_workqueue(down_wq);
 }
 
 module_exit(cpufreq_interactive_exit);
