@@ -679,7 +679,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 	!defined(CONFIG_SEC_DVFS_UNI)
 		if(!cpufreq_gov_lcd_status) {
 			if (policy->cur < policy->max) {
-				if (policy->cur < 368640) dbs_freq_increase(policy, 806400);
+				if (policy->cur < 341640) dbs_freq_increase(policy, 806400);
 				else if (policy->cur < 806400) dbs_freq_increase(policy, 1024000);
 				else {
 					this_dbs_info->rate_mult = dbs_tuners_ins.sampling_down_factor;
