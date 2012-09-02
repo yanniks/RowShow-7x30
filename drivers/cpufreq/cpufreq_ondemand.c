@@ -43,7 +43,7 @@
 #define MIN_FREQUENCY_UP_THRESHOLD		(11)
 #define MAX_FREQUENCY_UP_THRESHOLD		(100)
 #define MIN_FREQUENCY_DOWN_DIFFERENTIAL		(1)
-#define DEFAULT_FREQ_BOOST_TIME			(2500000)
+#define DEFAULT_FREQ_BOOST_TIME			(500000)
 
 u64 freq_boosted_time;
 
@@ -148,6 +148,7 @@ static struct dbs_tuners {
 	.ignore_nice = 0,
 	.powersave_bias = 0,
 	.freq_boost_time = DEFAULT_FREQ_BOOST_TIME,
+	.boostfreq = MAX_FREQ_LIMIT,
 };
 
 #if defined(CONFIG_SEC_LIMIT_LCD_OFF_CPU_MAX_FREQ) && defined(CONFIG_HAS_EARLYSUSPEND) && \
@@ -1175,6 +1176,7 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 				    latency * LATENCY_MULTIPLIER);
 			dbs_tuners_ins.io_is_busy = should_io_be_busy();
 		}
+#if 0
 		if (!cpu)
 			rc = input_register_handler(&dbs_input_handler);
 		mutex_unlock(&dbs_mutex);
@@ -1197,6 +1199,7 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 		/* If device is being removed, policy is no longer
 		 * valid. */
 		this_dbs_info->cur_policy = NULL;
+#if 0
 		if (!cpu)
 			input_unregister_handler(&dbs_input_handler);
 		mutex_unlock(&dbs_mutex);
