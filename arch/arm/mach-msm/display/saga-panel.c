@@ -142,6 +142,8 @@ static inline int is_hitachi_panel(void){
 
 static int panel_init_power(void)
 {
+  int rc;
+
   vreg_ldo19 = vreg_get(NULL, "wlan2");
   
   if (IS_ERR(vreg_ldo19)) {
@@ -166,7 +168,7 @@ static int panel_init_power(void)
            __func__, rc);
     return -1;
   }
-  retrn 0;
+  return 0;
 }
 
 static int panel_sony_power(int on)
@@ -278,22 +280,10 @@ static struct mddi_platform_data mddi_pdata = {
 	.mddi_client_power = mddi_hitachi_power,
 };
 
-/* use one flag to have better backlight on/off performance */
-static int saga_set_dim = 1;
-
-int mdp_core_clk_rate_table[] = {
-  122880000,
-  122880000,
-  192000000,
-  192000000,
-};
-
 static struct msm_panel_common_pdata mdp_pdata = {
   .hw_revision_addr = 0xac001270,
   .gpio = 30,
-  .mdp_core_clk_rate = 122880000,
-  .mdp_core_clk_table = mdp_core_clk_rate_table,
-  .num_mdp_clk = ARRAY_SIZE(mdp_core_clk_rate_table),
+  .mdp_max_clk = 192000000,
   .mdp_rev = MDP_REV_40,
 };
 
@@ -337,7 +327,7 @@ int __init saga_init_panel(void)
     return ret;
 
   msm_fb_add_devices(
-                     saga_fb_devices, ARARY_SIZE(saga_fb_devices));
+                     saga_fb_devices, ARRAY_SIZE(saga_fb_devices));
   if (is_sony_panel())
     {
       //    msm_fb_register_device("lcdc", &lcdc_pdata);
