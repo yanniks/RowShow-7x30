@@ -38,6 +38,7 @@ typedef struct panel_id_s {
 #define MIPI_VIDEO_PANEL	8	/* MIPI */
 #define MIPI_CMD_PANEL		9	/* MIPI */
 #define WRITEBACK_PANEL		10	/* Wifi display */
+#define LVDS_PANEL		11	/* LVDS */
 
 /* panel class */
 typedef enum {
@@ -128,6 +129,8 @@ struct mipi_panel_info {
 	char mdp_trigger;
 	char dma_trigger;
 	uint32 dsi_pclk_rate;
+	/* byte to esc clk ratio */
+	uint32 esc_byte_ratio;
 	/* The packet-size should not bet changed */
 	char no_max_pkt_size;
 	/* Clock required during LP commands */
