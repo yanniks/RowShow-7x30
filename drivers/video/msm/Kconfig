@@ -125,11 +125,6 @@ config FB_MSM_TVOUT
 	bool
 	default n
 
-config FB_MSM_MDDI_RENESAS_R61408_WVGA
-	bool
-	select FB_MSM_MDDI
-	default n
-
 config FB_MSM_MDDI_TOSHIBA_COMMON
 	bool
 	select FB_MSM_MDDI
@@ -215,26 +210,6 @@ config FB_MSM_LCDC_ST15_PANEL
     select FB_MSM_LCDC_ST15_WXGA
     ---help---
       Support for ST1.5 WXGA (1366x768) panel
-
-config FB_MSM_LCDC_SONY_WVGA
-	bool
-	select FB_MSM_LCDC_PANEL
-	default n
-
-config FB_MSM_LCDC_SPADE_WVGA
-	bool
-	select FB_MSM_LCDC_PANEL
-	default n
-
-config FB_MSM_LCDC_SAMSUNG_TL2796A_WVGA
-	bool
-	select FB_MSM_LCDC_PANEL
-	default n
-
-config FB_MSM_LCDC_SAMSUNG_S6E63M0_WVGA
-	bool
-	select FB_MSM_LCDC_PANEL
-	default n
 
 config FB_MSM_LCDC_PRISM_WVGA
 	bool
@@ -345,6 +320,15 @@ config FB_MSM_MIPI_CHIMEI_WXGA
 	  The panel is connected to the host
 	  via Toshiba DSI-to-LVDS bridge.
 
+config FB_MSM_MIPI_CHIMEI_WUXGA
+	bool "LVDS Chimei WUXGA Panel using Toshiba MIPI DSI-to-LVDS bridge."
+	select FB_MSM_MIPI_DSI_TC358764_DSI2LVDS
+	---help---
+	  Support for Chimei WUXGA (1920x1200) panel.
+	  The panel is using a serial LVDS input.
+	  The panel is connected to the host
+	  via Toshiba DSI-to-LVDS bridge.
+
 config FB_MSM_MIPI_TRULY_VIDEO_WVGA_PT
 	bool
 	select FB_MSM_MIPI_DSI_TRULY
@@ -353,6 +337,15 @@ config FB_MSM_MIPI_SIMULATOR_VIDEO
 	bool
 	select FB_MSM_MIPI_DSI_SIMULATOR
 	default n
+
+config FB_MSM_NO_MDP_PIPE_CTRL
+	depends on FB_MSM_OVERLAY
+	bool "Do not use mdp_pipe_ctrl"
+	---help---
+	  Saying 'Y' here obsoletes the mdp_pipe_ctrl function,
+	  which was used to control mdp-related clocks. MDP4 vsync-driven
+	  screen updates will use a different clock control mechanism if
+	  this is selected.
 
 config FB_MSM_OVERLAY0_WRITEBACK
 	depends on FB_MSM_OVERLAY
@@ -375,30 +368,6 @@ config FB_MSM_WRITEBACK_MSM_PANEL
 choice
 	prompt "LCD Panel"
 	default FB_MSM_MDDI_AUTO_DETECT
-
-config FB_MSM_VISION_PANEL
-	depends on FB_MSM_LCDC_HW && MACH_VISION
-	bool "LCDC Vision WVGA Panels"
-	select FB_MSM_LCDC_SONY_WVGA
-	select FB_MSM_LCDC_SAMSUNG_TL2796A_WVGA
-        select FB_MSM_LCDC_SAMSUNG_S6E63M0_WVGA
-	---help---
-	  Support for Vision WVGA (800x480) panels
-
-config FB_MSM_SAGA_PANEL
-	depends on FB_MSM_LCDC_HW && MACH_SAGA
-	bool "LCDC Saga WVGA Panels"
-	select FB_MSM_LCDC_SONY_WVGA
-        select FB_MSM_MDDI_RENESAS_R61408_WVGA
-	---help---
-	  Support for Saga WVGA (800x480) panels
-
-config FB_MSM_SPADE_PANEL
-	depends on FB_MSM_LCDC_HW && MACH_SPADE
-	bool "LCDC Spade WVGA Panels"
-	select FB_MSM_LCDC_SPADE_WVGA
-	---help---
-	  Support for Spade WVGA (800x480) panels
 
 config FB_MSM_LCDC_PRISM_WVGA_PANEL
 	depends on FB_MSM_LCDC_HW
@@ -501,6 +470,7 @@ config FB_MSM_MIPI_PANEL_DETECT
 	select FB_MSM_MIPI_ORISE_CMD_720P_PT
 	select FB_MSM_MIPI_SIMULATOR_VIDEO
 	select FB_MSM_MIPI_CHIMEI_WXGA
+	select FB_MSM_MIPI_CHIMEI_WUXGA
 	---help---
 	  Support for MIPI panel auto detect
 
@@ -513,21 +483,28 @@ config FB_MSM_MDDI_PANEL_AUTO_DETECT
 config FB_MSM_LCDC_PANEL_AUTO_DETECT
 	bool "LCDC Panel Auto Detect"
 	select FB_MSM_LCDC_AUTO_DETECT
-        select FB_MSM_LCDC_SONY_WVGA
-        select FB_MSM_LCDC_SAMSUNG_TL2796A_WVGA
-        select FB_MSM_LCDC_SAMSUNG_S6E63M0_WVGA
-	select FB_MSM_LCDC_SPADE_WVGA
+	select FB_MSM_LCDC_SAMSUNG_WSVGA
+	select FB_MSM_LCDC_AUO_WVGA
+	select FB_MSM_LCDC_NT35582_WVGA
+	select FB_MSM_LCDC_SAMSUNG_OLED_PT
 	---help---
 	  Support for LCDC panel auto detect
 
 config FB_MSM_LCDC_MIPI_PANEL_AUTO_DETECT
 	bool "LCDC + MIPI Panel Auto Detect"
 	select FB_MSM_LCDC_AUTO_DETECT
-        select FB_MSM_LCDC_SONY_WVGA
-        select FB_MSM_LCDC_SAMSUNG_TL2796A_WVGA
-        select FB_MSM_LCDC_SAMSUNG_S6E63M0_WVGA
-	select FB_MSM_LCDC_SPADE_WVGA
-        select FB_MSM_MDDI_RENESAS_R61408_WVGA
+	select FB_MSM_LCDC_SAMSUNG_WSVGA
+	select FB_MSM_LCDC_AUO_WVGA
+	select FB_MSM_LCDC_SAMSUNG_OLED_PT
+	select FB_MSM_LCDC_NT35582_WVGA
+	select FB_MSM_LCDC_TOSHIBA_FWVGA_PT
+	select FB_MSM_MIPI_TOSHIBA_VIDEO_WVGA_PT
+	select FB_MSM_MIPI_TOSHIBA_VIDEO_WSVGA_PT
+	select FB_MSM_MIPI_RENESAS_VIDEO_FWVGA_PT
+	select FB_MSM_MIPI_RENESAS_CMD_FWVGA_PT
+	select FB_MSM_MIPI_NOVATEK_VIDEO_QHD_PT
+	select FB_MSM_MIPI_NOVATEK_CMD_QHD_PT
+	select FB_MSM_MIPI_SIMULATOR_VIDEO
 	---help---
 	  Support for LCDC + MIPI panel auto detect
 
@@ -600,6 +577,10 @@ config FB_MSM_MIPI_RENESAS_CMD_FWVGA_PT_PANEL
 config FB_MSM_MIPI_CHIMEI_WXGA_PANEL
 	bool "MIPI Chimei WXGA PT Panel"
 	select FB_MSM_MIPI_CHIMEI_WXGA
+
+config FB_MSM_MIPI_CHIMEI_WUXGA_PANEL
+	bool "MIPI Chimei WUXGA Panel"
+	select FB_MSM_MIPI_CHIMEI_WUXGA
 
 config FB_MSM_MIPI_TRULY_VIDEO_WVGA_PT_PANEL
 	bool "MIPI Truly Video WVGA PT Panel"
@@ -810,7 +791,7 @@ endchoice
 
 choice
 	prompt "Default framebuffer color depth"
-	depends on FB_MSM_MDP40 || FB_MSM_MDP31
+	depends on FB_MSM_MDP40 || FB_MSM_MDP31 || FB_MSM_MDP303
 	default FB_MSM_DEFAULT_DEPTH_RGBA8888
 
 config FB_MSM_DEFAULT_DEPTH_RGB565
