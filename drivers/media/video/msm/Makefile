@@ -52,6 +52,7 @@ obj-$(CONFIG_S5K4E1GX) += s5k4e1gx.o s5k4e1gx_reg.o
 ifdef CONFIG_S5K6AAFX
 obj-$(CONFIG_MACH_FLYER) += s5k6aafx.o s5k6aafx_reg_flyer.o s5k6aafx_reg_flyer_cob.o
 endif
+obj-$(CONFIG_MSM_V4L2_VIDEO_OVERLAY_DEVICE) += msm_v4l2_video.o
 
 ifdef CONFIG_CAMERA_ZSL
 	obj-$(CONFIG_ARCH_MSM8X60) += msm_io_8x60.o msm_vfe_8x60_ZSL.o msm_vpe1_8x60.o
@@ -106,4 +107,3 @@ obj-$(CONFIG_WEBCAM_OV7692) += ov7692.o
 obj-$(CONFIG_MT9D112) += mt9d112.o mt9d112_reg.o
 
 obj-$(CONFIG_MT9D113) += mt9d113.o mt9d113_reg.o
-obj-$(CONFIG_MSM_V4L2_VIDEO_OVERLAY_DEVICE) += msm_v4l2_video.o
