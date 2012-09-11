@@ -519,12 +519,16 @@ struct msm_vidc_platform_data {
 	int disable_turbo;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int cont_mode_dpb_count;
 >>>>>>> dbd1b59... msm_fb: display: fix the build for other boards
 =======
         int cont_mode_dpb_count;
 >>>>>>> 3a3f1d8... msm8x55 initial bringup on JB_Choc
+=======
+	int cont_mode_dpb_count;
+>>>>>>> dbd1b59... msm_fb: display: fix the build for other boards
 };
 
 #if defined(CONFIG_USB_PEHCI_HCD) || defined(CONFIG_USB_PEHCI_HCD_MODULE)
