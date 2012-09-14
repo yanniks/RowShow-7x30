@@ -26,7 +26,7 @@
 #define __HCI_CORE_H
 
 #include <net/bluetooth/hci.h>
-#include <linux/wakelock.h>
+
 /* HCI upper protocols */
 #define HCI_PROTO_L2CAP	0
 #define HCI_PROTO_SCO	1
@@ -310,16 +310,21 @@ struct hci_conn {
 	__u8		remote_oob;
 	__u8		remote_auth;
 
+	__s8	rssi_threshold;
+	__u16	rssi_update_interval;
+	__u8	rssi_update_thresh_exceed;
+
 	unsigned int	sent;
 
 	struct sk_buff_head data_q;
 
 	struct timer_list disc_timer;
 	struct timer_list idle_timer;
+	struct delayed_work	rssi_update_work;
 
 	struct work_struct work_add;
 	struct work_struct work_del;
-	struct wake_lock idle_lock;
+
 	struct device	dev;
 	atomic_t	devref;
 
@@ -570,7 +575,7 @@ struct hci_conn *hci_conn_add(struct hci_dev *hdev, int type,
 struct hci_conn *hci_le_conn_add(struct hci_dev *hdev, bdaddr_t *dst,
 							__u8 addr_type);
 int hci_conn_del(struct hci_conn *conn);
-void hci_conn_hash_flush(struct hci_dev *hdev);
+void hci_conn_hash_flush(struct hci_dev *hdev, u8 is_process);
 void hci_conn_check_pending(struct hci_dev *hdev);
 
 struct hci_chan *hci_chan_add(struct hci_dev *hdev);
@@ -607,6 +612,10 @@ void hci_conn_enter_sniff_mode(struct hci_conn *conn);
 void hci_conn_hold_device(struct hci_conn *conn);
 void hci_conn_put_device(struct hci_conn *conn);
 
+void hci_conn_set_rssi_reporter(struct hci_conn *conn,
+		s8 rssi_threshold, u16 interval, u8 updateOnThreshExceed);
+void hci_conn_unset_rssi_reporter(struct hci_conn *conn);
+
 static inline void hci_conn_hold(struct hci_conn *conn)
 {
 	atomic_inc(&conn->refcnt);
@@ -622,7 +631,7 @@ static inline void hci_conn_put(struct hci_conn *conn)
 			if (conn->state == BT_CONNECTED) {
 				timeo = msecs_to_jiffies(conn->disc_timeout);
 				if (!conn->out)
-					timeo *= 20;
+					timeo *= 4;
 			} else
 				timeo = msecs_to_jiffies(10);
 		} else
@@ -751,7 +760,8 @@ struct hci_proto {
 	int (*connect_ind)	(struct hci_dev *hdev, bdaddr_t *bdaddr, __u8 type);
 	int (*connect_cfm)	(struct hci_conn *conn, __u8 status);
 	int (*disconn_ind)	(struct hci_conn *conn);
-	int (*disconn_cfm)	(struct hci_conn *conn, __u8 reason);
+	int (*disconn_cfm)	(struct hci_conn *conn, __u8 reason,
+							__u8 is_process);
 	int (*recv_acldata)	(struct hci_conn *conn, struct sk_buff *skb, __u16 flags);
 	int (*recv_scodata)	(struct hci_conn *conn, struct sk_buff *skb);
 	int (*security_cfm)	(struct hci_conn *conn, __u8 status, __u8 encrypt);
@@ -808,17 +818,18 @@ static inline int hci_proto_disconn_ind(struct hci_conn *conn)
 	return reason;
 }
 
-static inline void hci_proto_disconn_cfm(struct hci_conn *conn, __u8 reason)
+static inline void hci_proto_disconn_cfm(struct hci_conn *conn, __u8 reason,
+							__u8 is_process)
 {
 	register struct hci_proto *hp;
 
 	hp = hci_proto[HCI_PROTO_L2CAP];
 	if (hp && hp->disconn_cfm)
-		hp->disconn_cfm(conn, reason);
+		hp->disconn_cfm(conn, reason, is_process);
 
 	hp = hci_proto[HCI_PROTO_SCO];
 	if (hp && hp->disconn_cfm)
-		hp->disconn_cfm(conn, reason);
+		hp->disconn_cfm(conn, reason, is_process);
 
 	if (conn->disconn_cfm_cb)
 		conn->disconn_cfm_cb(conn, reason);
@@ -1019,6 +1030,8 @@ int mgmt_discoverable(u16 index, u8 discoverable);
 int mgmt_connectable(u16 index, u8 connectable);
 int mgmt_new_key(u16 index, struct link_key *key, u8 bonded);
 int mgmt_connected(u16 index, bdaddr_t *bdaddr, u8 le);
+int mgmt_le_conn_params(u16 index, bdaddr_t *bdaddr, u16 interval,
+						u16 latency, u16 timeout);
 int mgmt_disconnected(u16 index, bdaddr_t *bdaddr);
 int mgmt_disconnect_failed(u16 index);
 int mgmt_connect_failed(u16 index, bdaddr_t *bdaddr, u8 status);
@@ -1037,6 +1050,8 @@ int mgmt_read_local_oob_data_reply_complete(u16 index, u8 *hash, u8 *randomizer,
 								u8 status);
 int mgmt_device_found(u16 index, bdaddr_t *bdaddr, u8 type, u8 le,
 				u8 *dev_class, s8 rssi, u8 eir_len, u8 *eir);
+void mgmt_read_rssi_complete(u16 index, s8 rssi, bdaddr_t *bdaddr,
+				u16 handle, u8 status);
 int mgmt_remote_name(u16 index, bdaddr_t *bdaddr, u8 status, u8 *name);
 void mgmt_inquiry_started(u16 index);
 void mgmt_inquiry_complete_evt(u16 index, u8 status);
@@ -1087,5 +1102,7 @@ void hci_le_start_enc(struct hci_conn *conn, __le16 ediv, __u8 rand[8],
 							__u8 ltk[16]);
 void hci_le_ltk_reply(struct hci_conn *conn, u8 ltk[16]);
 void hci_le_ltk_neg_reply(struct hci_conn *conn);
+
+void hci_read_rssi(struct hci_conn *conn);
 
 #endif /* __HCI_CORE_H */
