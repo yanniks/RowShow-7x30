@@ -25,12 +25,17 @@
 #include <linux/leds.h>
 #include <linux/mfd/marimba.h>
 #include <linux/i2c.h>
+#include <linux/bma250.h>
+#include <linux/cm3629.h>
 #include <linux/lightsensor.h>
 #include <linux/input.h>
+#include <linux/curcial_oj.h>
+#include <linux/capella_cm3602.h>
 #include <linux/atmel_qt602240.h>
-#include <linux/cm3628.h>
+#include <mach/atmega_microp.h>
 #include <linux/akm8975.h>
 #include <linux/bma150.h>
+#include <linux/a1026.h>
 #include <linux/power_supply.h>
 #include <linux/leds-pm8058.h>
 #include <linux/msm_adc.h>
@@ -58,7 +63,6 @@
 #include <mach/dma.h>
 #include <linux/android_pmem.h>
 #include <linux/input/msm_ts.h>
-//#include <mach/pmic.h>
 #include <mach/rpc_pmapp.h>
 #ifdef CONFIG_MSM7KV2_AUDIO
 #include <mach/qdsp5v2_2x/msm_lpa.h>
@@ -67,16 +71,15 @@
 #include <mach/qdsp5v2_2x/audio_dev_ctl.h>
 #endif
 #include <mach/htc_battery.h>
-#include <linux/ds2746_battery.h>
 #include <linux/tps65200.h>
 #include <mach/rpc_server_handset.h>
-#include <mach/msm_tsif.h>
 #include <mach/socinfo.h>
 #include <mach/msm_memtypes.h>
 #include <asm/mach/mmc.h>
 #include <asm/mach/flash.h>
 #include <mach/vreg.h>
 #include <linux/platform_data/qcom_crypto_device.h>
+//#include <mach/htc_fmtx_rfkill.h>
 #include <mach/htc_headset_mgr.h>
 #include <mach/htc_headset_gpio.h>
 #include <mach/htc_headset_pmic.h>
@@ -104,20 +107,16 @@
 #include <mach/qdsp5v2_2x/audio_dev_ctl.h>
 #include <mach/sdio_al.h>
 #include "smd_private.h"
-#include "board-saga.h"
+#include "board-glacier.h"
 #include "board-msm7x30-regulator.h"
 #include <mach/board_htc.h>
+#include <mach/cable_detect.h>
 #ifdef CONFIG_PERFLOCK
 #include <mach/perflock.h>
 #endif
 #ifdef CONFIG_BT
 #include <mach/htc_bdaddress.h>
 #endif
-#ifdef CONFIG_USB_ACCESSORY_DETECT_BY_ADC
-#include <mach/cable_detect.h>
-#endif
-
-extern struct platform_device lcdc_sonywvga_panel_device;
 
 #define GPIO_2MA	0
 #define GPIO_4MA	1
@@ -142,300 +141,99 @@ extern struct platform_device lcdc_sonywvga_panel_device;
 		(((pull) & 0x3) << 15)          | \
 		(((drvstr) & 0xF) << 17))
 
-#define XC 2
-#define XD 3
-
 struct pm8xxx_gpio_init_info {
 	unsigned			gpio;
 	struct pm_gpio			config;
 };
 
 static unsigned int engineerid;
+extern unsigned long msm_fb_base;
 
-unsigned int saga_get_engineerid(void)
+unsigned int glacier_get_engineerid(void)
 {
 	return engineerid;
 }
 
-#ifdef CONFIG_MSM7KV2_AUDIO
-static struct resource msm_aictl_resources[] = {
-	{
-		.name = "aictl",
-		.start = 0xa5000100,
-		.end = 0xa5000100,
-		.flags = IORESOURCE_MEM,
-	}
-};
-
-static struct resource msm_mi2s_resources[] = {
-	{
-		.name = "hdmi",
-		.start = 0xac900000,
-		.end = 0xac900038,
-		.flags = IORESOURCE_MEM,
-	},
-	{
-		.name = "codec_rx",
-		.start = 0xac940040,
-		.end = 0xac940078,
-		.flags = IORESOURCE_MEM,
-	},
-	{
-		.name = "codec_tx",
-		.start = 0xac980080,
-		.end = 0xac9800B8,
-		.flags = IORESOURCE_MEM,
-	}
-
-};
-
-static struct msm_lpa_platform_data lpa_pdata = {
-	.obuf_hlb_size = 0x2BFF8,
-	.dsp_proc_id = 0,
-	.app_proc_id = 2,
-	.nosb_config = {
-		.llb_min_addr = 0,
-		.llb_max_addr = 0x3ff8,
-		.sb_min_addr = 0,
-		.sb_max_addr = 0,
-	},
-	.sb_config = {
-		.llb_min_addr = 0,
-		.llb_max_addr = 0x37f8,
-		.sb_min_addr = 0x3800,
-		.sb_max_addr = 0x3ff8,
-	}
-};
-
-static struct resource msm_lpa_resources[] = {
-	{
-		.name = "lpa",
-		.start = 0xa5000000,
-		.end = 0xa50000a0,
-		.flags = IORESOURCE_MEM,
-	}
-};
-
-static struct resource msm_aux_pcm_resources[] = {
-
-	{
-		.name = "aux_codec_reg_addr",
-		.start = 0xac9c00c0,
-		.end = 0xac9c00c8,
-		.flags = IORESOURCE_MEM,
-	},
-	{
-		.name   = "aux_pcm_dout",
-		.start  = 138,
-		.end    = 138,
-		.flags  = IORESOURCE_IO,
-	},
-	{
-		.name   = "aux_pcm_din",
-		.start  = 139,
-		.end    = 139,
-		.flags  = IORESOURCE_IO,
-	},
-	{
-		.name   = "aux_pcm_syncout",
-		.start  = 140,
-		.end    = 140,
-		.flags  = IORESOURCE_IO,
-	},
-	{
-		.name   = "aux_pcm_clkin_a",
-		.start  = 141,
-		.end    = 141,
-		.flags  = IORESOURCE_IO,
-	},
-};
-
-static struct platform_device msm_aux_pcm_device = {
-	.name   = "msm_aux_pcm",
-	.id     = 0,
-	.num_resources  = ARRAY_SIZE(msm_aux_pcm_resources),
-	.resource       = msm_aux_pcm_resources,
-};
-
-static struct platform_device msm_aictl_device = {
-	.name = "audio_interct",
-	.id   = 0,
-	.num_resources = ARRAY_SIZE(msm_aictl_resources),
-	.resource = msm_aictl_resources,
-};
-
-static struct platform_device msm_mi2s_device = {
-	.name = "mi2s",
-	.id   = 0,
-	.num_resources = ARRAY_SIZE(msm_mi2s_resources),
-	.resource = msm_mi2s_resources,
-};
-
-static struct platform_device msm_lpa_device = {
-	.name = "lpa",
-	.id   = 0,
-	.num_resources = ARRAY_SIZE(msm_lpa_resources),
-	.resource = msm_lpa_resources,
-	.dev		= {
-		.platform_data = &lpa_pdata,
-	},
-};
-#endif
-
-static int __capella_cm3628_power(int on)
+static int glacier_ts_atmel_power(int on)
 {
-	int rc;
-	struct vreg *vreg = vreg_get(0, "gp7");
+	pr_info("%s: power %d\n", __func__, on);
 
-	if (!vreg) {
-		printk(KERN_ERR "%s: vreg error\n", __func__);
-		return -EIO;
-	}
-	rc = vreg_set_level(vreg, 2850);
-
-	printk(KERN_DEBUG "%s: Turn the capella_cm3628 power %s\n",
-		__func__, (on) ? "on" : "off");
-
-	if (on) {
-		rc = vreg_enable(vreg);
-		if (rc < 0)
-			printk(KERN_ERR "%s: vreg enable failed\n", __func__);
-	} else {
-		rc = vreg_disable(vreg);
-		if (rc < 0)
-			printk(KERN_ERR "%s: vreg disable failed\n", __func__);
-	}
-
-	return rc;
-}
-
-static DEFINE_MUTEX(capella_cm3628_lock);
-static int als_power_control;
-
-static int capella_cm3628_power(int pwr_device, uint8_t enable)
-{
-	unsigned int old_status = 0;
-	int ret = 0, on = 0;
-	mutex_lock(&capella_cm3628_lock);
-
-	old_status = als_power_control;
-	if (enable)
-		als_power_control |= pwr_device;
-	else
-		als_power_control &= ~pwr_device;
-
-	on = als_power_control ? 1 : 0;
-	if (old_status == 0 && on)
-		ret = __capella_cm3628_power(1);
-	else if (!on)
-		ret = __capella_cm3628_power(0);
-
-	mutex_unlock(&capella_cm3628_lock);
-	return ret;
-}
-
-static struct cm3628_platform_data cm3628_pdata = {
-	.intr = SAGA_GPIO_PROXIMITY_INT_N,
-	.levels = { 0x1, 0x3, 0x5, 0x48, 0x8C, 0x5AA,
-			0x9E5, 0xF96, 0x1547, 0xFFFF},
-	.golden_adc = 0x730,
-	.power = capella_cm3628_power,
-	.ALS_slave_address = 0x30>>1,
-	.PS_slave_address = 0x32>>1,
-	.check_interrupt_add = 0x18>>1	,
-	.is_cmd = CM3628_ALS_IT_400ms | CM3628_ALS_PERS_2,
-	.ps_thd_set = 0x3,
-	.ps_thd_with_cal = 0x3,
-	.ps_thd_no_cal = 0x7,
-	.ps_conf2_val = 0,/*saga don't need test mode*/
-	.ps_calibration_rule = 2,
-	.ps_conf1_val = CM3628_PS_DR_1_320 |CM3628_PS_IT_1T,
-	.ps_adc_offset = 0x3,
-	.ps_adc_offset2 = 0xa,
-};
-
-static int saga_ts_atmel_power(int on)
-{
-	printk(KERN_INFO "%s: power %d\n", __func__, on);
-	if (on == 1) {
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(SAGA_LED_3V3_EN), 1);
+	if (on == 1)
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(GLACIER_TP_RSTz), 1);
+	else if (on == 2) {
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(GLACIER_TP_RSTz), 0);
 		msleep(5);
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(SAGA_TP_RSTz), 1);
-	} else if (on == 2) {
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(SAGA_TP_RSTz), 0);
-		msleep(5);
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(SAGA_TP_RSTz), 1);
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(GLACIER_TP_RSTz), 1);
 		msleep(40);
 	}
 
 	return 0;
 }
 
-struct atmel_i2c_platform_data saga_ts_atmel_data[] = {
+struct atmel_i2c_platform_data glacier_ts_atmel_data[] = {
 	{
-		.version = 0x0020,
-		.abs_x_min = 1,
+		.version = 0x020,
+		.abs_x_min = 0,
 		.abs_x_max = 1023,
-		.abs_y_min = 2,
-		.abs_y_max = 966,
+		.abs_y_min = 0,
+		.abs_y_max = 1020,
 		.abs_pressure_min = 0,
 		.abs_pressure_max = 255,
 		.abs_width_min = 0,
 		.abs_width_max = 20,
-		.gpio_irq = SAGA_GPIO_TP_ATT_N,
-		.power = saga_ts_atmel_power,
+		.gpio_irq = GLACIER_GPIO_TP_ATT_N,
+		.power = glacier_ts_atmel_power,
 		.config_T6 = {0, 0, 0, 0, 0, 0},
 		.config_T7 = {50, 15, 25},
-		.config_T8 = {8, 0, 5, 5, 0, 0, 5, 40, 5, 192},
-		.config_T9 = {139, 0, 0, 18, 12, 0, 16, 40, 3, 7, 10, 10, 5, 15, 4, 10, 20, 0, 0, 0, 0, 0, 8, 0, 0, 0, 164, 40, 0, 0, 40, 12},
+		.config_T8 = {8, 0, 5, 5, 0, 0, 10, 35, 5, 192},
+		.config_T9 = {139, 0, 0, 18, 12, 0, 16, 40, 3, 1, 10, 10, 5, 15, 4, 10, 20, 0, 0, 0, 0, 0, 0, 0, 40, 20, 155, 48, 152, 79, 25, 12},
 		.config_T15 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		.config_T18 = {0, 0},
-		.config_T19 = {0, 0, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		.config_T19 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		.config_T20 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		.config_T22 = {15, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 7, 18, 255, 255, 0},
-		.config_T23 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		.config_T22 = {15, 0, 0, 0, 0, 0, 0, 0, 35, 0, 0, 10, 15, 18, 255, 255, 0},
+		.config_T23 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		.config_T24 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		.config_T25 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		.config_T28 = {0, 0, 2, 8, 16, 60},
-		.object_crc = {0x77, 0xA1, 0x0A},
-		.cable_config = {40, 20, 8, 16},
-                //		.cal_tchthr = {45, 45},
+		.config_T25 = {3, 0, 200, 50, 64, 31, 0, 0, 0, 0, 0, 0, 0, 0},
+		.config_T27 = {0, 0, 0, 0, 0, 0, 0},
+		.config_T28 = {0, 0, 2, 4, 16, 60},
+		.object_crc = {0x04, 0xE0, 0xBA},
+		.cable_config = {40, 35, 8, 16},
 		.GCAF_level = {20, 24, 28, 40, 63},
-		.filter_level = {30, 60, 963, 993},
+		.filter_level = {10, 60, 963, 1013},
 	},
 	{
-		.version = 0x016,
-		.abs_x_min = 1,
+		.version = 0x015,
+		.abs_x_min = 0,
 		.abs_x_max = 1023,
-		.abs_y_min = 2,
-		.abs_y_max = 966,
+		.abs_y_min = 0,
+		.abs_y_max = 1020,
 		.abs_pressure_min = 0,
 		.abs_pressure_max = 255,
 		.abs_width_min = 0,
 		.abs_width_max = 20,
-		.gpio_irq = SAGA_GPIO_TP_ATT_N,
-		.power = saga_ts_atmel_power,
+		.gpio_irq = GLACIER_GPIO_TP_ATT_N,
+		.power = glacier_ts_atmel_power,
 		.config_T6 = {0, 0, 0, 0, 0, 0},
 		.config_T7 = {50, 15, 25},
-		.config_T8 = {8, 0, 5, 5, 0, 0, 5, 40},
-		.config_T9 = {139, 0, 0, 18, 12, 0, 16, 40, 3, 7, 10, 10, 5, 15, 4, 10, 20, 0, 0, 0, 0, 0, 8, 0, 0, 0, 164, 40, 0, 0, 40},
+		.config_T8 = {8, 0, 5, 5, 0, 0, 10, 35},
+		.config_T9 = {139, 0, 0, 18, 12, 0, 16, 40, 3, 1, 10, 10, 5, 15, 4, 10, 20, 0, 0, 0, 0, 0, 0, 0, 40, 20, 155, 48, 152, 79, 25},
 		.config_T15 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		.config_T18 = {0, 0},
-		.config_T19 = {0, 0, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		.config_T19 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		.config_T20 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		.config_T22 = {15, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 7, 18, 255, 255, 0},
-		.config_T23 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		.config_T22 = {15, 0, 0, 0, 0, 0, 0, 0, 35, 0, 0, 10, 15, 18, 255, 255, 0},
+		.config_T23 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		.config_T24 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		.config_T25 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		.config_T25 = {3, 0, 200, 50, 64, 31, 0, 0, 0, 0, 0, 0, 0, 0},
 		.config_T27 = {0, 0, 0, 0, 0, 0, 0},
-		.config_T28 = {0, 0, 2, 8, 16, 60},
-		.cable_config = {35, 20, 8, 16},
+		.config_T28 = {0, 0, 2, 4, 16, 60},
+		.object_crc = {0x48, 0x5E, 0x95},
+		.cable_config = {40, 35, 8, 16},
 		.GCAF_level = {20, 24, 28, 40, 63},
-		.filter_level = {30, 60, 963, 993},
+		.filter_level = {10, 60, 963, 1013},
 	},
 };
 
-static ssize_t saga_virtual_keys_show(struct kobject *kobj,
+static ssize_t glacier_atmel_virtual_keys_show(struct kobject *kobj,
 			struct kobj_attribute *attr, char *buf)
 {
 	return sprintf(buf,
@@ -446,31 +244,151 @@ static ssize_t saga_virtual_keys_show(struct kobject *kobj,
 		"\n");
 }
 
-static struct kobj_attribute saga_atmel_virtual_keys_attr = {
+static struct kobj_attribute glacier_atmel_virtual_keys_attr = {
 	.attr = {
 		.name = "virtualkeys.atmel-touchscreen",
 		.mode = S_IRUGO,
 	},
-	.show = &saga_virtual_keys_show,
+	.show = &glacier_atmel_virtual_keys_show,
 };
 
-static struct attribute *saga_properties_attrs[] = {
-	&saga_atmel_virtual_keys_attr.attr,
+static struct attribute *glacier_properties_attrs[] = {
+	&glacier_atmel_virtual_keys_attr.attr,
 	NULL
 };
 
-static struct attribute_group saga_properties_attr_group = {
-	.attrs = saga_properties_attrs,
+static struct attribute_group glacier_properties_attr_group = {
+	.attrs = glacier_properties_attrs,
+};
+
+static uint32_t proximity_on_gpio_table[] = {
+	PCOM_GPIO_CFG(GLACIER_GPIO_PROXIMITY_INT_N,
+		0, GPIO_INPUT, GPIO_NO_PULL, 0), /* PS_VOUT */
+};
+
+static uint32_t proximity_off_gpio_table[] = {
+	PCOM_GPIO_CFG(GLACIER_GPIO_PROXIMITY_INT_N,
+		0, GPIO_INPUT, GPIO_PULL_DOWN, 0) /* PS_VOUT */
+};
+
+void config_glacier_proximity_gpios(int on)
+{
+	if (on)
+		config_gpio_table(proximity_on_gpio_table,
+			ARRAY_SIZE(proximity_on_gpio_table));
+	else
+		config_gpio_table(proximity_off_gpio_table,
+			ARRAY_SIZE(proximity_off_gpio_table));
+}
+
+static int __capella_cm3602_power(int on)
+{
+	int rc;
+	struct vreg *vreg = vreg_get(0, "gp7");
+	if (!vreg) {
+		printk(KERN_ERR "%s: vreg error\n", __func__);
+		return -EIO;
+	}
+	rc = vreg_set_level(vreg, 2850);
+
+	printk(KERN_DEBUG "%s: Turn the capella_cm3602 power %s\n",
+		__func__, (on) ? "on" : "off");
+
+	if (on) {
+		config_glacier_proximity_gpios(1);
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(GLACIER_PS_SHDN), 1);
+		rc = vreg_enable(vreg);
+		if (rc < 0)
+			printk(KERN_ERR "%s: vreg enable failed\n", __func__);
+	} else {
+		rc = vreg_disable(vreg);
+		if (rc < 0)
+			printk(KERN_ERR "%s: vreg disable failed\n", __func__);
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(GLACIER_PS_SHDN), 0);
+		config_glacier_proximity_gpios(0);
+	}
+
+	return rc;
+}
+
+static DEFINE_MUTEX(capella_cm3602_lock);
+static int als_power_control;
+
+static int capella_cm3602_power(int pwr_device, uint8_t enable)
+{
+	unsigned int old_status = 0;
+	int ret = 0, on = 0;
+	mutex_lock(&capella_cm3602_lock);
+
+	old_status = als_power_control;
+	if (enable)
+		als_power_control |= pwr_device;
+	else
+		als_power_control &= ~pwr_device;
+
+	on = als_power_control ? 1 : 0;
+	if (old_status == 0 && on)
+		ret = __capella_cm3602_power(1);
+	else if (!on)
+		ret = __capella_cm3602_power(0);
+
+	mutex_unlock(&capella_cm3602_lock);
+	return ret;
+}
+
+static struct capella_cm3602_platform_data capella_cm3602_pdata = {
+	.power = capella_cm3602_power,
+	.p_en = PM8058_GPIO_PM_TO_SYS(GLACIER_PS_SHDN),
+	.p_out = GLACIER_GPIO_PROXIMITY_INT_N,
+	.irq = MSM_GPIO_TO_INT(GLACIER_GPIO_PROXIMITY_INT_N),
+};
+
+static struct platform_device capella_cm3602 = {
+	.name = CAPELLA_CM3602,
+	.id = -1,
+	.dev = {
+		.platform_data = &capella_cm3602_pdata
+	}
+};
+
+/* HEADSET DRIVER BEGIN */
+
+/* HTC_HEADSET_GPIO Driver */
+static struct htc_headset_gpio_platform_data htc_headset_gpio_data = {
+	.hpin_gpio		= 0,
+	.key_enable_gpio	= 0,
+	.mic_select_gpio	= GLACIER_AUD_MICPATH_SEL,
+};
+
+static struct platform_device htc_headset_gpio = {
+	.name	= "HTC_HEADSET_GPIO",
+	.id	= -1,
+	.dev	= {
+		.platform_data	= &htc_headset_gpio_data,
+	},
+};
+
+/* HTC_HEADSET_MICROP Driver */
+static struct htc_headset_microp_platform_data htc_headset_microp_data = {
+	.remote_int		= 1 << 13,
+	.remote_irq		= MSM_uP_TO_INT(13),
+	.remote_enable_pin	= 1 << 4,
+	.adc_channel		= 0x01,
+	.adc_remote		= {0, 33, 38, 82, 95, 167},
+};
+
+static struct platform_device htc_headset_microp = {
+	.name	= "HTC_HEADSET_MICROP",
+	.id	= -1,
+	.dev	= {
+		.platform_data	= &htc_headset_microp_data,
+	},
 };
 
 /* HTC_HEADSET_PMIC Driver */
 static struct htc_headset_pmic_platform_data htc_headset_pmic_data = {
-  .driver_flag		= DRIVER_HS_PMIC_RPC_KEY,
-  .hpin_gpio	= PM8058_GPIO_PM_TO_SYS(SAGA_AUD_HP_DETz),
-  .hpin_irq		= 0,
-  .adc_mic_bias	= {HS_DEF_MIC_ADC_16_BIT_MIN,
-                   HS_DEF_MIC_ADC_16_BIT_MAX},
-  .adc_remote	= {0, 2502, 2860, 6822, 9086, 13614},
+	.hpin_gpio	= PM8058_GPIO_PM_TO_SYS(GLACIER_AUD_HP_DETz),
+	.hpin_irq	= MSM_GPIO_TO_INT(PM8058_GPIO_PM_TO_SYS(GLACIER_AUD_HP_DETz)),
 };
 
 static struct platform_device htc_headset_pmic = {
@@ -483,6 +401,8 @@ static struct platform_device htc_headset_pmic = {
 
 /* HTC_HEADSET_MGR Driver */
 static struct platform_device *headset_devices[] = {
+	&htc_headset_microp,
+	&htc_headset_gpio,
 	&htc_headset_pmic,
 	/* Please put the headset detection driver on the last */
 };
@@ -492,138 +412,279 @@ static struct htc_headset_mgr_platform_data htc_headset_mgr_data = {
 	.headset_devices	= headset_devices,
 };
 
-static struct platform_device htc_headset_mgr = {
-	.name	= "HTC_HEADSET_MGR",
-	.id	= -1,
-	.dev	= {
-		.platform_data	= &htc_headset_mgr_data,
+/* HEADSET DRIVER END */
+
+static struct microp_function_config microp_functions[] = {
+	{
+		.name   = "microp_intrrupt",
+		.category = MICROP_FUNCTION_INTR,
+	},
+	{
+		.name   = "reset-int",
+		.category = MICROP_FUNCTION_RESET_INT,
+		.int_pin = 1 << 8,
 	},
 };
 
-/* HEADSET DRIVER END */
-
-
-static struct pm8058_led_config pm_led_config[] = {
-	{
-		.name = "green",
-		.type = PM8058_LED_RGB,
-		.bank = 0,
-		.pwm_size = 9,
-		.clk = PM_PWM_CLK_32KHZ,
-		.pre_div = PM_PWM_PREDIVIDE_2,
-		.pre_div_exp = 1,
-		.pwm_value = 511,
-	},
+static struct microp_led_config up_led_config[] = {
 	{
 		.name = "amber",
-		.type = PM8058_LED_RGB,
-		.bank = 1,
-		.pwm_size = 9,
-		.clk = PM_PWM_CLK_32KHZ,
-		.pre_div = PM_PWM_PREDIVIDE_2,
-		.pre_div_exp = 1,
-		.pwm_value = 511,
+		.type = LED_RGB,
+	},
+	{
+		.name = "green",
+		.type = LED_RGB,
 	},
 	{
 		.name = "button-backlight",
-		.type = PM8058_LED_DRVX,
-		.bank = 6,
-		.flags = PM8058_LED_LTU_EN,
-		.period_us = USEC_PER_SEC / 1000,
-		.start_index = 0,
-		.duites_size = 8,
-		.duty_time_ms = 32,
-		.lut_flag = PM_PWM_LUT_RAMP_UP | PM_PWM_LUT_PAUSE_HI_EN,
-		.out_current = 8,
+		.type = LED_PWM,
+		.led_pin = 1 << 0,
+		.init_value = 0,
+		.fade_time = 5,
 	},
 };
 
-static struct pm8058_led_platform_data pm8058_leds_data = {
-	.led_config = pm_led_config,
-	.num_leds = ARRAY_SIZE(pm_led_config),
-	.duties = {0, 15, 30, 45, 60, 75, 90, 100,
-		   100, 90, 75, 60, 45, 30, 15, 0,
-		   0, 0, 0, 0, 0, 0, 0, 0,
-		   0, 0, 0, 0, 0, 0, 0, 0,
-		   0, 0, 0, 0, 0, 0, 0, 0,
-		   0, 0, 0, 0, 0, 0, 0, 0,
-		   0, 0, 0, 0, 0, 0, 0, 0,
-		   0, 0, 0, 0, 0, 0, 0, 0},
+static struct microp_function_config microp_lightsensor_function = {
+	.name = "light_sensor",
+	.category = MICROP_FUNCTION_LSENSOR,
+	.levels = { 0x1, 0x3, 0x5, 0x13, 0x1A, 0x45, 0xDB, 0x135, 0x1F2, 0x3FF },
+	.channel = 3,
+	.int_pin = 1 << 9,
+	.golden_adc = 0xC0,
+        .ls_power = capella_cm3602_power,
 };
 
-static struct platform_device pm8058_leds = {
-  .name   = "leds-pm8058",
-  .id     = -1,
-  .dev    = {
-    .platform_data  = &pm8058_leds_data,
-  },
+static struct lightsensor_platform_data lightsensor_data = {
+	.config = &microp_lightsensor_function,
+	.irq = MSM_uP_TO_INT(9),
 };
 
-static struct akm8975_platform_data compass_platform_data_XA_XB = {
-	.layouts = SAGA_LAYOUTS_XA_XB,
+static struct microp_led_platform_data microp_leds_data = {
+	.num_leds	= ARRAY_SIZE(up_led_config),
+	.led_config	= up_led_config,
 };
 
-static struct akm8975_platform_data compass_platform_data_XC = {
-	.layouts = SAGA_LAYOUTS_XC,
+static struct bma150_platform_data microp_g_sensor_pdata = {
+	.microp_new_cmd = 1,
+	.chip_layout = 0,
 };
 
-static struct bma150_platform_data gsensor_platform_data = {
-	.intr = SAGA_GPIO_GSENSOR_INT_N,
-	.chip_layout = 1,
+#define OJ_SHUTDOWN            (35)
+static void curcial_oj_shutdown(int enable)
+{
+	/* set suspend state as output low as logic suggest.*/
+	unsigned id;
+
+	if (enable) { /*enter early suspend*/
+		id = PCOM_GPIO_CFG(OJ_SHUTDOWN, 0, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_2MA);
+		msm_proc_comm(PCOM_RPC_GPIO_TLMM_CONFIG_EX, &id, 0);
+	}
+
+	gpio_set_value(OJ_SHUTDOWN, 0);
+}
+
+static int curcial_oj_poweron(int on)
+{
+	return 1;
+}
+
+static void curcial_oj_adjust_xy(uint8_t *data, int16_t *mSumDeltaX, int16_t *mSumDeltaY)
+{
+	int8_t 	deltaX;
+	int8_t 	deltaY;
+
+
+	if (data[2] == 0x80)
+		data[2] = 0x81;
+	if (data[1] == 0x80)
+		data[1] = 0x81;
+	if (0) {
+		deltaX = (-1)*((int8_t) data[2]); /*X=2*/
+		deltaY = (1)*((int8_t) data[1]); /*Y=1*/
+	} else {
+		deltaX = (1)*((int8_t) data[1]);
+		deltaY = (1)*((int8_t) data[2]);
+	}
+	*mSumDeltaX = -((int16_t)deltaX);
+	*mSumDeltaY = -((int16_t)deltaY);
+}
+
+static struct curcial_oj_platform_data glacier_oj_data = {
+	.oj_poweron = curcial_oj_poweron,
+	.oj_shutdown = curcial_oj_shutdown,
+	.oj_adjust_xy = curcial_oj_adjust_xy,
+	.mdelay_time = 7,
+	.normal_th = 10,
+	.xy_ratio = 15,
+	.interval = 20,
+	.swap = false,
+	.x = -1,
+	.y = 1,
+	.share_power = false,
+	.debugflag = 0,
+	.ap_code = false,
+	.sht_tbl = {30, 200, 250, 300, 350, 400, 450},
+	.pxsum_tbl = {0, 0, 70, 80, 90, 100, 110},
+	.degree = 7,
+	.Xsteps = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+		10, 10, 10, 10, 10, 9, 9, 9, 9, 9,
+		9, 9, 9, 9, 9, 9, 9, 9, 9, 9},
+	.Ysteps = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+		10, 10, 10, 10, 10, 9, 9, 9, 9, 9,
+		9, 9, 9, 9, 9, 9, 9, 9, 9, 9},
+	.irq_gpio = 26,
+	.rst_gpio = GLACIER_OJ_RSTz,
+};
+
+static struct platform_device microp_devices[] = {
+	{
+		.name = "lightsensor_microp",
+		.dev = {
+			.platform_data = &lightsensor_data,
+		},
+	},
+	{
+		.name = "leds-microp",
+		.id = -1,
+		.dev = {
+			.platform_data = &microp_leds_data,
+		},
+	},
+	{
+		.name = BMA150_G_SENSOR_NAME,
+		.dev = {
+			.platform_data = &microp_g_sensor_pdata,
+		},
+	},
+	{
+		.name	= "HTC_HEADSET_MGR",
+		.id	= -1,
+		.dev	= {
+			.platform_data	= &htc_headset_mgr_data,
+		},
+	},
+};
+
+static struct microp_i2c_platform_data microp_data = {
+	.num_functions   = ARRAY_SIZE(microp_functions),
+	.microp_function = microp_functions,
+	.num_devices = ARRAY_SIZE(microp_devices),
+	.microp_devices = microp_devices,
+	.gpio_reset = GLACIER_GPIO_UP_RESET_N,
+	.spi_devices = SPI_GSENSOR,
+};
+
+static struct akm8975_platform_data compass_platform_data = {
+	.layouts = GLACIER_LAYOUTS,
 };
 
 static struct tps65200_platform_data tps65200_data = {
 	.charger_check = 0,
 };
 
+static struct a1026_platform_data a1026_data = {
+       .gpio_a1026_micsel = GLACIER_AUD_MICPATH_SEL,
+       .gpio_a1026_wakeup = GLACIER_AUD_A1026_WAKEUP,
+       .gpio_a1026_reset = GLACIER_AUD_A1026_RESET,
+       .gpio_a1026_clk = GLACIER_AUD_A1026_CLK,
+};
+
 static struct i2c_board_info i2c_devices[] = {
 	{
 		I2C_BOARD_INFO(ATMEL_QT602240_NAME, 0x94 >> 1),
-		.platform_data = &saga_ts_atmel_data,
-		.irq = MSM_GPIO_TO_INT(SAGA_GPIO_TP_ATT_N)
+		.platform_data = &glacier_ts_atmel_data,
+		.irq = MSM_GPIO_TO_INT(GLACIER_GPIO_TP_ATT_N)
 	},
 	{
-		I2C_BOARD_INFO(BMA150_I2C_NAME, 0x70 >> 1),
-		.platform_data = &gsensor_platform_data,
-		.irq = MSM_GPIO_TO_INT(SAGA_GPIO_GSENSOR_INT_N),
-	},
-	{
-		I2C_BOARD_INFO(CM3628_I2C_NAME, 0x30 >> 1),
-		.platform_data = &cm3628_pdata,
-		.irq = MSM_GPIO_TO_INT(SAGA_GPIO_PROXIMITY_INT_N),
+		I2C_BOARD_INFO(MICROP_I2C_NAME, 0xCC >> 1),
+		.platform_data = &microp_data,
+		.irq = MSM_GPIO_TO_INT(GLACIER_GPIO_UP_INT_N)
 	},
 	{
 		I2C_BOARD_INFO("tps65200", 0xD4 >> 1),
 		.platform_data = &tps65200_data,
 	},
-};
-
-static struct i2c_board_info i2c_compass_devices_XA_XB[] = {
 	{
-		I2C_BOARD_INFO(AKM8975_I2C_NAME, 0x1A >> 1),
-		.platform_data = &compass_platform_data_XA_XB,
-		.irq = MSM_GPIO_TO_INT(SAGA_GPIO_COMPASS_INT),
+		I2C_BOARD_INFO("audience_a1026", 0x3E),
+			.platform_data = &a1026_data,
 	},
 };
 
-static struct i2c_board_info i2c_compass_devices_XC[] = {
+static struct i2c_board_info i2c_compass_devices[] = {
 	{
 		I2C_BOARD_INFO(AKM8975_I2C_NAME, 0x1A >> 1),
-		.platform_data = &compass_platform_data_XC,
-		.irq = MSM_GPIO_TO_INT(SAGA_GPIO_COMPASS_INT),
+		.platform_data = &compass_platform_data,
+		.irq = MSM_GPIO_TO_INT(GLACIER_GPIO_COMPASS_INT),
 	},
 };
+
 
 static int pm8058_gpios_init(void)
 {
 	int rc;
+
+	static struct pm_gpio oj_act = {
+		.direction      = PM_GPIO_DIR_IN,
+		.output_buffer  = 0,
+		.output_value   = 0,
+		.pull           = PM_GPIO_PULL_UP_31P5,
+		.vin_sel        = PM8058_GPIO_VIN_S3,
+		.out_strength   = 0,
+		.function       = PM_GPIO_FUNC_NORMAL,
+		.inv_int_pol    = 0,
+	};
+
 	static struct pm_gpio tp_rstz = {
 		.direction      = PM_GPIO_DIR_OUT,
 		.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
 		.output_value   = 1,
-		.pull           = PM_GPIO_PULL_UP_31P5,
+		.pull           = PM_GPIO_PULL_NO,
 		.vin_sel        = PM8058_GPIO_VIN_L5,
 		.out_strength   = PM_GPIO_STRENGTH_HIGH,
+		.function       = PM_GPIO_FUNC_NORMAL,
+		.inv_int_pol    = 0,
+	};
+
+	static struct pm_gpio home_key = {
+		.direction      = PM_GPIO_DIR_IN,
+		.output_buffer  = 0,
+		.output_value   = 0,
+		.pull           = PM_GPIO_PULL_UP_31P5,
+		.vin_sel        = PM8058_GPIO_VIN_S3,
+		.out_strength   = 0,
+		.function       = PM_GPIO_FUNC_NORMAL,
+		.inv_int_pol    = 0,
+	};
+
+	static struct pm_gpio back_key = {
+		.direction      = PM_GPIO_DIR_IN,
+		.output_buffer  = 0,
+		.output_value   = 0,
+		.pull           = PM_GPIO_PULL_UP_31P5,
+		.vin_sel        = PM8058_GPIO_VIN_S3,
+		.out_strength   = 0,
+		.function       = PM_GPIO_FUNC_NORMAL,
+		.inv_int_pol    = 0,
+	};
+
+	static struct pm_gpio menu_key = {
+		.direction      = PM_GPIO_DIR_IN,
+		.output_buffer  = 0,
+		.output_value   = 0,
+		.pull           = PM_GPIO_PULL_UP_31P5,
+		.vin_sel        = PM8058_GPIO_VIN_S3,
+		.out_strength   = 0,
+		.function       = PM_GPIO_FUNC_NORMAL,
+		.inv_int_pol    = 0,
+	};
+
+	static struct pm_gpio send_key = {
+		.direction      = PM_GPIO_DIR_IN,
+		.output_buffer  = 0,
+		.output_value   = 0,
+		.pull           = PM_GPIO_PULL_UP_31P5,
+		.vin_sel        = PM8058_GPIO_VIN_S3,
+		.out_strength   = 0,
 		.function       = PM_GPIO_FUNC_NORMAL,
 		.inv_int_pol    = 0,
 	};
@@ -650,34 +711,23 @@ static int pm8058_gpios_init(void)
 		.inv_int_pol    = 0,
 	};
 
-	static struct pm_gpio green_led = {
-		.direction      = PM_GPIO_DIR_OUT,
-		.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
-		.output_value   = 1,
-		.pull           = PM_GPIO_PULL_NO,
-		.vin_sel        = PM8058_GPIO_VIN_L5,
-		.out_strength   = PM_GPIO_STRENGTH_HIGH,
-		.function       = PM_GPIO_FUNC_2,
-		.inv_int_pol    = 0,
-	};
-
-	static struct pm_gpio amber_led = {
-		.direction      = PM_GPIO_DIR_OUT,
-		.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
-		.output_value   = 1,
-		.pull           = PM_GPIO_PULL_NO,
-		.vin_sel        = PM8058_GPIO_VIN_L5,
-		.out_strength   = PM_GPIO_STRENGTH_HIGH,
-		.function       = PM_GPIO_FUNC_2,
-		.inv_int_pol    = 0,
-	};
-
-	static struct pm_gpio sdmc_cd_n = {
+	static struct pm_gpio cam_step1 = {
 		.direction      = PM_GPIO_DIR_IN,
 		.output_buffer  = 0,
 		.output_value   = 0,
 		.pull           = PM_GPIO_PULL_UP_31P5,
-		.vin_sel        = PM8058_GPIO_VIN_L5,
+		.vin_sel        = PM8058_GPIO_VIN_S3,
+		.out_strength   = 0,
+		.function       = PM_GPIO_FUNC_NORMAL,
+		.inv_int_pol    = 0,
+	};
+
+	static struct pm_gpio cam_step2 = {
+		.direction      = PM_GPIO_DIR_IN,
+		.output_buffer  = 0,
+		.output_value   = 0,
+		.pull           = PM_GPIO_PULL_UP_31P5,
+		.vin_sel        = PM8058_GPIO_VIN_S3,
 		.out_strength   = 0,
 		.function       = PM_GPIO_FUNC_NORMAL,
 		.inv_int_pol    = 0,
@@ -687,25 +737,14 @@ static int pm8058_gpios_init(void)
 		.direction      = PM_GPIO_DIR_IN,
 		.output_buffer  = 0,
 		.output_value   = 0,
-		.pull           = PM_GPIO_PULL_UP_31P5,
+		.pull           = PM_GPIO_PULL_NO,
 		.vin_sel        = PM8058_GPIO_VIN_S3,
 		.out_strength   = 0,
 		.function       = PM_GPIO_FUNC_NORMAL,
 		.inv_int_pol    = 0,
 	};
 
-	static struct pm_gpio spk_en = {
-		.direction      = PM_GPIO_DIR_OUT,
-		.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
-		.output_value   = 1,
-		.pull           = PM_GPIO_PULL_NO,
-		.vin_sel        = PM8058_GPIO_VIN_S3,
-		.out_strength   = PM_GPIO_STRENGTH_HIGH,
-		.function       = PM_GPIO_FUNC_NORMAL,
-		.inv_int_pol    = 0,
-	};
-
-	static struct pm_gpio ps_shdn = {
+	static struct pm_gpio ps_en = {
 		.direction      = PM_GPIO_DIR_OUT,
 		.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
 		.output_value   = 0,
@@ -716,71 +755,110 @@ static int pm8058_gpios_init(void)
 		.inv_int_pol    = 0,
 	};
 
-	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(SAGA_TP_RSTz), &tp_rstz);
+	static struct pm_gpio spk_eno = {
+		.direction      = PM_GPIO_DIR_OUT,
+		.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
+		.output_value   = 1,
+		.pull           = PM_GPIO_PULL_NO,
+		.vin_sel        = PM8058_GPIO_VIN_S3,
+		.out_strength   = PM_GPIO_STRENGTH_HIGH,
+		.function       = PM_GPIO_FUNC_NORMAL,
+		.inv_int_pol    = 0,
+	};
+
+
+	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(GLACIER_OJ_ACTION), &oj_act);
+	if (rc) {
+		printk(KERN_ERR "%s OJ_ACTION config failed\n", __func__);
+		return rc;
+	} else
+	  printk(KERN_ERR "%s OJ_ACTION config ok\n", __func__);
+
+	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(GLACIER_TP_RSTz), &tp_rstz);
 	if (rc) {
 		printk(KERN_ERR "%s TP_RSTz config failed\n", __func__);
 		return rc;
 	} else
 	  printk(KERN_ERR "%s TP_RSTz config ok\n", __func__);
 
-	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(SAGA_SDMC_CD_N), &sdmc_cd_n);
-	if (rc) {
-		printk(KERN_ERR "%s SLIDING_INTz config failed\n", __func__);
-		return rc;
-	} else
-	  printk(KERN_ERR "%s SLIDING_INTz config ok\n", __func__);
-
-	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(SAGA_VOL_UP), &vol_up);
+	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(GLACIER_VOL_UP), &vol_up);
 	if (rc) {
 		printk(KERN_ERR "%s VOL_UP config failed\n", __func__);
 		return rc;
 	} else
 	  printk(KERN_ERR "%s VOL_UP config ok\n", __func__);
-	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(SAGA_VOL_DN), &vol_dn);
+	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(GLACIER_VOL_DN), &vol_dn);
 	if (rc) {
 		printk(KERN_ERR "%s VOL_DN config failed\n", __func__);
 		return rc;
 	} else
 	  printk(KERN_ERR "%s VOL_DN config ok\n", __func__);
 
-	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(SAGA_GREEN_LED), &green_led);
+	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(GLACIER_HOME_KEY), &home_key);
 	if (rc) {
-		printk(KERN_ERR "%s GREEN_LED config failed\n", __func__);
+		printk(KERN_ERR "%s HOME_KEY config failed\n", __func__);
 		return rc;
 	} else
-	  printk(KERN_ERR "%s GREEN_LED config ok\n", __func__);
+	  printk(KERN_ERR "%s HOME_KEY config ok\n", __func__);
 
-	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(SAGA_AMBER_LED), &amber_led);
+	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(GLACIER_BACK_KEY), &back_key);
 	if (rc) {
-		printk(KERN_ERR "%s AMBER_LED config failed\n", __func__);
+		printk(KERN_ERR "%s BACK_KEY config failed\n", __func__);
 		return rc;
 	} else
-	  printk(KERN_ERR "%s AMBER_LED config ok\n", __func__);
+	  printk(KERN_ERR "%s BACK_KEY config ok\n", __func__);
 
-	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(SAGA_AUD_HP_DETz), &headset);
+	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(GLACIER_MENU_KEY), &menu_key);
+	if (rc) {
+		printk(KERN_ERR "%s MENU_KEY config failed\n", __func__);
+		return rc;
+	} else
+	  printk(KERN_ERR "%s MENU_KEY config ok\n", __func__);
+
+	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(GLACIER_SEND_KEY), &send_key);
+	if (rc) {
+		printk(KERN_ERR "%s SEND_KEY config failed\n", __func__);
+		return rc;
+	} else
+	  printk(KERN_ERR "%s SEND_KEY config ok\n", __func__);
+
+	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(GLACIER_CAM_STEP1), &cam_step1);
+	if (rc) {
+		printk(KERN_ERR "%s CAM_STEP1 config failed\n", __func__);
+		return rc;
+	} else
+	  printk(KERN_ERR "%s CAM_STEP1 config ok\n", __func__);
+
+	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(GLACIER_CAM_STEP2), &cam_step2);
+	if (rc) {
+		printk(KERN_ERR "%s CAM_STEP2 config failed\n", __func__);
+		return rc;
+	} else
+	  printk(KERN_ERR "%s CAM_STEP2 config ok\n", __func__);
+
+	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(GLACIER_AUD_HP_DETz), &headset);
 	if (rc) {
 		printk(KERN_ERR "%s AUD_HP_DETz config failed\n", __func__);
 		return rc;
 	} else
 	  printk(KERN_ERR "%s AUD_HP_DETz config ok\n", __func__);
 
-	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(SAGA_AUD_SPK_EN), &spk_en);
-	if (rc) {
-		printk(KERN_ERR "%s AUD_HP_SPK_EN config failed\n", __func__);
-		return rc;
-	} else
-	  printk(KERN_ERR "%s AUD_SPK_EN config ok\n", __func__);
-
-	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(SAGA_PS_SHDN), &ps_shdn);
+	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(GLACIER_PS_SHDN), &ps_en);
 	if (rc) {
 		printk(KERN_ERR "%s PS_SHDN config failed\n", __func__);
 		return rc;
 	} else
 	  printk(KERN_ERR "%s PS_SHDN config ok\n", __func__);
 
+	rc = pm8xxx_gpio_config(PM8058_GPIO_PM_TO_SYS(GLACIER_AUD_SPK_ENO), &spk_eno);
+	if (rc) {
+		printk(KERN_ERR "%s AUD_SPK_ENO config failed\n", __func__);
+		return rc;
+	} else
+	  printk(KERN_ERR "%s AUD_SPK_ENO config ok\n", __func__);
+
 	return 0;
 }
-
 /* Regulator API support */
 
 #ifdef CONFIG_MSM_PROC_COMM_REGULATOR
@@ -882,18 +960,13 @@ static int pm8058_pwm_enable(struct pwm_device *pwm, int ch, int on)
 	return rc;
 }
 
-static struct pm8xxx_vibrator_platform_data pm8058_vib_pdata = {
-       .initial_vibrate_ms  = 0,
-       .level_mV = 3000,
-       .max_timeout_ms = 15000,
-};
 static struct pm8058_pwm_pdata pm8058_pwm_data = {
 	.config         = pm8058_pwm_config,
 	.enable         = pm8058_pwm_enable,
 };
 
 static struct pm8xxx_irq_platform_data pm8xxx_irq_pdata = {
-	.irq_base		= PMIC8058_IRQ_BASE,
+  .irq_base		= PMIC8058_IRQ_BASE,
 	.devirq			= MSM_GPIO_TO_INT(PMIC_GPIO_INT),
 	.irq_trigger_flag       = IRQF_TRIGGER_LOW,
 };
@@ -910,8 +983,7 @@ static struct pm8058_platform_data pm8058_7x30_data = {
 	.irq_pdata		= &pm8xxx_irq_pdata,
 	.gpio_pdata		= &pm8xxx_gpio_pdata,
 	.mpp_pdata		= &pm8xxx_mpp_pdata,
-        .pwm_pdata		= &pm8058_pwm_data,
-        .vibrator_pdata		= &pm8058_vib_pdata,
+	.pwm_pdata		= &pm8058_pwm_data,
 };
 
 #ifdef CONFIG_MSM_SSBI
@@ -926,14 +998,15 @@ static struct msm_ssbi_platform_data msm7x30_ssbi_pm8058_pdata __devinitdata = {
 };
 #endif
 
+
 static int __init buses_init(void)
 {
-  if (gpio_tlmm_config(GPIO_CFG(PMIC_GPIO_INT, 1, GPIO_CFG_INPUT,
-                                GPIO_CFG_NO_PULL, GPIO_CFG_2MA), GPIO_CFG_ENABLE))
-    pr_err("%s: gpio_tlmm_config (gpio=%d) failed\n",
-           __func__, PMIC_GPIO_INT);
-  
-  return 0;
+	if (gpio_tlmm_config(GPIO_CFG(PMIC_GPIO_INT, 1, GPIO_CFG_INPUT,
+				  GPIO_CFG_NO_PULL, GPIO_CFG_2MA), GPIO_CFG_ENABLE))
+		pr_err("%s: gpio_tlmm_config (gpio=%d) failed\n",
+		       __func__, PMIC_GPIO_INT);
+
+	return 0;
 }
 
 #define TIMPANI_RESET_GPIO	1
@@ -1192,7 +1265,7 @@ static struct marimba_platform_data marimba_pdata = {
         .tsadc_ssbi_adap = MARIMBA_SSBI_ADAP,
 };
 
-static void __init saga_init_marimba(void)
+static void __init glacier_init_marimba(void)
 {
 	vreg_marimba_1 = vreg_get(NULL, "s2");
 	if (IS_ERR(vreg_marimba_1)) {
@@ -1209,6 +1282,129 @@ static void __init saga_init_marimba(void)
 }
 
 #ifdef CONFIG_MSM7KV2_AUDIO
+static struct resource msm_aictl_resources[] = {
+	{
+		.name = "aictl",
+		.start = 0xa5000100,
+		.end = 0xa5000100,
+		.flags = IORESOURCE_MEM,
+	}
+};
+
+static struct resource msm_mi2s_resources[] = {
+	{
+		.name = "hdmi",
+		.start = 0xac900000,
+		.end = 0xac900038,
+		.flags = IORESOURCE_MEM,
+	},
+	{
+		.name = "codec_rx",
+		.start = 0xac940040,
+		.end = 0xac940078,
+		.flags = IORESOURCE_MEM,
+	},
+	{
+		.name = "codec_tx",
+		.start = 0xac980080,
+		.end = 0xac9800B8,
+		.flags = IORESOURCE_MEM,
+	}
+
+};
+
+static struct msm_lpa_platform_data lpa_pdata = {
+	.obuf_hlb_size = 0x2BFF8,
+	.dsp_proc_id = 0,
+	.app_proc_id = 2,
+	.nosb_config = {
+		.llb_min_addr = 0,
+		.llb_max_addr = 0x3ff8,
+		.sb_min_addr = 0,
+		.sb_max_addr = 0,
+	},
+	.sb_config = {
+		.llb_min_addr = 0,
+		.llb_max_addr = 0x37f8,
+		.sb_min_addr = 0x3800,
+		.sb_max_addr = 0x3ff8,
+	}
+};
+
+static struct resource msm_lpa_resources[] = {
+	{
+		.name = "lpa",
+		.start = 0xa5000000,
+		.end = 0xa50000a0,
+		.flags = IORESOURCE_MEM,
+	}
+};
+
+static struct resource msm_aux_pcm_resources[] = {
+
+	{
+		.name = "aux_codec_reg_addr",
+		.start = 0xac9c00c0,
+		.end = 0xac9c00c8,
+		.flags = IORESOURCE_MEM,
+	},
+	{
+		.name   = "aux_pcm_dout",
+		.start  = 138,
+		.end    = 138,
+		.flags  = IORESOURCE_IO,
+	},
+	{
+		.name   = "aux_pcm_din",
+		.start  = 139,
+		.end    = 139,
+		.flags  = IORESOURCE_IO,
+	},
+	{
+		.name   = "aux_pcm_syncout",
+		.start  = 140,
+		.end    = 140,
+		.flags  = IORESOURCE_IO,
+	},
+	{
+		.name   = "aux_pcm_clkin_a",
+		.start  = 141,
+		.end    = 141,
+		.flags  = IORESOURCE_IO,
+	},
+};
+
+static struct platform_device msm_aux_pcm_device = {
+	.name   = "msm_aux_pcm",
+	.id     = 0,
+	.num_resources  = ARRAY_SIZE(msm_aux_pcm_resources),
+	.resource       = msm_aux_pcm_resources,
+};
+
+static struct platform_device msm_aictl_device = {
+	.name = "audio_interct",
+	.id   = 0,
+	.num_resources = ARRAY_SIZE(msm_aictl_resources),
+	.resource = msm_aictl_resources,
+};
+
+static struct platform_device msm_mi2s_device = {
+	.name = "mi2s",
+	.id   = 0,
+	.num_resources = ARRAY_SIZE(msm_mi2s_resources),
+	.resource = msm_mi2s_resources,
+};
+
+static struct platform_device msm_lpa_device = {
+	.name = "lpa",
+	.id   = 0,
+	.num_resources = ARRAY_SIZE(msm_lpa_resources),
+	.resource = msm_lpa_resources,
+	.dev		= {
+		.platform_data = &lpa_pdata,
+	},
+};
+#endif
 
 #define DEC0_FORMAT ((1<<MSM_ADSP_CODEC_MP3)| \
 	(1<<MSM_ADSP_CODEC_AAC)|(1<<MSM_ADSP_CODEC_WMA)| \
@@ -1370,12 +1566,38 @@ static void __init aux_pcm_gpio_init(void)
 	config_gpio_table(aux_pcm_gpio_off,
 		ARRAY_SIZE(aux_pcm_gpio_off));
 }
-#endif /* CONFIG_MSM7KV2_AUDIO */
+#ifdef CONFIG_VP_A1026
+static uint32_t audience_gpio_on_table[] = {
+	PCOM_GPIO_CFG(GLACIER_AUD_A1026_INT, 0, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_8MA),
+	PCOM_GPIO_CFG(GLACIER_AUD_MICPATH_SEL, 0, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_8MA),
+	PCOM_GPIO_CFG(GLACIER_AUD_A1026_RESET, 0, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_8MA),
+	PCOM_GPIO_CFG(GLACIER_AUD_A1026_WAKEUP, 0, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_8MA),
+};
+
+static void __init audience_gpio_init(void)
+{
+  /*Bit2:
+    0: with audience.
+    1: without audience*/
+  if (engineerid & 0x4) {
+    config_gpio_table(audience_gpio_on_table, ARRAY_SIZE(audience_gpio_on_table));
+    gpio_set_value(GLACIER_AUD_A1026_INT, 0);
+    mdelay(1);
+    gpio_set_value(GLACIER_AUD_MICPATH_SEL, 0);
+    mdelay(1);
+    gpio_set_value(GLACIER_AUD_A1026_RESET, 0);
+    mdelay(1);
+    gpio_set_value(GLACIER_AUD_A1026_WAKEUP, 0);
+    mdelay(1);
+    pr_info("Configure audio codec gpio for devices without audience.\n");
+  }
+}
+#endif
 
 #ifdef CONFIG_USB_G_ANDROID
 static struct android_usb_platform_data android_usb_pdata = {
-	.vendor_id	= 0x0BB4,
-	.product_id	= 0x0c91,
+	.vendor_id	= 0x0bb4,
+	.product_id	= 0x0CCA,
 	.version	= 0x0100,
 	.product_name		= "Android Phone",
 	.manufacturer_name	= "HTC",
@@ -1385,7 +1607,7 @@ static struct android_usb_platform_data android_usb_pdata = {
 	.functions = usb_functions_all,
 	.fserial_init_string = "tty:modem,tty:autobot,tty:serial,tty:autobot",
 	.nluns = 1,
-	.usb_id_pin_gpio = SAGA_GPIO_USB_ID_PIN,
+	.usb_id_pin_gpio = GLACIER_GPIO_USB_ID1_PIN,
 };
 
 static struct platform_device android_usb_device = {
@@ -1395,6 +1617,7 @@ static struct platform_device android_usb_device = {
 		.platform_data = &android_usb_pdata,
 	},
 };
+
 #endif
 
 static struct i2c_board_info msm_marimba_board_info[] = {
@@ -1474,36 +1697,48 @@ static struct spi_board_info msm_spi_board_info[] __initdata = {
 		.max_speed_hz	= 10000000,
 	},
 	{
-		.modalias	= "spi_aic3254",
-		.mode           = SPI_MODE_1,
-		.bus_num        = 0,
-		.chip_select    = 3,
-		.max_speed_hz   = 9963243,
+		.modalias	= "spi_oj",
+		.mode		= SPI_MODE_3,
+		.bus_num	= 0,
+		.chip_select	= 3,
+		.max_speed_hz	= 512000,
 	}
 };
 #endif
 
+static struct platform_device glacier_oj = {
+	.name = CURCIAL_OJ_NAME,
+	.id = -1,
+	.dev = {
+		.platform_data	= &glacier_oj_data,
+	}
+};
 
 static uint32_t qsd_spi_gpio_on_table[] = {
-	PCOM_GPIO_CFG(45, 1, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_6MA),
-	PCOM_GPIO_CFG(47, 1, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_6MA),
-	PCOM_GPIO_CFG(48, 1, GPIO_INPUT, GPIO_NO_PULL, GPIO_6MA),
-	PCOM_GPIO_CFG(87, 2, GPIO_OUTPUT, GPIO_PULL_UP, GPIO_6MA),
-	PCOM_GPIO_CFG(89, 2, GPIO_OUTPUT, GPIO_PULL_UP, GPIO_6MA)
+	PCOM_GPIO_CFG(45, 1, GPIO_INPUT, GPIO_NO_PULL, GPIO_16MA),
+	PCOM_GPIO_CFG(47, 1, GPIO_INPUT, GPIO_NO_PULL, GPIO_16MA),
+	PCOM_GPIO_CFG(48, 1, GPIO_INPUT, GPIO_NO_PULL, GPIO_16MA),
+	PCOM_GPIO_CFG(89, 2, GPIO_INPUT, GPIO_NO_PULL, GPIO_16MA)
 };
 
 static uint32_t qsd_spi_gpio_off_table[] = {
-	PCOM_GPIO_CFG(45, 0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_6MA),
-	PCOM_GPIO_CFG(47, 0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_6MA),
-	PCOM_GPIO_CFG(48, 0, GPIO_INPUT, GPIO_NO_PULL, GPIO_6MA),
-	PCOM_GPIO_CFG(87, 0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_6MA),
-	PCOM_GPIO_CFG(89, 0, GPIO_INPUT, GPIO_PULL_UP, GPIO_6MA)
+	PCOM_GPIO_CFG(45, 0, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_16MA),
+	PCOM_GPIO_CFG(47, 0, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_16MA),
+	PCOM_GPIO_CFG(48, 0, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_16MA),
+	PCOM_GPIO_CFG(89, 0, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_16MA)
+};
+
+static uint32_t spi_oj_table[] = {
+	PCOM_GPIO_CFG(GLACIER_OJ_MOTION, 0, GPIO_INPUT, GPIO_NO_PULL, GPIO_2MA)
 };
 
 static int msm_qsd_spi_gpio_config(void)
 {
 	config_gpio_table(qsd_spi_gpio_on_table,
 		ARRAY_SIZE(qsd_spi_gpio_on_table));
+	gpio_set_value(GLACIER_OJ_RSTz, 1);
+	config_gpio_table(spi_oj_table,
+		ARRAY_SIZE(spi_oj_table));
 	return 0;
 }
 
@@ -1511,6 +1746,8 @@ static void msm_qsd_spi_gpio_release(void)
 {
 	config_gpio_table(qsd_spi_gpio_off_table,
 		ARRAY_SIZE(qsd_spi_gpio_off_table));
+	gpio_set_value(GLACIER_OJ_MOTION, 0);
+	gpio_set_value(GLACIER_OJ_RSTz, 0);
 }
 
 static struct msm_spi_platform_data qsd_spi_pdata = {
@@ -1567,7 +1804,7 @@ static struct msm_usb_host_platform_data msm_usb_host_pdata = {
 };
 #endif
 
-#ifdef CONFIG_USB_MSM_OTG_72K
+#if 0 // CONFIG_USB_MSM_OTG_72K
 static struct vreg *vreg_3p3;
 static int msm_hsusb_ldo_init(int init)
 {
@@ -1658,6 +1895,12 @@ static struct platform_device android_pmem_device = {
 	.dev = { .platform_data = &android_pmem_pdata },
 };
 
+static struct resource msm_fb_resources[] = {
+	{
+		.flags  = IORESOURCE_DMA,
+	}
+};
+
 static struct platform_device msm_migrate_pages_device = {
 	.name   = "msm_migrate_pages",
 	.id     = -1,
@@ -1693,7 +1936,6 @@ static struct htc_battery_platform_data htc_battery_pdev_data = {
 	.guage_driver = GUAGE_MODEM,
 	.charger = SWITCH_CHARGER_TPS65200,
 	.m2a_cable_detect = 1,
-        //.int_data.chg_int = MSM_GPIO_TO_INT(PM8058_GPIO_PM_TO_SYS(SAGA_GPIO_CHG_INT)),
 };
 
 static struct platform_device htc_battery_pdev = {
@@ -1704,33 +1946,46 @@ static struct platform_device htc_battery_pdev = {
 	},
 };
 
+#ifdef CONFIG_SUPPORT_DQ_BATTERY
+static int __init check_dq_setup(char *str)
+{
+	if (!strcmp(str, "PASS"))
+		tps65200_data.dq_result = 1;
+	else
+		tps65200_data.dq_result = 0;
+
+	return 1;
+}
+__setup("androidboot.dq=", check_dq_setup);
+#endif
+
 #ifdef CONFIG_SERIAL_MSM_HS
 static struct msm_serial_hs_platform_data msm_uart_dm1_pdata = {
 	.inject_rx_on_wakeup = 0,
 	.cpu_lock_supported = 1,
 #ifdef CONFIG_SERIAL_MSM_HS_PURE_ANDROID
-        .exit_lpm_cb = bcm_bt_lpm_exit_lpm_locked,
+	.exit_lpm_cb = bcm_bt_lpm_exit_lpm_locked,
 #endif
 	/* for bcm BT */
 	.bt_wakeup_pin_supported = 1,
-	.bt_wakeup_pin = SAGA_GPIO_BT_CHIP_WAKE,
-	.host_wakeup_pin = SAGA_GPIO_BT_HOST_WAKE,
+	.bt_wakeup_pin = GLACIER_GPIO_BT_CHIP_WAKE,
+	.host_wakeup_pin = GLACIER_GPIO_BT_HOST_WAKE,
 };
 
 #ifdef CONFIG_SERIAL_MSM_HS_PURE_ANDROID
 static struct bcm_bt_lpm_platform_data bcm_bt_lpm_pdata = {
-  .gpio_wake = SAGA_GPIO_BT_CHIP_WAKE,
-  .gpio_host_wake = SAGA_GPIO_BT_HOST_WAKE,
-  .request_clock_off_locked = msm_hs_request_clock_off_locked,
-  .request_clock_on_locked = msm_hs_request_clock_on_locked,
+	.gpio_wake = GLACIER_GPIO_BT_CHIP_WAKE,
+	.gpio_host_wake = GLACIER_GPIO_BT_HOST_WAKE,
+	.request_clock_off_locked = msm_hs_request_clock_off_locked,
+	.request_clock_on_locked = msm_hs_request_clock_on_locked,
 };
 
-struct platform_device saga_bcm_bt_lpm_device = {
-  .name = "bcm_bt_lpm",
-  .id = 0,
-  .dev = {
-    .platform_data = &bcm_bt_lpm_pdata,
-  },
+struct platform_device glacier_bcm_bt_lpm_device = {
+	.name = "bcm_bt_lpm",
+	.id = 0,
+	.dev = {
+		.platform_data = &bcm_bt_lpm_pdata,
+	},
 };
 #endif
 #endif
@@ -1778,8 +2033,8 @@ static struct platform_device msm_vpe_device = {
 };
 #endif
 
-
 #ifdef CONFIG_MSM_CAMERA
+
 static struct i2c_board_info msm_camera_boardinfo[] __initdata = {
 #ifdef CONFIG_S5K4E1GX
 	{
@@ -1794,10 +2049,11 @@ static struct i2c_board_info msm_camera_boardinfo[] __initdata = {
 };
 
 static uint32_t camera_off_gpio_table[] = {
-/* parallel CAMERA interfaces */
-	PCOM_GPIO_CFG(SAGA_CAM1_PD, 0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA),
-	PCOM_GPIO_CFG(SAGA_CAM2_RSTz, 0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA),
-	PCOM_GPIO_CFG(SAGA_CAM2_PD, 0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA),
+	/* parallel CAMERA interfaces */
+	PCOM_GPIO_CFG(GLACIER_CAM_RST,  0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA), /* RST */
+	PCOM_GPIO_CFG(GLACIER_CAM_PWD,  0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA), /* PWD */
+	PCOM_GPIO_CFG(GLACIER_CAM2_RST, 0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA),
+	PCOM_GPIO_CFG(GLACIER_CAM2_PWD, 0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA),
 	PCOM_GPIO_CFG(2,  0, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_4MA), /* DAT2 */
 	PCOM_GPIO_CFG(3,  0, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_4MA), /* DAT3 */
 	PCOM_GPIO_CFG(4,  0, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_4MA), /* DAT4 */
@@ -1816,18 +2072,21 @@ static uint32_t camera_off_gpio_table[] = {
 };
 
 static uint32_t camera_on_gpio_table[] = {
-/* parallel CAMERA interfaces */
-	PCOM_GPIO_CFG(SAGA_CAM1_PD, 0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA),
-	PCOM_GPIO_CFG(SAGA_CAM2_RSTz, 0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA),
-	PCOM_GPIO_CFG(SAGA_CAM2_PD, 0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA),
-	PCOM_GPIO_CFG(4,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT0 */
-	PCOM_GPIO_CFG(5,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT1 */
-	PCOM_GPIO_CFG(6,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT2 */
-	PCOM_GPIO_CFG(7,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT3 */
-	PCOM_GPIO_CFG(8,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT4 */
-	PCOM_GPIO_CFG(9,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT5 */
-	PCOM_GPIO_CFG(10, 1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT6 */
-	PCOM_GPIO_CFG(11, 1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT7 */
+	/* parallel CAMERA interfaces */
+	PCOM_GPIO_CFG(GLACIER_CAM_RST,   0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA), /* RST */
+	PCOM_GPIO_CFG(GLACIER_CAM_PWD,   0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA), /* PWD */
+	PCOM_GPIO_CFG(GLACIER_CAM2_RST, 0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA),
+	PCOM_GPIO_CFG(GLACIER_CAM2_PWD, 0, GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA),
+	PCOM_GPIO_CFG(2,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT2 */
+	PCOM_GPIO_CFG(3,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT3 */
+	PCOM_GPIO_CFG(4,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT4 */
+	PCOM_GPIO_CFG(5,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT5 */
+	PCOM_GPIO_CFG(6,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT6 */
+	PCOM_GPIO_CFG(7,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT7 */
+	PCOM_GPIO_CFG(8,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT8 */
+	PCOM_GPIO_CFG(9,  1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT9 */
+	PCOM_GPIO_CFG(10, 1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT10 */
+	PCOM_GPIO_CFG(11, 1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* DAT11 */
 	PCOM_GPIO_CFG(12, 1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* PCLK */
 	PCOM_GPIO_CFG(13, 1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* HSYNC_IN */
 	PCOM_GPIO_CFG(14, 1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA), /* VSYNC_IN */
@@ -1835,7 +2094,7 @@ static uint32_t camera_on_gpio_table[] = {
 
 };
 
-static int saga_sensor_power_enable(char *power, unsigned volt)
+static int glacier_sensor_power_enable(char *power, unsigned volt)
 {
 	struct vreg *vreg_gp;
 	int rc;
@@ -1866,7 +2125,7 @@ static int saga_sensor_power_enable(char *power, unsigned volt)
 	return rc;
 }
 
-static int saga_sensor_power_disable(char *power)
+static int glacier_sensor_power_disable(char *power)
 {
 	struct vreg *vreg_gp;
 	int rc;
@@ -1886,53 +2145,77 @@ static int saga_sensor_power_disable(char *power)
 	return rc;
 }
 
-static int saga_sensor_vreg_on(void)
+static int glacier_sensor_vreg_on(void)
 {
 	int rc;
 
+	struct pm_gpio camera_analog_pw_on = {
+		.direction		= PM_GPIO_DIR_OUT,
+		.output_buffer	= PM_GPIO_OUT_BUF_CMOS,
+		.output_value	= 1,
+		.pull			= PM_GPIO_PULL_NO,
+		.out_strength	= PM_GPIO_STRENGTH_HIGH,
+		.function = PM_GPIO_FUNC_NORMAL,
+	};
+
+	pr_info("%s camera vreg on\n", __func__);
+
 	/*camera VCM power*/
-	rc = saga_sensor_power_enable("gp4", 2850);
+	if (system_rev >= 1)
+		rc = glacier_sensor_power_enable("gp4", 2850);
+	else
+		rc = glacier_sensor_power_enable("wlan", 2850);
 
 	/*camera IO power*/
-	rc = saga_sensor_power_enable("gp2", 1800);
+	rc = glacier_sensor_power_enable("gp2", 1800);
+
 
 	/*camera analog power*/
-	rc = saga_sensor_power_enable("gp9", 2850);
+	pm8xxx_gpio_config(GLACIER_CAM_A2V85_EN, &camera_analog_pw_on);
 
 	/*camera digital power*/
-	rc = saga_sensor_power_enable("wlan", 1800);
+	if (system_rev >= 1)
+		rc = glacier_sensor_power_enable("wlan", 1800);
+	else
+		rc = glacier_sensor_power_enable("gp4", 1800);
 
 	udelay(200);
 
 	return rc;
 }
 
-static int saga_sensor_vreg_off(void)
+static int glacier_sensor_vreg_off(void)
 {
 	int rc;
+	/*camera analog power*/
+	struct pm_gpio camera_analog_pw_off = {
+		.direction		= PM_GPIO_DIR_OUT,
+		.output_buffer	= PM_GPIO_OUT_BUF_CMOS,
+		.output_value	= 0,
+		.pull			= PM_GPIO_PULL_NO,
+		.out_strength	= PM_GPIO_STRENGTH_LOW,
+		.function = PM_GPIO_FUNC_NORMAL,
+	};
 
-	/*camera VCM power*/
-	rc = saga_sensor_power_disable("gp4");
+	pm8xxx_gpio_config(GLACIER_CAM_A2V85_EN, &camera_analog_pw_off);
+	/*camera digital power*/
+	rc = glacier_sensor_power_disable("gp4");
 
 	/*camera IO power*/
-	rc = saga_sensor_power_disable("gp2");
+	rc = glacier_sensor_power_disable("gp2");
 
-	/*camera analog power*/
-	rc = saga_sensor_power_disable("gp9");
-
-	/*camera digital power*/
-	rc = saga_sensor_power_disable("wlan");
-
+	/*camera VCM power*/
+	rc = glacier_sensor_power_disable("wlan");
 	return rc;
 }
 
-static void config_saga_camera_on_gpios(void)
+static void config_glacier_camera_on_gpios(void)
 {
 	config_gpio_table(camera_on_gpio_table,
 		ARRAY_SIZE(camera_on_gpio_table));
 }
 
-static void config_saga_camera_off_gpios(void)
+static void config_glacier_camera_off_gpios(void)
 {
 	config_gpio_table(camera_off_gpio_table,
 		ARRAY_SIZE(camera_off_gpio_table));
@@ -1958,60 +2241,76 @@ static int flashlight_control(int mode)
 }
 #endif
 
-static struct msm_camera_device_platform_data msm_camera_device_data = {
-	.camera_gpio_on  = config_saga_camera_on_gpios,
-	.camera_gpio_off = config_saga_camera_off_gpios,
+struct msm_camera_device_platform_data msm_camera_device_data = {
+	.camera_gpio_on  = config_glacier_camera_on_gpios,
+	.camera_gpio_off = config_glacier_camera_off_gpios,
 	.ioext.mdcphy = MSM_MDC_PHYS,
 	.ioext.mdcsz  = MSM_MDC_SIZE,
 	.ioext.appphy = MSM_CLK_CTL_PHYS,
 	.ioext.appsz  = MSM_CLK_CTL_SIZE,
 	.ioext.camifpadphy = 0xAB000000,
-	.ioext.camifpadsz  = 0x00000400,
-	.ioext.csiphy = 0xA6100000,
-	.ioext.csisz  = 0x00000400,
-	.ioext.csiirq = INT_CSI,
+	.ioext.camifpadsz  = 0x00000400
 };
 
 static struct camera_flash_cfg msm_camera_sensor_flash_cfg = {
 	.camera_flash		= flashlight_control,
 	.num_flash_levels	= FLASHLIGHT_NUM,
 	.low_temp_limit		= 5,
-	.low_cap_limit		= 10,
+	.low_cap_limit		= 15,
+	.flash_info			= NULL,
 };
 
 #ifdef CONFIG_S5K4E1GX
-static void saga_s5k4e1gx_clk_switch(void){
+static void glacier_s5k4e1gx_clk_switch(void){
 	int rc = 0;
-	pr_info("doing clk switch (saga)(s5k4e1gx)\n");
-	rc = gpio_request(SAGA_CLK_SEL, "s5k4e1gx");
+	pr_info("doing clk switch (glacier)(s5k4e1gx)\n");
+	rc = gpio_request(GLACIER_CLK_SWITCH, "s5k4e1gx");
 	if (rc < 0)
-		pr_err("GPIO (%d) request fail\n", SAGA_CLK_SEL);
+		pr_err("GPIO (%d) request fail\n", GLACIER_CLK_SWITCH);
 	else
-		gpio_direction_output(SAGA_CLK_SEL, 0);
-	gpio_free(SAGA_CLK_SEL);
+		gpio_direction_output(GLACIER_CLK_SWITCH, 0);
+	gpio_free(GLACIER_CLK_SWITCH);
 
 	return;
 }
+#endif
+#ifdef CONFIG_MT9V113
+static void glacier_mt9v113_clk_switch(void){
+	int rc = 0;
+	pr_info("doing clk switch (glacier)(mt9v113)\n");
+	rc = gpio_request(GLACIER_CLK_SWITCH, "mt9v113");
+	if (rc < 0)
+		pr_err("GPIO (%d) request fail\n", GLACIER_CLK_SWITCH);
+	else
+		gpio_direction_output(GLACIER_CLK_SWITCH, 1);
+	gpio_free(GLACIER_CLK_SWITCH);
+
+	return;
+}
+#endif
 
 static struct msm_camera_sensor_info msm_camera_sensor_s5k4e1gx_data = {
 	.sensor_name    = "s5k4e1gx",
-	.sensor_reset = SAGA_CAM1_PD,
-	.vcm_pwd     = SAGA_VCM_PD,
-	.camera_clk_switch	= saga_s5k4e1gx_clk_switch,
-	.camera_power_on = saga_sensor_vreg_on,
-	.camera_power_off = saga_sensor_vreg_off,
+	.sensor_reset   = GLACIER_CAM_RST,
+	.vcm_pwd        = GLACIER_CAM_PWD,
+	.camera_clk_switch	= glacier_s5k4e1gx_clk_switch,
+/*	.camera_analog_pwd = "gp8",*/
+	.camera_io_pwd = "gp2",
+	.camera_vcm_pwd = "wlan",
+	.camera_digital_pwd = "gp4",
+	.analog_pwd1_gpio = GLACIER_CAM_A2V85_EN,
+	.camera_power_on = glacier_sensor_vreg_on,
+	.camera_power_off = glacier_sensor_vreg_off,
 	.pdata          = &msm_camera_device_data,
 	.flash_type     = MSM_CAMERA_FLASH_LED,
-	.resource       = msm_camera_resources,
-	.num_resources  = ARRAY_SIZE(msm_camera_resources),
-	.sensor_lc_disable = true, /* disable sensor lens correction */
-	.zero_shutter_mode = true, /* for doing zero shutter lag on MIPI */
-	.cam_select_pin = SAGA_CLK_SEL,
-	.csi_if = 1,
 #ifdef CONFIG_ARCH_MSM_FLASHLIGHT
 	.flash_cfg      = &msm_camera_sensor_flash_cfg,
 #endif
-
+	.sensor_platform_info = NULL,
+	.resource       = msm_camera_resources,
+	.num_resources  = ARRAY_SIZE(msm_camera_resources),
+	.sensor_lc_disable = true, /* disable sensor lens correction */
+	.cam_select_pin = GLACIER_CLK_SWITCH,
 };
 
 static struct platform_device msm_camera_sensor_s5k4e1gx = {
@@ -2020,35 +2319,19 @@ static struct platform_device msm_camera_sensor_s5k4e1gx = {
 		.platform_data = &msm_camera_sensor_s5k4e1gx_data,
 	},
 };
-#endif
-
-#ifdef CONFIG_MT9V113
-static void saga_mt9v113_clk_switch(void){
-	int rc = 0;
-	pr_info("doing clk switch (saga)(mt9v113)\n");
-	rc = gpio_request(SAGA_CLK_SEL, "mt9v113");
-	if (rc < 0)
-		pr_err("GPIO (%d) request fail\n", SAGA_CLK_SEL);
-	else
-		gpio_direction_output(SAGA_CLK_SEL, 1);
-	gpio_free(SAGA_CLK_SEL);
-
-	return;
-}
 
 static struct msm_camera_sensor_info msm_camera_sensor_mt9v113_data = {
 	.sensor_name	= "mt9v113",
-	.sensor_reset	= SAGA_CAM2_RSTz,
-	.vcm_pwd		= SAGA_CAM2_PD,
-	.camera_clk_switch	= saga_mt9v113_clk_switch,
-	.camera_power_on = saga_sensor_vreg_on,
-	.camera_power_off = saga_sensor_vreg_off,
+	.sensor_reset	= GLACIER_CAM2_RST,
+	.vcm_pwd		= GLACIER_CAM2_PWD,
+	.camera_clk_switch	= glacier_mt9v113_clk_switch,
+	.camera_power_on = glacier_sensor_vreg_on,
+	.camera_power_off = glacier_sensor_vreg_off,
 	.pdata		= &msm_camera_device_data,
 	.flash_type     = MSM_CAMERA_FLASH_NONE,
 	.resource = msm_camera_resources,
 	.num_resources = ARRAY_SIZE(msm_camera_resources),
-	.cam_select_pin = SAGA_CLK_SEL,
-	.mirror_mode = true, /* for sensor upside down */
+	.cam_select_pin = GLACIER_CLK_SWITCH,
 };
 
 static struct platform_device msm_camera_sensor_mt9v113 = {
@@ -2057,16 +2340,27 @@ static struct platform_device msm_camera_sensor_mt9v113 = {
 		.platform_data = &msm_camera_sensor_mt9v113_data,
 	},
 };
-#endif
 #endif /*CONFIG_MSM_CAMERA*/
 
 #ifdef CONFIG_BT
-static struct platform_device saga_rfkill = {
-	.name = "saga_rfkill",
+static struct platform_device glacier_rfkill = {
+	.name = "glacier_rfkill",
 	.id = -1,
 };
 #endif
+/*
+static struct htc_fmtx_platform_data htc_fmtx_data = {
+	.switch_pin	= GLACIER_WFM_ANT_SW,
+};
 
+static struct platform_device glacier_fmtx_rfkill = {
+	.name = "htc_fmtx_rfkill",
+	.id = -1,
+	.dev = {
+		.platform_data = &htc_fmtx_data,
+	},
+};
+*/
 #ifdef CONFIG_MSM_SDIO_AL
 static struct msm_gpio mdm2ap_status = {
 	GPIO_CFG(77, 0, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
@@ -2123,12 +2417,12 @@ static struct platform_device ram_console_device = {
 };
 
 #ifdef CONFIG_ARCH_MSM_FLASHLIGHT
-static void config_saga_flashlight_gpios(void)
+static void config_glacier_flashlight_gpios(void)
 {
 	static uint32_t flashlight_gpio_table[] = {
-		PCOM_GPIO_CFG(SAGA_GPIO_FLASHLIGHT_TORCH, 0,
+		PCOM_GPIO_CFG(GLACIER_GPIO_FLASHLIGHT_TORCH, 0,
 					GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA),
-		PCOM_GPIO_CFG(SAGA_GPIO_FLASHLIGHT_FLASH, 0,
+		PCOM_GPIO_CFG(GLACIER_GPIO_FLASHLIGHT_FLASH, 0,
 					GPIO_OUTPUT, GPIO_PULL_DOWN, GPIO_2MA),
 
 	};
@@ -2137,19 +2431,19 @@ static void config_saga_flashlight_gpios(void)
 		ARRAY_SIZE(flashlight_gpio_table));
 }
 
-static struct flashlight_platform_data saga_flashlight_data = {
-	.gpio_init  = config_saga_flashlight_gpios,
-	.torch = SAGA_GPIO_FLASHLIGHT_TORCH,
-	.flash = SAGA_GPIO_FLASHLIGHT_FLASH,
+static struct flashlight_platform_data glacier_flashlight_data = {
+	.gpio_init  = config_glacier_flashlight_gpios,
+	.torch = GLACIER_GPIO_FLASHLIGHT_TORCH,
+	.flash = GLACIER_GPIO_FLASHLIGHT_FLASH,
 	.flash_duration_ms = 600,
 	.led_count = 1,
 	.chip_model = 0,
 };
 
-static struct platform_device saga_flashlight_device = {
+static struct platform_device glacier_flashlight_device = {
 	.name = FLASHLIGHT_NAME,
 	.dev		= {
-		.platform_data	= &saga_flashlight_data,
+		.platform_data	= &glacier_flashlight_data,
 	},
 };
 #endif
@@ -2157,32 +2451,41 @@ static struct platform_device saga_flashlight_device = {
 #define PM8058ADC_16BIT(adc) ((adc * 2200) / 65535) /* vref=2.2v, 16-bits resolution */
 
 static uint32_t usb_ID_PIN_input_table[] = {
-	GPIO_CFG(SAGA_GPIO_USB_ID_PIN, 0, GPIO_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_4MA),
+	GPIO_CFG(GLACIER_GPIO_USB_ID1_PIN, 0, GPIO_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_4MA),
 };
 
 static uint32_t usb_ID_PIN_ouput_table[] = {
-	GPIO_CFG(SAGA_GPIO_USB_ID_PIN, 0, GPIO_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_4MA),
+	GPIO_CFG(GLACIER_GPIO_USB_ID1_PIN, 0, GPIO_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_4MA),
 };
 
-void config_saga_usb_id_gpios(bool output)
+void config_glacier_usb_id_gpios(bool output)
 {
 	if (output) {
 		config_gpio_table(usb_ID_PIN_ouput_table, ARRAY_SIZE(usb_ID_PIN_ouput_table));
-		gpio_set_value(SAGA_GPIO_USB_ID_PIN, 1);
-		printk(KERN_INFO "%s %d output high\n",  __func__, SAGA_GPIO_USB_ID_PIN);
+		gpio_set_value(GLACIER_GPIO_USB_ID1_PIN, 1);
+		printk(KERN_INFO "%s %d output high\n",  __func__, GLACIER_GPIO_USB_ID1_PIN);
 	} else {
 		config_gpio_table(usb_ID_PIN_input_table, ARRAY_SIZE(usb_ID_PIN_input_table));
-		printk(KERN_INFO "%s %d input none pull\n",  __func__, SAGA_GPIO_USB_ID_PIN);
+		printk(KERN_INFO "%s %d input none pull\n",  __func__, GLACIER_GPIO_USB_ID1_PIN);
 	}
 }
 
-#ifdef CONFIG_USB_G_ANDROID
-static void saga_disable_usb_charger(void)
-{
-	printk(KERN_INFO "%s\n", __func__);
+#ifdef CONFIG_CABLE_DETECT_GPIO_DOCK
+static struct cable_detect_platform_data cable_detect_pdata = {
+	.detect_type 		= CABLE_TYPE_ID_PIN,
+	.usb_id_pin_gpio 	= GLACIER_GPIO_USB_ID1_PIN,
+	.config_usb_id_gpios 	= config_glacier_usb_id_gpios,
+	.dock_detect = 1, /* detect desk dock */
+	.dock_pin_gpio  = GLACIER_GPIO_DOCK_PIN,
+};
 
-        htc_battery_charger_disable();
-}
+static struct platform_device cable_detect_device = {
+	.name	= "cable_detect",
+	.id	= -1,
+	.dev	= {
+		.platform_data = &cable_detect_pdata,
+	},
+};
 #endif
 
 static struct msm_gpio msm_i2c_gpios_hw[] = {
@@ -2196,12 +2499,13 @@ static struct msm_gpio msm_i2c_gpios_io[] = {
 };
 
 static struct msm_gpio qup_i2c_gpios_io[] = {
-	{ GPIO_CFG(16, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_16MA), "qup_scl" },
-	{ GPIO_CFG(17, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_16MA), "qup_sda" },
+	{ GPIO_CFG(16, 0, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_16MA), "qup_scl" },
+	{ GPIO_CFG(17, 0, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_16MA), "qup_sda" },
+
 };
 static struct msm_gpio qup_i2c_gpios_hw[] = {
-	{ GPIO_CFG(16, 2, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_16MA), "qup_scl" },
-	{ GPIO_CFG(17, 2, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_16MA), "qup_sda" },
+	{ GPIO_CFG(16, 2, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_16MA), "qup_scl" },
+	{ GPIO_CFG(17, 2, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_16MA), "qup_sda" },
 };
 
 static void
@@ -2210,7 +2514,7 @@ msm_i2c_gpio_config(int adap_id, int config_type)
 	struct msm_gpio *msm_i2c_table;
 
 	/* Each adapter gets 2 lines from the table */
-	if (adap_id < 0)
+	if (adap_id > 0)
 		return;
 	if (config_type)
 		msm_i2c_table = &msm_i2c_gpios_hw[adap_id*2];
@@ -2286,7 +2590,7 @@ static void __init msm_device_i2c_2_init(void)
 }
 
 static struct msm_i2c_platform_data qup_i2c_pdata = {
-	.clk_freq = 384000,
+	.clk_freq = 100000,
 	.msm_i2c_config_gpio = qup_i2c_gpio_config,
 };
 
@@ -2313,8 +2617,8 @@ static struct msm_i2c_ssbi_platform_data msm_i2c_ssbi7_pdata = {
 };
 #endif
 
-static struct vreg *vreg_s3;
-static struct vreg *vreg_mmc;
+struct vreg *vreg_s3;
+struct vreg *vreg_mmc;
 
 #if (defined(CONFIG_MMC_MSM_SDC1_SUPPORT)\
 	|| defined(CONFIG_MMC_MSM_SDC2_SUPPORT)\
@@ -2528,18 +2832,6 @@ static uint32_t msm_sdcc_setup_power(struct device *dv, unsigned int vdd)
 out:
 	return rc;
 }
-
-#endif
-
-#ifdef CONFIG_MMC_MSM_SDC4_SUPPORT
-#ifdef CONFIG_MMC_MSM_CARD_HW_DETECTION
-static unsigned int msm7x30_sdcc_slot_status(struct device *dev)
-{
-	return (unsigned int)
-		!gpio_get_value_cansleep(
-			PM8058_GPIO_PM_TO_SYS(SAGA_GPIO_SDMC_CD_N));
-}
-#endif
 #endif
 
 #if defined(CONFIG_MMC_MSM_SDC1_SUPPORT)
@@ -2555,7 +2847,7 @@ static struct mmc_platform_data msm7x30_sdc1_data = {
 #endif
 
 #ifdef CONFIG_MMC_MSM_SDC2_SUPPORT
-static unsigned int saga_sdc2_slot_type = MMC_TYPE_MMC;
+static unsigned int glacier_sdc2_slot_type = MMC_TYPE_MMC;
 static struct mmc_platform_data msm7x30_sdc2_data = {
 	.ocr_mask       = MMC_VDD_165_195 | MMC_VDD_27_28,
 #ifdef CONFIG_MMC_MSM_SDC2_8_BIT_SUPPORT
@@ -2567,7 +2859,7 @@ static struct mmc_platform_data msm7x30_sdc2_data = {
 	.msmsdcc_fmid	= 24576000,
 	//	.msmsdcc_fmax	= 49152000,
 	.msmsdcc_fmax	= 50000000,
-	.slot_type		= &saga_sdc2_slot_type,
+	.slot_type		= &glacier_sdc2_slot_type,
 	.nonremovable	= 1,
 	.emmc_dma_ch	= 7,
 };
@@ -2576,7 +2868,7 @@ static struct mmc_platform_data msm7x30_sdc2_data = {
 #ifdef CONFIG_MMC_MSM_SDC3_SUPPORT
 /* HTC_WIFI_START */
 /*
-static unsigned int saga_sdc3_slot_type = MMC_TYPE_SDIO_WIFI;
+static unsigned int glacier_sdc3_slot_type = MMC_TYPE_SDIO_WIFI;
 static struct mmc_platform_data msm7x30_sdc3_data = {
 	.ocr_mask	= MMC_VDD_27_28 | MMC_VDD_28_29,
 	.translate_vdd	= msm_sdcc_setup_power,
@@ -2587,7 +2879,7 @@ static struct mmc_platform_data msm7x30_sdc3_data = {
 	.msmsdcc_fmin	= 144000,
 	.msmsdcc_fmid	= 24576000,
 	.msmsdcc_fmax	= 49152000,
-	.slot_type		= &saga_sdc3_slot_type,
+	.slot_type		= &glacier_sdc3_slot_type,
 	.nonremovable	= 0,
 };
 */
@@ -2595,7 +2887,7 @@ static struct mmc_platform_data msm7x30_sdc3_data = {
 #endif
 
 #ifdef CONFIG_MMC_MSM_SDC4_SUPPORT
-static unsigned int saga_sdc4_slot_type = MMC_TYPE_SD;
+static unsigned int glacier_sdc4_slot_type = MMC_TYPE_SD;
 static struct mmc_platform_data msm7x30_sdc4_data = {
 	.ocr_mask	= MMC_VDD_27_28 | MMC_VDD_28_29,
 	.translate_vdd	= msm_sdcc_setup_power,
@@ -2603,7 +2895,7 @@ static struct mmc_platform_data msm7x30_sdc4_data = {
 
 #ifdef CONFIG_MMC_MSM_CARD_HW_DETECTION
 	.status      = msm7x30_sdcc_slot_status,
-	.status_irq  = PM8058_GPIO_IRQ(PMIC8058_IRQ_BASE, SAGA_GPIO_SDMC_CD_N),
+	.status_irq  = PM8058_GPIO_IRQ(PMIC8058_IRQ_BASE, GLACIER_GPIO_SDMC_CD_N),
 	.irq_flags   = IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
 #endif
 
@@ -2615,7 +2907,7 @@ static struct mmc_platform_data msm7x30_sdc4_data = {
 	//	.msmsdcc_fmax	= 49152000,
 	.msmsdcc_fmax	= 50000000,
 	.nonremovable	= 0,
-	.slot_type     = &saga_sdc4_slot_type,
+	.slot_type     = &glacier_sdc4_slot_type,
 };
 #endif
 
@@ -2688,7 +2980,7 @@ static void __init msm7x30_init_mmc(void)
 	msm_sdcc_setup_gpio(3, 1);
 	msm_add_sdcc(3, &msm7x30_sdc3_data);
 	*/
-	saga_init_mmc(system_rev);
+	glacier_init_mmc(system_rev);
 /* HTC_WIFI_END*/
 #endif
 #ifdef CONFIG_MMC_MSM_SDC4_SUPPORT
@@ -2725,25 +3017,38 @@ static struct msm_spm_platform_data msm_spm_data __initdata = {
 };
 
 #ifdef CONFIG_PERFLOCK
-static unsigned saga_perf_acpu_table[] = {
+static unsigned glacier_perf_acpu_table[] = {
 	245000000,
 	768000000,
 	1024000000,
 };
 
-static struct perflock_platform_data saga_perflock_data = {
-	.perf_acpu_table = saga_perf_acpu_table,
-	.table_size = ARRAY_SIZE(saga_perf_acpu_table),
+static struct perflock_platform_data glacier_perflock_data = {
+	.perf_acpu_table = glacier_perf_acpu_table,
+	.table_size = ARRAY_SIZE(glacier_perf_acpu_table),
 };
 #endif
 
-static void saga_reset(void)
+static void glacier_reset(void)
 {
-	gpio_set_value(SAGA_GPIO_PS_HOLD, 0);
+	gpio_set_value(GLACIER_GPIO_PS_HOLD, 0);
 }
 
-void saga_add_usb_devices(void)
+char *TMUS_SKU = "T-MOB010";
+void glacier_add_usb_devices(void)
 {
+	char *get_cid;
+	uint8_t cid_len;
+
+	board_get_cid_tag(&get_cid);
+	cid_len = strlen(get_cid);
+
+	printk("cid=%s\n", get_cid);
+	if (!strncmp(get_cid, TMUS_SKU, cid_len)) {
+		android_usb_pdata.product_id = 0x0c96;
+		android_usb_pdata.product_name = "myTouch 4G";
+		android_usb_pdata.manufacturer_name = "T-Mobile";
+	}
 	printk(KERN_INFO "%s rev: %d\n", __func__, system_rev);
 	android_usb_pdata.products[0].product_id =
 			android_usb_pdata.product_id;
@@ -2764,7 +3069,7 @@ static int __init board_serialno_setup(char *serialno)
 __setup("androidboot.serialno=", board_serialno_setup);
 
 #ifdef CONFIG_MDP4_HW_VSYNC
-static void saga_te_gpio_config(void)
+static void glacier_te_gpio_config(void)
 {
 	uint32_t te_gpio_table[] = {
 	PCOM_GPIO_CFG(30, 1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_2MA),
@@ -2779,7 +3084,7 @@ static struct platform_device *devices[] __initdata = {
         &msm_device_uart2,
 #endif
 #ifdef CONFIG_SERIAL_MSM_HS_PURE_ANDROID
-        &saga_bcm_bt_lpm_device,
+        &glacier_bcm_bt_lpm_device,
 #endif
 #ifdef CONFIG_MSM_PROC_COMM_REGULATOR
         &msm_proccomm_regulator_dev,
@@ -2803,10 +3108,6 @@ static struct platform_device *devices[] __initdata = {
         &msm_device_ssbi7,
 #endif
         &android_pmem_device,
-        &msm_fb_device,
-#ifdef CONFIG_MSM_V4L2_VIDEO_OVERLAY_DEVICE
-        &msm_v4l2_video_overlay_device,
-#endif
         &msm_migrate_pages_device,
 #ifdef CONFIG_MSM_ROTATOR
         &msm_rotator_device,
@@ -2815,6 +3116,9 @@ static struct platform_device *devices[] __initdata = {
         &android_pmem_audio_device,
         &msm_device_i2c,
         &msm_device_i2c_2,
+#ifdef CONFIG_INPUT_CAPELLA_CM3602
+        &capella_cm3602,
+#endif
 #ifdef CONFIG_MSM7KV2_AUDIO
         &msm_aictl_device,
         &msm_mi2s_device,
@@ -2825,7 +3129,7 @@ static struct platform_device *devices[] __initdata = {
         &msm_camera_sensor_s5k4e1gx,
 #endif
 #ifdef CONFIG_MT9V113
-        &msm_camera_sensor_mt9v113,
+	&msm_camera_sensor_mt9v113, /* 2nd CAM */
 #endif
         &msm_device_adspdec,
         &qup_device_i2c,
@@ -2866,35 +3170,36 @@ static struct platform_device *devices[] __initdata = {
         &msm_device_uart_dm1,
 #endif
 #ifdef CONFIG_BT
-        &saga_rfkill,
+        &glacier_rfkill,
 #endif
+		//&glacier_fmtx_rfkill,
 #ifdef CONFIG_ARCH_MSM_FLASHLIGHT
-        &saga_flashlight_device,
+        &glacier_flashlight_device,
 #endif
-	&htc_headset_mgr,
-        &pm8058_leds,
+#ifdef CONFIG_CABLE_DETECT_GPIO_DOCK
+		&cable_detect_device,
+#endif
 };
 
-static void __init saga_init(void)
+static void __init glacier_init(void)
 {
-	int rc = 0, i = 0;
+	int rc = 0;
 	struct kobject *properties_kobj;
 	unsigned smem_size;
 	uint32_t soc_version = 0;
 	struct proc_dir_entry *entry = NULL;
-	char *device_mid;
 
 	soc_version = socinfo_get_version();
 
 	/* Must set msm_hw_reset_hook before first proc comm */
-	msm_hw_reset_hook = saga_reset;
+	msm_hw_reset_hook = glacier_reset;
 
 	msm_clock_init(&msm7x30_clock_init_data);
 	msm_spm_init(&msm_spm_data, 1);
 	acpuclk_init(&acpuclk_7x30_soc_data);
 
 #ifdef CONFIG_PERFLOCK
-	perflock_init(&saga_perflock_data);
+	perflock_init(&glacier_perflock_data);
 #endif
 
 #ifdef CONFIG_BT
@@ -2903,10 +3208,10 @@ static void __init saga_init(void)
 
 #ifdef CONFIG_SERIAL_MSM_HS
 #ifdef CONFIG_SERIAL_MSM_HS_PURE_ANDROID
-        msm_uart_dm1_pdata.rx_wakeup_irq = -1;
+	msm_uart_dm1_pdata.rx_wakeup_irq = -1;
 #else
-        msm_uart_dm1_pdata.rx_wakeup_irq = gpio_to_irq(SAGA_GPIO_BT_HOST_WAKE);
-        msm_device_uart_dm1.name = "msm_serial_hs_brcm";
+	msm_uart_dm1_pdata.rx_wakeup_irq = gpio_to_irq(GLACIER_GPIO_BT_HOST_WAKE);
+	msm_device_uart_dm1.name = "msm_serial_hs_brcm";
 #endif
 	msm_device_uart_dm1.dev.platform_data = &msm_uart_dm1_pdata;
 #endif
@@ -2930,10 +3235,11 @@ static void __init saga_init(void)
 	msm_device_ssbi_pmic1.dev.platform_data =
 				&msm7x30_ssbi_pm8058_pdata;
 #endif
+
 	buses_init();
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 
-	saga_add_usb_devices();
+	glacier_add_usb_devices();
 
 #ifdef CONFIG_USB_EHCI_MSM_72K
 	msm_add_host(0, &msm_usb_host_pdata);
@@ -2943,31 +3249,37 @@ static void __init saga_init(void)
 
 	spi_register_board_info(msm_spi_board_info, ARRAY_SIZE(msm_spi_board_info));
 
+	if ((system_rev >= 0x80) || (engineerid & 0x2))
+		glacier_oj_data.ap_code = true;
+	platform_device_register(&glacier_oj);
+	if (!panel_type) {
+		glacier_ts_atmel_data[0].config_T9[9] = 5;
+		glacier_ts_atmel_data[0].abs_y_max = 954;
+	}
 	msm_pm_set_platform_data(msm_pm_data, ARRAY_SIZE(msm_pm_data));
 	BUG_ON(msm_pm_boot_init(MSM_PM_BOOT_CONFIG_RESET_VECTOR, ioremap(0x0, PAGE_SIZE)));
 
 	msm_device_i2c_init();
 	msm_device_i2c_2_init();
+#ifdef CONFIG_MICROP_COMMON
+	glacier_microp_init();
+#endif
 	qup_device_i2c_init();
-	saga_init_marimba();
+	glacier_init_marimba();
 #ifdef CONFIG_MSM7KV2_AUDIO
 	aux_pcm_gpio_init();
 	msm_snddev_init();
+	audience_gpio_init();
 #endif
 
 	i2c_register_board_info(2, msm_marimba_board_info,
 			ARRAY_SIZE(msm_marimba_board_info));
 
-	if (system_rev <= 1)
-		i2c_register_board_info(0, i2c_compass_devices_XA_XB,
-					ARRAY_SIZE(i2c_compass_devices_XA_XB));
-	else
-		i2c_register_board_info(0, i2c_compass_devices_XC,
-					ARRAY_SIZE(i2c_compass_devices_XC));
+	i2c_register_board_info(0, i2c_compass_devices,
+			ARRAY_SIZE(i2c_compass_devices));
 
 	i2c_register_board_info(4 /* QUP ID */, msm_camera_boardinfo,
 				ARRAY_SIZE(msm_camera_boardinfo));
-
 #ifdef CONFIG_I2C_SSBI
 	msm_device_ssbi6.dev.platform_data = &msm_i2c_ssbi6_pdata;
 	msm_device_ssbi7.dev.platform_data = &msm_i2c_ssbi7_pdata;
@@ -2991,23 +3303,23 @@ static void __init saga_init(void)
 	printk(KERN_NOTICE "Boot Reason = 0x%02x\n", boot_reason);
 
 #ifdef CONFIG_MSM_CAMERA
-          config_gpio_table(camera_on_gpio_table, ARRAY_SIZE(camera_on_gpio_table));
+	config_gpio_table(camera_on_gpio_table, ARRAY_SIZE(camera_on_gpio_table));
 #endif
 	properties_kobj = kobject_create_and_add("board_properties", NULL);
 	if (properties_kobj)
 		rc = sysfs_create_group(properties_kobj,
-				&saga_properties_attr_group);
+				&glacier_properties_attr_group);
 	if (!properties_kobj || rc)
 		pr_err("failed to create board_properties\n");
 
 	i2c_register_board_info(0, i2c_devices,	ARRAY_SIZE(i2c_devices));
-       	saga_init_keypad();
+        glacier_init_keypad();
 #ifdef CONFIG_MDP4_HW_VSYNC
-	saga_te_gpio_config();
+	glacier_te_gpio_config();
 #endif
-	saga_audio_init();
-        saga_wifi_init();
-        saga_init_panel();
+	glacier_init_panel();
+	glacier_audio_init();
+	glacier_wifi_init();
 	msm_init_pmic_vibrator(3000);
 }
 
@@ -3114,13 +3426,13 @@ static struct reserve_info msm7x30_reserve_info __initdata = {
 	.paddr_to_memtype = msm7x30_paddr_to_memtype,
 };
 
-static void __init saga_reserve(void)
+static void __init glacier_reserve(void)
 {
 	reserve_info = &msm7x30_reserve_info;
 	msm_reserve();
 }
 
-static void __init saga_allocate_memory_regions(void)
+static void __init glacier_allocate_memory_regions(void)
 {
 	void *addr;
 	unsigned long size;
@@ -3128,22 +3440,13 @@ static void __init saga_allocate_memory_regions(void)
 	size = fb_size ? : MSM_FB_SIZE;
 	addr = alloc_bootmem_align(size, 0x1000);
 	msm_fb_resources[0].start = __pa(addr);
+	msm_fb_base = msm_fb_resources[0].start;
 	msm_fb_resources[0].end = msm_fb_resources[0].start + size - 1;
 	printk("allocating %lu bytes at %p (%lx physical) for fb\n",
 			size, addr, __pa(addr));
-
-#ifdef CONFIG_MSM_V4L2_VIDEO_OVERLAY_DEVICE
-	size = MSM_V4L2_VIDEO_OVERLAY_BUF_SIZE;
-	addr = alloc_bootmem_align(size, 0x1000);
-	msm_v4l2_video_overlay_resources[0].start = __pa(addr);
-	msm_v4l2_video_overlay_resources[0].end =
-		msm_v4l2_video_overlay_resources[0].start + size - 1;
-	pr_debug("allocating %lu bytes at %p (%lx physical) for v4l2\n",
-		size, addr, __pa(addr));
-#endif
 }
 
-static void __init saga_map_io(void)
+static void __init glacier_map_io(void)
 {
 	msm_shared_ram_phys = 0x00400000;
 	msm_map_msm7x30_io();
@@ -3152,12 +3455,12 @@ static void __init saga_map_io(void)
 		       __func__);
 }
 
-static void __init saga_init_early(void)
+static void __init glacier_init_early(void)
 {
-	saga_allocate_memory_regions();
+	glacier_allocate_memory_regions();
 }
 
-static void __init saga_fixup(struct machine_desc *desc, struct tag *tags,
+static void __init glacier_fixup(struct machine_desc *desc, struct tag *tags,
 								char **cmdline, struct meminfo *mi)
 {
 	int mem = parse_tag_memsize((const struct tag *)tags);
@@ -3172,13 +3475,12 @@ static void __init saga_fixup(struct machine_desc *desc, struct tag *tags,
 		mi->bank[0].size += MSM_MEM_256MB_OFFSET;
 }
 
-MACHINE_START(SAGA, "saga")
-	.fixup = saga_fixup,
-	.map_io = saga_map_io,
-	.reserve = saga_reserve,
+MACHINE_START(GLACIER, "glacier")
+	.fixup = glacier_fixup,
+	.map_io = glacier_map_io,
+	.reserve = glacier_reserve,
 	.init_irq = msm_init_irq,
-	.init_machine = saga_init,
+	.init_machine = glacier_init,
 	.timer = &msm_timer,
-	.init_early = saga_init_early,
+	.init_early = glacier_init_early,
 MACHINE_END
-
