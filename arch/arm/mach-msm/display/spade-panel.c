@@ -137,13 +137,13 @@ static void spade_sharp_panel_power(bool on_off)
     gpio_set_value(SPADE_LCD_RSTz, 0);
     vreg_enable(vreg_lcm_2v8);
     vreg_enable(vreg_lcm_1v8);
-    udelay(30);
+    udelay(10);
     gpio_set_value(SPADE_LCD_RSTz, 1);
-    hr_msleep(50);
+    hr_msleep(20);
   } else {
     LCMDBG("(%d):\n", on_off);
     gpio_set_value(SPADE_LCD_RSTz, 0);
-    hr_msleep(100);
+    hr_msleep(70);
     vreg_disable(vreg_lcm_2v8);
     vreg_disable(vreg_lcm_1v8);
     config_gpio_table(display_off_gpio_table,
@@ -156,17 +156,17 @@ static void spade_auo_panel_power(bool on_off)
   if (!!on_off) {
     LCMDBG("(%d):\n", on_off);
     gpio_set_value(SPADE_LCD_RSTz, 1);
-    udelay(600);
+    udelay(500);
     gpio_set_value(SPADE_LCD_RSTz, 0);
-    udelay(600);
+    udelay(500);
     gpio_set_value(SPADE_LCD_RSTz, 1);
-    hr_msleep(50);
+    hr_msleep(20);
     config_gpio_table( display_on_gpio_table,
                        ARRAY_SIZE(display_on_gpio_table));
   } else {
     LCMDBG("%s(%d):\n", __func__, on_off);
     gpio_set_value(SPADE_LCD_RSTz, 1);
-    hr_msleep(100);
+    hr_msleep(70);
     config_gpio_table( display_off_gpio_table,
                        ARRAY_SIZE(display_off_gpio_table));
   }
