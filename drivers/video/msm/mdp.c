@@ -1202,54 +1202,31 @@ error:
 }
 #endif
 
-static void send_vsync_work(struct work_struct *work)
-{
-	char buf[64];
-	char *envp[2];
-
-	snprintf(buf, sizeof(buf), "VSYNC=%llu",
-			ktime_to_ns(vsync_cntrl.vsync_time));
-	envp[0] = buf;
-	envp[1] = NULL;
-	kobject_uevent_env(&(vsync_cntrl.dev->kobj), KOBJ_CHANGE, envp);
-}
-
-void mdp3_vsync_irq_enable(int intr, int term)
-{
-	unsigned long flag;
-
-	spin_lock_irqsave(&mdp_spin_lock, flag);
-	outp32(MDP_INTR_CLEAR, intr);
-	mdp_intr_mask |= intr;
-	outp32(MDP_INTR_ENABLE, mdp_intr_mask);
-	mdp_enable_irq(term);
-	spin_unlock_irqrestore(&mdp_spin_lock, flag);
-}
-
-void mdp3_vsync_irq_disable(int intr, int term)
-{
-	unsigned long flag;
-
-	spin_lock_irqsave(&mdp_spin_lock, flag);
-	/* required to synchronize between frame update and vsync
-	 * since both use the same LCDC_FRAME_START interrupt
-	 */
-	if (intr == LCDC_FRAME_START && dma2_data.waiting == FALSE) {
-		mdp_intr_mask &= ~intr;
-		outp32(MDP_INTR_ENABLE, mdp_intr_mask);
-	}
-	mdp_disable_irq(term);
-	spin_unlock_irqrestore(&mdp_spin_lock, flag);
-}
-
 #ifdef CONFIG_FB_MSM_MDP303
 /* vsync_isr_handler: Called from isr context*/
 static void vsync_isr_handler(void)
 {
 	vsync_cntrl.vsync_time = ktime_get();
-	schedule_work(&(vsync_cntrl.vsync_work));
 }
 #endif
+
+static ssize_t vsync_show_event(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	ssize_t ret = 0;
+
+	if (atomic_read(&vsync_cntrl.suspend) > 0 ||
+		atomic_read(&vsync_cntrl.vsync_resume) == 0)
+		return 0;
+
+	INIT_COMPLETION(vsync_cntrl.vsync_wait);
+
+	wait_for_completion(&vsync_cntrl.vsync_wait);
+	ret = snprintf(buf, PAGE_SIZE, "VSYNC=%llu",
+	ktime_to_ns(vsync_cntrl.vsync_time));
+	buf[strlen(buf) + 1] = '\0';
+	return ret;
+}
 
 /* Returns < 0 on error, 0 on timeout, or > 0 on successful wait */
 int mdp_ppp_pipe_wait(void)
@@ -1720,6 +1697,9 @@ irqreturn_t mdp_isr(int irq, void *ptr)
 		if (!mdp_interrupt)
 			break;
 
+		complete_all(&vsync_cntrl.vsync_wait);
+	}
+
 	/*Primary Vsync interrupt*/
 	if (mdp_interrupt & MDP_PRIM_RDPTR)
 		vsync_isr_handler();
@@ -1780,6 +1760,8 @@ irqreturn_t mdp_isr(int irq, void *ptr)
 				mdp_intr_mask &= ~LCDC_FRAME_START;
 				outp32(MDP_INTR_ENABLE, mdp_intr_mask);
 			}
+
+			complete_all(&vsync_cntrl.vsync_wait);
 		}
 
 		/* DMA2 LCD-Out Complete */
@@ -1905,6 +1887,9 @@ static void mdp_drv_init(void)
 		atomic_set(&mdp_block_power_cnt[i], 0);
 	}
 	INIT_WORK(&(vsync_cntrl.vsync_work), send_vsync_work);
+	vsync_cntrl.disabled_clocks = 1;
+	init_completion(&vsync_cntrl.vsync_wait);
+	atomic_set(&vsync_cntrl.vsync_resume, 1);
 #ifdef MSM_FB_ENABLE_DBGFS
 	{
 		struct dentry *root;
@@ -1989,7 +1974,10 @@ static int mdp_off(struct platform_device *pdev)
 	struct msm_fb_data_type *mfd = platform_get_drvdata(pdev);
 
 	mdp_histogram_ctrl_all(FALSE);
-
+	atomic_set(&vsync_cntrl.suspend, 1);
+	atomic_set(&vsync_cntrl.vsync_resume, 0);
+	complete_all(&vsync_cntrl.vsync_wait);
+	mdp_clk_ctrl(1);
 	if (mfd->panel.type == MIPI_CMD_PANEL)
 		mdp4_dsi_cmd_off(pdev);
 	else if (mfd->panel.type == MIPI_VIDEO_PANEL)
@@ -2009,6 +1997,15 @@ static int mdp_off(struct platform_device *pdev)
 		mdp_dsi_cmd_overlay_suspend(mfd);
 	return ret;
 }
+
+static DEVICE_ATTR(vsync_event, S_IRUGO, vsync_show_event, NULL);
+static struct attribute *vsync_fs_attrs[] = {
+	&dev_attr_vsync_event.attr,
+	NULL,
+};
+static struct attribute_group vsync_fs_attr_group = {
+	.attrs = vsync_fs_attrs,
+};
 
 static int mdp_on(struct platform_device *pdev)
 {
@@ -2041,7 +2038,25 @@ static int mdp_on(struct platform_device *pdev)
 
 	if ((mdp_rev == MDP_REV_303) &&
 			(mfd->panel.type == MIPI_CMD_PANEL))
+	if (mdp_rev == MDP_REV_303 && mfd->panel.type == MIPI_CMD_PANEL) {
+
 		vsync_cntrl.dev = mfd->fbi->dev;
+
+		if (!vsync_cntrl.sysfs_created) {
+			ret = sysfs_create_group(&vsync_cntrl.dev->kobj,
+				&vsync_fs_attr_group);
+			if (ret) {
+				pr_err("%s: sysfs creation failed, ret=%d\n",
+					__func__, ret);
+				return ret;
+			}
+
+			kobject_uevent(&vsync_cntrl.dev->kobj, KOBJ_ADD);
+			pr_debug("%s: kobject_uevent(KOBJ_ADD)\n", __func__);
+			vsync_cntrl.sysfs_created = 1;
+		}
+		atomic_set(&vsync_cntrl.suspend, 0);
+	}
 
 	mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
 	ret = panel_next_on(pdev);
