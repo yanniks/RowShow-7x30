@@ -1,7 +1,11 @@
 #
 # Automatically generated make config: don't edit
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Linux/arm 3.0.40 Kernel Configuration
+=======
+# Linux/arm 3.0.43 Kernel Configuration
+>>>>>>> cbe877d... Update vision defconfig
 =======
 # Linux/arm 3.0.43 Kernel Configuration
 >>>>>>> cbe877d... Update vision defconfig
