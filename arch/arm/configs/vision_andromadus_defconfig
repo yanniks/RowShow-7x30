@@ -1,10 +1,6 @@
 #
 # Automatically generated make config: don't edit
-<<<<<<< HEAD
 # Linux/arm 3.0.40 Kernel Configuration
-=======
-# Linux/arm 3.0.43 Kernel Configuration
->>>>>>> cbe877d... Update vision defconfig
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -413,13 +409,8 @@ CONFIG_ACPUCLOCK_OVERCLOCKING=y
 # CONFIG_MSM_HW3D is not set
 CONFIG_AMSS_7X25_VERSION_2009=y
 # CONFIG_AMSS_7X25_VERSION_2008 is not set
-<<<<<<< HEAD
 # CONFIG_MSM7KV2_AUDIO is not set
 CONFIG_MSM7KV2_1X_AUDIO=y
-=======
-CONFIG_MSM7KV2_AUDIO=y
-# CONFIG_MSM_ADSP_REPORT_EVENTS is not set
->>>>>>> cbe877d... Update vision defconfig
 CONFIG_RTAC=y
 # CONFIG_MSM_VREG_SWITCH_INVERTED is not set
 CONFIG_MSM_DMA_TEST=m
@@ -2271,21 +2262,7 @@ CONFIG_USB_EHCI_MSM_72K=y
 #
 # also be needed; see USB_STORAGE Help for more info
 #
-CONFIG_USB_STORAGE=y
-CONFIG_USB_STORAGE_DEBUG=y
-# CONFIG_USB_STORAGE_REALTEK is not set
-# CONFIG_USB_STORAGE_DATAFAB is not set
-# CONFIG_USB_STORAGE_FREECOM is not set
-# CONFIG_USB_STORAGE_ISD200 is not set
-# CONFIG_USB_STORAGE_USBAT is not set
-# CONFIG_USB_STORAGE_SDDR09 is not set
-# CONFIG_USB_STORAGE_SDDR55 is not set
-# CONFIG_USB_STORAGE_JUMPSHOT is not set
-# CONFIG_USB_STORAGE_ALAUDA is not set
-# CONFIG_USB_STORAGE_ONETOUCH is not set
-# CONFIG_USB_STORAGE_KARMA is not set
-# CONFIG_USB_STORAGE_CYPRESS_ATACB is not set
-# CONFIG_USB_STORAGE_ENE_UB6250 is not set
+# CONFIG_USB_STORAGE is not set
 # CONFIG_USB_UAS is not set
 # CONFIG_USB_LIBUSUAL is not set
 
