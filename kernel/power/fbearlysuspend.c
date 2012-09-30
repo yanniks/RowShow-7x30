@@ -35,7 +35,7 @@ static void stop_drawing_early_suspend(struct early_suspend *h)
 	unsigned long irq_flags;
 
 //Fix CRT off animation when wifi is off too
-msleep(500);
+msleep(250);
 
 	spin_lock_irqsave(&fb_state_lock, irq_flags);
 	fb_state = FB_STATE_REQUEST_STOP_DRAWING;
