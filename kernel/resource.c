@@ -262,24 +262,6 @@ int request_resource(struct resource *root, struct resource *new)
 EXPORT_SYMBOL(request_resource);
 
 /**
- * locate_resource - locate an already reserved I/O or memory resource
- * @root: root resource descriptor
- * @search: resource descriptor to be located
- *
- * Returns pointer to desired resource or NULL if not found.
- */
-struct resource *locate_resource(struct resource *root, struct resource *search)
-{
-	struct resource *found;
-
-	write_lock(&resource_lock);
-	found = __request_resource(root, search);
-	write_unlock(&resource_lock);
-	return found;
-}
-EXPORT_SYMBOL(locate_resource);
-
-/**
  * release_resource - release a previously reserved resource
  * @old: resource pointer
  */
@@ -788,13 +770,16 @@ static void __init __reserve_region_with_split(struct resource *root,
 			end = res->end;
 			res->end = conflict->start - 1;
 			if (conflict->end < end) {
-				next_res = kzalloc(sizeof(*res), GFP_ATOMIC);
+				next_res = kzalloc(sizeof(*next_res),
+						GFP_ATOMIC);
 				if (!next_res) {
 					kfree(res);
 					break;
 				}
+				next_res->name = name;
 				next_res->start = conflict->end + 1;
 				next_res->end = end;
+				next_res->flags = IORESOURCE_BUSY;
 			}
 		} else {
 			res->start = conflict->end + 1;
