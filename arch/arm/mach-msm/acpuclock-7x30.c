@@ -88,6 +88,21 @@ static struct clock_state drv_state = { 0 };
 static struct clkctl_acpu_speed *backup_s;
 
 static struct pll pll2_tbl[] = {
+#ifdef CONFIG_ACPU_AGGRESSIVE_BUS
+        {  53, 1, 3, 0 }, /* 1024 MHz */
+        { 125, 0, 1, 1 }, /* 1200 MHz */
+        {  79, 0, 1, 0 }, /* 1500 MHz */
+        {  81, 0, 1, 0 }, /* 1527 MHz */
+        {  83, 0, 1, 0 }, /* 1553 MHz */
+        {  85, 0, 1, 0 }, /* 1586 MHz */
+        {  87, 0, 1, 0 }, /* 1621 MHz */
+        {  89, 0, 1, 0 }, /* 1675 MHz */
+        {  91, 0, 1, 0 }, /* 1713 MHz */
+        {  93, 0, 1, 0 }, /* 1757 MHz */
+        {  95, 0, 1, 0 }, /* 1784 MHz */
+        {  97, 0, 1, 0 }, /* 1784 MHz */
+        {  99, 0, 1, 0 }, /* 1784 MHz */
+#else
         {  42, 0, 1, 0 }, /*  806 MHz */
         {  53, 1, 3, 0 }, /* 1024 MHz */
         { 125, 0, 1, 1 }, /* 1200 MHz */
@@ -101,6 +116,7 @@ static struct pll pll2_tbl[] = {
         {  91, 0, 1, 0 }, /* 1713 MHz */
         {  93, 0, 1, 0 }, /* 1757 MHz */
         {  95, 0, 1, 0 }, /* 1784 MHz */
+#endif /* CONFIG_ACPU_AGGRESSIVE_BUS */
 };
 
 /* Use negative numbers for sources that can't be enabled/disabled */
