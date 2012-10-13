@@ -649,8 +649,8 @@ static int htc_cable_status_update(int status)
 			htc_batt_info.rep.charging_source = CHARGER_USB;
 		}
 #else
-                htc_set_smem_cable_type(CHARGER_USB);
-                htc_batt_info.rep.charging_source = CHARGER_USB;
+		htc_set_smem_cable_type(CHARGER_USB);
+		htc_batt_info.rep.charging_source = CHARGER_USB;
 #endif
 	} else {
 		htc_set_smem_cable_type(status);
