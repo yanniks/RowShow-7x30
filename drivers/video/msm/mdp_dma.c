@@ -513,7 +513,6 @@ void mdp_dma_vsync_ctrl(int enable)
 	if (vsync_cntrl.vsync_irq_enabled == enable)
 		return;
 
-	spin_lock_irqsave(&mdp_spin_lock, flag);
 	if (!enable)
 		INIT_COMPLETION(vsync_cntrl.vsync_wait);
 
@@ -522,12 +521,9 @@ void mdp_dma_vsync_ctrl(int enable)
 	if (enable) {
 		mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
 		MDP_OUTP(MDP_BASE + 0x021c, 0x10); /* read pointer */
-		mdp3_vsync_irq_enable(MDP_PRIM_RDPTR, MDP_VSYNC_TERM);
 	} else {
-		mdp3_vsync_irq_disable(MDP_PRIM_RDPTR, MDP_VSYNC_TERM);
 		mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_OFF, FALSE);
 	}
-	spin_unlock_irqrestore(&mdp_spin_lock, flag);
 	if (vsync_cntrl.vsync_irq_enabled &&
 		atomic_read(&vsync_cntrl.suspend) == 0)
 		atomic_set(&vsync_cntrl.vsync_resume, 1);
