@@ -1886,7 +1886,6 @@ static void mdp_drv_init(void)
 	for (i = 0; i < MDP_MAX_BLOCK; i++) {
 		atomic_set(&mdp_block_power_cnt[i], 0);
 	}
-	INIT_WORK(&(vsync_cntrl.vsync_work), send_vsync_work);
 	vsync_cntrl.disabled_clocks = 1;
 	init_completion(&vsync_cntrl.vsync_wait);
 	atomic_set(&vsync_cntrl.vsync_resume, 1);
