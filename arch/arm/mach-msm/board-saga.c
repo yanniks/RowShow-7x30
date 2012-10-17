@@ -439,10 +439,10 @@ static ssize_t saga_virtual_keys_show(struct kobject *kobj,
 			struct kobj_attribute *attr, char *buf)
 {
 	return sprintf(buf,
-		__stringify(EV_KEY) ":" __stringify(KEY_HOME)	":65:845:80:50"
-		":" __stringify(EV_KEY) ":" __stringify(KEY_MENU)	":180:845:83:50"
-		":" __stringify(EV_KEY) ":" __stringify(KEY_BACK)	":310:845:88:50"
-		":" __stringify(EV_KEY) ":" __stringify(KEY_SEARCH) ":445:845:91:50"
+	        __stringify(EV_KEY) ":" __stringify(KEY_HOME)       ":45:839:74:60"
+	        ":" __stringify(EV_KEY) ":" __stringify(KEY_MENU)   ":178:839:80:60"
+	        ":" __stringify(EV_KEY) ":" __stringify(KEY_BACK)   ":315:839:90:60"
+	        ":" __stringify(EV_KEY) ":" __stringify(KEY_SEARCH) ":444:839:60:60"
 		"\n");
 }
 
