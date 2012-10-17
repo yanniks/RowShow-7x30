@@ -471,10 +471,10 @@ static ssize_t vision_atmel_virtual_keys_show(struct kobject *kobj,
 			struct kobj_attribute *attr, char *buf)
 {
 	return sprintf(buf,
-		__stringify(EV_KEY) ":" __stringify(KEY_HOME)	":65:845:80:50"
-		":" __stringify(EV_KEY) ":" __stringify(KEY_MENU)	":180:845:83:50"
-		":" __stringify(EV_KEY) ":" __stringify(KEY_BACK)	":310:845:88:50"
-		":" __stringify(EV_KEY) ":" __stringify(KEY_SEARCH) ":445:845:91:50"
+               __stringify(EV_KEY) ":" __stringify(KEY_HOME)       ":47:830:74:50"
+		":" __stringify(EV_KEY) ":" __stringify(KEY_MENU)   ":155:830:80:50"
+		":" __stringify(EV_KEY) ":" __stringify(KEY_BACK)   ":337:830:90:50"
+		":" __stringify(EV_KEY) ":" __stringify(KEY_SEARCH) ":434:830:60:50"
 		"\n");
 }
 
