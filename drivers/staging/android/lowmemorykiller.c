@@ -72,7 +72,7 @@ static unsigned long boost_duration = (HZ << 1);
 
 static uint32_t lowmem_fork_boost = 1;
 
-extern int compact_nodes();
+extern int compact_nodes(bool sync);
 
 #define lowmem_print(level, x...)			\
 	do {						\
