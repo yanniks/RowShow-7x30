@@ -132,9 +132,9 @@
  */
 
 #ifdef CONFIG_DEBUG_SLAB
-#define	DEBUG		1
-#define	STATS		1
-#define	FORCED_DEBUG	1
+#define	DEBUG		0
+#define	STATS		0
+#define	FORCED_DEBUG	0
 #else
 #define	DEBUG		0
 #define	STATS		0
