@@ -3159,11 +3159,11 @@ static void *cache_alloc_debugcheck_after(struct kmem_cache *cachep,
 		       objp, ARCH_SLAB_MINALIGN);
 	}
 #endif
-	return objp;
-}
-#else
+//	return objp;
+//}
+//#else
 #define cache_alloc_debugcheck_after(a,b,objp,d) (objp)
-#endif
+//#endif
 
 static bool slab_should_failslab(struct kmem_cache *cachep, gfp_t flags)
 {
