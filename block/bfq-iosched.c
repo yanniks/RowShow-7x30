@@ -63,7 +63,7 @@
 #include "bfq.h"
 
 /* Max number of dispatches in one round of service. */
-static const int bfq_quantum = 4;
+static const int bfq_quantum = 16;
 
 /* Expiration time of sync (0) and async (1) requests, in jiffies. */
 static const int bfq_fifo_expire[2] = { HZ / 4, HZ / 8 };
@@ -72,10 +72,10 @@ static const int bfq_fifo_expire[2] = { HZ / 4, HZ / 8 };
 static const int bfq_back_max = 16 * 1024;
 
 /* Penalty of a backwards seek, in number of sectors. */
-static const int bfq_back_penalty = 2;
+static const int bfq_back_penalty = 1;
 
 /* Idling period duration, in jiffies. */
-static int bfq_slice_idle = HZ / 125;
+static int bfq_slice_idle = 0;
 
 /* Default maximum budget values, in sectors and number of requests. */
 static const int bfq_default_max_budget = 16 * 1024;
@@ -498,12 +498,9 @@ static void bfq_add_rq_rb(struct request *rq)
 		 */
 		if(old_raising_coeff == 1 && (idle_for_long_time || soft_rt)) {
 			bfqq->raising_coeff = bfqd->bfq_raising_coeff;
-			if (idle_for_long_time)
-				bfqq->raising_cur_max_time =
-					bfq_wrais_duration(bfqd);
-			else
-				bfqq->raising_cur_max_time =
-					bfqd->bfq_raising_rt_max_time;
+			bfqq->raising_cur_max_time = idle_for_long_time ?
+				bfq_wrais_duration(bfqd) :
+				bfqd->bfq_raising_rt_max_time;
 			bfq_log_bfqq(bfqd, bfqq,
 				     "wrais starting at %llu msec,"
 				     "rais_max_time %u",
@@ -845,10 +842,8 @@ static struct bfq_queue *bfq_close_cooperator(struct bfq_data *bfqd,
  */
 static inline unsigned long bfq_max_budget(struct bfq_data *bfqd)
 {
-	if (bfqd->budgets_assigned < 194)
-		return bfq_default_max_budget;
-	else
-		return bfqd->bfq_max_budget;
+	return bfqd->budgets_assigned < 194 ? bfq_default_max_budget :
+		bfqd->bfq_max_budget;
 }
 
 /*
@@ -857,10 +852,8 @@ static inline unsigned long bfq_max_budget(struct bfq_data *bfqd)
  */
 static inline unsigned long bfq_min_budget(struct bfq_data *bfqd)
 {
-	if (bfqd->budgets_assigned < 194)
-		return bfq_default_max_budget;
-	else
-		return bfqd->bfq_max_budget / 32;
+	return bfqd->budgets_assigned < 194 ? bfq_default_max_budget / 32 :
+		bfqd->bfq_max_budget / 32;
 }
 
 /*
@@ -936,11 +929,9 @@ static void bfq_arm_slice_timer(struct bfq_data *bfqd)
 static void bfq_set_budget_timeout(struct bfq_data *bfqd)
 {
 	struct bfq_queue *bfqq = bfqd->active_queue;
-	unsigned int timeout_coeff;
-	if (bfqq->raising_cur_max_time == bfqd->bfq_raising_rt_max_time)
-		timeout_coeff = 1;
-	else
-		timeout_coeff = bfqq->entity.weight / bfqq->entity.orig_weight;
+	unsigned int timeout_coeff =
+		bfqq->raising_cur_max_time == bfqd->bfq_raising_rt_max_time ?
+		1 : (bfqq->entity.weight / bfqq->entity.orig_weight);
 
 	bfqd->last_budget_start = ktime_get();
 
@@ -1251,10 +1242,7 @@ static int bfq_update_peak_rate(struct bfq_data *bfqd, struct bfq_queue *bfqq,
 	if (!bfq_bfqq_sync(bfqq) || bfq_bfqq_budget_new(bfqq))
 		return 0;
 
-	if (compensate)
-		delta = bfqd->last_idling_start;
-	else
-		delta = ktime_get();
+	delta = compensate ? bfqd->last_idling_start : ktime_get();
 	delta = ktime_sub(delta, bfqd->last_budget_start);
 	usecs = ktime_to_us(delta);
 
@@ -2725,14 +2713,9 @@ static void *bfq_init_queue(struct request_queue *q)
 	bfqd->bfq_raising_min_inter_arr_async = msecs_to_jiffies(500);
 	bfqd->bfq_raising_max_softrt_rate = 7000;
 
-	/* Initially estimate the device's peak rate as the reference rate */
-	if (blk_queue_nonrot(bfqd->queue)) {
-		bfqd->RT_prod = R_nonrot * T_nonrot;
-		bfqd->peak_rate = R_nonrot;
-	} else {
-		bfqd->RT_prod = R_rot * T_rot;
-		bfqd->peak_rate = R_rot;
-	}
+	bfqd->RT_prod = blk_queue_nonrot(bfqd->queue) ?
+		R_nonrot * T_nonrot : R_rot * T_rot;
+	bfqd->peak_rate = 1; /* to avoid divide-by-zero exceptions */
 
 	return bfqd;
 }
@@ -3017,8 +3000,8 @@ static int __init bfq_init(void)
 	/*
 	 * Can be 0 on HZ < 1000 setups.
 	 */
-	if (bfq_slice_idle == 0)
-		bfq_slice_idle = 1;
+	//if (bfq_slice_idle == 0)
+	//	bfq_slice_idle = 1;
 
 	if (bfq_timeout_async == 0)
 		bfq_timeout_async = 1;
