@@ -1,8 +1,6 @@
 #ifndef _LINUX_COMPACTION_H
 #define _LINUX_COMPACTION_H
 
-#include <linux/node.h>
-
 /* Return values for compact_zone() and try_to_compact_pages() */
 /* compaction didn't start as it was not possible or direct reclaim was more suitable */
 #define COMPACT_SKIPPED		0
@@ -76,11 +74,6 @@ static inline void defer_compaction(struct zone *zone)
 static inline bool compaction_deferred(struct zone *zone)
 {
 	return 1;
-}
-
-static inline int compact_nodes(bool sync)
-{
-    return COMPACT_CONTINUE;
 }
 
 #endif /* CONFIG_COMPACTION */
