@@ -3560,9 +3560,10 @@ end:
 	return ret;
 }
 
-#ifndef CONFIG_MSMFB_OVERLAY_DTV
+#ifndef CONFIG_FB_MSM_DTV
 int mdp4_dtv_pipe_commit(int cndx, int wait)
 {
+	return 0;
 }
 #endif
 
