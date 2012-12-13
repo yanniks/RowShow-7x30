@@ -335,12 +335,6 @@ static int __cpuinit msm_cpufreq_init(struct cpufreq_policy *policy)
 	return 0;
 }
 
-/*
- * Define suspend/resume for cpufreq_driver. Kernel will call
- * these during suspend/resume with interrupts disabled. This
- * helps the suspend/resume variable get's updated before cpufreq
- * governor tries to change the frequency after coming out of suspend.
- */
 static int msm_cpufreq_suspend(struct cpufreq_policy *policy)
 {
 	int cpu;
@@ -396,6 +390,8 @@ static struct cpufreq_driver msm_cpufreq_driver = {
 	.suspend	= msm_cpufreq_suspend,
 	.resume		= msm_cpufreq_resume,
 	.get		= msm_cpufreq_get_freq,
+	.suspend	= msm_cpufreq_suspend,
+	.resume		= msm_cpufreq_resume,
 	.name		= "msm",
 	.attr		= msm_freq_attr,
 };
