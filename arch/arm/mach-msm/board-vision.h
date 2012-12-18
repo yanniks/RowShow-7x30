@@ -53,7 +53,11 @@ extern struct platform_device msm_device_mddi0;
 
 #define PMEM_KERNEL_EBI1_SIZE   0x00600000
 
-#define MSM_PMEM_SF_SIZE	0x01700000
+#ifdef CONFIG_FB_MSM_DEFAULT_DEPTH_RGB565
+#define MSM_PMEM_SF_SIZE	0x0C00000
+#else
+#define MSM_PMEM_SF_SIZE	0x1800000
+#endif
 
 #ifdef CONFIG_FB_MSM_TRIPLE_BUFFER
 #define MSM_FB_SIZE	0x465000
