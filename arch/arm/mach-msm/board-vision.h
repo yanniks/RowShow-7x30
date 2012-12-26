@@ -56,7 +56,7 @@ extern struct platform_device msm_device_mddi0;
 #ifdef CONFIG_FB_MSM_DEFAULT_DEPTH_RGB565
 #define MSM_PMEM_SF_SIZE	0x0C00000
 #else
-#define MSM_PMEM_SF_SIZE	0x1800000
+#define MSM_PMEM_SF_SIZE	0x1A00000
 #endif
 
 #ifdef CONFIG_FB_MSM_TRIPLE_BUFFER
