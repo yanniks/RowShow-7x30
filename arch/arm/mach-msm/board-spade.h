@@ -47,10 +47,10 @@ extern struct platform_device msm_device_mddi0;
 */
 #define MSM_V4L2_VIDEO_OVERLAY_BUF_SIZE 2764800
 #define MSM_PMEM_ADSP_BASE  	0x2B900000
-#define MSM_PMEM_ADSP_SIZE	0x01E00000 /* for 8M(4:3) + gpu effect */
+#define MSM_PMEM_ADSP_SIZE	0x02000000 /* for 8M(4:3) + gpu effect */
 #define PMEM_KERNEL_EBI0_BASE   0x2D600000
 #define PMEM_KERNEL_EBI0_SIZE   0x00700000
-#define MSM_PMEM_SF_SIZE	0x1C00000
+#define MSM_PMEM_SF_SIZE	0x01E00000
 #define MSM_PMEM_AUDIO_SIZE	0x00000000
 
 #define MSM_PMEM_CAMERA_BASE	0x2DD00000
@@ -61,11 +61,7 @@ extern struct platform_device msm_device_mddi0;
 
 #define MSM_FB_BASE		0x2FD00000
 
-#ifdef CONFIG_FB_MSM_TRIPLE_BUFFER
-#define MSM_FB_SIZE	0x465000
-#else
-#define MSM_FB_SIZE	0x2EE000
-#endif
+#define MSM_FB_SIZE		0x500000
 
 /* GPIO definition */
 
