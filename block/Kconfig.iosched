@@ -114,12 +114,6 @@ choice
 
 	config DEFAULT_SIO
 		bool "SIO" if IOSCHED_SIO=y
-<<<<<<< HEAD
-
-	config DEFAULT_FIOPS
-		bool "FIOPS" if IOSCHED_FIOPS=y
-=======
->>>>>>> parent of 959a30b60b... block: fiops ioscheduler core
 
 	config DEFAULT_NOOP
 		bool "No-op"
