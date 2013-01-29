@@ -370,11 +370,6 @@ int mdp4_overlay_borderfill_supported(void)
 	return (mdp_rev >= MDP_REV_42);
 }
 
-void mdp_vid_quant_set(void)
-{
-	/* stub function */
-}
-
 void mdp4_overlay_dmae_cfg(struct msm_fb_data_type *mfd, int atv)
 {
 	uint32	dmae_cfg_reg;
@@ -414,7 +409,9 @@ void mdp4_overlay_dmae_cfg(struct msm_fb_data_type *mfd, int atv)
 		MDP_OUTP(MDP_BASE + 0xb3014, 0x1000080);
 		MDP_OUTP(MDP_BASE + 0xb4004, 0x67686970);
 	} else {
+#ifdef CONFIG_FB_MSM_EXT_INTERFACE_COMMON
 		mdp_vid_quant_set();
+#endif
 		MDP_OUTP(MDP_BASE + 0xb0070, 0xff0000);
 		MDP_OUTP(MDP_BASE + 0xb0074, 0xff0000);
 		MDP_OUTP(MDP_BASE + 0xb0078, 0xff0000);
