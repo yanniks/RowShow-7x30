@@ -681,28 +681,15 @@ char *mac_address_string(char *buf, char *end, u8 *addr,
 	char *p = mac_addr;
 	int i;
 	char separator;
-	bool reversed = false;
 
-	switch (fmt[1]) {
-	case 'F':
+	if (fmt[1] == 'F') {		/* FDDI canonical format */
 		separator = '-';
-		break;
-
-	case 'R':
-		reversed = true;
-		/* fall through */
-
-	default:
+	} else {
 		separator = ':';
-		break;
 	}
 
 	for (i = 0; i < 6; i++) {
-		if (reversed)
-			p = hex_byte_pack(p, addr[5 - i]);
-		else
-			p = hex_byte_pack(p, addr[i]);
-
+		p = pack_hex_byte(p, addr[i]);
 		if (fmt[0] == 'M' && i != 5)
 			*p++ = separator;
 	}
@@ -1015,8 +1002,7 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
 		return resource_string(buf, end, ptr, spec, fmt);
 	case 'M':			/* Colon separated: 00:01:02:03:04:05 */
 	case 'm':			/* Contiguous: 000102030405 */
-					/* [mM]F (FDDI) */
-					/* [mM]R (Reverse order; Bluetooth) */
+					/* [mM]F (FDDI, bit reversed) */
 		return mac_address_string(buf, end, ptr, spec, fmt);
 	case 'I':			/* Formatted IP supported
 					 * 4:	1.2.3.4
