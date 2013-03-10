@@ -57,20 +57,6 @@ static int lowmem_minfree[6] = {
 static int lowmem_minfree_size = 4;
 
 static unsigned long lowmem_deathpending_timeout;
-static uint32_t lowmem_check_filepages = 0;
-static unsigned long lowmem_fork_boost_timeout;
-/*
- * discount = 1 -> 1/2^1 = 50% Off
- * discount = 2 -> 1/2^2 = 25% Off
- * discount = 3 -> 1/2^3 = 12.5% Off
- * discount = 4 -> 1/2^4 = 6.25% Off
- */
-static unsigned int discount = 2;
-static unsigned long boost_duration = (HZ << 1);
-
-static uint32_t lowmem_fork_boost = 1;
-
-extern int compact_nodes(bool sync);
 
 #define lowmem_print(level, x...)			\
 	do {						\
