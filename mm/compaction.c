@@ -681,6 +681,9 @@ static int __compact_pgdat(pg_data_t *pgdat, struct compact_control *cc)
 	int zoneid;
 	struct zone *zone;
 
+	/* Flush pending updates to the LRU lists */
+	lru_add_drain_all();
+
 	for (zoneid = 0; zoneid < MAX_NR_ZONES; zoneid++) {
 
 		zone = &pgdat->node_zones[zoneid];
@@ -715,21 +718,23 @@ int compact_pgdat(pg_data_t *pgdat, int order)
 
 static int compact_node(int nid)
 {
+	pg_data_t *pgdat;
 	struct compact_control cc = {
 		.order = -1,
 		.sync = true,
 	};
 
-	return __compact_pgdat(NODE_DATA(nid), &cc);
+	if (nid < 0 || nid >= nr_node_ids || !node_online(nid))
+		return -EINVAL;
+	pgdat = NODE_DATA(nid);
+
+	return __compact_pgdat(pgdat, &cc);
 }
 
 /* Compact all nodes in the system */
 static int compact_nodes(void)
 {
 	int nid;
-
-	/* Flush pending updates to the LRU lists */
-	lru_add_drain_all();
 
 	for_each_online_node(nid)
 		compact_node(nid);
@@ -761,14 +766,7 @@ ssize_t sysfs_compact_node(struct sys_device *dev,
 			struct sysdev_attribute *attr,
 			const char *buf, size_t count)
 {
-	int nid = dev->id;
-
-	if (nid >= 0 && nid < nr_node_ids && node_online(nid)) {
-		/* Flush pending updates to the LRU lists */
-		lru_add_drain_all();
-
-		compact_node(nid);
-	}
+	compact_node(dev->id);
 
 	return count;
 }
