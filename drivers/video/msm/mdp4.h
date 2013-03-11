@@ -519,7 +519,7 @@ static inline void mdp4_dtv_wait4vsync(int cndx, long long *vtime)
 {
     /* empty */
 }
-static inline void mdp4_dtv_vsync_ctrl(int cndx, int enable)
+static inline void mdp4_dtv_vsync_ctrl(struct fb_info *info, int enable)
 {
     /* empty */
 }
@@ -551,7 +551,7 @@ int mdp4_atv_on(struct platform_device *pdev);
 int mdp4_atv_off(struct platform_device *pdev);
 void mdp4_dsi_video_fxn_register(cmd_fxn_t fxn);
 void mdp4_dsi_video_overlay(struct msm_fb_data_type *mfd);
-void mdp4_lcdc_vsync_ctrl(int cndx, int enable);
+void mdp4_lcdc_vsync_ctrl(struct fb_info *info, int enable);
 void mdp4_overlay0_done_dsi_video(int cndx);
 void mdp4_overlay0_done_dsi_cmd(int cndx);
 void mdp4_primary_rdptr(void);
@@ -818,7 +818,7 @@ static inline int mdp4_mddi_off(struct platform_device *pdev)
 static inline void mdp4_mddi_wait4vsync(int cndx, long long *vtime)
 {
 }
-static inline void mdp4_mddi_vsync_ctrl(int cndx, int enable)
+static inline void mdp4_mddi_vsync_ctrl(struct fb_info *info, int enable)
 {
 }
 static inline void mdp4_mddi_pipe_queue(int cndx,
@@ -831,9 +831,8 @@ static inline void mdp4_mddi_pipe_queue(int cndx,
 int mdp4_mddi_off(struct platform_device *pdev);
 int mdp4_mddi_on(struct platform_device *pdev);
 void mdp4_mddi_wait4vsync(int cndx, long long *vtime);
-void mdp4_mddi_vsync_ctrl(int cndx, int enable);
+void mdp4_mddi_vsync_ctrl(struct fb_info *info, int enable);
 void mdp4_mddi_pipe_queue(int cndx, struct mdp4_overlay_pipe *pipe);
-void mdp4_overlay_update_mddi(struct msm_fb_data_type *mfd);
 
 static inline int mdp4_dsi_cmd_on(struct platform_device *pdev)
 {
@@ -876,7 +875,8 @@ static inline void mdp4_dsi_cmd_vsync_ctrl(struct fb_info *info,
 					int enable)
 {
 }
-static inline void mdp4_dsi_video_vsync_ctrl(int cndx, int enable)
+static inline void mdp4_dsi_video_vsync_ctrl(struct fb_info *info,
+				int enable)
 {
 }
 
