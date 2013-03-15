@@ -65,7 +65,7 @@
 #define PROC_DIR	"bluetooth/sleep"
 
 /* enable/disable wake-on-bluetooth */
-#define BT_ENABLE_IRQ_WAKE 1
+#define BT_ENABLE_IRQ_WAKE 0
 
 #define BT_BLUEDROID_SUPPORT 1
 
@@ -426,12 +426,14 @@ static void bluesleep_tx_timer_expire(unsigned long data)
  * @param irq Not used.
  * @param dev_id Not used.
  */
+#if BT_ENABLE_IRQ_WAKE
 static irqreturn_t bluesleep_hostwake_isr(int irq, void *dev_id)
 {
 	/* schedule a tasklet to handle the change in the host wake line */
 	tasklet_schedule(&hostwake_task);
 	return IRQ_HANDLED;
 }
+#endif
 
 /**
  * Starts the Sleep-Mode Protocol on the Host.
@@ -440,7 +442,9 @@ static irqreturn_t bluesleep_hostwake_isr(int irq, void *dev_id)
  */
 static int bluesleep_start(void)
 {
+#if BT_ENABLE_IRQ_WAKE
 	int retval;
+#endif
 	unsigned long irq_flags;
 
 	spin_lock_irqsave(&rw_lock, irq_flags);
@@ -471,11 +475,13 @@ static int bluesleep_start(void)
 	set_bit(BT_PROTO, &flags);
 	wake_lock(&bsi->wake_lock);
 	return 0;
+#if BT_ENABLE_IRQ_WAKE
 fail:
 	del_timer(&tx_timer);
 	atomic_inc(&open_count);
 
 	return retval;
+#endif
 }
 
 /**
@@ -704,6 +710,7 @@ static int bluesleep_probe(struct platform_device *pdev)
 
 	}
 
+#if BT_ENABLE_IRQ_WAKE
 	bsi->host_wake_irq = platform_get_irq_byname(pdev, "host_wake");
 	if (bsi->host_wake_irq < 0) {
 		BT_ERR("couldn't find host_wake irq\n");
@@ -719,6 +726,7 @@ static int bluesleep_probe(struct platform_device *pdev)
 		BT_ERR("Couldn't acquire BT_HOST_WAKE IRQ");
 		goto free_bt_ext_wake;
 	}
+#endif
 
 	gpio_tlmm_config(GPIO_CFG(bsi->ext_wake, 0, GPIO_CFG_OUTPUT,
 				  GPIO_CFG_NO_PULL, GPIO_CFG_16MA),
@@ -735,8 +743,10 @@ static int bluesleep_probe(struct platform_device *pdev)
 
 	return 0;
 
+#if BT_ENABLE_IRQ_WAKE
 free_bt_ext_wake:
 	gpio_free(bsi->ext_wake);
+#endif
 free_bt_host_wake:
 	gpio_free(bsi->host_wake);
 free_bsi:
@@ -746,7 +756,9 @@ free_bsi:
 
 static int bluesleep_remove(struct platform_device *pdev)
 {
+#if BT_ENABLE_IRQ_WAKE
 	free_irq(bsi->host_wake_irq, NULL);
+#endif
 	gpio_free(bsi->host_wake);
 	gpio_free(bsi->ext_wake);
 	wake_lock_destroy(&bsi->wake_lock);
@@ -928,9 +940,11 @@ static void __exit bluesleep_exit(void)
 	if (bsi->has_ext_wake == 1)
 		gpio_set_value(bsi->ext_wake, 0);
 	if (test_bit(BT_PROTO, &flags)) {
+#if BT_ENABLE_IRQ_WAKE
 		if (disable_irq_wake(bsi->host_wake_irq))
 			BT_ERR("Couldn't disable hostwake IRQ wakeup mode\n");
 		free_irq(bsi->host_wake_irq, NULL);
+#endif
 		del_timer(&tx_timer);
 		if (test_bit(BT_ASLEEP, &flags))
 			hsuart_power(1);
