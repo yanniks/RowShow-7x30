@@ -3088,7 +3088,9 @@ static struct platform_device *devices[] __initdata = {
         &ds2746_battery_pdev,
         &msm_ebi0_thermal,
         &msm_ebi1_thermal,
+#ifdef CONFIG_BT_MSM_SLEEP
         &msm_bluesleep_device,
+#endif
 #ifdef CONFIG_SERIAL_MSM_HS
         &msm_device_uart_dm1,
 #endif
