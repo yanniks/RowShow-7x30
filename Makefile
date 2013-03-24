@@ -195,7 +195,7 @@ SUBARCH := arm
 SUBARCH := arm
 export KBUILD_BUILDHOST := $(SUBARCH)
 ARCH		?= $(SUBARCH)
-CROSS_COMPILE	?= /home/niko/arm-eabi-4.7/bin/arm-eabi-
+CROSS_COMPILE	?= /home/niko/linaro-toolchain/bin/arm-eabi-
 CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
 
 # Architecture as present in compile.h
@@ -353,14 +353,13 @@ CHECK		= sparse
 CC		= $(srctree)/scripts/gcc-wrapper.py $(REAL_CC)
 
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
-		  -Wbitwise -Wno-return-void $(CF)
-MODFLAGS  = -DMODULE -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr -ffast-math -fsingle-precision-constant -mtune=cortex-a9 -march=armv7-a -mfpu=neon -mvectorize-with-neon-quad -ftree-vectorize -funswitch-loops
-CFLAGS_MODULE   = $(MODFLAGS)
-AFLAGS_MODULE   = $(MODFLAGS)
-LDFLAGS_MODULE  = -T $(srctree)/scripts/module-common.lds
-CFLAGS_KERNEL  = -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr -ffast-math -fsingle-precision-constant -mtune=cortex-a9 -march=armv7-a -mfpu=neon -mvectorize-with-neon-quad -ftree-vectorize -funswitch-loops
-AFLAGS_KERNEL  = -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr -ffast-math -fsingle-precision-constant -mtune=cortex-a9 -march=armv7-a -mfpu=neon -mvectorize-with-neon-quad -ftree-vectorize -funswitch-loops
-CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
+		   -Wbitwise -Wno-return-void $(CF)
+CFLAGS_MODULE   =
+AFLAGS_MODULE   =
+LDFLAGS_MODULE  =
+CFLAGS_KERNEL   =
+AFLAGS_KERNEL   =
+CFLAGS_GCOV     = -fprofile-arcs -ftest-coverage
 
 
 # Use LINUXINCLUDE when you must reference the include/ directory.
@@ -368,19 +367,20 @@ CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 LINUXINCLUDE    := -I$(srctree)/arch/$(hdr-arch)/include \
                    -Iarch/$(hdr-arch)/include/generated -Iinclude \
                    $(if $(KBUILD_SRC), -I$(srctree)/include) \
-                   -include include/generated/autoconf.h
+                   -include $(srctree)/include/generated/autoconf.h
 
 KBUILD_CPPFLAGS := -D__KERNEL__
 
-KBUILD_CFLAGS   := -Wstrict-prototypes -Wno-trigraphs \
+KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
+		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
-                   -fno-delete-null-pointer-checks -mno-unaligned-access \
-		   -marm -mcpu=cortex-a9 -mtune=cortex-a9 -mfpu=neon \
+		   -fno-delete-null-pointer-checks -mno-unaligned-access \
+		   -mcpu=cortex-a8 -mtune=cortex-a8 -march=armv7-a -mfpu=neon \
+		   -funsafe-math-optimizations \
 		   -fsingle-precision-constant -fpredictive-commoning -fipa-cp-clone \
-                   -fmodulo-sched -fmodulo-sched-allow-regmoves \
-		   -funsafe-math-optimizations -fgcse-after-reload -ftree-vectorize -pipe \
-		   -funswitch-loops -fpredictive-commoning -floop-interchange \
+		   -fgcse-after-reload -ftree-vectorize -pipe \
+		   -funswitch-loops -floop-interchange \
 		   -floop-strip-mine -floop-block
 
 KBUILD_AFLAGS_KERNEL :=
