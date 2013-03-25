@@ -3066,7 +3066,7 @@ dhd_preinit_ioctls(dhd_pub_t *dhd)
 
 #if !defined(AP)  && defined(WLP2P)
 	/* Check if firmware with WFD support used */
-#if defined(WL_ENABLE_P2P_IF)
+#if 0 //defined(WL_ENABLE_P2P_IF)
 	if ((ret = dhd_concurrent_fw(dhd)) < 0) {
 		DHD_ERROR(("%s error : firmware can't support p2p mode\n", __FUNCTION__));
 		goto done;
