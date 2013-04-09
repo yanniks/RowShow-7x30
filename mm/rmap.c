@@ -21,7 +21,6 @@
  * Lock ordering in mm:
  *
  * inode->i_mutex	(while writing or truncating, not reading or faulting)
- *   inode->i_alloc_sem (vmtruncate_range)
  *   mm->mmap_sem
  *     page->flags PG_locked (lock_page)
  *       mapping->i_mmap_mutex
@@ -32,11 +31,11 @@
  *               mmlist_lock (in mmput, drain_mmlist and others)
  *               mapping->private_lock (in __set_page_dirty_buffers)
  *               inode->i_lock (in set_page_dirty's __mark_inode_dirty)
- *               inode_wb_list_lock (in set_page_dirty's __mark_inode_dirty)
+ *               bdi.wb->list_lock (in set_page_dirty's __mark_inode_dirty)
  *                 sb_lock (within inode_lock in fs/fs-writeback.c)
  *                 mapping->tree_lock (widely used, in set_page_dirty,
  *                           in arch-dependent flush_dcache_mmap_lock,
- *                           within inode_wb_list_lock in __sync_single_inode)
+ *                           within bdi.wb->list_lock in __sync_single_inode)
  *
  * anon_vma->mutex,mapping->i_mutex      (memory_failure, collect_procs_anon)
  *   ->tasklist_lock
@@ -730,7 +729,7 @@ out:
 }
 
 static int page_referenced_anon(struct page *page,
-				struct mem_cgroup *mem_cont,
+				struct mem_cgroup *memcg,
 				unsigned long *vm_flags)
 {
 	unsigned int mapcount;
@@ -753,7 +752,7 @@ static int page_referenced_anon(struct page *page,
 		 * counting on behalf of references from different
 		 * cgroups
 		 */
-		if (mem_cont && !mm_match_cgroup(vma->vm_mm, mem_cont))
+		if (memcg && !mm_match_cgroup(vma->vm_mm, memcg))
 			continue;
 		referenced += page_referenced_one(page, vma, address,
 						  &mapcount, vm_flags);
@@ -768,7 +767,7 @@ static int page_referenced_anon(struct page *page,
 /**
  * page_referenced_file - referenced check for object-based rmap
  * @page: the page we're checking references on.
- * @mem_cont: target memory controller
+ * @memcg: target memory control group
  * @vm_flags: collect encountered vma->vm_flags who actually referenced the page
  *
  * For an object-based mapped page, find all the places it is mapped and
@@ -779,7 +778,7 @@ static int page_referenced_anon(struct page *page,
  * This function is only called from page_referenced for object-based pages.
  */
 static int page_referenced_file(struct page *page,
-				struct mem_cgroup *mem_cont,
+				struct mem_cgroup *memcg,
 				unsigned long *vm_flags)
 {
 	unsigned int mapcount;
@@ -821,7 +820,7 @@ static int page_referenced_file(struct page *page,
 		 * counting on behalf of references from different
 		 * cgroups
 		 */
-		if (mem_cont && !mm_match_cgroup(vma->vm_mm, mem_cont))
+		if (memcg && !mm_match_cgroup(vma->vm_mm, memcg))
 			continue;
 		referenced += page_referenced_one(page, vma, address,
 						  &mapcount, vm_flags);
@@ -837,7 +836,7 @@ static int page_referenced_file(struct page *page,
  * page_referenced - test if the page was referenced
  * @page: the page to test
  * @is_locked: caller holds lock on the page
- * @mem_cont: target memory controller
+ * @memcg: target memory cgroup
  * @vm_flags: collect encountered vma->vm_flags who actually referenced the page
  *
  * Quick test_and_clear_referenced for all mappings to a page,
@@ -845,7 +844,7 @@ static int page_referenced_file(struct page *page,
  */
 int page_referenced(struct page *page,
 		    int is_locked,
-		    struct mem_cgroup *mem_cont,
+		    struct mem_cgroup *memcg,
 		    unsigned long *vm_flags)
 {
 	int referenced = 0;
@@ -861,13 +860,13 @@ int page_referenced(struct page *page,
 			}
 		}
 		if (unlikely(PageKsm(page)))
-			referenced += page_referenced_ksm(page, mem_cont,
+			referenced += page_referenced_ksm(page, memcg,
 								vm_flags);
 		else if (PageAnon(page))
-			referenced += page_referenced_anon(page, mem_cont,
+			referenced += page_referenced_anon(page, memcg,
 								vm_flags);
 		else if (page->mapping)
-			referenced += page_referenced_file(page, mem_cont,
+			referenced += page_referenced_file(page, memcg,
 								vm_flags);
 		if (we_locked)
 			unlock_page(page);

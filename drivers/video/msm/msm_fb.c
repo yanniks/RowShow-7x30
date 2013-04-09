@@ -1017,8 +1017,14 @@ static int msm_fb_blank(int blank_mode, struct fb_info *info)
 	mutex_lock(&mfd->entry_mutex);
 	msm_fb_pan_idle(mfd);
 	if (mfd->op_enable == 0) {
-		if (blank_mode == FB_BLANK_UNBLANK)
+		if (blank_mode == FB_BLANK_UNBLANK) {
 			mfd->suspend.panel_power_on = TRUE;
+			/* if unblank is called when system is in suspend,
+			do not unblank but send SUCCESS to hwc, so that hwc
+			keeps pushing frames and display comes up as soon
+			 as system is resumed */
+			return 0;
+		}
 		else
 			mfd->suspend.panel_power_on = FALSE;
 	}
@@ -1684,6 +1690,12 @@ static int msm_fb_open(struct fb_info *info, int user)
 			mfd->ref_cnt++;
 			result = 0;
 			goto msm_fb_open_exit;
+	}
+
+	if (mfd->op_enable == 0) {
+		/* if system is in suspend mode, do not unblank */
+		mfd->ref_cnt++;
+		return 0;
 	}
 
 	if (!mfd->ref_cnt) {

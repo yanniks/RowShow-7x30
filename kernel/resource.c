@@ -788,13 +788,16 @@ static void __init __reserve_region_with_split(struct resource *root,
 			end = res->end;
 			res->end = conflict->start - 1;
 			if (conflict->end < end) {
-				next_res = kzalloc(sizeof(*res), GFP_ATOMIC);
+				next_res = kzalloc(sizeof(*next_res),
+						GFP_ATOMIC);
 				if (!next_res) {
 					kfree(res);
 					break;
 				}
+				next_res->name = name;
 				next_res->start = conflict->end + 1;
 				next_res->end = end;
+				next_res->flags = IORESOURCE_BUSY;
 			}
 		} else {
 			res->start = conflict->end + 1;

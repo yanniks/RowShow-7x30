@@ -72,7 +72,7 @@ static inline void free_ea_wmap(struct inode *inode)
  * RETURN:	Errors from subroutines
  *
  */
-static int jfs_create(struct inode *dip, struct dentry *dentry, int mode,
+static int jfs_create(struct inode *dip, struct dentry *dentry, umode_t mode,
 		struct nameidata *nd)
 {
 	int rc = 0;
@@ -172,7 +172,7 @@ static int jfs_create(struct inode *dip, struct dentry *dentry, int mode,
 	mutex_unlock(&JFS_IP(dip)->commit_mutex);
 	if (rc) {
 		free_ea_wmap(ip);
-		ip->i_nlink = 0;
+		clear_nlink(ip);
 		unlock_new_inode(ip);
 		iput(ip);
 	} else {
@@ -311,7 +311,7 @@ static int jfs_mkdir(struct inode *dip, struct dentry *dentry, int mode)
 	mutex_unlock(&JFS_IP(dip)->commit_mutex);
 	if (rc) {
 		free_ea_wmap(ip);
-		ip->i_nlink = 0;
+		clear_nlink(ip);
 		unlock_new_inode(ip);
 		iput(ip);
 	} else {
@@ -844,7 +844,7 @@ static int jfs_link(struct dentry *old_dentry,
 	rc = txCommit(tid, 2, &iplist[0], 0);
 
 	if (rc) {
-		ip->i_nlink--; /* never instantiated */
+		drop_nlink(ip); /* never instantiated */
 		iput(ip);
 	} else
 		d_instantiate(dentry, ip);
@@ -1049,7 +1049,7 @@ static int jfs_symlink(struct inode *dip, struct dentry *dentry,
 	mutex_unlock(&JFS_IP(dip)->commit_mutex);
 	if (rc) {
 		free_ea_wmap(ip);
-		ip->i_nlink = 0;
+		clear_nlink(ip);
 		unlock_new_inode(ip);
 		iput(ip);
 	} else {
@@ -1354,7 +1354,7 @@ static int jfs_rename(struct inode *old_dir, struct dentry *old_dentry,
  * FUNCTION:	Create a special file (device)
  */
 static int jfs_mknod(struct inode *dir, struct dentry *dentry,
-		int mode, dev_t rdev)
+		umode_t mode, dev_t rdev)
 {
 	struct jfs_inode_info *jfs_ip;
 	struct btstack btstack;
@@ -1434,7 +1434,7 @@ static int jfs_mknod(struct inode *dir, struct dentry *dentry,
 	mutex_unlock(&JFS_IP(dir)->commit_mutex);
 	if (rc) {
 		free_ea_wmap(ip);
-		ip->i_nlink = 0;
+		clear_nlink(ip);
 		unlock_new_inode(ip);
 		iput(ip);
 	} else {
@@ -1481,10 +1481,8 @@ static struct dentry *jfs_lookup(struct inode *dip, struct dentry *dentry, struc
 	}
 
 	ip = jfs_iget(dip->i_sb, inum);
-	if (IS_ERR(ip)) {
+	if (IS_ERR(ip))
 		jfs_err("jfs_lookup: iget failed on inum %d", (uint) inum);
-		return ERR_CAST(ip);
-	}
 
 	return d_splice_alias(ip, dentry);
 }
@@ -1548,7 +1546,7 @@ const struct inode_operations jfs_dir_inode_operations = {
 	.removexattr	= jfs_removexattr,
 	.setattr	= jfs_setattr,
 #ifdef CONFIG_JFS_POSIX_ACL
-	.check_acl	= jfs_check_acl,
+	.get_acl	= jfs_get_acl,
 #endif
 };
 
