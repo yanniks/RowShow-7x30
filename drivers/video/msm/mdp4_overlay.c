@@ -1568,9 +1568,13 @@ int mdp4_mixer_info(int mixer_num, struct mdp_mixer_info *info)
 	cnt = 0;
 	ndx = MDP4_MIXER_STAGE_BASE;
 	for ( ; ndx < MDP4_MIXER_STAGE_MAX; ndx++) {
-		pipe = ctrl->stage[mixer_num][ndx];
+		pipe = &ctrl->plist[ndx];
 		if (pipe == NULL)
 			continue;
+
+		if (!pipe->pipe_used)
+			continue;
+
 		info->z_order = pipe->mixer_stage - MDP4_MIXER_STAGE0;
 		/* z_order == -1, means base layer */
 		info->ptype = pipe->pipe_type;
@@ -1613,7 +1617,8 @@ void mdp4_mixer_stage_commit(int mixer)
 	mdp_pipe_ctrl(MDP_CMD_BLOCK, MDP_BLOCK_POWER_ON, FALSE);
 	mdp_clk_ctrl(1);
 
-	mdp4_mixer_blend_setup(mixer);
+	if (data)
+		mdp4_mixer_blend_setup(mixer);
 
 	off = 0;
 	if (data != ctrl->mixer_cfg[mixer]) {
@@ -1859,29 +1864,21 @@ static void mdp4_overlay_bg_solidfill(struct blend_cfg *blend)
 	}
 
 	format = inpdw(base + 0x50);
-	if (blend->solidfill) {
-		format |= MDP4_FORMAT_SOLID_FILL;
-		/*
-		 * If solid fill is enabled, flip and scale
-		 * have to be disabled. otherwise, h/w
-		 * underruns.
-		 */
-		op_mode = inpdw(base + 0x0058);
-		op_mode &= ~(MDP4_OP_FLIP_LR + MDP4_OP_SCALEX_EN);
-		op_mode &= ~(MDP4_OP_FLIP_UD + MDP4_OP_SCALEY_EN);
-		outpdw(base + 0x0058, op_mode);
-		outpdw(base + 0x1008, 0);	/* black */
-		/*
-		 * Set src size and dst size same to avoid underruns
-		 */
-		outpdw(base + 0x0000, inpdw(base + 0x0008));
-	} else {
-		u32 src_size = ((pipe->src_h << 16) | pipe->src_w);
-		outpdw(base + 0x0000, src_size);
-		format &= ~MDP4_FORMAT_SOLID_FILL;
-		blend->solidfill_pipe = NULL;
-	}
-
+	format |= MDP4_FORMAT_SOLID_FILL;
+	/*
+	 * If solid fill is enabled, flip and scale
+	 * have to be disabled. otherwise, h/w
+	 * underruns.
+	 */
+	op_mode = inpdw(base + 0x0058);
+	op_mode &= ~(MDP4_OP_FLIP_LR + MDP4_OP_SCALEX_EN);
+	op_mode &= ~(MDP4_OP_FLIP_UD + MDP4_OP_SCALEY_EN);
+	outpdw(base + 0x0058, op_mode);
+	outpdw(base + 0x1008, 0);	/* black */
+	/*
+	 * Set src size and dst size same to avoid underruns
+	 */
+	outpdw(base + 0x0000, inpdw(base + 0x0008));
 	outpdw(base + 0x50, format);
 
 	mdp4_overlay_reg_flush(pipe, 0);
@@ -2055,8 +2052,10 @@ void mdp4_mixer_blend_setup(int mixer)
 		if (i == MDP4_MIXER_STAGE3)
 			off -= 4;
 
-		if (blend->solidfill_pipe)
+		if (blend->solidfill_pipe && blend->solidfill)
 			mdp4_overlay_bg_solidfill(blend);
+		else
+			blend->solidfill_pipe = NULL;
 
 		outpdw(overlay_base + off + 0x108, blend->fg_alpha);
 		outpdw(overlay_base + off + 0x10c, blend->bg_alpha);
@@ -3197,7 +3196,7 @@ int mdp4_overlay_unset(struct fb_info *info, int ndx)
 
 int mdp4_overlay_wait4vsync(struct fb_info *info)
 {
-        long long vtime;
+	long long vtime;
 
 	if (!hdmi_prim_display && info->node == 0) {
 		if (ctrl->panel_mode & MDP4_PANEL_DSI_VIDEO)
@@ -3218,6 +3217,13 @@ int mdp4_overlay_wait4vsync(struct fb_info *info)
 int mdp4_overlay_vsync_ctrl(struct fb_info *info, int enable)
 {
 	int cmd;
+	struct msm_fb_data_type *mfd = (struct msm_fb_data_type *)info->par;
+
+	if (mfd == NULL)
+		return -ENODEV;
+
+	if (!mfd->panel_power_on)
+		return -EINVAL;
 
 	if (enable)
 		cmd = 1;
@@ -3763,4 +3769,13 @@ int mdp4_update_base_blend(struct msm_fb_data_type *mfd,
 		blend->bg_alpha = 0;
 	}
 	return ret;
+}
+
+int mdp4_overlay_reset()
+{
+	memset(&perf_request, 0, sizeof(perf_request));
+	memset(&perf_current, 0, sizeof(perf_current));
+	perf_request.mdp_bw = OVERLAY_PERF_LEVEL4;
+	perf_current.mdp_bw = OVERLAY_PERF_LEVEL4;
+	return 0;
 }

@@ -15,6 +15,7 @@
 #include <linux/range.h>
 #include <linux/pfn.h>
 #include <linux/bit_spinlock.h>
+#include <linux/shrinker.h>
 
 struct mempolicy;
 struct anon_vma;
@@ -157,6 +158,7 @@ extern pgprot_t protection_map[16];
 #define FAULT_FLAG_ALLOW_RETRY	0x08	/* Retry fault if blocking */
 #define FAULT_FLAG_RETRY_NOWAIT	0x10	/* Don't drop mmap_sem and wait when retrying */
 #define FAULT_FLAG_KILLABLE	0x20	/* The fault task is in SIGKILL killable region */
+#define FAULT_FLAG_TRIED	0x40	/* second try */
 
 /*
  * This interface is used by x86 PAT code to identify a pfn mapping that is
@@ -701,7 +703,7 @@ static inline void set_page_section(struct page *page, unsigned long section)
 	page->flags |= (section & SECTIONS_MASK) << SECTIONS_PGSHIFT;
 }
 
-static inline unsigned long page_to_section(struct page *page)
+static inline unsigned long page_to_section(const struct page *page)
 {
 	return (page->flags >> SECTIONS_PGSHIFT) & SECTIONS_MASK;
 }
@@ -753,7 +755,7 @@ static __always_inline void *lowmem_page_address(struct page *page)
 #endif
 
 #if defined(HASHED_PAGE_VIRTUAL)
-void *page_address(struct page *page);
+void *page_address(const struct page *page);
 void set_page_address(struct page *page, void *virtual);
 void page_address_init(void);
 #endif
@@ -1134,44 +1136,6 @@ static inline void sync_mm_rss(struct task_struct *task, struct mm_struct *mm)
 }
 #endif
 
-/*
- * This struct is used to pass information from page reclaim to the shrinkers.
- * We consolidate the values for easier extention later.
- */
-struct shrink_control {
-	gfp_t gfp_mask;
-
-	/* How many slab objects shrinker() should scan and try to reclaim */
-	unsigned long nr_to_scan;
-};
-
-/*
- * A callback you can register to apply pressure to ageable caches.
- *
- * 'sc' is passed shrink_control which includes a count 'nr_to_scan'
- * and a 'gfpmask'.  It should look through the least-recently-used
- * 'nr_to_scan' entries and attempt to free them up.  It should return
- * the number of objects which remain in the cache.  If it returns -1, it means
- * it cannot do any scanning at this time (eg. there is a risk of deadlock).
- *
- * The 'gfpmask' refers to the allocation we are currently trying to
- * fulfil.
- *
- * Note that 'shrink' will be passed nr_to_scan == 0 when the VM is
- * querying the cache size, so a fastpath for that case is appropriate.
- */
-struct shrinker {
-	int (*shrink)(struct shrinker *, struct shrink_control *sc);
-	int seeks;	/* seeks to recreate an obj */
-
-	/* These are for internal use */
-	struct list_head list;
-	long nr;	/* objs pending delete */
-};
-#define DEFAULT_SEEKS 2 /* A good number if you don't know better. */
-extern void register_shrinker(struct shrinker *);
-extern void unregister_shrinker(struct shrinker *);
-
 int vma_wants_writenotify(struct vm_area_struct *vma);
 
 extern pte_t *__get_locked_pte(struct mm_struct *mm, unsigned long addr,
@@ -1320,12 +1284,14 @@ extern void free_area_init_node(int nid, unsigned long * zones_size,
  * CONFIG_ARCH_POPULATES_NODE_MAP
  */
 extern void free_area_init_nodes(unsigned long *max_zone_pfn);
+#ifndef CONFIG_HAVE_MEMBLOCK_NODE_MAP
 extern void add_active_range(unsigned int nid, unsigned long start_pfn,
 					unsigned long end_pfn);
 extern void remove_active_range(unsigned int nid, unsigned long start_pfn,
 					unsigned long end_pfn);
 extern void remove_all_active_ranges(void);
 void sort_node_map(void);
+#endif
 unsigned long __absent_pages_in_range(int nid, unsigned long start_pfn,
 						unsigned long end_pfn);
 extern unsigned long absent_pages_in_range(unsigned long start_pfn,
@@ -1371,7 +1337,8 @@ extern void si_meminfo(struct sysinfo * val);
 extern void si_meminfo_node(struct sysinfo *val, int nid);
 extern int after_bootmem;
 
-extern void warn_alloc_failed(gfp_t gfp_mask, int order, const char *fmt, ...);
+extern __printf(3, 4)
+void warn_alloc_failed(gfp_t gfp_mask, int order, const char *fmt, ...);
 
 extern void setup_per_cpu_pageset(void);
 

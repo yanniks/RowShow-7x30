@@ -86,6 +86,7 @@
 #ifdef CONFIG_HARDWALL
 #include <asm/hardwall.h>
 #endif
+#include <trace/events/oom.h>
 #include "internal.h"
 
 /* NOTE:
@@ -198,27 +199,6 @@ static int proc_root_link(struct inode *inode, struct path *path)
 		put_task_struct(task);
 	}
 	return result;
-}
-
-static struct mm_struct *mm_access(struct task_struct *task, unsigned int mode)
-{
-	struct mm_struct *mm;
-	int err;
-
-	err =  mutex_lock_killable(&task->signal->cred_guard_mutex);
-	if (err)
-		return ERR_PTR(err);
-
-	mm = get_task_mm(task);
-	if (mm && mm != current->mm &&
-			!ptrace_may_access(task, mode) &&
-			!capable(CAP_SYS_RESOURCE)) {
-		mmput(mm);
-		mm = ERR_PTR(-EACCES);
-	}
-	mutex_unlock(&task->signal->cred_guard_mutex);
-
-	return mm;
 }
 
 struct mm_struct *mm_for_maps(struct task_struct *task)
@@ -627,7 +607,7 @@ static int mounts_open_common(struct inode *inode, struct file *file,
 	p->m.private = p;
 	p->ns = ns;
 	p->root = root;
-	p->event = ns->event;
+	p->m.poll_event = ns->event;
 
 	return 0;
 
@@ -1033,13 +1013,6 @@ static ssize_t oom_adjust_write(struct file *file, const char __user *buf,
 		goto err_sighand;
 	}
 
-	if (oom_adjust != task->signal->oom_adj) {
-		if (oom_adjust == OOM_DISABLE)
-			atomic_inc(&task->mm->oom_disable_count);
-		if (task->signal->oom_adj == OOM_DISABLE)
-			atomic_dec(&task->mm->oom_disable_count);
-	}
-
 	/*
 	 * Warn that /proc/pid/oom_adj is deprecated, see
 	 * Documentation/feature-removal-schedule.txt.
@@ -1058,6 +1031,7 @@ static ssize_t oom_adjust_write(struct file *file, const char __user *buf,
 	else
 		task->signal->oom_score_adj = (oom_adjust * OOM_SCORE_ADJ_MAX) /
 								-OOM_DISABLE;
+	trace_oom_score_adj_update(task);
 err_sighand:
 	unlock_task_sighand(task, &flags);
 err_task_lock:
@@ -1067,14 +1041,10 @@ out:
 	return err < 0 ? err : count;
 }
 
-static int oom_adjust_permission(struct inode *inode, int mask,
-				 unsigned int flags)
+static int oom_adjust_permission(struct inode *inode, int mask)
 {
 	uid_t uid;
 	struct task_struct *p;
-
-	if (flags & IPERM_FLAG_RCU)
-		return -ECHILD;
 
 	p = get_proc_task(inode);
 	if(p) {
@@ -1093,7 +1063,7 @@ static int oom_adjust_permission(struct inode *inode, int mask,
 	}
 
 	/* Fall back to default. */
-	return generic_permission(inode, mask, flags, NULL);
+	return generic_permission(inode, mask);
 }
 
 static const struct inode_operations proc_oom_adjust_inode_operations = {
@@ -1175,15 +1145,10 @@ static ssize_t oom_score_adj_write(struct file *file, const char __user *buf,
 		goto err_sighand;
 	}
 
-	if (oom_score_adj != task->signal->oom_score_adj) {
-		if (oom_score_adj == OOM_SCORE_ADJ_MIN)
-			atomic_inc(&task->mm->oom_disable_count);
-		if (task->signal->oom_score_adj == OOM_SCORE_ADJ_MIN)
-			atomic_dec(&task->mm->oom_disable_count);
-	}
 	task->signal->oom_score_adj = oom_score_adj;
 	if (has_capability_noaudit(current, CAP_SYS_RESOURCE))
 		task->signal->oom_score_adj_min = oom_score_adj;
+	trace_oom_score_adj_update(task);
 	/*
 	 * Scale /proc/pid/oom_adj appropriately ensuring that OOM_DISABLE is
 	 * always attainable.
@@ -2134,9 +2099,9 @@ static const struct file_operations proc_fd_operations = {
  * /proc/pid/fd needs a special permission handler so that a process can still
  * access /proc/self/fd after it has executed a setuid().
  */
-static int proc_fd_permission(struct inode *inode, int mask, unsigned int flags)
+static int proc_fd_permission(struct inode *inode, int mask)
 {
-	int rv = generic_permission(inode, mask, flags, NULL);
+	int rv = generic_permission(inode, mask);
 	if (rv == 0)
 		return 0;
 	if (task_pid(current) == proc_pid(inode))
