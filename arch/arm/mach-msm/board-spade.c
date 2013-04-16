@@ -757,28 +757,6 @@ static int pm8058_gpios_init(void)
 		.inv_int_pol    = 0,
 	};
 
-	static struct pm_gpio vol_up = {
-		.direction      = PM_GPIO_DIR_IN,
-		.output_buffer  = 0,
-		.output_value   = 0,
-		.pull           = PM_GPIO_PULL_UP_31P5,
-		.vin_sel        = PM8058_GPIO_VIN_S3,
-		.out_strength   = 0,
-		.function       = PM_GPIO_FUNC_NORMAL,
-		.inv_int_pol    = 0,
-	};
-
-	static struct pm_gpio vol_dn = {
-		.direction      = PM_GPIO_DIR_IN,
-		.output_buffer  = 0,
-		.output_value   = 0,
-		.pull           = PM_GPIO_PULL_UP_31P5,
-		.vin_sel        = PM8058_GPIO_VIN_S3,
-		.out_strength   = 0,
-		.function       = PM_GPIO_FUNC_NORMAL,
-		.inv_int_pol    = 0,
-	};
-
 	static struct pm_gpio sdmc_cd_n = {
 		.direction      = PM_GPIO_DIR_IN,
 		.output_buffer  = 0,
@@ -1117,7 +1095,7 @@ static int marimba_tsadc_vote(int vote_on)
         if (rc < 0)
           pr_err("%s: vreg level %s failed (%d)\n",
                  __func__, vote_on ? "on" : "off", rc);
-        
+
         return rc;
 }
 
@@ -2404,28 +2382,11 @@ void config_spade_usb_id_gpios(bool output)
 	}
 }
 
-static void spade_disable_usb_charger(void)
-{
-	printk(KERN_INFO "%s\n", __func__);
-
-	config_gpio_table(usb_suspend_output_table,
-		ARRAY_SIZE(usb_suspend_output_table));
-	gpio_set_value(SPADE_DISABLE_USB_CHARGER, 1);
-}
-
 static struct cable_detect_platform_data cable_detect_pdata = {
 	.detect_type 		= CABLE_TYPE_PMIC_ADC,
 	.usb_id_pin_gpio 	= SPADE_GPIO_USB_ID_PIN,
 	.config_usb_id_gpios 	= config_spade_usb_id_gpios,
 	.get_adc_cb		= spade_get_usbid_adc,
-};
-
-static struct platform_device cable_detect_device = {
-	.name	= "cable_detect",
-	.id	= -1,
-	.dev	= {
-		.platform_data = &cable_detect_pdata,
-	},
 };
 
 static struct msm_gpio msm_i2c_gpios_hw[] = {
@@ -3115,7 +3076,6 @@ static struct platform_device *devices[] __initdata = {
         &spade_flashlight_device,
 #endif
         &pm8058_leds,
-        //        &cable_detect_device,
 };
 
 static void __init spade_init(void)
