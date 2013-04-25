@@ -757,28 +757,6 @@ static int pm8058_gpios_init(void)
 		.inv_int_pol    = 0,
 	};
 
-	static struct pm_gpio vol_up = {
-		.direction      = PM_GPIO_DIR_IN,
-		.output_buffer  = 0,
-		.output_value   = 0,
-		.pull           = PM_GPIO_PULL_UP_31P5,
-		.vin_sel        = PM8058_GPIO_VIN_S3,
-		.out_strength   = 0,
-		.function       = PM_GPIO_FUNC_NORMAL,
-		.inv_int_pol    = 0,
-	};
-
-	static struct pm_gpio vol_dn = {
-		.direction      = PM_GPIO_DIR_IN,
-		.output_buffer  = 0,
-		.output_value   = 0,
-		.pull           = PM_GPIO_PULL_UP_31P5,
-		.vin_sel        = PM8058_GPIO_VIN_S3,
-		.out_strength   = 0,
-		.function       = PM_GPIO_FUNC_NORMAL,
-		.inv_int_pol    = 0,
-	};
-
 	static struct pm_gpio sdmc_cd_n = {
 		.direction      = PM_GPIO_DIR_IN,
 		.output_buffer  = 0,
@@ -1117,7 +1095,7 @@ static int marimba_tsadc_vote(int vote_on)
         if (rc < 0)
           pr_err("%s: vreg level %s failed (%d)\n",
                  __func__, vote_on ? "on" : "off", rc);
-        
+
         return rc;
 }
 
@@ -1660,7 +1638,7 @@ static struct msm_usb_host_platform_data msm_usb_host_pdata = {
 };
 #endif
 
-#ifdef CONFIG_USB_MSM_OTG_72K
+#if 0 // CONFIG_USB_MSM_OTG_72K
 static struct vreg *vreg_3p3;
 static int msm_hsusb_ldo_init(int init)
 {
@@ -1912,6 +1890,24 @@ static struct msm_serial_hs_platform_data msm_uart_dm1_pdata = {
 	.host_wakeup_pin = SPADE_GPIO_BT_HOST_WAKE,
 };
 
+#ifdef CONFIG_SERIAL_MSM_HS_PURE_ANDROID
+static struct bcm_bt_lpm_platform_data bcm_bt_lpm_pdata = {
+  .gpio_wake = SPADE_GPIO_BT_CHIP_WAKE,
+  .gpio_host_wake = SPADE_GPIO_BT_HOST_WAKE,
+  .request_clock_off_locked = msm_hs_request_clock_off_locked,
+  .request_clock_on_locked = msm_hs_request_clock_on_locked,
+};
+
+struct platform_device spade_bcm_bt_lpm_device = {
+  .name = "bcm_bt_lpm",
+  .id = 0,
+  .dev = {
+    .platform_data = &bcm_bt_lpm_pdata,
+  },
+};
+#endif
+
+#ifdef CONFIG_BT_MSM_SLEEP
 static struct resource bluesleep_resources[] = {
     {
         .name   = "gpio_host_wake",
@@ -1933,27 +1929,12 @@ static struct resource bluesleep_resources[] = {
     },
 };
 
-#ifdef CONFIG_SERIAL_MSM_HS_PURE_ANDROID
-static struct bcm_bt_lpm_platform_data bcm_bt_lpm_pdata = {
-  .gpio_wake = SPADE_GPIO_BT_CHIP_WAKE,
-  .gpio_host_wake = SPADE_GPIO_BT_HOST_WAKE,
-  .request_clock_off_locked = msm_hs_request_clock_off_locked,
-  .request_clock_on_locked = msm_hs_request_clock_on_locked,
-};
 
 static struct platform_device msm_bluesleep_device = {
     .name   = "bluesleep_bcm",
     .id     = -1,
     .num_resources  = ARRAY_SIZE(bluesleep_resources),
     .resource   = bluesleep_resources,
-};
-
-struct platform_device spade_bcm_bt_lpm_device = {
-  .name = "bcm_bt_lpm",
-  .id = 0,
-  .dev = {
-    .platform_data = &bcm_bt_lpm_pdata,
-  },
 };
 #endif
 #endif
@@ -2388,9 +2369,11 @@ static uint32_t usb_ID_PIN_ouput_table[] = {
 	GPIO_CFG(SPADE_GPIO_USB_ID_PIN, 0, GPIO_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_4MA),
 };
 
+#if 0
 static uint32_t usb_suspend_output_table[] = {
 	PCOM_GPIO_CFG(SPADE_DISABLE_USB_CHARGER, 0, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_4MA),
 };
+#endif
 
 void config_spade_usb_id_gpios(bool output)
 {
@@ -2404,29 +2387,14 @@ void config_spade_usb_id_gpios(bool output)
 	}
 }
 
-static void spade_disable_usb_charger(void)
-{
-	printk(KERN_INFO "%s\n", __func__);
-
-	config_gpio_table(usb_suspend_output_table,
-		ARRAY_SIZE(usb_suspend_output_table));
-	gpio_set_value(SPADE_DISABLE_USB_CHARGER, 1);
-}
-
+#if 0
 static struct cable_detect_platform_data cable_detect_pdata = {
 	.detect_type 		= CABLE_TYPE_PMIC_ADC,
 	.usb_id_pin_gpio 	= SPADE_GPIO_USB_ID_PIN,
 	.config_usb_id_gpios 	= config_spade_usb_id_gpios,
 	.get_adc_cb		= spade_get_usbid_adc,
 };
-
-static struct platform_device cable_detect_device = {
-	.name	= "cable_detect",
-	.id	= -1,
-	.dev	= {
-		.platform_data = &cable_detect_pdata,
-	},
-};
+#endif
 
 static struct msm_gpio msm_i2c_gpios_hw[] = {
 	{ GPIO_CFG(70, 1, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_16MA), "i2c_scl" },
@@ -3115,7 +3083,6 @@ static struct platform_device *devices[] __initdata = {
         &spade_flashlight_device,
 #endif
         &pm8058_leds,
-        //        &cable_detect_device,
 };
 
 static void __init spade_init(void)
