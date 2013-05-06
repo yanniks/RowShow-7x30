@@ -195,7 +195,7 @@ SUBARCH := arm
 SUBARCH := arm
 export KBUILD_BUILDHOST := $(SUBARCH)
 ARCH		?= $(SUBARCH)
-CROSS_COMPILE	?= /home/dev-shared/toolchains/toolchains/bin/arm-eabi-
+CROSS_COMPILE	?= /home/randomblame/Desktop/cm101/prebuilt/linux-x86/toolchain/arm-eabi-4.7/arm-eabi
 CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
 
 # Architecture as present in compile.h
@@ -372,15 +372,18 @@ LINUXINCLUDE    := -I$(srctree)/arch/$(hdr-arch)/include \
 
 KBUILD_CPPFLAGS := -D__KERNEL__
 
-KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
-		   -fno-strict-aliasing -fno-common \
-		   -Werror-implicit-function-declaration \
-		   -Wno-format-security \
-		   -fno-delete-null-pointer-checks \
-		   -marm -mtune=cortex-a8 -march=armv7-a \
-		   -funswitch-loops -fpredictive-commoning -fgcse-after-reload \
-		   -fmodulo-sched -fmodulo-sched-allow-regmoves \
-		   -mfpu=neon -mfloat-abi=hard
+KBUILD_CFLAGS := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+-fno-strict-aliasing -fno-common \
+-Werror-implicit-function-declaration \
+-Wno-format-security \
+-fno-delete-null-pointer-checks -mno-unaligned-access \
+-mcpu=cortex-a8 -mtune=cortex-a8 -march=armv7-a -mfpu=neon \
+-funsafe-math-optimizations \
+-fsingle-precision-constant -fpredictive-commoning -fipa-cp-clone \
+-fgcse-after-reload -ftree-vectorize -pipe \
+-funswitch-loops -floop-interchange \
+-floop-strip-mine -floop-block
+
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
