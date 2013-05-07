@@ -140,24 +140,34 @@ enum lru_list {
 	NR_LRU_LISTS
 };
 
-#define for_each_lru(l) for (l = 0; l < NR_LRU_LISTS; l++)
+#define for_each_lru(lru) for (lru = 0; lru < NR_LRU_LISTS; lru++)
 
-#define for_each_evictable_lru(l) for (l = 0; l <= LRU_ACTIVE_FILE; l++)
+#define for_each_evictable_lru(lru) for (lru = 0; lru <= LRU_ACTIVE_FILE; lru++)
 
-static inline int is_file_lru(enum lru_list l)
+static inline int is_file_lru(enum lru_list lru)
 {
-	return (l == LRU_INACTIVE_FILE || l == LRU_ACTIVE_FILE);
+	return (lru == LRU_INACTIVE_FILE || lru == LRU_ACTIVE_FILE);
 }
 
-static inline int is_active_lru(enum lru_list l)
+static inline int is_active_lru(enum lru_list lru)
 {
-	return (l == LRU_ACTIVE_ANON || l == LRU_ACTIVE_FILE);
+	return (lru == LRU_ACTIVE_ANON || lru == LRU_ACTIVE_FILE);
 }
 
-static inline int is_unevictable_lru(enum lru_list l)
+static inline int is_unevictable_lru(enum lru_list lru)
 {
-	return (l == LRU_UNEVICTABLE);
+	return (lru == LRU_UNEVICTABLE);
 }
+
+struct lruvec {
+	struct list_head lists[NR_LRU_LISTS];
+};
+
+/* Mask used at gathering information at once (see memcontrol.c) */
+#define LRU_ALL_FILE (BIT(LRU_INACTIVE_FILE) | BIT(LRU_ACTIVE_FILE))
+#define LRU_ALL_ANON (BIT(LRU_INACTIVE_ANON) | BIT(LRU_ACTIVE_ANON))
+#define LRU_ALL_EVICTABLE (LRU_ALL_FILE | LRU_ALL_ANON)
+#define LRU_ALL	     ((1 << NR_LRU_LISTS) - 1)
 
 /* Isolate inactive pages */
 #define ISOLATE_INACTIVE	((__force isolate_mode_t)0x1)
@@ -313,6 +323,12 @@ struct zone {
 	 */
 	unsigned long		lowmem_reserve[MAX_NR_ZONES];
 
+	/*
+	 * This is a per-zone reserve of pages that should not be
+	 * considered dirtyable memory.
+	 */
+	unsigned long		dirty_balance_reserve;
+
 #ifdef CONFIG_NUMA
 	int node;
 	/*
@@ -349,15 +365,14 @@ struct zone {
 	 */
 	unsigned int		compact_considered;
 	unsigned int		compact_defer_shift;
+	int			compact_order_failed;
 #endif
 
 	ZONE_PADDING(_pad1_)
 
 	/* Fields commonly accessed by the page reclaim scanner */
-	spinlock_t		lru_lock;	
-	struct zone_lru {
-		struct list_head list;
-	} lru[NR_LRU_LISTS];
+	spinlock_t		lru_lock;
+	struct lruvec		lruvec;
 
 	struct zone_reclaim_stat reclaim_stat;
 

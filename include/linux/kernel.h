@@ -390,11 +390,16 @@ extern const char hex_asc[];
 #define hex_asc_lo(x)	hex_asc[((x) & 0x0f)]
 #define hex_asc_hi(x)	hex_asc[((x) & 0xf0) >> 4]
 
-static inline char *pack_hex_byte(char *buf, u8 byte)
+static inline char *hex_byte_pack(char *buf, u8 byte)
 {
 	*buf++ = hex_asc_hi(byte);
 	*buf++ = hex_asc_lo(byte);
 	return buf;
+}
+
+static inline char * __deprecated pack_hex_byte(char *buf, u8 byte)
+{
+	return hex_byte_pack(buf, byte);
 }
 
 extern int hex_to_bin(char ch);
@@ -406,10 +411,16 @@ extern void hex2bin(u8 *dst, const char *src, size_t count);
 			printk(KERN_ERR pr_aud_fmt(fmt), ##__VA_ARGS__)
 #define pr_aud_err1(fmt, ...) \
 			printk(KERN_ERR pr_aud_fmt1(fmt), ##__VA_ARGS__)
+#ifdef CONFIG_DEBUG_KERNEL
 #define pr_aud_info(fmt, ...) \
 			printk(KERN_INFO pr_aud_fmt(fmt), ##__VA_ARGS__)
 #define pr_aud_info1(fmt, ...) \
 			printk(KERN_INFO pr_aud_fmt1(fmt), ##__VA_ARGS__)
+#else
+#define pr_aud_info(fmt, ...) do { } while (0)
+#define pr_aud_info1(fmt, ...) do { } while (0)
+#endif
+
 /*
  * General tracing related utility functions - trace_printk(),
  * tracing_on/tracing_off and tracing_start()/tracing_stop

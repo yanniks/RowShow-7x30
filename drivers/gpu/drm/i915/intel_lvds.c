@@ -1,5 +1,5 @@
 /*
- * Copyright Â© 2006-2007 Intel Corporation
+ * Copyright © 2006-2007 Intel Corporation
  * Copyright (c) 2006 Dave Airlie <airlied@linux.ie>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -714,14 +714,6 @@ static const struct dmi_system_id intel_no_lvds[] = {
 	},
 	{
 		.callback = intel_no_lvds_dmi_callback,
-                .ident = "AOpen i45GMx-I",
-                .matches = {
-                        DMI_MATCH(DMI_BOARD_VENDOR, "AOpen"),
-                        DMI_MATCH(DMI_BOARD_NAME, "i45GMx-I"),
-                },
-        },
-	{
-		.callback = intel_no_lvds_dmi_callback,
 		.ident = "Aopen i945GTt-VFA",
 		.matches = {
 			DMI_MATCH(DMI_PRODUCT_VERSION, "AO00001JW"),
@@ -741,14 +733,6 @@ static const struct dmi_system_id intel_no_lvds[] = {
 		.matches = {
 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK Computer INC."),
 			DMI_MATCH(DMI_PRODUCT_NAME, "EB1007"),
-		},
-	},
-	{
-		.callback = intel_no_lvds_dmi_callback,
-		.ident = "MSI Wind Box DC500",
-		.matches = {
-			DMI_MATCH(DMI_BOARD_VENDOR, "MICRO-STAR INTERNATIONAL CO., LTD"),
-			DMI_MATCH(DMI_BOARD_NAME, "MS-7469"),
 		},
 	},
 	{

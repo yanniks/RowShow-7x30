@@ -273,7 +273,7 @@ struct fb_var_screeninfo {
 	__u32 sync;			/* see FB_SYNC_*		*/
 	__u32 vmode;			/* see FB_VMODE_*		*/
 	__u32 rotate;			/* angle we rotate counter clockwise */
-	__u32 reserved[5];		/* Reserved for future compatibility */
+	__u32 reserved[4];              /* Reserved for future compatibility */
 };
 
 struct fb_cmap {
@@ -1044,7 +1044,8 @@ extern void fb_deferred_io_open(struct fb_info *info,
 				struct inode *inode,
 				struct file *file);
 extern void fb_deferred_io_cleanup(struct fb_info *info);
-extern int fb_deferred_io_fsync(struct file *file, int datasync);
+extern int fb_deferred_io_fsync(struct file *file, loff_t start,
+				loff_t end, int datasync);
 
 static inline bool fb_be_math(struct fb_info *info)
 {

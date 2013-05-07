@@ -54,8 +54,6 @@ enum {
 extern int panel_type;
 static struct vreg *vreg_lcm_1v8, *vreg_lcm_2v8;
 
-static bool screen_on = true;
-
 #define LCM_GPIO_CFG(gpio, func) \
 	PCOM_GPIO_CFG(gpio, func, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_4MA)
 
@@ -139,11 +137,11 @@ static void spade_sharp_panel_power(bool on_off)
     vreg_enable(vreg_lcm_1v8);
     udelay(10);
     gpio_set_value(SPADE_LCD_RSTz, 1);
-    hr_msleep(20);
+    msleep(20);
   } else {
     LCMDBG("(%d):\n", on_off);
     gpio_set_value(SPADE_LCD_RSTz, 0);
-    hr_msleep(70);
+    msleep(70);
     vreg_disable(vreg_lcm_2v8);
     vreg_disable(vreg_lcm_1v8);
     config_gpio_table(display_off_gpio_table,
@@ -160,13 +158,13 @@ static void spade_auo_panel_power(bool on_off)
     gpio_set_value(SPADE_LCD_RSTz, 0);
     udelay(500);
     gpio_set_value(SPADE_LCD_RSTz, 1);
-    hr_msleep(20);
+    msleep(20);
     config_gpio_table( display_on_gpio_table,
                        ARRAY_SIZE(display_on_gpio_table));
   } else {
     LCMDBG("%s(%d):\n", __func__, on_off);
     gpio_set_value(SPADE_LCD_RSTz, 1);
-    hr_msleep(70);
+    msleep(70);
     config_gpio_table( display_off_gpio_table,
                        ARRAY_SIZE(display_off_gpio_table));
   }
@@ -191,8 +189,10 @@ static int panel_power(int on)
 
 int device_fb_detect_panel(const char *name)
 {
-  if (!strcmp(name, "lcdc_spade_wvga"))
+  if (!strcmp(name, "lcdc_spade_wvga")) {
     return 0;
+  }
+  return 0;
 }
 
 /* a hacky interface to control the panel power */

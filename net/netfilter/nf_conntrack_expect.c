@@ -369,28 +369,6 @@ static void evict_oldest_expect(struct nf_conn *master,
 	}
 }
 
-static inline int refresh_timer(struct nf_conntrack_expect *i)
-{
-	struct nf_conn_help *master_help = nfct_help(i->master);
-	const struct nf_conntrack_expect_policy *p;
-
-	if (!del_timer(&i->timeout))
-		return 0;
-
-#ifdef CONFIG_HTC_NETWORK_MODIFY
-	if (IS_ERR(master_help) || (!master_help))
-		printk(KERN_ERR "[NET] master_help is NULL in %s!\n", __func__);
-#endif
-
-	p = &rcu_dereference_protected(
-		master_help->helper,
-		lockdep_is_held(&nf_conntrack_lock)
-		)->expect_policy[i->class];
-	i->timeout.expires = jiffies + p->timeout * HZ;
-	add_timer(&i->timeout);
-	return 1;
-}
-
 static inline int __nf_ct_expect_check(struct nf_conntrack_expect *expect)
 {
 	const struct nf_conntrack_expect_policy *p;

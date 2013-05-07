@@ -813,6 +813,7 @@ static int irq_thread(void *data)
 
 	sched_setscheduler(current, SCHED_FIFO, &param);
 	current->irqaction = action;
+	irq_thread_check_affinity(desc, action);
 
 	while (!irq_wait_for_interrupt(action)) {
 
@@ -1055,7 +1056,7 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 		 * thread_mask assigned. See the loop above which or's
 		 * all existing action->thread_mask bits.
 		 */
-		new->thread_mask = 1 << ffz(thread_mask);
+		new->thread_mask = 1UL << ffz(thread_mask);
 	}
 
 	if (!shared) {
@@ -1082,9 +1083,10 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 		if (new->flags & IRQF_ONESHOT)
 			desc->istate |= IRQS_ONESHOT;
 
-		if (irq_settings_can_autoenable(desc))
+		if (irq_settings_can_autoenable(desc)) {
 			irq_startup(desc, true);
-		else
+			check_irq_resend(desc, irq);
+		} else
 			/* Undo nested disables: */
 			desc->depth = 1;
 

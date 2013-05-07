@@ -174,10 +174,12 @@ static inline cputime64_t get_cpu_idle_time_jiffy(unsigned int cpu,
 
 static inline cputime64_t get_cpu_idle_time(unsigned int cpu, cputime64_t *wall)
 {
-	u64 idle_time = get_cpu_idle_time_us(cpu, wall);
+	u64 idle_time = get_cpu_idle_time_us(cpu, NULL);
 
 	if (idle_time == -1ULL)
 		return get_cpu_idle_time_jiffy(cpu, wall);
+	else
+		idle_time += get_cpu_iowait_time_us(cpu, wall);
 
 	return idle_time;
 }
@@ -997,6 +999,7 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 		dbs_timer_exit(this_dbs_info);
 
 		mutex_lock(&dbs_mutex);
+		mutex_destroy(&this_dbs_info->timer_mutex);
 		dbs_enable--;
 		/* If device is being removed, policy is no longer
 		 * valid. */
@@ -1067,14 +1070,7 @@ static int __init cpufreq_gov_dbs_init(void)
 
 static void __exit cpufreq_gov_dbs_exit(void)
 {
-	unsigned int i;
-
 	cpufreq_unregister_governor(&cpufreq_gov_ondemand);
-	for_each_possible_cpu(i) {
-		struct cpu_dbs_info_s *this_dbs_info =
-			&per_cpu(od_cpu_dbs_info, i);
-		mutex_destroy(&this_dbs_info->timer_mutex);
-	}
 	destroy_workqueue(input_wq);
 }
 
@@ -1091,4 +1087,3 @@ fs_initcall(cpufreq_gov_dbs_init);
 module_init(cpufreq_gov_dbs_init);
 #endif
 module_exit(cpufreq_gov_dbs_exit);
-

@@ -390,7 +390,7 @@ found:
 #endif
 
 	if (fq->q.last_in == (INET_FRAG_FIRST_IN | INET_FRAG_LAST_IN) &&
-	    fq->q.meat == fq->q.len) {
+		fq->q.meat == fq->q.len) {
 		int res;
 		unsigned long orefdst = skb->_skb_refdst;
 

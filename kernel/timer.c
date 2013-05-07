@@ -681,23 +681,23 @@ __mod_timer(struct timer_list *timer, unsigned long expires,
 
 	debug_activate(timer, expires);
 
-	cpu = smp_processor_id();
+	/*
+	 * Should we try to migrate timer?
+	 * However we can't change timer's base while it is running, otherwise
+	 * del_timer_sync() can't detect that the timer's handler yet has not
+	 * finished. This also guarantees that the timer is serialized wrt
+	 * itself.
+	 */
+	if (likely(base->running_timer != timer)) {
+		cpu = smp_processor_id();
 
 #if defined(CONFIG_NO_HZ) && defined(CONFIG_SMP)
-	if (!pinned && get_sysctl_timer_migration() && idle_cpu(cpu))
-		cpu = get_nohz_timer_target();
+		if (!pinned && get_sysctl_timer_migration() && idle_cpu(cpu))
+			cpu = get_nohz_timer_target();
 #endif
-	new_base = per_cpu(tvec_bases, cpu);
+		new_base = per_cpu(tvec_bases, cpu);
 
-	if (base != new_base) {
-		/*
-		 * We are trying to schedule the timer on the local CPU.
-		 * However we can't change timer's base while it is running,
-		 * otherwise del_timer_sync() can't detect that the timer's
-		 * handler yet has not finished. This also guarantees that
-		 * the timer is serialized wrt itself.
-		 */
-		if (likely(base->running_timer != timer)) {
+		if (base != new_base) {
 			/* See the comment in lock_timer_base() */
 			timer_set_base(timer, NULL);
 			spin_unlock(&base->lock);
@@ -741,9 +741,7 @@ EXPORT_SYMBOL(mod_timer_pending);
  * Algorithm:
  *   1) calculate the maximum (absolute) time
  *   2) calculate the highest bit where the expires and new max are different
- *   3) use this bit to make a mask
- *   4) use the bitmask to round down the maximum time, so that all last
- *      bits are zeros
+ *   3) round down the maximum time, so that all the lower bits are zeros
  */
 static inline
 unsigned long apply_slack(struct timer_list *timer, unsigned long expires)
@@ -767,9 +765,7 @@ unsigned long apply_slack(struct timer_list *timer, unsigned long expires)
 
 	bit = __fls(mask);
 
-	mask = (1 << bit) - 1;
-
-	expires_limit = expires_limit & ~(mask);
+	expires_limit = (expires_limit >> bit) << bit;
 
 	return expires_limit;
 }
@@ -1773,72 +1769,15 @@ unsigned long msleep_interruptible(unsigned int msecs)
 
 EXPORT_SYMBOL(msleep_interruptible);
 
-static void do_nsleep(unsigned int msecs, struct hrtimer_sleeper *sleeper,
-	int sigs)
-{
-	enum hrtimer_mode mode = HRTIMER_MODE_REL;
-	int state = sigs ? TASK_INTERRUPTIBLE : TASK_UNINTERRUPTIBLE;
-
-	/*
-	 * This is really just a reworked and simplified version
-	 * of do_nanosleep().
-	 */
-	hrtimer_init(&sleeper->timer, CLOCK_MONOTONIC, mode);
-	sleeper->timer.node.expires = ktime_set(msecs / 1000,
-					    (msecs % 1000) * NSEC_PER_MSEC);
-	hrtimer_init_sleeper(sleeper, current);
-
-	do {
-		set_current_state(state);
-		hrtimer_start(&sleeper->timer, sleeper->timer.node.expires, mode);
-		if (sleeper->task)
-			schedule();
-		hrtimer_cancel(&sleeper->timer);
-		mode = HRTIMER_MODE_ABS;
-	} while (sleeper->task && !(sigs && signal_pending(current)));
-}
-
-/**
- * msleep - sleep safely even with waitqueue interruptions
- * @msecs: Time in milliseconds to sleep for
- */
-void hr_msleep(unsigned int msecs)
-{
-	struct hrtimer_sleeper sleeper;
-
-	do_nsleep(msecs, &sleeper, 0);
-}
-
-EXPORT_SYMBOL(hr_msleep);
-
-/**
- * msleep_interruptible - sleep waiting for signals
- * @msecs: Time in milliseconds to sleep for
- */
-unsigned long hr_msleep_interruptible(unsigned int msecs)
-{
-	struct hrtimer_sleeper sleeper;
-	ktime_t left;
-
-	do_nsleep(msecs, &sleeper, 1);
-
-	if (!sleeper.task)
-		return 0;
-	left = ktime_sub(sleeper.timer.node.expires,
-			 sleeper.timer.base->get_time());
-	return max(((long) ktime_to_ns(left))/(long)NSEC_PER_MSEC, 1L);
-}
-
-EXPORT_SYMBOL(hr_msleep_interruptible);
-
-static int __sched do_usleep_range(unsigned long min, unsigned long max)
+static unsigned long __sched do_usleep_range(unsigned long min, unsigned long max)
 {
 	ktime_t kmin;
-	unsigned long delta;
+	unsigned long elapsed, delta;
 
 	kmin = ktime_set(0, min * NSEC_PER_USEC);
 	delta = (max - min) * NSEC_PER_USEC;
-	return schedule_hrtimeout_range(&kmin, delta, HRTIMER_MODE_REL);
+	return schedule_hrtimeout_range(&kmin, delta, HRTIMER_MODE_REL,
+					&elapsed) ? 0 : elapsed;
 }
 
 /**
@@ -1846,9 +1785,9 @@ static int __sched do_usleep_range(unsigned long min, unsigned long max)
  * @min: Minimum time in usecs to sleep
  * @max: Maximum time in usecs to sleep
  */
-void usleep_range(unsigned long min, unsigned long max)
+unsigned long usleep_range(unsigned long min, unsigned long max)
 {
 	__set_current_state(TASK_UNINTERRUPTIBLE);
-	do_usleep_range(min, max);
+	return do_usleep_range(min, max);
 }
 EXPORT_SYMBOL(usleep_range);

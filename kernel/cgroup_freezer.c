@@ -130,7 +130,7 @@ struct cgroup_subsys freezer_subsys;
  *   write_lock css_set_lock (cgroup iterator start)
  *    task->alloc_lock
  *   read_lock css_set_lock (cgroup iterator start)
- *    task->alloc_lock (inside thaw_process(), prevents race with refrigerator())
+ *    task->alloc_lock (inside __thaw_task(), prevents race with refrigerator())
  *     sighand->siglock
  */
 static struct cgroup_subsys_state *freezer_create(struct cgroup_subsys *ss,
@@ -167,17 +167,9 @@ static bool is_task_frozen_enough(struct task_struct *task)
  */
 static int freezer_can_attach(struct cgroup_subsys *ss,
 			      struct cgroup *new_cgroup,
-			      struct task_struct *task)
+			      struct cgroup_taskset *tset)
 {
 	struct freezer *freezer;
-
-	if ((current != task) && (!capable(CAP_SYS_ADMIN))) {
-		const struct cred *cred = current_cred(), *tcred;
-
-		tcred = __task_cred(task);
-		if (cred->euid != tcred->uid && cred->euid != tcred->suid)
-			return -EPERM;
-	}
 
 	/*
 	 * Anything frozen can't move or be moved to/from.
@@ -315,9 +307,8 @@ static void unfreeze_cgroup(struct cgroup *cgroup, struct freezer *freezer)
 	struct task_struct *task;
 
 	cgroup_iter_start(cgroup, &it);
-	while ((task = cgroup_iter_next(cgroup, &it))) {
-		thaw_process(task);
-	}
+	while ((task = cgroup_iter_next(cgroup, &it)))
+		__thaw_task(task);
 	cgroup_iter_end(cgroup, &it);
 
 	freezer->state = CGROUP_THAWED;
