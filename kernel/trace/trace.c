@@ -4489,32 +4489,30 @@ void trace_init_global_iter(struct trace_iterator *iter)
 	iter->cpu_file = TRACE_PIPE_ALL_CPU;
 }
 
-void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
+static void
+__ftrace_dump(bool disable_tracing, enum ftrace_dump_mode oops_dump_mode)
 {
+	static arch_spinlock_t ftrace_dump_lock =
+		(arch_spinlock_t)__ARCH_SPIN_LOCK_UNLOCKED;
 	/* use static because iter can be a bit big for the stack */
 	static struct trace_iterator iter;
-	static atomic_t dump_running;
 	unsigned int old_userobj;
+	static int dump_ran;
 	unsigned long flags;
 	int cnt = 0, cpu;
 
-	/* Only allow one dump user at a time. */
-	if (atomic_inc_return(&dump_running) != 1) {
-		atomic_dec(&dump_running);
-		return;
-	}
+	/* only one dump */
+	local_irq_save(flags);
+	arch_spin_lock(&ftrace_dump_lock);
+	if (dump_ran)
+		goto out;
 
-	/*
-	 * Always turn off tracing when we dump.
-	 * We don't need to show trace output of what happens
-	 * between multiple crashes.
-	 *
-	 * If the user does a sysrq-z, then they can re-enable
-	 * tracing with echo 1 > tracing_on.
-	 */
+	dump_ran = 1;
+
 	tracing_off();
 
-	local_irq_save(flags);
+	if (disable_tracing)
+		ftrace_kill();
 
 	trace_init_global_iter(&iter);
 
