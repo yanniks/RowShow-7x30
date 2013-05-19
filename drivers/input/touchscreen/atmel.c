@@ -129,12 +129,10 @@ static void multi_input_report(struct atmel_ts_data *ts);
 
 #ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE_DISABLED
 int s2w_switch = 0;
-int s2w_temp = 0;
 #elif defined(CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE_ENABLED)
 int s2w_switch = 1;
-int s2w_temp = 1;
 #endif
-bool scr_suspended = false, exec_count = true, s2w_switch_changed = false;
+bool scr_suspended = false, exec_count = true;
 bool scr_on_touch = false, barrier[2] = {false, false};
 static struct input_dev * sweep2wake_pwrdev;
 static DEFINE_MUTEX(pwrlock);
@@ -675,37 +673,23 @@ static DEVICE_ATTR(info, S_IRUGO, atmel_info_show, NULL);
 static ssize_t atmel_sweep2wake_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
-	size_t count = 0;
-	
-	if (s2w_switch == s2w_temp )
-		count += sprintf(buf, "%d\n", s2w_switch);
-	else
-		count += sprintf(buf, "%d->%d\n", s2w_switch, s2w_temp);
-
-	return count;
+	return sprintf(buf, "%d\n", s2w_switch);
 }
 
-static ssize_t atmel_sweep2wake_dump(struct device *dev,
+static ssize_t atmel_sweep2wake_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
-	if (buf[0] >= '0' && buf[0] <= '2' && buf[1] == '\n')
-		if (s2w_switch != buf[0] - '0') {
-			s2w_temp = buf[0] - '0';
-			if (scr_suspended == false)
-				s2w_switch = s2w_temp;
-			else 
-				s2w_switch_changed = true;
-		}
+	if (buf[0] >= '0' && buf[0] <= '1')
+		sscanf(buf, "%du", &s2w_switch);
 
-	if (s2w_temp == 0) 
+	if (s2w_switch == 0)
 		printk(KERN_INFO "[sweep2wake]: Disabled.\n");
-	else if (s2w_temp == 1)
+	else if (s2w_switch == 1)
 		printk(KERN_INFO "[sweep2wake]: Enabled.\n");
 	return count;
 }
 
-static DEVICE_ATTR(sweep2wake, (S_IWUSR|S_IRUGO),
-	atmel_sweep2wake_show, atmel_sweep2wake_dump);
+static DEVICE_ATTR(sweep2wake, 0664, atmel_sweep2wake_show, atmel_sweep2wake_store);
 #endif
 
 
@@ -1252,7 +1236,7 @@ static void multi_input_report(struct atmel_ts_data *ts)
 {
 	uint8_t loop_i, finger_report = 0;
 #ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
-  int prevx = 0, nextx = 0;
+	int prevx = 0, nextx = 0;
 #endif
 
 	for (loop_i = 0; loop_i < ts->finger_support; loop_i++) {
@@ -1277,7 +1261,7 @@ static void multi_input_report(struct atmel_ts_data *ts)
 				if ((barrier[0] == true) ||
 				   ((ts->finger_data[loop_i].x > prevx) &&
 				    (ts->finger_data[loop_i].x < nextx) &&
-				    (ts->finger_data[loop_i].y > 980))) {					
+				    (ts->finger_data[loop_i].y > 980))) {
 					prevx = 200;
 					nextx = 800;
 					barrier[0] = true;
@@ -1298,8 +1282,10 @@ static void multi_input_report(struct atmel_ts_data *ts)
 						}
 					}
 				}
+			}
+
 			//right -> left
-			} else if ((s2w_switch > 0) && (scr_suspended == false) && (ts->finger_count == 1)) {
+			else if ((s2w_switch > 0) && (scr_suspended == false) && (ts->finger_count == 1)) {
 				scr_on_touch=true;
 				prevx = 1000;
 				nextx = 800;
@@ -2487,13 +2473,13 @@ static int atmel_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 	printk(KERN_INFO "%s:[TP]enter\n", __func__);
 
 #ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
-    	scr_suspended = true;
 	if (s2w_switch > 0) {
+		scr_suspended = true;
 		enable_irq_wake(client->irq);
 		printk(KERN_INFO "[sweep2wake]: suspend but keep interupt wake going.\n");
  	} else {
 #endif
-    		disable_irq(client->irq);
+		disable_irq_nosync(client->irq);
 #ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
 	}
 #endif
@@ -2536,9 +2522,9 @@ static int atmel_ts_resume(struct i2c_client *client)
 	printk(KERN_INFO "%s:[TP]enter\n", __func__);
 
 #ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
-    	scr_suspended = false;
 	if (s2w_switch > 0) {
-    		disable_irq_wake(client->irq);
+		scr_suspended = false;
+		disable_irq_wake(client->irq);
 		printk(KERN_INFO "[sweep2wake]: resume but disable interupt wake.\n");
   	}
 #endif
@@ -2560,7 +2546,7 @@ static int atmel_ts_resume(struct i2c_client *client)
 				ts->locking_config[0]);
 		}
 	}
-	
+
 #ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
 	if (s2w_switch == 0) {
 #endif
@@ -2621,11 +2607,6 @@ static int atmel_ts_resume(struct i2c_client *client)
 		enable_irq(client->irq);
 #ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
   	}
-	if (s2w_switch_changed == true) {
-		s2w_switch = s2w_temp;
-		s2w_switch_changed = false;
-	}	
-
 #endif
 	printk(KERN_INFO "%s:[TP]done\n", __func__);
 	return 0;
