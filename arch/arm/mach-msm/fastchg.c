@@ -21,25 +21,31 @@ int force_fast_charge;
 /* sysfs interface */
 static ssize_t force_fast_charge_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
 {
-return sprintf(buf, "%d\n", force_fast_charge);
+	return sprintf(buf, "%d\n", force_fast_charge);
 }
 
 static ssize_t force_fast_charge_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count)
 {
-sscanf(buf, "%du", &force_fast_charge);
-return count;
+	if (buf[0] >= '0' && buf[0] <= '1')
+		sscanf(buf, "%du", &force_fast_charge);
+
+	if (force_fast_charge == 0)
+		printk(KERN_INFO "[force_fast_charge]: Disabled.\n");
+	else if (force_fast_charge == 1)
+		printk(KERN_INFO "[force_fast_charge]: Enabled.\n");
+	return count;
 }
 
 static struct kobj_attribute force_fast_charge_attribute =
-__ATTR(force_fast_charge, 0666, force_fast_charge_show, force_fast_charge_store);
+__ATTR(force_fast_charge, 0664, force_fast_charge_show, force_fast_charge_store);
 
 static struct attribute *attrs[] = {
-&force_fast_charge_attribute.attr,
-NULL,
+	&force_fast_charge_attribute.attr,
+	NULL,
 };
 
 static struct attribute_group attr_group = {
-.attrs = attrs,
+	.attrs = attrs,
 };
 
 static struct kobject *force_fast_charge_kobj;
