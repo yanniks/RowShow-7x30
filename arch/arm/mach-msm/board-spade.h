@@ -35,8 +35,8 @@ extern struct platform_device msm_device_mddi0;
 #define MSM_LINUX_SIZE2		0x10000000
 #define MSM_MEM_256MB_OFFSET	0x10000000
 
-#define MSM_GPU_MEM_BASE	0x00100000
-#define MSM_GPU_MEM_SIZE	0x003F0000
+//#define MSM_GPU_MEM_BASE	0x00100000 /* unused */
+//#define MSM_GPU_MEM_SIZE	0x003F0000 /* unused */
 
 #define MSM_RAM_CONSOLE_BASE	0x00500000
 #define MSM_RAM_CONSOLE_SIZE	0x00100000
@@ -46,21 +46,20 @@ extern struct platform_device msm_device_mddi0;
  * res V4L2 video overlay - i.e. 1280x720x1.5x2
 */
 #define MSM_V4L2_VIDEO_OVERLAY_BUF_SIZE 2764800
-#define MSM_PMEM_ADSP_BASE  	0x2B900000
+//#define MSM_PMEM_ADSP_BASE  	0x2B900000 /* unused */
 #define MSM_PMEM_ADSP_SIZE	0x03600000 /* for 8M(4:3) + gpu effect */
-#define PMEM_KERNEL_EBI0_BASE   0x2D600000
+//#define PMEM_KERNEL_EBI0_BASE   0x2D600000 /* unused */
 #define PMEM_KERNEL_EBI0_SIZE   0x00700000
 #define MSM_PMEM_SF_SIZE	0x01E00000
 #define MSM_PMEM_AUDIO_SIZE	0x00000000
 
-#define MSM_PMEM_CAMERA_BASE	0x2DD00000
-#define MSM_PMEM_CAMERA_SIZE	0x00C00000
+//#define MSM_PMEM_CAMERA_BASE	0x2DD00000 /* unused */
+//#define MSM_PMEM_CAMERA_SIZE	0x00C00000 /* unused */
 
-#define MSM_PMEM_MDP_BASE	0x2DD00000
-#define MSM_PMEM_MDP_SIZE	0x02000000
+//#define MSM_PMEM_MDP_BASE	0x2DD00000 /* unused */
+//#define MSM_PMEM_MDP_SIZE	0x02000000 /* unused */
 
 #define MSM_FB_BASE		0x2FD00000
-
 #define MSM_FB_SIZE		0x00465000
 
 #ifdef CONFIG_ION_MSM
