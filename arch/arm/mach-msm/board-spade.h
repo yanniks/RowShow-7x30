@@ -60,7 +60,7 @@ extern struct platform_device msm_device_mddi0;
 //#define MSM_PMEM_MDP_SIZE	0x02000000 /* unused */
 
 #define MSM_FB_BASE		0x2FD00000
-#define MSM_FB_SIZE		0x00465000
+#define MSM_FB_SIZE		roundup((800 * ALIGN(480, 32) * 4 * 3), 4096) /* 4 bpp x 3 pages, Note: must be multiple of 4096 */
 
 #ifdef CONFIG_ION_MSM
 #define MSM_ION_AUDIO_SIZE  (MSM_PMEM_AUDIO_SIZE + PMEM_KERNEL_EBI0_SIZE)
