@@ -2,9 +2,9 @@
 DATE=$(date +%Y%m%d-%H%M)
 PWD=$(pwd)
 ANYKERNEL="~/AnyKernel"
-#ANYKERNEL="~/storage/AnyKernel"
+#ANYKERNEL="/home/mustaavalkosta/storage/AnyKernel"
 OUTPUT="/media/glooms"
-#OUTPUT="~/downloads/tests"
+#OUTPUT="/home/mustaavalkosta/downloads/tests"
 # cleanup
 rm -v $ANYKERNEL/{kernel/zImage,system/lib/modules/*}
 # copy files
