@@ -9,5 +9,6 @@ cp -v arch/arm/boot/zImage ~/AnyKernel/kernel/zImage
 # zip it
 cd ~/AnyKernel
 zip -r9 ~/kernel-$DATE.zip *
+export UPDATEZIP=~/kernel-$DATE.zip
 # return
 cd $PWD
