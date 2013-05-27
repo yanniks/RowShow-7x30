@@ -3228,7 +3228,7 @@ static int __init pmem_sf_size_setup(char *p)
 }
 early_param("pmem_sf_size", pmem_sf_size_setup);
 
-static unsigned fb_size = MSM_FB_SIZE;
+static unsigned fb_size;
 static int __init fb_size_setup(char *p)
 {
 	fb_size = memparse(p, NULL);
@@ -3420,7 +3420,7 @@ static void __init spade_allocate_memory_regions(void)
 	void *addr;
 	unsigned long size;
 
-	size = fb_size ? : MSM_FB_SIZE;
+	size = MSM_FB_SIZE;
 	addr = alloc_bootmem_align(size, 0x1000);
 	msm_fb_resources[0].start = __pa(addr);
 	msm_fb_resources[0].end = msm_fb_resources[0].start + size - 1;
