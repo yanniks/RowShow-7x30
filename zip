@@ -1,14 +1,14 @@
 #!/bin/bash
 DATE=$(date +%Y%m%d-%H%M)
 PWD=$(pwd)
-# cleanup
-rm -v ~/AnyKernel/{kernel/zImage,system/lib/modules/*}
+ANYKERNEL="~/AnyKernel"
+OUTPUT="~"
+rm -v $ANYKERNEL/{kernel/zImage,system/lib/modules/*}
 # copy files
-find . -name "*.ko" -exec cp -v {} ~/AnyKernel/system/lib/modules/ \;
-cp -v arch/arm/boot/zImage ~/AnyKernel/kernel/zImage
+find . -name "*.ko" -exec cp -v {} $ANYKERNEL/system/lib/modules/ \;
+cp -v arch/arm/boot/zImage $ANYKERNEL/kernel/zImage
 # zip it
-cd ~/AnyKernel
-zip -r9 ~/kernel-$DATE.zip *
-export UPDATEZIP=~/kernel-$DATE.zip
+cd $ANYKERNEL
+zip -r9 $OUTPUT/kernel-$DATE.zip *
 # return
 cd $PWD

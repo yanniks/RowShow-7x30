@@ -381,8 +381,16 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -funsafe-math-optimizations \
 		   -fsingle-precision-constant -fpredictive-commoning -fipa-cp-clone \
 		   -fgcse-after-reload -ftree-vectorize -pipe \
-		   -funswitch-loops -floop-interchange \
-		   -floop-strip-mine -floop-block
+		   -funswitch-loops
+
+ifdef CONFIG_CC_GRAPHITE_OPTIMIZATION
+KBUILD_CFLAGS	:= -floop-interchange -floop-strip-mine \
+			-floop-block
+endif
+
+ifdef CONFIG_CC_LINK_TIME_OPTIMIZATION
+KBUILD_CFLAGS	:= -flto -fno-toplevel-reorder
+endif
 
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
