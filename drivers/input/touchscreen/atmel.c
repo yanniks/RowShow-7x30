@@ -1527,7 +1527,7 @@ static int wlc_tp_status_handler_func(struct notifier_block *this,
 	struct atmel_ts_data *ts;
 	int wlc_status;
 
-	wlc_status = connect_status > 0 ? CONNECTED : NONE;
+	wlc_status = connect_status ? CONNECTED : NONE;
 	printk(KERN_INFO "[TP]wireless charger %d\n", wlc_status);
 
 	ts = private_ts;
@@ -1631,8 +1631,7 @@ static void cable_tp_status_handler_func(int connect_status)
 	printk(KERN_INFO "[TP]cable change to %d\n", connect_status);
 
 	if (connect_status != ts->status) {
-		ts->status = connect_status > 0 ? CONNECTED : NONE;
-        printk(KERN_INFO "[TP]ts->status change to %d\n", ts->status);
+		ts->status = connect_status ? CONNECTED : NONE;
 		if (!ts->status && ts->wlc_status)
 			printk(KERN_INFO "[TP]ambigurous wireless charger state\n");
 		if (ts->config_setting[CONNECTED].config[0]) {
@@ -2079,7 +2078,7 @@ static int atmel_ts_probe(struct i2c_client *client,
 		cable_connect_type = cable_get_connect_type();
 		if (cable_connect_type == 4)
 			ts->wlc_status = CONNECTED;
-		else if (cable_connect_type > 0)
+		else if (cable_connect_type != 0)
 			ts->status = CONNECTED;
 #endif
 
