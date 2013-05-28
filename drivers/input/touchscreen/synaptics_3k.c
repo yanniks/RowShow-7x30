@@ -804,7 +804,7 @@ static int synaptics_ts_resume(struct i2c_client *client)
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 	if (s2w_switch2 > 0) {
 		ret = i2c_smbus_write_byte_data(client, ts->page_table[8].value, 0x01); /* sleep */
-		msleep(100);
+		msleep(150);
 		ret = 0;
 		scr_suspended2 = false;
 		disable_irq_wake(client->irq);
@@ -815,6 +815,7 @@ static int synaptics_ts_resume(struct i2c_client *client)
 	if (s2w_switch2 == 0) {
 #endif
 		ret = i2c_smbus_write_byte_data(client, ts->page_table[8].value, 0x00); /* wake */
+		msleep(100);
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 	}
 #endif
