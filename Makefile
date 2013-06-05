@@ -249,8 +249,8 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 
 HOSTCC       = gcc
 HOSTCXX      = g++
-HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O3 -fomit-frame-pointer
-HOSTCXXFLAGS = -O3
+HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
+HOSTCXXFLAGS = -O2
 
 # Decide whether to build built-in, modular, or both.
 # Normally, just do built-in.
@@ -373,30 +373,17 @@ LINUXINCLUDE    := -I$(srctree)/arch/$(hdr-arch)/include \
 KBUILD_CPPFLAGS := -D__KERNEL__
 
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
-		   -fno-strict-aliasing -fno-common \
-		   -Werror-implicit-function-declaration \
-		   -Wno-format-security \
-		   -fno-delete-null-pointer-checks -mno-unaligned-access \
-		   -mcpu=cortex-a8 -mtune=cortex-a8 -march=armv7-a -mfpu=neon \
-		   -funsafe-math-optimizations \
-		   -fsingle-precision-constant -fpredictive-commoning -fipa-cp-clone \
-		   -fgcse-after-reload -ftree-vectorize -pipe \
-		   -funswitch-loops
-
-ifdef CONFIG_CC_GRAPHITE_OPTIMIZATION
-KBUILD_CFLAGS	:= -floop-interchange -floop-strip-mine \
-			-floop-block
-endif
-
-ifdef CONFIG_CC_LINK_TIME_OPTIMIZATION
-KBUILD_CFLAGS	:= -flto -fno-toplevel-reorder
-endif
+				   -fno-strict-aliasing -fno-common \
+				   -Werror-implicit-function-declaration \
+				   -Wno-format-security \
+				   -fno-delete-null-pointer-checks
 
 KBUILD_AFLAGS_KERNEL :=
-KBUILD_CFLAGS_KERNEL :=
+KBUILD_CFLAGS_KERNEL := -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr -ffast-math -fsingle-precision-constant -mtune=cortex-a8 -march=armv7-a -mfpu=neon -ftree-vectorize -funswitch-loops
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 KBUILD_AFLAGS_MODULE  := -DMODULE
-KBUILD_CFLAGS_MODULE  := -DMODULE
+KBUILD_CFLAGS_MODULE  := -DMODULE -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr -ffast-math -fsingle-precision-constant -mtune=cortex-a8 -march=armv7-a -mfpu=neon -ftree-vectorize -funswitch-loops
+CFLAGS_MODULE   = $(MODFLAGS)
 KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
 
 # Read KERNELRELEASE from include/config/kernel.release (if it exists)
