@@ -3,7 +3,7 @@
 DEFCONFIG_FILE=$1
 
 if [ -z "$DEFCONFIG_FILE" ]; then
-	echo "Need defconfig file(j1v-perf_defconfig)!"
+	echo "Need defconfig file(spade_defconfig)!"
 	exit -1
 fi
 
@@ -12,16 +12,15 @@ if [ ! -e arch/arm/configs/$DEFCONFIG_FILE ]; then
 	exit -1
 fi
 
-# make .config
-env KCONFIG_NOTIMESTAMP=true \
-make ARCH=arm CROSS_COMPILE=arm-eabi- ${DEFCONFIG_FILE}
+# update current config
+export ARCH=arm
+make $DEFCONFIG_FILE
 
 # run menuconfig
-env KCONFIG_NOTIMESTAMP=true \
-make menuconfig ARCH=arm
+make menuconfig
 
-make savedefconfig ARCH=arm
 # copy .config to defconfig
-mv defconfig arch/arm/configs/${DEFCONFIG_FILE}
+rm arch/arm/configs/${DEFCONFIG_FILE}
+mv .config arch/arm/configs/${DEFCONFIG_FILE}
 # clean kernel object
 make mrproper
