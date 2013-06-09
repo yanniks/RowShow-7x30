@@ -422,15 +422,11 @@ void vfe_stop(void)
 {
 	pr_info("[CAM]vfe_stop()  enter\n");
 
+	uint8_t  axiBusyFlag = true;
 	if(!vfe31_ctrl)  return;
 
 	atomic_set(&(vfe31_ctrl->vstate), 0);
 	atomic_set(&(vfe31_ctrl->stop_ack_pending), 1);
-
-	/* in either continuous or snapshot mode, stop command can be issued
-	 * at any time. stop camif immediately. */
-	msm_io_w_mb(CAMIF_COMMAND_STOP_IMMEDIATELY,
-		vfe31_ctrl->vfebase + VFE_CAMIF_COMMAND);
 
 	/* disable all interrupts.  */
 	msm_io_w(VFE_DISABLE_ALL_IRQS,
@@ -448,15 +444,31 @@ void vfe_stop(void)
 	msm_io_w_mb(1,
 		vfe31_ctrl->vfebase + VFE_IRQ_CMD);
 
+	/* in either continuous or snapshot mode, stop command can be issued
+	 * at any time. stop camif immediately. */
+	msm_io_w_mb(CAMIF_COMMAND_STOP_IMMEDIATELY,
+		vfe31_ctrl->vfebase + VFE_CAMIF_COMMAND);
+
+	/* then apply axi halt command. */
+	msm_io_w_mb(AXI_HALT,
+		vfe31_ctrl->vfebase + VFE_AXI_CMD);
+
+	wmb();
+	while (axiBusyFlag) {
+		if (msm_io_r(vfe31_ctrl->vfebase + VFE_AXI_STATUS) & 0x1)
+			axiBusyFlag = false;
+	}
+
+	/* Ensure the write order while writing
+	to the command register using the barrier */
+	msm_io_w_mb(AXI_HALT_CLEAR,
+			vfe31_ctrl->vfebase + VFE_AXI_CMD);
+
 	/* now enable only halt_irq & reset_irq */
 	msm_io_w(0xf0000000,          /* this is for async timer. */
 		vfe31_ctrl->vfebase + VFE_IRQ_MASK_0);
 	msm_io_w(VFE_IMASK_WHILE_STOPPING_1,
 		vfe31_ctrl->vfebase + VFE_IRQ_MASK_1);
-
-	/* then apply axi halt command. */
-	msm_io_w_mb(AXI_HALT,
-		vfe31_ctrl->vfebase + VFE_AXI_CMD);
 
 	pr_info("[CAM]vfe_stop()  exit\n");
 }
