@@ -420,9 +420,10 @@ static int vfe31_enable(struct camera_enable_cmd *enable)
 
 void vfe_stop(void)
 {
+	uint8_t  axiBusyFlag = true;
+
 	pr_info("[CAM]vfe_stop()  enter\n");
 
-	uint8_t  axiBusyFlag = true;
 	if(!vfe31_ctrl)  return;
 
 	atomic_set(&(vfe31_ctrl->vstate), 0);
