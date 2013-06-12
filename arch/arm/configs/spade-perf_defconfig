@@ -1,6 +1,6 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 3.0.80 Kernel Configuration
+# Linux/arm 3.0.81 Kernel Configuration
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -2620,7 +2620,7 @@ CONFIG_EXT4_USE_FOR_EXT23=y
 # CONFIG_EXT4_DEBUG is not set
 CONFIG_EXT4_E2FSCK_RECOVER=y
 CONFIG_JBD2=y
-CONFIG_JBD2_DEBUG=y
+# CONFIG_JBD2_DEBUG is not set
 # CONFIG_REISERFS_FS is not set
 # CONFIG_JFS_FS is not set
 # CONFIG_XFS_FS is not set
