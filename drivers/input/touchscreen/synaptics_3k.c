@@ -26,6 +26,7 @@
 #include <linux/synaptics_i2c_rmi.h>
 #include <linux/slab.h>
 
+#define DEBUG 1
 #define SYN_I2C_RETRY_TIMES 10
 
 struct synaptics_ts_data {
@@ -62,8 +63,9 @@ static struct synaptics_ts_data *gl_ts;
 static const char SYNAPTICSNAME[]	= "Synaptics_3K";
 static uint32_t syn_panel_version;
 
+static bool proximity_status = true; // psensor; true = far, false = near
+
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
-#define DEBUG 1
 /* S2W starts */
 static int s2w_register_threshold = 9; /* beyond this threshold the panel will not register to apps */
 static int s2w_min_distance = 500; /* power will toggle at this distance from start point */
@@ -83,7 +85,6 @@ static bool scr_suspended = false;
 static bool exec_count = true;
 static bool barrier = false;
 static bool mode = true;
-static bool proximity_status = true; // psensor; true = far, false = near
 
 static struct input_dev * sweep2wake_pwrdev;
 static DEFINE_MUTEX(pwrlock);
@@ -115,13 +116,13 @@ void sweep2wake_syn_pwrtrigger(void) {
 	if (!work_busy(&sweep2wake_presspwr_work))
 		schedule_work(&sweep2wake_presspwr_work);
 }
+#endif
 
 extern void synaptics_proximity_status(bool val) {
 	proximity_status = val;
 	if (DEBUG)
-		printk(KERN_INFO "[sweep2wake] proximity: %d", proximity_status ? 1 : 0);
+		printk(KERN_INFO "[TP] proximity: %d", proximity_status ? 1 : 0);
 }
-#endif
 
 static int i2c_syn_read(struct i2c_client *client, uint16_t addr, uint8_t *data, uint16_t length)
 {
