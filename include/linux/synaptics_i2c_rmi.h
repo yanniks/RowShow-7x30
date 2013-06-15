@@ -153,4 +153,9 @@ enum {
 	FUNCTION
 };
 
+#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
+extern void sweep2wake_syn_setdev(struct input_dev * input_device);
+#endif
+extern void synaptics_proximity_status(bool val);
+
 #endif /* _LINUX_SYNAPTICS_I2C_RMI_H */
