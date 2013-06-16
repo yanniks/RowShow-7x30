@@ -7,8 +7,15 @@ rm -v ~/AnyKernel/{kernel/zImage,system/lib/modules/*}
 find . -name "*.ko" -exec cp -v {} ~/AnyKernel/system/lib/modules/ \;
 cp -v arch/arm/boot/zImage ~/AnyKernel/kernel/zImage
 # zip it
-cd ~/AnyKernel
-zip -r9 ~/kernel-$DATE.zip *
-export UPDATEZIP=~/kernel-$DATE.zip
+if [ -z "$EXTRAVERSION" ]
+then
+  cd ~/AnyKernel
+  zip -r9 ~/kernel-$DATE.zip *
+  export UPDATEZIP=~/kernel-$DATE.zip
+else
+  cd ~/AnyKernel
+  zip -r9 ~/kernel-$DATE-$EXTRAVERSION.zip *
+  export UPDATEZIP=~/kernel-$DATE-$EXTRAVERSION.zip
+fi
 # return
 cd $PWD
