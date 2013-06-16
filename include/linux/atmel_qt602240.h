@@ -497,5 +497,9 @@ struct atmel_config_data {
 	int8_t *config_T58;
 };
 
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+extern void sweep2wake_atmel_setdev(struct input_dev * input_device);
+#endif
+
 #endif
 

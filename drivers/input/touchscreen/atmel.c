@@ -125,6 +125,62 @@ static void restore_normal_threshold(struct atmel_ts_data *ts);
 static void confirm_calibration(struct atmel_ts_data *ts, uint8_t recal, uint8_t reason);
 static void multi_input_report(struct atmel_ts_data *ts);
 
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+#define DEBUG 1
+/* S2W starts */
+static int s2w_register_threshold = 9; /* beyond this threshold the panel will not register to apps */
+static int s2w_min_distance = 500; /* power will toggle at this distance from start point */
+static bool s2w_allow_stroke = true; /* use either direction for on/off */
+static bool s2w_switch = true;
+/* S2W ends */
+
+/* DT2W starts */
+static bool dt2w_switch = true;
+static unsigned int dt2w_duration = 100; /* msecs */
+static unsigned int dt2w_threshold = 500;  /* msecs */
+static cputime64_t dt2w_start = 0;
+static bool dt2w_screen = false; /* true if last touch was on display area */
+/* DT2W ends */
+
+static bool scr_suspended = false;
+static bool exec_count = true;
+static bool barrier = false;
+static bool mode = true;
+// -1 = not touched; -2 = touched on screen; >=0 = touched on button panel
+static int downx = -1;
+
+static struct input_dev * sweep2wake_pwrdev;
+static DEFINE_MUTEX(pwrlock);
+
+static inline bool s2w_active(void) {
+	return s2w_switch || dt2w_switch;
+}
+
+extern void sweep2wake_atmel_setdev(struct input_dev * input_device) {
+	sweep2wake_pwrdev = input_device;
+}
+EXPORT_SYMBOL(sweep2wake_atmel_setdev);
+
+static void sweep2wake_presspwr(struct work_struct * sweep2wake_presspwr_work) {
+	if (!mutex_trylock(&pwrlock))
+		return;
+	printk(KERN_INFO "[TP] [sweep2wake]: mode=%d", mode);
+	input_event(sweep2wake_pwrdev, EV_KEY, KEY_POWER, 1);
+	input_sync(sweep2wake_pwrdev);
+	msleep(100);
+	input_event(sweep2wake_pwrdev, EV_KEY, KEY_POWER, 0);
+	input_sync(sweep2wake_pwrdev);
+	msleep(100);
+	mutex_unlock(&pwrlock);
+}
+static DECLARE_WORK(sweep2wake_presspwr_work, sweep2wake_presspwr);
+
+void sweep2wake_atmel_pwrtrigger(void) {
+	if (!work_busy(&sweep2wake_presspwr_work))
+		schedule_work(&sweep2wake_presspwr_work);
+}
+#endif
+
 static int i2c_atmel_read(struct i2c_client *client, uint16_t address, uint8_t *data, uint8_t length)
 {
 	int retry;
@@ -631,6 +687,221 @@ static ssize_t atmel_info_show(struct device *dev,
 
 static DEVICE_ATTR(info, S_IRUGO, atmel_info_show, NULL);
 
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+/* S2W sysfs starts */
+static ssize_t atmel_sweep2wake_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+	count += sprintf(buf, "%d\n", s2w_switch);
+	return count;
+}
+
+static ssize_t atmel_sweep2wake_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	unsigned long value;
+	int ret = 0;
+
+	ret = strict_strtoul(buf, 10, &value);
+	if (ret < 0) {
+		printk(KERN_INFO "[TP] [sweep2wake]: set s2w_switch failed %s\n", buf);
+		return count;
+	}
+	if (value == 0 || value == 1) {
+		s2w_switch = (bool)value;
+		printk(KERN_INFO "[TP] [sweep2wake]: s2w_switch=%d\n", s2w_switch);
+	} else {
+		printk(KERN_INFO "[TP] [sweep2wake]: set s2w_switch failed - valid values are 0 or 1 - %s\n", buf);
+	}
+	return count;
+}
+
+static DEVICE_ATTR(sweep2wake, (S_IWUSR|S_IRUGO),
+		atmel_sweep2wake_show, atmel_sweep2wake_store);
+
+static ssize_t atmel_s2w_allow_stroke_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+	count += sprintf(buf, "%d\n", s2w_allow_stroke);
+	return count;
+}
+
+static ssize_t atmel_s2w_allow_stroke_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	unsigned long value;
+	int ret = 0;
+
+	ret = strict_strtoul(buf, 10, &value);
+	if (ret < 0) {
+		printk(KERN_INFO "[TP] [sweep2wake]: set s2w_allow_stroke failed %s\n", buf);
+		return count;
+	}
+	if (value == 0 || value == 1) {
+		s2w_allow_stroke = (bool)value;
+		printk(KERN_INFO "[TP] [sweep2wake]: s2w_allow_stroke=%d\n", s2w_allow_stroke);
+	} else {
+		printk(KERN_INFO "[TP] [sweep2wake]: set s2w_allow_stroke failed - valid values are 0 or 1 - %s\n", buf);
+	}
+	return count;
+}
+
+static DEVICE_ATTR(s2w_allow_stroke, (S_IWUSR|S_IRUGO),
+		atmel_s2w_allow_stroke_show, atmel_s2w_allow_stroke_store);
+
+static ssize_t atmel_s2w_register_threshold_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+	count += sprintf(buf, "%d\n", s2w_register_threshold);
+	return count;
+}
+
+static ssize_t atmel_s2w_register_threshold_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	unsigned long value;
+	int ret = 0;
+
+	ret = strict_strtoul(buf, 10, &value);
+	if (ret < 0) {
+		printk(KERN_INFO "[TP] [sweep2wake]: set s2w_register_threshold failed - %s\n", buf);
+		return count;
+	}
+	s2w_register_threshold = (int)value;
+	printk(KERN_INFO "[TP] [sweep2wake]: s2w_register_threshold=%d\n", s2w_register_threshold);
+	return count;
+}
+
+static DEVICE_ATTR(s2w_register_threshold, (S_IWUSR|S_IRUGO),
+		atmel_s2w_register_threshold_show, atmel_s2w_register_threshold_store);
+
+static ssize_t atmel_s2w_min_distance_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+	count += sprintf(buf, "%d\n", s2w_min_distance);
+	return count;
+}
+
+static ssize_t atmel_s2w_min_distance_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	unsigned long value;
+	int ret = 0;
+
+	ret = strict_strtoul(buf, 10, &value);
+	if (ret < 0) {
+		printk(KERN_INFO "[TP] [sweep2wake]: set s2w_min_distance failed - %s\n", buf);
+		return count;
+	}
+	s2w_min_distance = (int)value;
+	printk(KERN_INFO "[TP] [sweep2wake]: s2w_min_distance=%d", s2w_min_distance);
+	return count;
+}
+
+static DEVICE_ATTR(s2w_min_distance, (S_IWUSR|S_IRUGO),
+		atmel_s2w_min_distance_show, atmel_s2w_min_distance_store);
+/* S2W sysfs ends */
+
+/* DT2W sysfs starts */
+static ssize_t atmel_dt2w_switch_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+	count += sprintf(buf, "%d\n", dt2w_switch);
+	return count;
+}
+
+static ssize_t atmel_dt2w_switch_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	unsigned long value;
+	int ret = 0;
+
+	ret = strict_strtoul(buf, 10, &value);
+	if (ret < 0) {
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_switch failed - %s\n", buf);
+		return count;
+	}
+	if (value == 0 || value == 1) {
+		dt2w_switch = (bool)value;
+		printk(KERN_INFO "[TP] [sweep2wake]: dt2w_switch=%d\n", s2w_allow_stroke);
+	} else {
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_switch failed - valid values are 0 or 1 - %s\n", buf);
+	}
+	return count;
+}
+
+static DEVICE_ATTR(doubletap2wake, (S_IWUSR|S_IRUGO),
+		atmel_dt2w_switch_show, atmel_dt2w_switch_store);
+
+static ssize_t atmel_dt2w_duration_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+	count += sprintf(buf, "%d\n", dt2w_duration);
+	return count;
+}
+
+static ssize_t atmel_dt2w_duration_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	unsigned long value;
+	int ret = 0;
+
+	ret = strict_strtoul(buf, 10, &value);
+	if (ret < 0) {
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_duration failed - %s\n", buf);
+		return count;
+	}
+	if (value > 0) {
+		dt2w_duration = (int)value;
+		printk(KERN_INFO "[TP] [sweep2wake]: dt2w_duration=%d\n", dt2w_duration);
+	} else {
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_duration failed - valid values are positive integers - %s\n", buf);
+	}
+	return count;
+}
+
+static DEVICE_ATTR(dt2w_duration, (S_IWUSR|S_IRUGO),
+		atmel_dt2w_duration_show, atmel_dt2w_duration_store);
+
+static ssize_t atmel_dt2w_threshold_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	size_t count = 0;
+	count += sprintf(buf, "%d\n", dt2w_threshold);
+	return count;
+}
+
+static ssize_t atmel_dt2w_threshold_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t count)
+{
+	unsigned long value;
+	int ret = 0;
+
+	ret = strict_strtoul(buf, 10, &value);
+	if (ret < 0) {
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_threshold failed - %s\n", buf);
+		return count;
+	}
+	if (value > 0) {
+		dt2w_threshold = (int)value;
+		printk(KERN_INFO "[TP] [sweep2wake]: dt2w_threshold=%d\n", dt2w_threshold);
+	} else {
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_threshold failed - valid values are positive integers - %s\n", buf);
+	}
+	return count;
+}
+
+static DEVICE_ATTR(dt2w_threshold, (S_IWUSR|S_IRUGO),
+		atmel_dt2w_threshold_show, atmel_dt2w_threshold_store);
+/* DT2W sysfs ends */
+#endif
+
 static struct kobject *android_touch_kobj;
 
 static int atmel_touch_sysfs_init(void)
@@ -642,6 +913,16 @@ static int atmel_touch_sysfs_init(void)
 		ret = -ENOMEM;
 		return ret;
 	}
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+	if (sysfs_create_file(android_touch_kobj, &dev_attr_sweep2wake.attr) ||
+			sysfs_create_file(android_touch_kobj, &dev_attr_s2w_allow_stroke.attr) ||
+			sysfs_create_file(android_touch_kobj, &dev_attr_s2w_register_threshold.attr) ||
+			sysfs_create_file(android_touch_kobj, &dev_attr_s2w_min_distance.attr) ||
+			sysfs_create_file(android_touch_kobj, &dev_attr_doubletap2wake.attr) ||
+			sysfs_create_file(android_touch_kobj, &dev_attr_dt2w_duration.attr) ||
+			sysfs_create_file(android_touch_kobj, &dev_attr_dt2w_threshold.attr))
+		return -ENOMEM;
+#endif
 	ret = sysfs_create_file(android_touch_kobj, &dev_attr_gpio.attr);
 	if (ret) {
 		printk(KERN_ERR "[TP]TOUCH_ERR: create_file gpio failed\n");
@@ -698,6 +979,15 @@ static int atmel_touch_sysfs_init(void)
 
 static void atmel_touch_sysfs_deinit(void)
 {
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+	sysfs_remove_file(android_touch_kobj, &dev_attr_sweep2wake.attr);
+	sysfs_remove_file(android_touch_kobj, &dev_attr_s2w_allow_stroke.attr);
+	sysfs_remove_file(android_touch_kobj, &dev_attr_s2w_register_threshold.attr);
+	sysfs_remove_file(android_touch_kobj, &dev_attr_s2w_min_distance.attr);
+	sysfs_remove_file(android_touch_kobj, &dev_attr_doubletap2wake.attr);
+	sysfs_remove_file(android_touch_kobj, &dev_attr_dt2w_duration.attr);
+	sysfs_remove_file(android_touch_kobj, &dev_attr_dt2w_threshold.attr);
+#endif
 	sysfs_remove_file(android_touch_kobj, &dev_attr_info.attr);
 	sysfs_remove_file(android_touch_kobj, &dev_attr_htc_event.attr);
 	sysfs_remove_file(android_touch_kobj, &dev_attr_unlock.attr);
@@ -1177,6 +1467,150 @@ static void multi_input_report(struct atmel_ts_data *ts)
 				compatible_input_report(ts->input_dev, &ts->finger_data[loop_i],
 					1, (ts->finger_count == ++finger_report));
 			}
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+			dt2w_screen = ts->finger_data[loop_i].y < 966;
+			if (s2w_allow_stroke)
+			{
+				// stroke2wake - any direction activates
+				if ((ts->finger_count == 1) && s2w_switch && (downx != -2))
+				{
+					if (ts->finger_data[loop_i].y > 966)
+					{
+						if ((downx == -1) || (abs(downx - ts->finger_data[loop_i].x) > s2w_register_threshold))
+						{
+							// handle touch down
+							if (downx == -1)
+							{
+								downx = ts->finger_data[loop_i].x;
+								break;
+							}
+							else
+							{
+								// lock panel to s2w after this distance
+								if (abs(downx - ts->finger_data[loop_i].x) > s2w_register_threshold)
+								{
+									barrier = true;
+								}
+
+								// lock/unlock after distance travelled
+								if (abs(downx - ts->finger_data[loop_i].x) > s2w_min_distance)
+								{
+									if (exec_count) {
+										if (scr_suspended)
+										{
+											printk(KERN_INFO "[TP] [sweep2wake]: ON\n");
+											mode = true;
+											sweep2wake_atmel_pwrtrigger();
+											exec_count = false;
+											break;
+										}
+										else
+										{
+											printk(KERN_INFO "[TP] [sweep2wake]: OFF\n");
+											mode=false;
+											sweep2wake_atmel_pwrtrigger();
+											exec_count = false;
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+					else // touch down on screen
+					{
+						// this prevents swipes originating on screen and then
+						// entering button panel to affect s2w (gaming etc.)
+						downx = -2;
+					}
+				}
+			}
+			else
+			{
+				// Free swipe - single direction activation
+				// left->right
+				if ((ts->finger_count == 1) && scr_suspended && s2w_switch && (downx != -2))
+				{
+					if (ts->finger_data[loop_i].y > 966)
+					{
+						if ((downx == -1) || (ts->finger_data[loop_i].x > downx))
+						{
+							// handle touch down
+							if (downx == -1)
+							{
+								downx = ts->finger_data[loop_i].x;
+								break;
+							}
+							else
+							{
+								// lock panel to s2w after this distance
+								if (abs(downx - ts->finger_data[loop_i].x) > s2w_register_threshold)
+								{
+									barrier = true;
+								}
+
+								// unlock after distance travelled
+								if (abs(downx - ts->finger_data[loop_i].x) > s2w_min_distance)
+								{
+									if (exec_count) {
+										printk(KERN_INFO "[TP] [sweep2wake]: ON\n");
+										mode = true;
+										sweep2wake_atmel_pwrtrigger();
+										exec_count = false;
+										break;
+									}
+								}
+							}
+						}
+					}
+					else // touch down on screen
+					{
+						downx = -2;
+					}
+				}
+				// right->left
+				else if ((ts->finger_count == 1) && !scr_suspended && s2w_switch && (downx != -2))
+				{
+					if (ts->finger_data[loop_i].y > 966)
+					{
+						if ((downx == -1) || (ts->finger_data[loop_i].x < downx))
+						{
+							// handle touch down
+							if (downx == -1)
+							{
+								downx = ts->finger_data[loop_i].x;
+								break;
+							}
+							else
+							{
+								// lock panel to s2w after this distance
+								if (downx - s2w_register_threshold > ts->finger_data[loop_i].x)
+								{
+									barrier = true;
+								}
+
+								// lock after distance travelled
+								if (downx - s2w_min_distance > ts->finger_data[loop_i].x)
+								{
+									if (exec_count)
+									{
+										printk(KERN_INFO "[TP] [sweep2wake]: OFF\n");
+										mode = false;
+										sweep2wake_atmel_pwrtrigger();
+										exec_count = false;
+										break;
+									}
+								}
+							}
+						}
+					}
+					else // touch down on screen
+					{
+						downx = -2;
+					}
+				}
+			}
+#endif
 			if (ts->debug_log_level & 0x2)
 				printk(KERN_INFO "Finger %d=> X:%d, Y:%d w:%d, z:%d, F:%d\n",
 					loop_i + 1,
@@ -1262,6 +1696,42 @@ static irqreturn_t atmel_irq_thread(int irq, void *ptr)
 				compatible_input_report(ts->input_dev, NULL, 0, 1);
 			else
 				htc_input_report(ts->input_dev, NULL, 0, 1);
+
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+			/* if finger released, reset count & barriers */
+			if ((((ts->finger_count > 0)?1:0) == 0) && s2w_active()) {
+				if (s2w_switch) {
+					exec_count = true;
+					barrier = false;
+					downx = -1;
+				}
+
+				/* DT2W */
+				if (scr_suspended && dt2w_switch) {
+					cputime64_t now = ktime_to_ns(ktime_get());
+					cputime64_t diff = cputime64_sub(now, dt2w_start);
+					cputime64_t tap_time = dt2w_duration * 1000 * 1000;
+					cputime64_t too_long_time = dt2w_threshold * 1000 * 1000;
+
+					//if (DEBUG)
+					//	printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap diff=%lld\n", diff);
+
+					dt2w_start = now;
+
+					if (dt2w_screen && ts->finger_data[loop_i].y < 966) {
+						if (diff > tap_time && diff < too_long_time) {
+							printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap ON\n");
+							mode = true;
+							sweep2wake_atmel_pwrtrigger();
+						} else {
+							printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap took too long, %lld\n", diff);
+						}
+					} else {
+						printk(KERN_INFO "[TP] [dt2w]: previous tap was outside of the screen");
+					}
+				}
+			}
+#endif
 
 			if (ts->debug_log_level & 0x2)
 				printk(KERN_INFO "Finger leave\n");
@@ -2325,7 +2795,17 @@ static int atmel_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 
 	printk(KERN_INFO "%s:[TP]enter\n", __func__);
 
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+	if (s2w_active()) {
+		//screen off, enable_irq_wake
+		printk(KERN_INFO "[TP] [sweep2wake]: enable_irq_wake\n");
+		enable_irq_wake(client->irq);
+	} else {
+#endif
 	disable_irq(client->irq);
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+	}
+#endif
 
 	cancel_delayed_work_sync(&ts->unlock_work);
 	if (ts->pre_data[0] == RECALIB_UNLOCK && ts->psensor_status)
@@ -2343,10 +2823,23 @@ static int atmel_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 			ts->ATCH_EXT, 4);
 	}
 
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+	if (!s2w_active()) {
+#endif
 	i2c_atmel_write_byte_data(client,
 		get_object_address(ts, GEN_POWERCONFIG_T7) + T7_CFG_IDLEACQINT, 0x0);
 	i2c_atmel_write_byte_data(client,
 		get_object_address(ts, GEN_POWERCONFIG_T7) + T7_CFG_ACTVACQINT, 0x0);
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+	}
+#endif
+
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+	if (s2w_active()) {
+		scr_suspended = true;
+		mode = false;
+	}
+#endif
 
 	printk(KERN_INFO "%s:[TP]done\n", __func__);
 	return 0;
@@ -2357,6 +2850,14 @@ static int atmel_ts_resume(struct i2c_client *client)
 	struct atmel_ts_data *ts = i2c_get_clientdata(client);
 
 	printk(KERN_INFO "%s:[TP]enter\n", __func__);
+
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+	if (s2w_active()) {
+		//screen on, disable_irq_wake
+		printk(KERN_INFO "[sweep2wake]: disable_irq_wake\n");
+		disable_irq_wake(client->irq);
+	}
+#endif
 
 	if (ts->id->version >= 0x20 && ts->pre_data[0] == RECALIB_NEED) {
 		if (ts->call_tchthr[0] && ts->psensor_status == 2 && !ts->wlc_status) {
@@ -2376,6 +2877,9 @@ static int atmel_ts_resume(struct i2c_client *client)
 		}
 	}
 
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+	if (!s2w_active()) {
+#endif
 	if (!ts->status && ts->wlc_status && ts->wlc_config[0])
 		i2c_atmel_write(ts->client,
 			get_object_address(ts, GEN_POWERCONFIG_T7),
@@ -2386,6 +2890,9 @@ static int atmel_ts_resume(struct i2c_client *client)
 			get_object_address(ts, GEN_POWERCONFIG_T7),
 			ts->config_setting[ts->status].config_T7,
 			get_object_size(ts, GEN_POWERCONFIG_T7));
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+	}
+#endif
 
 	if (ts->id->version == 0x16) {
 		if (ts->config_setting[CONNECTED].config[0] && ts->status &&
@@ -2424,7 +2931,20 @@ static int atmel_ts_resume(struct i2c_client *client)
 				T6_CFG_CALIBRATE, 0x55);
 		}
 	}
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+	if (!s2w_active()) {
+#endif
 	enable_irq(client->irq);
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+	}
+#endif
+
+#ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
+	if (s2w_active()) {
+		scr_suspended = false;
+		mode = true;
+	}
+#endif
 
 	printk(KERN_INFO "%s:[TP]done\n", __func__);
 	return 0;

@@ -41,6 +41,11 @@ config TOUCHSCREEN_ATMEL
 	help
 	  This enables support for Atmel over I2C based touchscreens.
 
+config TOUCHSCREEN_ATMEL_SWEEP2WAKE
+    bool "Sweep2Wake for Atmel based touchscreens"
+    depends on TOUCHSCREEN_ATMEL
+    default n
+
 config TOUCHSCREEN_NTRIG
 	tristate "N-trig spi touchscreen"
 	depends on SPI_TOUCHSCREEN_NTRIG
