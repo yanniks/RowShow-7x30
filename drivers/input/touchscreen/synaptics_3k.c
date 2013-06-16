@@ -682,7 +682,7 @@ static void synaptics_ts_work_func(struct work_struct *work)
 					if (((finger_pressed >> loop_i) & 1) == 1) {
 						finger_pressed &= ~(1 << loop_i);
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
-						if (s2w_active() && !scr_suspended) {
+						if (!s2w_active() || (s2w_active() & !scr_suspended)) {
 #endif
 #ifdef CONFIG_TOUCHSCREEN_COMPATIBLE_REPORT
 						input_report_abs(ts->input_dev, ABS_MT_PRESSURE,
