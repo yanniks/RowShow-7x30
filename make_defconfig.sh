@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DEFCONFIG_FILE=$1
+LOADMENU=$2
 
 if [ -z "$DEFCONFIG_FILE" ]; then
 	echo "Need defconfig file(spade_defconfig)!"
@@ -16,8 +17,14 @@ fi
 export ARCH=arm
 make $DEFCONFIG_FILE
 
-# run menuconfig
-make menuconfig
+  if [ "$LOADMENU" = "updateonly" ]
+  then
+    echo defconfig done!
+  else
+    # run menuconfig
+    make menuconfig
+    echo defconfig done!
+  fi
 
 # copy .config to defconfig
 rm arch/arm/configs/${DEFCONFIG_FILE}
