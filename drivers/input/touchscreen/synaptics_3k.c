@@ -56,8 +56,6 @@ static void synaptics_ts_early_suspend(struct early_suspend *h);
 static void synaptics_ts_late_resume(struct early_suspend *h);
 #endif
 
-static DEFINE_MUTEX(syn_mutex);
-
 static struct synaptics_ts_data *gl_ts;
 static const char SYNAPTICSNAME[]	= "Synaptics_3K";
 static uint32_t syn_panel_version;
@@ -144,13 +142,11 @@ static int i2c_syn_read(struct i2c_client *client, uint16_t addr, uint8_t *data,
 	};
 	buf = addr & 0xFF;
 
-	mutex_lock(&syn_mutex);
 	for (retry = 0; retry < SYN_I2C_RETRY_TIMES; retry++) {
 		if (i2c_transfer(client->adapter, msg, 2) == 2)
 			break;
 		msleep(10);
 	}
-	mutex_unlock(&syn_mutex);
 
 	if (retry == SYN_I2C_RETRY_TIMES) {
 		printk(KERN_ERR "[TP]: i2c_read retry over %d\n",
