@@ -28,7 +28,7 @@
 #include <mach/qdsp5v2_2x/voice.h>
 #endif
 #include <mach/htc_acoustic_7x30.h>
-#include <linux/spi/spi_aic3254.h>
+#include <linux/spi_aic3254.h>
 #include <linux/delay.h>
 
 static struct mutex bt_sco_lock;

@@ -41,6 +41,11 @@ config TOUCHSCREEN_ATMEL
 	help
 	  This enables support for Atmel over I2C based touchscreens.
 
+config TOUCHSCREEN_ATMEL_SWEEP2WAKE
+    bool "Sweep2Wake for Atmel based touchscreens"
+    depends on TOUCHSCREEN_ATMEL
+    default n
+
 config TOUCHSCREEN_NTRIG
 	tristate "N-trig spi touchscreen"
 	depends on SPI_TOUCHSCREEN_NTRIG
@@ -486,6 +491,11 @@ config TOUCHSCREEN_SYNAPTICS_3K
         depends on I2C
         help
           This enables support for Synaptics RMI4 over I2C based touchscreens.
+
+config TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
+	bool "Sweep2Wake for SYNAPTICS_3K based touchscreens"
+	depends on TOUCHSCREEN_SYNAPTICS_3K
+	default n
 
 config TOUCHSCREEN_TOUCHRIGHT
 	tristate "Touchright serial touchscreen"
