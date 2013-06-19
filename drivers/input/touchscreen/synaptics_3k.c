@@ -68,12 +68,12 @@ static bool proximity_status = true; // psensor; true = far, false = near
 /* S2W starts */
 static int s2w_register_threshold = 9; /* beyond this threshold the panel will not register to apps */
 static int s2w_min_distance = 600; /* power will toggle at this distance from start point */
-static bool s2w_allow_stroke = true; /* use either direction for on/off */
-static bool s2w_switch = true;
+static bool s2w_allow_stroke = false; /* use either direction for on/off */
+static bool s2w_switch = false;
 /* S2W ends */
 
 /* DT2W starts */
-static bool dt2w_switch = true;
+static bool dt2w_switch = false;
 static unsigned int dt2w_min_duration = 100; /* msecs */
 static unsigned int dt2w_max_duration = 500;  /* msecs */
 static cputime64_t dt2w_start = 0;
