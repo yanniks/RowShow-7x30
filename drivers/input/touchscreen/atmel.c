@@ -129,15 +129,15 @@ static void multi_input_report(struct atmel_ts_data *ts);
 #define DEBUG 1
 /* S2W starts */
 static int s2w_register_threshold = 9; /* beyond this threshold the panel will not register to apps */
-static int s2w_min_distance = 500; /* power will toggle at this distance from start point */
+static int s2w_min_distance = 600; /* power will toggle at this distance from start point */
 static bool s2w_allow_stroke = true; /* use either direction for on/off */
 static bool s2w_switch = true;
 /* S2W ends */
 
 /* DT2W starts */
 static bool dt2w_switch = true;
-static unsigned int dt2w_duration = 100; /* msecs */
-static unsigned int dt2w_threshold = 500;  /* msecs */
+static unsigned int dt2w_min_duration = 100; /* msecs */
+static unsigned int dt2w_max_duration = 500;  /* msecs */
 static cputime64_t dt2w_start = 0;
 static bool dt2w_screen = false; /* true if last touch was on display area */
 /* DT2W ends */
@@ -838,15 +838,15 @@ static ssize_t atmel_dt2w_switch_store(struct device *dev,
 static DEVICE_ATTR(doubletap2wake, (S_IWUSR|S_IRUGO),
 		atmel_dt2w_switch_show, atmel_dt2w_switch_store);
 
-static ssize_t atmel_dt2w_duration_show(struct device *dev,
+static ssize_t atmel_dt2w_min_duration_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
 	size_t count = 0;
-	count += sprintf(buf, "%d\n", dt2w_duration);
+	count += sprintf(buf, "%d\n", dt2w_min_duration);
 	return count;
 }
 
-static ssize_t atmel_dt2w_duration_store(struct device *dev,
+static ssize_t atmel_dt2w_min_duration_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
 	unsigned long value;
@@ -854,30 +854,30 @@ static ssize_t atmel_dt2w_duration_store(struct device *dev,
 
 	ret = strict_strtoul(buf, 10, &value);
 	if (ret < 0) {
-		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_duration failed - %s\n", buf);
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_min_duration failed - %s\n", buf);
 		return count;
 	}
 	if (value > 0) {
-		dt2w_duration = (int)value;
-		printk(KERN_INFO "[TP] [sweep2wake]: dt2w_duration=%d\n", dt2w_duration);
+		dt2w_min_duration = (int)value;
+		printk(KERN_INFO "[TP] [sweep2wake]: dt2w_min_duration=%d\n", dt2w_min_duration);
 	} else {
-		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_duration failed - valid values are positive integers - %s\n", buf);
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_min_duration failed - valid values are positive integers - %s\n", buf);
 	}
 	return count;
 }
 
-static DEVICE_ATTR(dt2w_duration, (S_IWUSR|S_IRUGO),
-		atmel_dt2w_duration_show, atmel_dt2w_duration_store);
+static DEVICE_ATTR(dt2w_min_duration, (S_IWUSR|S_IRUGO),
+		atmel_dt2w_min_duration_show, atmel_dt2w_min_duration_store);
 
-static ssize_t atmel_dt2w_threshold_show(struct device *dev,
+static ssize_t atmel_dt2w_max_duration_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
 	size_t count = 0;
-	count += sprintf(buf, "%d\n", dt2w_threshold);
+	count += sprintf(buf, "%d\n", dt2w_max_duration);
 	return count;
 }
 
-static ssize_t atmel_dt2w_threshold_store(struct device *dev,
+static ssize_t atmel_dt2w_max_duration_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
 	unsigned long value;
@@ -885,20 +885,20 @@ static ssize_t atmel_dt2w_threshold_store(struct device *dev,
 
 	ret = strict_strtoul(buf, 10, &value);
 	if (ret < 0) {
-		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_threshold failed - %s\n", buf);
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_max_duration failed - %s\n", buf);
 		return count;
 	}
 	if (value > 0) {
-		dt2w_threshold = (int)value;
-		printk(KERN_INFO "[TP] [sweep2wake]: dt2w_threshold=%d\n", dt2w_threshold);
+		dt2w_max_duration = (int)value;
+		printk(KERN_INFO "[TP] [sweep2wake]: dt2w_max_duration=%d\n", dt2w_max_duration);
 	} else {
-		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_threshold failed - valid values are positive integers - %s\n", buf);
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_max_duration failed - valid values are positive integers - %s\n", buf);
 	}
 	return count;
 }
 
-static DEVICE_ATTR(dt2w_threshold, (S_IWUSR|S_IRUGO),
-		atmel_dt2w_threshold_show, atmel_dt2w_threshold_store);
+static DEVICE_ATTR(dt2w_max_duration, (S_IWUSR|S_IRUGO),
+		atmel_dt2w_max_duration_show, atmel_dt2w_max_duration_store);
 /* DT2W sysfs ends */
 #endif
 
@@ -919,8 +919,8 @@ static int atmel_touch_sysfs_init(void)
 			sysfs_create_file(android_touch_kobj, &dev_attr_s2w_register_threshold.attr) ||
 			sysfs_create_file(android_touch_kobj, &dev_attr_s2w_min_distance.attr) ||
 			sysfs_create_file(android_touch_kobj, &dev_attr_doubletap2wake.attr) ||
-			sysfs_create_file(android_touch_kobj, &dev_attr_dt2w_duration.attr) ||
-			sysfs_create_file(android_touch_kobj, &dev_attr_dt2w_threshold.attr))
+			sysfs_create_file(android_touch_kobj, &dev_attr_dt2w_min_duration.attr) ||
+			sysfs_create_file(android_touch_kobj, &dev_attr_dt2w_max_duration.attr))
 		return -ENOMEM;
 #endif
 	ret = sysfs_create_file(android_touch_kobj, &dev_attr_gpio.attr);
@@ -985,8 +985,8 @@ static void atmel_touch_sysfs_deinit(void)
 	sysfs_remove_file(android_touch_kobj, &dev_attr_s2w_register_threshold.attr);
 	sysfs_remove_file(android_touch_kobj, &dev_attr_s2w_min_distance.attr);
 	sysfs_remove_file(android_touch_kobj, &dev_attr_doubletap2wake.attr);
-	sysfs_remove_file(android_touch_kobj, &dev_attr_dt2w_duration.attr);
-	sysfs_remove_file(android_touch_kobj, &dev_attr_dt2w_threshold.attr);
+	sysfs_remove_file(android_touch_kobj, &dev_attr_dt2w_min_duration.attr);
+	sysfs_remove_file(android_touch_kobj, &dev_attr_dt2w_max_duration.attr);
 #endif
 	sysfs_remove_file(android_touch_kobj, &dev_attr_info.attr);
 	sysfs_remove_file(android_touch_kobj, &dev_attr_htc_event.attr);
@@ -1710,8 +1710,8 @@ static irqreturn_t atmel_irq_thread(int irq, void *ptr)
 				if (scr_suspended && dt2w_switch) {
 					cputime64_t now = ktime_to_ns(ktime_get());
 					cputime64_t diff = cputime64_sub(now, dt2w_start);
-					cputime64_t tap_time = dt2w_duration * 1000 * 1000;
-					cputime64_t too_long_time = dt2w_threshold * 1000 * 1000;
+					cputime64_t min = dt2w_min_duration * 1000 * 1000;
+					cputime64_t max = dt2w_max_duration * 1000 * 1000;
 
 					//if (DEBUG)
 					//	printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap diff=%lld\n", diff);
@@ -1719,7 +1719,7 @@ static irqreturn_t atmel_irq_thread(int irq, void *ptr)
 					dt2w_start = now;
 
 					if (dt2w_screen && ts->finger_data[loop_i].y < 966) {
-						if (diff > tap_time && diff < too_long_time) {
+						if (diff > min && diff < max) {
 							printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap ON\n");
 							mode = true;
 							sweep2wake_atmel_pwrtrigger();
