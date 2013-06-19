@@ -26,7 +26,6 @@
 #include <linux/synaptics_i2c_rmi.h>
 #include <linux/slab.h>
 
-#define DEBUG 1
 #define SYN_I2C_RETRY_TIMES 10
 
 struct synaptics_ts_data {
@@ -101,7 +100,8 @@ EXPORT_SYMBOL(sweep2wake_syn_setdev);
 static void sweep2wake_presspwr(struct work_struct * sweep2wake_presspwr_work) {
 	if (!mutex_trylock(&pwrlock))
 		return;
-	printk(KERN_INFO "[TP] [sweep2wake]: mode=%d", mode);
+	if (ts->debug_log_level > 0)
+		printk(KERN_INFO "[TP] [sweep2wake]: mode=%d", mode);
 	input_event(sweep2wake_pwrdev, EV_KEY, KEY_POWER, 1);
 	input_sync(sweep2wake_pwrdev);
 	msleep(100);
@@ -120,7 +120,7 @@ void sweep2wake_syn_pwrtrigger(void) {
 
 extern void synaptics_proximity_status(bool val) {
 	proximity_status = val;
-	if (DEBUG)
+	if (ts->debug_log_level > 0)
 		printk(KERN_INFO "[TP] proximity: %d", proximity_status ? 1 : 0);
 }
 
@@ -634,8 +634,8 @@ static void synaptics_ts_work_func(struct work_struct *work)
 					cputime64_t min = dt2w_min_duration * 1000 * 1000;
 					cputime64_t max = dt2w_max_duration * 1000 * 1000;
 
-					//if (DEBUG)
-					//	printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap diff=%lld\n", diff);
+					if (ts->debug_log_level > 0)
+						printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap diff=%lld\n", diff);
 
 					dt2w_start = now;
 
@@ -645,10 +645,12 @@ static void synaptics_ts_work_func(struct work_struct *work)
 							mode = true;
 							sweep2wake_syn_pwrtrigger();
 						} else {
-							printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap took too long, %lld\n", diff);
+							if (ts->debug_log_level > 0)
+								printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap took too long, %lld\n", diff);
 						}
 					} else {
-						printk(KERN_INFO "[TP] [dt2w]: previous tap was outside of the screen");
+						if (ts->debug_log_level > 0)
+							printk(KERN_INFO "[TP] [dt2w]: previous tap was outside of the screen");
 					}
 				}
 			}
@@ -1125,13 +1127,14 @@ static int synaptics_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 {
 	int ret;
 	struct synaptics_ts_data *ts = i2c_get_clientdata(client);
-	if (DEBUG)
+	if (ts->debug_log_level > 0)
 		printk(KERN_INFO "[TP] %s: enter\n", __func__);
 
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 	if (s2w_active()) {
 		//screen off, enable_irq_wake
-		printk(KERN_INFO "[TP] [sweep2wake]: enable_irq_wake\n");
+		if (ts->debug_log_level > 0)
+			printk(KERN_INFO "[TP] [sweep2wake]: enable_irq_wake\n");
 		enable_irq_wake(client->irq);
 	}
 #endif
@@ -1166,7 +1169,7 @@ static int synaptics_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 	}
 #endif
 
-	if (DEBUG)
+	if (ts->debug_log_level > 0)
 		printk(KERN_INFO "[TP] %s: leave\n", __func__);
 	return 0;
 }
@@ -1175,7 +1178,7 @@ static int synaptics_ts_resume(struct i2c_client *client)
 {
 	int ret;
 	struct synaptics_ts_data *ts = i2c_get_clientdata(client);
-	if (DEBUG)
+	if (ts->debug_log_level > 0)
 		printk(KERN_INFO "[TP] %s: enter\n", __func__);
 
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
@@ -1186,7 +1189,8 @@ static int synaptics_ts_resume(struct i2c_client *client)
 		msleep(150);
 		ret = 0;
 		//screen on, disable_irq_wake
-		printk(KERN_INFO "[TP] [sweep2wake]: disable_irq_wake\n");
+		if (ts->debug_log_level > 0)
+			printk(KERN_INFO "[TP] [sweep2wake]: disable_irq_wake\n");
 		disable_irq_wake(client->irq);
 	}
 #endif
@@ -1225,7 +1229,7 @@ static int synaptics_ts_resume(struct i2c_client *client)
 	}
 #endif
 
-	if (DEBUG)
+	if (ts->debug_log_level > 0)
 		printk(KERN_INFO "[TP] %s: leave\n", __func__);
 	return 0;
 }
