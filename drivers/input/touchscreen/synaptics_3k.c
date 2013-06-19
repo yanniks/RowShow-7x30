@@ -98,8 +98,7 @@ EXPORT_SYMBOL(sweep2wake_syn_setdev);
 static void sweep2wake_presspwr(struct work_struct * sweep2wake_presspwr_work) {
 	if (!mutex_trylock(&pwrlock))
 		return;
-	if (ts->debug_log_level > 0)
-		printk(KERN_INFO "[TP] [sweep2wake]: mode=%d", mode);
+	printk(KERN_INFO "[TP] [sweep2wake]: mode=%d", mode);
 	input_event(sweep2wake_pwrdev, EV_KEY, KEY_POWER, 1);
 	input_sync(sweep2wake_pwrdev);
 	msleep(100);
@@ -118,8 +117,7 @@ void sweep2wake_syn_pwrtrigger(void) {
 
 extern void synaptics_proximity_status(bool val) {
 	proximity_status = val;
-	if (ts->debug_log_level > 0)
-		printk(KERN_INFO "[TP] proximity: %d", proximity_status ? 1 : 0);
+	printk(KERN_INFO "[TP] proximity: %d", proximity_status ? 1 : 0);
 }
 
 static int i2c_syn_read(struct i2c_client *client, uint16_t addr, uint8_t *data, uint16_t length)
