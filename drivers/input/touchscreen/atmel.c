@@ -126,7 +126,6 @@ static void confirm_calibration(struct atmel_ts_data *ts, uint8_t recal, uint8_t
 static void multi_input_report(struct atmel_ts_data *ts);
 
 #ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
-#define DEBUG 1
 /* S2W starts */
 static int s2w_register_threshold = 9; /* beyond this threshold the panel will not register to apps */
 static int s2w_min_distance = 600; /* power will toggle at this distance from start point */
@@ -1713,8 +1712,8 @@ static irqreturn_t atmel_irq_thread(int irq, void *ptr)
 					cputime64_t min = dt2w_min_duration * 1000 * 1000;
 					cputime64_t max = dt2w_max_duration * 1000 * 1000;
 
-					//if (DEBUG)
-					//	printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap diff=%lld\n", diff);
+					if (ts->debug_log_level > 0)
+						printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap diff=%lld\n", diff);
 
 					dt2w_start = now;
 
@@ -1724,10 +1723,12 @@ static irqreturn_t atmel_irq_thread(int irq, void *ptr)
 							mode = true;
 							sweep2wake_atmel_pwrtrigger();
 						} else {
-							printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap took too long, %lld\n", diff);
+							if (ts->debug_log_level > 0)
+								printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap took too long, %lld\n", diff);
 						}
 					} else {
-						printk(KERN_INFO "[TP] [dt2w]: previous tap was outside of the screen");
+						if (ts->debug_log_level > 0)
+							printk(KERN_INFO "[TP] [dt2w]: previous tap was outside of the screen");
 					}
 				}
 			}
@@ -2792,13 +2793,14 @@ static int atmel_ts_remove(struct i2c_client *client)
 static int atmel_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 {
 	struct atmel_ts_data *ts = i2c_get_clientdata(client);
-
-	printk(KERN_INFO "%s:[TP]enter\n", __func__);
+	if (ts->debug_log_level > 0)
+		printk(KERN_INFO "%s:[TP]enter\n", __func__);
 
 #ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
 	if (s2w_active()) {
 		//screen off, enable_irq_wake
-		printk(KERN_INFO "[TP] [sweep2wake]: enable_irq_wake\n");
+		if (ts->debug_log_level > 0)
+			printk(KERN_INFO "[TP] [sweep2wake]: enable_irq_wake\n");
 		enable_irq_wake(client->irq);
 	} else {
 #endif
@@ -2841,20 +2843,22 @@ static int atmel_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 	}
 #endif
 
-	printk(KERN_INFO "%s:[TP]done\n", __func__);
+	if (ts->debug_log_level > 0)
+		printk(KERN_INFO "%s:[TP]done\n", __func__);
 	return 0;
 }
 
 static int atmel_ts_resume(struct i2c_client *client)
 {
 	struct atmel_ts_data *ts = i2c_get_clientdata(client);
-
-	printk(KERN_INFO "%s:[TP]enter\n", __func__);
+	if (ts->debug_log_level > 0)
+		printk(KERN_INFO "%s:[TP]enter\n", __func__);
 
 #ifdef CONFIG_TOUCHSCREEN_ATMEL_SWEEP2WAKE
 	if (s2w_active()) {
 		//screen on, disable_irq_wake
-		printk(KERN_INFO "[sweep2wake]: disable_irq_wake\n");
+		if (ts->debug_log_level > 0)
+			printk(KERN_INFO "[sweep2wake]: disable_irq_wake\n");
 		disable_irq_wake(client->irq);
 	}
 #endif
@@ -2946,7 +2950,8 @@ static int atmel_ts_resume(struct i2c_client *client)
 	}
 #endif
 
-	printk(KERN_INFO "%s:[TP]done\n", __func__);
+	if (ts->debug_log_level > 0)
+		printk(KERN_INFO "%s:[TP]done\n", __func__);
 	return 0;
 }
 
