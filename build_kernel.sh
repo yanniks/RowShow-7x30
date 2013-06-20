@@ -18,7 +18,7 @@ echo done!
 if [ "$RELEASE" = "true" ]
 then
   echo releasing...
-  mv /var/lib/jenkins/kernel-*.zip /var/www
+  mv /var/lib/jenkins/kernel-*.zip /var/www/kernel
   echo released new kernel binary under http://yauniks.homeunix.net/
 else
   echo everything done!
