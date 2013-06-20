@@ -1,3 +1,13 @@
+#!/usr/bin/env bash
+
+function check_result {
+  if [ "0" -ne "$?" ]
+  then
+    echo $1
+    exit 1
+  fi
+}
+
 echo cloning AnyKernel...
 rm -rf ~/AnyKernel
 git clone git://github.com/yanniks/AnyKernel.git ~/AnyKernel
