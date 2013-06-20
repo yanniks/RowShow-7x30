@@ -866,11 +866,7 @@ int intel_init_ring_buffer(struct drm_device *dev,
 	 * of the buffer.
 	 */
 	ring->effective_size = ring->size;
-<<<<<<< HEAD
 	if (IS_I830(ring->dev))
-=======
-	if (IS_I830(ring->dev) || IS_845G(ring->dev))
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		ring->effective_size -= 128;
 
 	return 0;

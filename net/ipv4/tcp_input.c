@@ -2038,10 +2038,7 @@ int tcp_use_frto(struct sock *sk)
 		return 0;
 
 	skb = tcp_write_queue_head(sk);
-<<<<<<< HEAD
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (tcp_skb_is_last(sk, skb))
 		return 1;
 	skb = tcp_write_queue_next(sk, skb);	/* Skips head */
@@ -2112,10 +2109,7 @@ void tcp_enter_frto(struct sock *sk)
 	tp->undo_retrans = 0;
 
 	skb = tcp_write_queue_head(sk);
-<<<<<<< HEAD
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (TCP_SKB_CB(skb)->sacked & TCPCB_RETRANS)
 		tp->undo_marker = 0;
 	if (TCP_SKB_CB(skb)->sacked & TCPCB_SACKED_RETRANS) {
@@ -2852,7 +2846,6 @@ static int tcp_try_undo_loss(struct sock *sk)
 static inline void tcp_complete_cwr(struct sock *sk)
 {
 	struct tcp_sock *tp = tcp_sk(sk);
-<<<<<<< HEAD
 
 	/* Do not moderate cwnd if it's already undone in cwr or recovery. */
 	if (tp->undo_marker) {
@@ -2860,11 +2853,6 @@ static inline void tcp_complete_cwr(struct sock *sk)
 			tp->snd_cwnd = min(tp->snd_cwnd, tp->snd_ssthresh);
 		else /* PRR */
 			tp->snd_cwnd = tp->snd_ssthresh;
-=======
-	/* Do not moderate cwnd if it's already undone in cwr or recovery */
-	if (tp->undo_marker && tp->snd_cwnd > tp->snd_ssthresh) {
-		tp->snd_cwnd = tp->snd_ssthresh;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		tp->snd_cwnd_stamp = tcp_time_stamp;
 	}
 	tcp_ca_event(sk, CA_EVENT_COMPLETE_CWR);
@@ -2982,7 +2970,6 @@ void tcp_simple_retransmit(struct sock *sk)
 }
 EXPORT_SYMBOL(tcp_simple_retransmit);
 
-<<<<<<< HEAD
 /* This function implements the PRR algorithm, specifcally the PRR-SSRB
  * (proportional rate reduction with slow start reduction bound) as described in
  * http://www.ietf.org/id/draft-mathis-tcpm-proportional-rate-reduction-01.txt.
@@ -3015,8 +3002,6 @@ static void tcp_update_cwnd_in_recovery(struct sock *sk, int newly_acked_sacked,
 	tp->snd_cwnd = tcp_packets_in_flight(tp) + sndcnt;
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* Process an event, which can update packets-in-flight not trivially.
  * Main goal of this function is to calculate new estimate for left_out,
  * taking into account both packets sitting in receiver's buffer and
@@ -3028,12 +3013,8 @@ static void tcp_update_cwnd_in_recovery(struct sock *sk, int newly_acked_sacked,
  * It does _not_ decide what to send, it is made in function
  * tcp_xmit_retransmit_queue().
  */
-<<<<<<< HEAD
 static void tcp_fastretrans_alert(struct sock *sk, int pkts_acked,
 				  int newly_acked_sacked, int flag)
-=======
-static void tcp_fastretrans_alert(struct sock *sk, int pkts_acked, int flag)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inet_connection_sock *icsk = inet_csk(sk);
 	struct tcp_sock *tp = tcp_sk(sk);
@@ -3183,24 +3164,17 @@ static void tcp_fastretrans_alert(struct sock *sk, int pkts_acked, int flag)
 
 		tp->bytes_acked = 0;
 		tp->snd_cwnd_cnt = 0;
-<<<<<<< HEAD
 		tp->prior_cwnd = tp->snd_cwnd;
 		tp->prr_delivered = 0;
 		tp->prr_out = 0;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		tcp_set_ca_state(sk, TCP_CA_Recovery);
 		fast_rexmit = 1;
 	}
 
 	if (do_lost || (tcp_is_fack(tp) && tcp_head_timedout(sk)))
 		tcp_update_scoreboard(sk, fast_rexmit);
-<<<<<<< HEAD
 	tp->prr_delivered += newly_acked_sacked;
 	tcp_update_cwnd_in_recovery(sk, newly_acked_sacked, fast_rexmit, flag);
-=======
-	tcp_cwnd_down(sk, flag);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	tcp_xmit_retransmit_queue(sk);
 }
 
@@ -3758,11 +3732,8 @@ static int tcp_ack(struct sock *sk, struct sk_buff *skb, int flag)
 	u32 prior_in_flight;
 	u32 prior_fackets;
 	int prior_packets;
-<<<<<<< HEAD
 	int prior_sacked = tp->sacked_out;
 	int newly_acked_sacked = 0;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int frto_cwnd = 0;
 
 	/* If the ack is older than previous acks
@@ -3846,12 +3817,9 @@ static int tcp_ack(struct sock *sk, struct sk_buff *skb, int flag)
 	/* See if we can take anything off of the retransmit queue. */
 	flag |= tcp_clean_rtx_queue(sk, prior_fackets, prior_snd_una);
 
-<<<<<<< HEAD
 	newly_acked_sacked = (prior_packets - prior_sacked) -
 			     (tp->packets_out - tp->sacked_out);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (tp->frto_counter)
 		frto_cwnd = tcp_process_frto(sk, flag);
 	/* Guarantee sacktag reordering detection against wrap-arounds */
@@ -3864,11 +3832,7 @@ static int tcp_ack(struct sock *sk, struct sk_buff *skb, int flag)
 		    tcp_may_raise_cwnd(sk, flag))
 			tcp_cong_avoid(sk, ack, prior_in_flight);
 		tcp_fastretrans_alert(sk, prior_packets - tp->packets_out,
-<<<<<<< HEAD
 				      newly_acked_sacked, flag);
-=======
-				      flag);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	} else {
 		if ((flag & FLAG_DATA_ACKED) && !frto_cwnd)
 			tcp_cong_avoid(sk, ack, prior_in_flight);

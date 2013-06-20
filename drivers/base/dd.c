@@ -285,11 +285,7 @@ static int __driver_attach(struct device *dev, void *data)
 		return 0;
 
 	if (dev->parent)	/* Needed for USB */
-<<<<<<< HEAD
 		initcall_lock(&dev->parent->mutex);
-=======
-		device_lock(dev->parent);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	device_lock(dev);
 	if (!dev->driver)
 		driver_probe_device(drv, dev);

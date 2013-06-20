@@ -3,7 +3,6 @@
 
 
 #ifdef CONFIG_BUG
-<<<<<<< HEAD
 
 /*
  * Use a suitable undefined instruction to use for ARM/Thumb2 bug handling.
@@ -56,23 +55,6 @@ do {								\
 
 #define HAVE_ARCH_BUG
 #endif  /* CONFIG_BUG */
-=======
-#ifdef CONFIG_DEBUG_BUGVERBOSE
-extern void __bug(const char *file, int line) __attribute__((noreturn));
-
-/* give file/line information */
-#define BUG()		__bug(__FILE__, __LINE__)
-
-#else
-
-/* this just causes an oops */
-#define BUG()		do { *(int *)0 = 0; } while (1)
-
-#endif
-
-#define HAVE_ARCH_BUG
-#endif
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #include <asm-generic/bug.h>
 

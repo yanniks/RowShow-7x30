@@ -1003,15 +1003,12 @@ static void qh_link_async (struct ehci_hcd *ehci, struct ehci_qh *qh)
 	head->qh_next.qh = qh;
 	head->hw->hw_next = dma;
 
-<<<<<<< HEAD
 	/*
 	 * flush qh descriptor into memory immediately,
 	 * see comments in qh_append_tds.
 	 * */
 	ehci_sync_mem();
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	qh_get(qh);
 	qh->xacterrs = 0;
 	qh->qh_state = QH_STATE_LINKED;
@@ -1099,7 +1096,6 @@ static struct ehci_qh *qh_append_tds (
 			wmb ();
 			dummy->hw_token = token;
 
-<<<<<<< HEAD
 			/*
 			 * Writing to dma coherent buffer on ARM may
 			 * be delayed to reach memory, so HC may not see
@@ -1112,8 +1108,6 @@ static struct ehci_qh *qh_append_tds (
 			 * */
 			ehci_sync_mem();
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			urb->hcpriv = qh_get (qh);
 		}
 	}
@@ -1176,7 +1170,6 @@ submit_async (
 		qtd_list_free (ehci, urb, qtd_list);
 	return rc;
 }
-<<<<<<< HEAD
 /*-------------------------------------------------------------------------*/
 /* This function creates the qtds and submits them for the
  * SINGLE_STEP_SET_FEATURE Test.
@@ -1281,9 +1274,6 @@ cleanup:
 	return -1;
 }
 #endif
-=======
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*-------------------------------------------------------------------------*/
 
 /* the async qh for the qtds being reclaimed are now unlinked from the HC */

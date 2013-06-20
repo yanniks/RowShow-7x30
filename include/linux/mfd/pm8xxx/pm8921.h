@@ -20,7 +20,6 @@
 
 #include <linux/device.h>
 #include <linux/mfd/pm8xxx/irq.h>
-<<<<<<< HEAD
 #include <linux/mfd/pm8xxx/gpio.h>
 #include <linux/mfd/pm8xxx/mpp.h>
 #include <linux/mfd/pm8xxx/rtc.h>
@@ -131,14 +130,6 @@ struct pm8921_platform_data {
 	struct pm8xxx_led_platform_data		*leds_pdata;
 	struct pm8xxx_vibrator_platform_data	*vibrator_pdata;
 	struct pm8xxx_ccadc_platform_data	*ccadc_pdata;
-=======
-
-#define PM8921_NR_IRQS		256
-
-struct pm8921_platform_data {
-	int					irq_base;
-	struct pm8xxx_irq_platform_data		*irq_pdata;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 #endif

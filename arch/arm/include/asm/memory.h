@@ -299,7 +299,6 @@ static inline __deprecated void *bus_to_virt(unsigned long x)
 #define arch_is_coherent()		0
 #endif
 
-<<<<<<< HEAD
 /*
  * Set if the architecture speculatively fetches data into cache.
  */
@@ -307,8 +306,6 @@ static inline __deprecated void *bus_to_virt(unsigned long x)
 #define arch_has_speculative_dfetch()	0
 #endif
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 
 #include <asm-generic/memory_model.h>

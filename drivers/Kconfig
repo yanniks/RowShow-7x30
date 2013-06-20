@@ -52,11 +52,8 @@ source "drivers/i2c/Kconfig"
 
 source "drivers/spi/Kconfig"
 
-<<<<<<< HEAD
 source "drivers/slimbus/Kconfig"
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 source "drivers/pps/Kconfig"
 
 source "drivers/ptp/Kconfig"
@@ -101,11 +98,8 @@ source "drivers/leds/Kconfig"
 
 source "drivers/nfc/Kconfig"
 
-<<<<<<< HEAD
 source "drivers/switch/Kconfig"
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 source "drivers/accessibility/Kconfig"
 
 source "drivers/infiniband/Kconfig"

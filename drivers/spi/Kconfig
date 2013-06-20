@@ -253,7 +253,6 @@ config SPI_OC_TINY
 	help
 	  This is the driver for OpenCores tiny SPI master controller.
 
-<<<<<<< HEAD
 config SPI_AIC3254
 	tristate "TI AIC3254 SPI support"
         default n
@@ -267,8 +266,6 @@ config SPI_SP8803COM
 	depends on ARCH_MSM7X30 || ARCH_MSM8X60
 	help
 	  SP 8803 COM is one modem
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config SPI_OMAP_UWIRE
 	tristate "OMAP1 MicroWire"
 	depends on ARCH_OMAP1
@@ -326,7 +323,6 @@ config SPI_PXA2XX
 config SPI_PXA2XX_PCI
 	def_bool SPI_PXA2XX && X86_32 && PCI
 
-<<<<<<< HEAD
 config SPI_QSD
 	tristate "Qualcomm MSM SPI support"
 	default n
@@ -337,8 +333,6 @@ config SPI_DISPLAY
 	default n
 	depends on ARCH_MSM_SCORPION && !MSM_SMP
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config SPI_S3C24XX
 	tristate "Samsung S3C24XX series SPI"
 	depends on ARCH_S3C2410 && EXPERIMENTAL
@@ -449,7 +443,6 @@ config SPI_NUC900
 	help
 	  SPI driver for Nuvoton NUC900 series ARM SoCs
 
-<<<<<<< HEAD
 config SPI_QSD
 	tristate "Qualcomm MSM SPI support"
 	default n
@@ -485,8 +478,6 @@ config SPI_TOUCHSCREEN_NTRIG
 	help
 		SPI driver for N-trig Touchscreen
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #
 # Add new SPI master controllers in alphabetical order above this line
 #

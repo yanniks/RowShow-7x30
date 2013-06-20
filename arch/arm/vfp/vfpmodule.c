@@ -11,21 +11,15 @@
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/cpu.h>
-<<<<<<< HEAD
 #include <linux/hardirq.h>
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <linux/kernel.h>
 #include <linux/notifier.h>
 #include <linux/signal.h>
 #include <linux/sched.h>
 #include <linux/smp.h>
 #include <linux/init.h>
-<<<<<<< HEAD
 #include <linux/uaccess.h>
 #include <linux/user.h>
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #include <asm/cputype.h>
 #include <asm/thread_notify.h>
@@ -398,14 +392,10 @@ void VFP_bounce(u32 trigger, u32 fpexc, struct pt_regs *regs)
 
 static void vfp_enable(void *unused)
 {
-<<<<<<< HEAD
 	u32 access;
 
 	BUG_ON(preemptible());
 	access = get_copro_access();
-=======
-	u32 access = get_copro_access();
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/*
 	 * Enable full access to VFP (cp10 and cp11)
@@ -413,7 +403,6 @@ static void vfp_enable(void *unused)
 	set_copro_access(access | CPACC_FULL(10) | CPACC_FULL(11));
 }
 
-<<<<<<< HEAD
 int vfp_flush_context(void)
 {
 	unsigned long flags;
@@ -453,32 +442,6 @@ int vfp_flush_context(void)
 }
 
 void vfp_reinit(void)
-=======
-#ifdef CONFIG_PM
-#include <linux/syscore_ops.h>
-
-static int vfp_pm_suspend(void)
-{
-	struct thread_info *ti = current_thread_info();
-	u32 fpexc = fmrx(FPEXC);
-
-	/* if vfp is on, then save state for resumption */
-	if (fpexc & FPEXC_EN) {
-		printk(KERN_DEBUG "%s: saving vfp state\n", __func__);
-		vfp_save_state(&ti->vfpstate, fpexc);
-
-		/* disable, just in case */
-		fmxr(FPEXC, fmrx(FPEXC) & ~FPEXC_EN);
-	}
-
-	/* clear any information we had about last context state */
-	memset(last_VFP_context, 0, sizeof(last_VFP_context));
-
-	return 0;
-}
-
-static void vfp_pm_resume(void)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	/* ensure we have access to the vfp */
 	vfp_enable(NULL);
@@ -487,7 +450,6 @@ static void vfp_pm_resume(void)
 	fmxr(FPEXC, fmrx(FPEXC) & ~FPEXC_EN);
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_PM
 #include <linux/syscore_ops.h>
 
@@ -503,8 +465,6 @@ static void vfp_pm_resume(void)
 	vfp_reinit();
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static struct syscore_ops vfp_pm_syscore_ops = {
 	.suspend	= vfp_pm_suspend,
 	.resume		= vfp_pm_resume,
@@ -575,7 +535,6 @@ void vfp_flush_hwstate(struct thread_info *thread)
 }
 
 /*
-<<<<<<< HEAD
  * Save the current VFP state into the provided structures and prepare
  * for entry into a new function (signal handler).
  */
@@ -673,8 +632,6 @@ int vfp_restore_user_hwstate(struct user_vfp __user *ufp,
 }
 
 /*
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * VFP hardware can lose all context when a CPU goes offline.
  * As we will be running in SMP mode with CPU hotplug, we will save the
  * hardware state at every thread switch.  We clear our held state when
@@ -705,11 +662,7 @@ static int __init vfp_init(void)
 	unsigned int cpu_arch = cpu_architecture();
 
 	if (cpu_arch >= CPU_ARCH_ARMv6)
-<<<<<<< HEAD
 		on_each_cpu(vfp_enable, NULL, 1);
-=======
-		vfp_enable(NULL);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/*
 	 * First check that there is a VFP that we can use.
@@ -730,11 +683,6 @@ static int __init vfp_init(void)
 	} else {
 		hotcpu_notifier(vfp_hotplug, 0);
 
-<<<<<<< HEAD
-=======
-		smp_call_function(vfp_enable, NULL, 1);
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		VFP_arch = (vfpsid & FPSID_ARCH_MASK) >> FPSID_ARCH_BIT;  /* Extract the architecture version */
 		printk("implementor %02x architecture %d part %02x variant %x rev %x\n",
 			(vfpsid & FPSID_IMPLEMENTER_MASK) >> FPSID_IMPLEMENTER_BIT,
@@ -768,10 +716,6 @@ static int __init vfp_init(void)
 				elf_hwcap |= HWCAP_VFPD32;
 		}
 #endif
-<<<<<<< HEAD
-=======
-#ifdef CONFIG_NEON
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		/*
 		 * Check for the presence of the Advanced SIMD
 		 * load/store instructions, integer and single
@@ -779,7 +723,6 @@ static int __init vfp_init(void)
 		 * for NEON if the hardware has the MVFR registers.
 		 */
 		if ((read_cpuid_id() & 0x000f0000) == 0x000f0000) {
-<<<<<<< HEAD
 #ifdef CONFIG_NEON
 			if ((fmrx(MVFR1) & 0x000fff00) == 0x00011100)
 				elf_hwcap |= HWCAP_NEON;
@@ -789,12 +732,6 @@ static int __init vfp_init(void)
 			    (read_cpuid_id() & 0xff00fc00) == 0x51000400)
 				elf_hwcap |= HWCAP_VFPv4;
 		}
-=======
-			if ((fmrx(MVFR1) & 0x000fff00) == 0x00011100)
-				elf_hwcap |= HWCAP_NEON;
-		}
-#endif
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	return 0;
 }

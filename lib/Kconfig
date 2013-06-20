@@ -16,15 +16,12 @@ config BITREVERSE
 config RATIONAL
 	boolean
 
-<<<<<<< HEAD
 config GENERIC_STRNCPY_FROM_USER
 	bool
 
 config GENERIC_STRNLEN_USER
 	bool
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config GENERIC_FIND_FIRST_BIT
 	bool
 
@@ -60,16 +57,11 @@ config CRC_ITU_T
 	  functions require M here.
 
 config CRC32
-<<<<<<< HEAD
 	tristate "CRC32/CRC32c functions"
-=======
-	tristate "CRC32 functions"
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	default y
 	select BITREVERSE
 	help
 	  This option is provided for the case where no in-kernel-tree
-<<<<<<< HEAD
 	  modules require CRC32/CRC32c functions, but a module built outside
 	  the kernel tree does. Such modules that use library CRC32/CRC32c
 	  functions require M here.
@@ -118,11 +110,6 @@ config CRC32_BIT
 	  no lookup table.  This is provided as a debugging option.
 
 endchoice
-=======
-	  modules require CRC32 functions, but a module built outside the
-	  kernel tree does. Such modules that use library CRC32 functions
-	  require M here.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 config CRC7
 	tristate "CRC7 functions"

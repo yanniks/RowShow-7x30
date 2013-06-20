@@ -1,10 +1,6 @@
 /*
  * Copyright (C) 2007 Google, Inc.
-<<<<<<< HEAD
  * Copyright (c) 2007-2011, Code Aurora Forum. All rights reserved.
-=======
- * Copyright (c) 2007-2010, Code Aurora Forum. All rights reserved.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -21,15 +17,11 @@
 #include <linux/module.h>
 #include <linux/ctype.h>
 #include <linux/debugfs.h>
-<<<<<<< HEAD
 #include <linux/seq_file.h>
 #include <linux/clk.h>
 #include <linux/list.h>
 #include <linux/clkdev.h>
 
-=======
-#include <linux/clk.h>
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include "clock.h"
 
 static int clock_debug_rate_set(void *data, u64 val)
@@ -39,24 +31,12 @@ static int clock_debug_rate_set(void *data, u64 val)
 
 	/* Only increases to max rate will succeed, but that's actually good
 	 * for debugging purposes so we don't check for error. */
-<<<<<<< HEAD
 	if (clock->flags & CLKFLAG_MAX)
 		clk_set_max_rate(clock, val);
 	ret = clk_set_rate(clock, val);
 	if (ret)
 		pr_err("clk_set_rate failed (%d)\n", ret);
 
-=======
-	if (clock->flags & CLK_MAX)
-		clk_set_max_rate(clock, val);
-	if (clock->flags & CLK_MIN)
-		ret = clk_set_min_rate(clock, val);
-	else
-		ret = clk_set_rate(clock, val);
-	if (ret != 0)
-		printk(KERN_ERR "clk_set%s_rate failed (%d)\n",
-			(clock->flags & CLK_MIN) ? "_min" : "", ret);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return ret;
 }
 
@@ -70,7 +50,6 @@ static int clock_debug_rate_get(void *data, u64 *val)
 DEFINE_SIMPLE_ATTRIBUTE(clock_rate_fops, clock_debug_rate_get,
 			clock_debug_rate_set, "%llu\n");
 
-<<<<<<< HEAD
 static struct clk *measure;
 
 static int clock_debug_measure_get(void *data, u64 *val)
@@ -88,23 +67,15 @@ static int clock_debug_measure_get(void *data, u64 *val)
 DEFINE_SIMPLE_ATTRIBUTE(clock_measure_fops, clock_debug_measure_get,
 			NULL, "%lld\n");
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static int clock_debug_enable_set(void *data, u64 val)
 {
 	struct clk *clock = data;
 	int rc = 0;
 
 	if (val)
-<<<<<<< HEAD
 		rc = clk_enable(clock);
 	else
 		clk_disable(clock);
-=======
-		rc = clock->ops->enable(clock->id);
-	else
-		clock->ops->disable(clock->id);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return rc;
 }
@@ -112,7 +83,6 @@ static int clock_debug_enable_set(void *data, u64 val)
 static int clock_debug_enable_get(void *data, u64 *val)
 {
 	struct clk *clock = data;
-<<<<<<< HEAD
 	int enabled;
 
 	if (clock->ops->is_enabled)
@@ -121,30 +91,17 @@ static int clock_debug_enable_get(void *data, u64 *val)
 		enabled = !!(clock->count);
 
 	*val = enabled;
-=======
-
-	*val = clock->ops->is_enabled(clock->id);
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 
 DEFINE_SIMPLE_ATTRIBUTE(clock_enable_fops, clock_debug_enable_get,
-<<<<<<< HEAD
 			clock_debug_enable_set, "%lld\n");
-=======
-			clock_debug_enable_set, "%llu\n");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static int clock_debug_local_get(void *data, u64 *val)
 {
 	struct clk *clock = data;
 
-<<<<<<< HEAD
 	*val = clock->ops->is_local(clock);
-=======
-	*val = clock->ops->is_local(clock->id);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return 0;
 }
@@ -152,7 +109,6 @@ static int clock_debug_local_get(void *data, u64 *val)
 DEFINE_SIMPLE_ATTRIBUTE(clock_local_fops, clock_debug_local_get,
 			NULL, "%llu\n");
 
-<<<<<<< HEAD
 struct clk *clock_debug_parent_get(void *data)
 {
 	struct clk *clock = data;
@@ -367,18 +323,6 @@ static const struct file_operations list_rates_fops = {
 	.release	= seq_release,
 };
 
-=======
-static struct dentry *debugfs_base;
-
-int __init clock_debug_init(void)
-{
-	debugfs_base = debugfs_create_dir("clk", NULL);
-	if (!debugfs_base)
-		return -ENOMEM;
-	return 0;
-}
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 int __init clock_debug_add(struct clk *clock)
 {
 	char temp[50], *ptr;
@@ -387,11 +331,7 @@ int __init clock_debug_add(struct clk *clock)
 	if (!debugfs_base)
 		return -ENOMEM;
 
-<<<<<<< HEAD
 	strlcpy(temp, clock->dbg_name, ARRAY_SIZE(temp));
-=======
-	strncpy(temp, clock->dbg_name, ARRAY_SIZE(temp)-1);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	for (ptr = temp; *ptr; ptr++)
 		*ptr = tolower(*ptr);
 
@@ -410,7 +350,6 @@ int __init clock_debug_add(struct clk *clock)
 	if (!debugfs_create_file("is_local", S_IRUGO, clk_dir, clock,
 				&clock_local_fops))
 		goto error;
-<<<<<<< HEAD
 
 	if (measure &&
 	    !clk_set_parent(measure, clock) &&
@@ -423,8 +362,6 @@ int __init clock_debug_add(struct clk *clock)
 				S_IRUGO, clk_dir, clock, &list_rates_fops))
 			goto error;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 error:
 	debugfs_remove_recursive(clk_dir);

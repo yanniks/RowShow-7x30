@@ -23,21 +23,14 @@
 #include <linux/slab.h>
 #include <linux/suspend.h>
 #include <linux/syscore_ops.h>
-<<<<<<< HEAD
-=======
-#include <linux/ftrace.h>
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <trace/events/power.h>
 
 #include "power.h"
 
 const char *const pm_states[PM_SUSPEND_MAX] = {
-<<<<<<< HEAD
 #ifdef CONFIG_EARLYSUSPEND
 	[PM_SUSPEND_ON]		= "on",
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	[PM_SUSPEND_STANDBY]	= "standby",
 	[PM_SUSPEND_MEM]	= "mem",
 };
@@ -54,10 +47,7 @@ void suspend_set_ops(const struct platform_suspend_ops *ops)
 	suspend_ops = ops;
 	mutex_unlock(&pm_mutex);
 }
-<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(suspend_set_ops);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 bool valid_state(suspend_state_t state)
 {
@@ -79,10 +69,7 @@ int suspend_valid_only_mem(suspend_state_t state)
 {
 	return state == PM_SUSPEND_MEM;
 }
-<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(suspend_valid_only_mem);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static int suspend_test(int level)
 {
@@ -144,7 +131,6 @@ void __attribute__ ((weak)) arch_suspend_enable_irqs(void)
 }
 
 /**
-<<<<<<< HEAD
  * suspend_enter - enter the desired system sleep state.
  * @state: State to enter
  * @wakeup: Returns information that suspend should not be entered again.
@@ -152,14 +138,6 @@ void __attribute__ ((weak)) arch_suspend_enable_irqs(void)
  * This function should be called after devices have been suspended.
  */
 static int suspend_enter(suspend_state_t state, bool *wakeup)
-=======
- *	suspend_enter - enter the desired system sleep state.
- *	@state:		state to enter
- *
- *	This function should be called after devices have been suspended.
- */
-static int suspend_enter(suspend_state_t state)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	int error;
 
@@ -193,12 +171,8 @@ static int suspend_enter(suspend_state_t state)
 
 	error = syscore_suspend();
 	if (!error) {
-<<<<<<< HEAD
 		*wakeup = pm_wakeup_pending();
 		if (!(suspend_test(TEST_CORE) || *wakeup)) {
-=======
-		if (!(suspend_test(TEST_CORE) || pm_wakeup_pending())) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			error = suspend_ops->enter(state);
 			events_check_enabled = false;
 		}
@@ -232,10 +206,7 @@ static int suspend_enter(suspend_state_t state)
 int suspend_devices_and_enter(suspend_state_t state)
 {
 	int error;
-<<<<<<< HEAD
 	bool wakeup = false;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (!suspend_ops)
 		return -ENOSYS;
@@ -247,10 +218,6 @@ int suspend_devices_and_enter(suspend_state_t state)
 			goto Close;
 	}
 	suspend_console();
-<<<<<<< HEAD
-=======
-	ftrace_stop();
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	suspend_test_start();
 	error = dpm_suspend_start(PMSG_SUSPEND);
 	if (error) {
@@ -261,23 +228,15 @@ int suspend_devices_and_enter(suspend_state_t state)
 	if (suspend_test(TEST_DEVICES))
 		goto Recover_platform;
 
-<<<<<<< HEAD
 	do {
 		error = suspend_enter(state, &wakeup);
 	} while (!error && !wakeup
 		&& suspend_ops->suspend_again && suspend_ops->suspend_again());
-=======
-	error = suspend_enter(state);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
  Resume_devices:
 	suspend_test_start();
 	dpm_resume_end(PMSG_RESUME);
 	suspend_test_finish("resume devices");
-<<<<<<< HEAD
-=======
-	ftrace_start();
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	resume_console();
  Close:
 	if (suspend_ops->end)
@@ -325,13 +284,7 @@ int enter_state(suspend_state_t state)
 	if (!mutex_trylock(&pm_mutex))
 		return -EBUSY;
 
-<<<<<<< HEAD
 	suspend_sys_sync_queue();
-=======
-	printk(KERN_INFO "PM: Syncing filesystems ... ");
-	sys_sync();
-	printk("done.\n");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	pr_debug("PM: Preparing system for %s sleep\n", pm_states[state]);
 	error = suspend_prepare();

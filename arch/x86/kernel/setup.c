@@ -306,12 +306,8 @@ static void __init cleanup_highmap(void)
 static void __init reserve_brk(void)
 {
 	if (_brk_end > _brk_start)
-<<<<<<< HEAD
 		memblock_reserve(__pa(_brk_start),
 				 __pa(_brk_end) - __pa(_brk_start));
-=======
-		memblock_x86_reserve_range(__pa(_brk_start), __pa(_brk_end), "BRK");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* Mark brk area as locked down and no longer taking any
 	   new allocations */
@@ -336,21 +332,13 @@ static void __init relocate_initrd(void)
 	ramdisk_here = memblock_find_in_range(0, end_of_lowmem, area_size,
 					 PAGE_SIZE);
 
-<<<<<<< HEAD
 	if (!ramdisk_here)
-=======
-	if (ramdisk_here == MEMBLOCK_ERROR)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		panic("Cannot find place for new RAMDISK of size %lld\n",
 			 ramdisk_size);
 
 	/* Note: this includes all the lowmem currently occupied by
 	   the initrd, we rely on that fact to keep the data intact. */
-<<<<<<< HEAD
 	memblock_reserve(ramdisk_here, area_size);
-=======
-	memblock_x86_reserve_range(ramdisk_here, ramdisk_here + area_size, "NEW RAMDISK");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	initrd_start = ramdisk_here + PAGE_OFFSET;
 	initrd_end   = initrd_start + ramdisk_size;
 	printk(KERN_INFO "Allocated new RAMDISK: %08llx - %08llx\n",
@@ -406,11 +394,7 @@ static void __init reserve_initrd(void)
 	initrd_start = 0;
 
 	if (ramdisk_size >= (end_of_lowmem>>1)) {
-<<<<<<< HEAD
 		memblock_free(ramdisk_image, ramdisk_end - ramdisk_image);
-=======
-		memblock_x86_free_range(ramdisk_image, ramdisk_end);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		printk(KERN_ERR "initrd too large to handle, "
 		       "disabling initrd\n");
 		return;
@@ -433,11 +417,7 @@ static void __init reserve_initrd(void)
 
 	relocate_initrd();
 
-<<<<<<< HEAD
 	memblock_free(ramdisk_image, ramdisk_end - ramdisk_image);
-=======
-	memblock_x86_free_range(ramdisk_image, ramdisk_end);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 #else
 static void __init reserve_initrd(void)
@@ -511,22 +491,13 @@ static void __init memblock_x86_reserve_range_setup_data(void)
 {
 	struct setup_data *data;
 	u64 pa_data;
-<<<<<<< HEAD
-=======
-	char buf[32];
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (boot_params.hdr.version < 0x0209)
 		return;
 	pa_data = boot_params.hdr.setup_data;
 	while (pa_data) {
 		data = early_memremap(pa_data, sizeof(*data));
-<<<<<<< HEAD
 		memblock_reserve(pa_data, sizeof(*data) + data->len);
-=======
-		sprintf(buf, "setup data %x", data->type);
-		memblock_x86_reserve_range(pa_data, pa_data+sizeof(*data)+data->len, buf);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		pa_data = data->next;
 		early_iounmap(data, sizeof(*data));
 	}
@@ -582,11 +553,7 @@ static void __init reserve_crashkernel(void)
 		crash_base = memblock_find_in_range(alignment,
 			       CRASH_KERNEL_ADDR_MAX, crash_size, alignment);
 
-<<<<<<< HEAD
 		if (!crash_base) {
-=======
-		if (crash_base == MEMBLOCK_ERROR) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			pr_info("crashkernel reservation failed - No suitable area found.\n");
 			return;
 		}
@@ -600,11 +567,7 @@ static void __init reserve_crashkernel(void)
 			return;
 		}
 	}
-<<<<<<< HEAD
 	memblock_reserve(crash_base, crash_size);
-=======
-	memblock_x86_reserve_range(crash_base, crash_base + crash_size, "CRASH KERNEL");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	printk(KERN_INFO "Reserving %ldMB of memory at %ldMB "
 			"for crashkernel (System RAM: %ldMB)\n",
@@ -662,11 +625,7 @@ static __init void reserve_ibft_region(void)
 	addr = find_ibft_region(&size);
 
 	if (size)
-<<<<<<< HEAD
 		memblock_reserve(addr, size);
-=======
-		memblock_x86_reserve_range(addr, addr + size, "* ibft");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static unsigned reserve_low = CONFIG_X86_RESERVE_LOW << 10;

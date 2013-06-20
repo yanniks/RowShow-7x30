@@ -120,22 +120,14 @@ static int mmc_bus_remove(struct device *dev)
 	return 0;
 }
 
-<<<<<<< HEAD
 static int mmc_bus_suspend(struct device *dev)
-=======
-static int mmc_bus_suspend(struct device *dev, pm_message_t state)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct mmc_driver *drv = to_mmc_driver(dev->driver);
 	struct mmc_card *card = mmc_dev_to_card(dev);
 	int ret = 0;
 
 	if (dev->driver && drv->suspend)
-<<<<<<< HEAD
 		ret = drv->suspend(card);
-=======
-		ret = drv->suspend(card, state);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return ret;
 }
 
@@ -171,36 +163,20 @@ static int mmc_runtime_idle(struct device *dev)
 	return pm_runtime_suspend(dev);
 }
 
-<<<<<<< HEAD
 #else /* !CONFIG_PM_RUNTIME */
 #define mmc_runtime_suspend	NULL
 #define mmc_runtime_resume	NULL
 #define mmc_runtime_idle	NULL
 #endif /* !CONFIG_PM_RUNTIME */
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static const struct dev_pm_ops mmc_bus_pm_ops = {
 	.runtime_suspend	= mmc_runtime_suspend,
 	.runtime_resume		= mmc_runtime_resume,
 	.runtime_idle		= mmc_runtime_idle,
-<<<<<<< HEAD
 	.suspend		= mmc_bus_suspend,
 	.resume			= mmc_bus_resume,
 };
 
-=======
-};
-
-#define MMC_PM_OPS_PTR	(&mmc_bus_pm_ops)
-
-#else /* !CONFIG_PM_RUNTIME */
-
-#define MMC_PM_OPS_PTR	NULL
-
-#endif /* !CONFIG_PM_RUNTIME */
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static struct bus_type mmc_bus_type = {
 	.name		= "mmc",
 	.dev_attrs	= mmc_dev_attrs,
@@ -208,13 +184,7 @@ static struct bus_type mmc_bus_type = {
 	.uevent		= mmc_bus_uevent,
 	.probe		= mmc_bus_probe,
 	.remove		= mmc_bus_remove,
-<<<<<<< HEAD
 	.pm		= &mmc_bus_pm_ops,
-=======
-	.suspend	= mmc_bus_suspend,
-	.resume		= mmc_bus_resume,
-	.pm		= MMC_PM_OPS_PTR,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 int mmc_register_bus(void)
@@ -295,10 +265,7 @@ int mmc_add_card(struct mmc_card *card)
 	const char *type;
 
 	dev_set_name(&card->dev, "%s:%04x", mmc_hostname(card->host), card->rca);
-<<<<<<< HEAD
 	card->removed = 0;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	switch (card->type) {
 	case MMC_TYPE_MMC:
@@ -360,11 +327,8 @@ int mmc_add_card(struct mmc_card *card)
  */
 void mmc_remove_card(struct mmc_card *card)
 {
-<<<<<<< HEAD
 	if (mmc_card_sd(card))
 		card->removed = 1;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_DEBUG_FS
 	mmc_remove_card_debugfs(card);
 #endif

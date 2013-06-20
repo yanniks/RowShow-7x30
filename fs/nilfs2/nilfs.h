@@ -235,11 +235,7 @@ extern void nilfs_set_link(struct inode *, struct nilfs_dir_entry *,
 			   struct page *, struct inode *);
 
 /* file.c */
-<<<<<<< HEAD
 extern int nilfs_sync_file(struct file *, loff_t, loff_t, int);
-=======
-extern int nilfs_sync_file(struct file *, int);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* ioctl.c */
 long nilfs_ioctl(struct file *, unsigned int, unsigned long);
@@ -268,11 +264,7 @@ extern void nilfs_update_inode(struct inode *, struct buffer_head *);
 extern void nilfs_truncate(struct inode *);
 extern void nilfs_evict_inode(struct inode *);
 extern int nilfs_setattr(struct dentry *, struct iattr *);
-<<<<<<< HEAD
 int nilfs_permission(struct inode *inode, int mask);
-=======
-int nilfs_permission(struct inode *inode, int mask, unsigned int flags);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 int nilfs_load_inode_block(struct inode *inode, struct buffer_head **pbh);
 extern int nilfs_inode_dirty(struct inode *);
 int nilfs_set_file_dirty(struct inode *inode, unsigned nr_dirty);

@@ -240,7 +240,6 @@ static inline int ext4_journal_force_commit(journal_t *journal)
 
 static inline int ext4_jbd2_file_inode(handle_t *handle, struct inode *inode)
 {
-<<<<<<< HEAD
 	if (ext4_handle_valid(handle)) {
 		if (unlikely(EXT4_I(inode)->jinode == NULL)) {
 			/* Should never happen */
@@ -250,10 +249,6 @@ static inline int ext4_jbd2_file_inode(handle_t *handle, struct inode *inode)
 		}
 		return jbd2_journal_file_inode(handle, EXT4_I(inode)->jinode);
 	}
-=======
-	if (ext4_handle_valid(handle))
-		return jbd2_journal_file_inode(handle, EXT4_I(inode)->jinode);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 

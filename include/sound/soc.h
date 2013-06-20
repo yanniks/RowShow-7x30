@@ -47,7 +47,6 @@
 	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw,\
 	.put = snd_soc_put_volsw, \
 	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert) }
-<<<<<<< HEAD
 #define SOC_SINGLE_S8_TLV(xname, xreg, xmin, xmax, tlv_array) \
 {	.iface  = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
@@ -58,8 +57,6 @@
 	.private_value = (unsigned long)&(struct soc_mixer_control) \
 		{.reg = xreg, .min = xmin, .max = xmax, \
 		 .platform_max = xmax} }
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define SOC_DOUBLE(xname, xreg, shift_left, shift_right, xmax, xinvert) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
 	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw, \
@@ -102,11 +99,7 @@
 	.info   = snd_soc_info_volsw_s8, .get = snd_soc_get_volsw_s8, \
 	.put    = snd_soc_put_volsw_s8, \
 	.private_value = (unsigned long)&(struct soc_mixer_control) \
-<<<<<<< HEAD
 		{.reg = xreg, .rshift = 8, .min = xmin, .max = xmax, \
-=======
-		{.reg = xreg, .min = xmin, .max = xmax, \
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		 .platform_max = xmax} }
 #define SOC_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmax, xtexts) \
 {	.reg = xreg, .shift_l = xshift_l, .shift_r = xshift_r, \
@@ -219,7 +212,6 @@
 #define SOC_VALUE_ENUM_SINGLE_DECL(name, xreg, xshift, xmask, xtexts, xvalues) \
 	SOC_VALUE_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xmask, xtexts, xvalues)
 
-<<<<<<< HEAD
 
 /* DAI Link Host Mode Support */
 #define SND_SOC_DAI_LINK_NO_HOST		0x1
@@ -243,8 +235,6 @@
 	(soc_enum->texts ? soc_enum->texts[idx] : soc_enum->dtexts[idx])
 
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * Bias levels
  *
@@ -280,10 +270,7 @@ struct snd_soc_jack;
 struct snd_soc_jack_zone;
 struct snd_soc_jack_pin;
 struct snd_soc_cache_ops;
-<<<<<<< HEAD
 struct snd_soc_dsp_link;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <sound/soc-dapm.h>
 
 #ifdef CONFIG_GPIOLIB
@@ -305,14 +292,11 @@ enum snd_soc_compress_type {
 	SND_SOC_RBTREE_COMPRESSION
 };
 
-<<<<<<< HEAD
 enum snd_soc_pcm_subclass {
 	SND_SOC_MUTEX_FE	= 0,
 	SND_SOC_MUTEX_BE	= 1,
 };
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 int snd_soc_codec_set_sysclk(struct snd_soc_codec *codec, int clk_id,
 			     unsigned int freq, int dir);
 int snd_soc_codec_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
@@ -352,7 +336,6 @@ int snd_soc_default_readable_register(struct snd_soc_codec *codec,
 				      unsigned int reg);
 int snd_soc_default_writable_register(struct snd_soc_codec *codec,
 				      unsigned int reg);
-<<<<<<< HEAD
 unsigned int snd_soc_platform_read(struct snd_soc_platform *platform,
 					unsigned int reg);
 unsigned int snd_soc_platform_write(struct snd_soc_platform *platform,
@@ -362,8 +345,6 @@ struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
 		const char *dai_link, int stream);
 struct snd_soc_pcm_runtime *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
 		const char *dai_link);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* Utility functions to get clock rates from various things */
 int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
@@ -416,11 +397,8 @@ struct snd_kcontrol *snd_soc_cnew(const struct snd_kcontrol_new *_template,
 				  const char *prefix);
 int snd_soc_add_controls(struct snd_soc_codec *codec,
 	const struct snd_kcontrol_new *controls, int num_controls);
-<<<<<<< HEAD
 int snd_soc_add_platform_controls(struct snd_soc_platform *platform,
 	const struct snd_kcontrol_new *controls, int num_controls);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 int snd_soc_info_enum_double(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_info *uinfo);
 int snd_soc_info_enum_ext(struct snd_kcontrol *kcontrol,
@@ -684,7 +662,6 @@ struct snd_soc_codec_driver {
 
 	void (*seq_notifier)(struct snd_soc_dapm_context *,
 			     enum snd_soc_dapm_type, int);
-<<<<<<< HEAD
 
 	/* probe ordering - for components with runtime dependencies */
 	int probe_order;
@@ -692,8 +669,6 @@ struct snd_soc_codec_driver {
 
 	/* codec stream completion event */
 	int (*stream_event)(struct snd_soc_dapm_context *dapm);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 /* SoC platform interface */
@@ -705,12 +680,7 @@ struct snd_soc_platform_driver {
 	int (*resume)(struct snd_soc_dai *dai);
 
 	/* pcm creation and destruction */
-<<<<<<< HEAD
 	int (*pcm_new)(struct snd_soc_pcm_runtime *);
-=======
-	int (*pcm_new)(struct snd_card *, struct snd_soc_dai *,
-		struct snd_pcm *);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	void (*pcm_free)(struct snd_pcm *);
 
 	/*
@@ -722,7 +692,6 @@ struct snd_soc_platform_driver {
 
 	/* platform stream ops */
 	struct snd_pcm_ops *ops;
-<<<<<<< HEAD
 
 	/* probe ordering - for components with runtime dependencies */
 	int probe_order;
@@ -734,8 +703,6 @@ struct snd_soc_platform_driver {
 	/* platform DAPM IO TODO: refactor this */
 	unsigned int (*read)(struct snd_soc_platform *, unsigned int);
 	int (*write)(struct snd_soc_platform *, unsigned int, unsigned int);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 struct snd_soc_platform {
@@ -747,7 +714,6 @@ struct snd_soc_platform {
 	unsigned int suspended:1; /* platform is suspended */
 	unsigned int probed:1;
 
-<<<<<<< HEAD
 	struct snd_card *snd_card;
 	struct snd_soc_card *card;
 	struct list_head list;
@@ -761,11 +727,6 @@ struct snd_soc_platform {
 	struct dentry *debugfs_platform_root;
 	struct dentry *debugfs_dapm;
 #endif
-=======
-	struct snd_soc_card *card;
-	struct list_head list;
-	struct list_head card_list;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 struct snd_soc_dai_link {
@@ -777,16 +738,12 @@ struct snd_soc_dai_link {
 	const char *cpu_dai_name;
 	const char *codec_dai_name;
 
-<<<<<<< HEAD
 	struct snd_soc_dsp_link *dsp_link;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* Keep DAI active over suspend */
 	unsigned int ignore_suspend:1;
 
 	/* Symmetry requirements */
 	unsigned int symmetric_rates:1;
-<<<<<<< HEAD
 	/* No PCM created for this DAI link */
 	unsigned int no_pcm:1;
 	/* This DAI link can change CODEC and platform at runtime*/
@@ -797,19 +754,14 @@ struct snd_soc_dai_link {
 	unsigned int be_id;
 	/* This DAI can support no host IO (no pcm data is copied to from host) */
 	unsigned int no_host_mode:2;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* codec/machine specific init - e.g. add machine controls */
 	int (*init)(struct snd_soc_pcm_runtime *rtd);
 
-<<<<<<< HEAD
 	/* hw_params re-writing for BE and FE sync */
 	int (*be_hw_params_fixup)(struct snd_soc_pcm_runtime *rtd,
 			struct snd_pcm_hw_params *params);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* machine stream operations */
 	struct snd_soc_ops *ops;
 };
@@ -849,11 +801,8 @@ struct snd_soc_card {
 
 	struct list_head list;
 	struct mutex mutex;
-<<<<<<< HEAD
 	struct mutex dapm_mutex;
 	struct mutex dsp_mutex;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	bool instantiated;
 
@@ -929,7 +878,6 @@ struct snd_soc_card {
 	void *drvdata;
 };
 
-<<<<<<< HEAD
 /* DSP runtime data */
 struct snd_soc_dsp_runtime {
 	struct list_head be_clients;
@@ -940,29 +888,21 @@ struct snd_soc_dsp_runtime {
 	int runtime_update;
 };
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* SoC machine DAI configuration, glues a codec and cpu DAI together */
 struct snd_soc_pcm_runtime  {
 	struct device dev;
 	struct snd_soc_card *card;
 	struct snd_soc_dai_link *dai_link;
-<<<<<<< HEAD
 	struct mutex pcm_mutex;
 	enum snd_soc_pcm_subclass pcm_subclass;
 	struct snd_pcm_ops ops;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	unsigned int complete:1;
 	unsigned int dev_registered:1;
 
-<<<<<<< HEAD
 	/* DSP runtime data */
 	struct snd_soc_dsp_runtime dsp[2];
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* Symmetry data - only valid if symmetry is being enforced */
 	unsigned int rate;
 	long pmdown_time;
@@ -975,13 +915,10 @@ struct snd_soc_pcm_runtime  {
 	struct snd_soc_dai *cpu_dai;
 
 	struct delayed_work delayed_work;
-<<<<<<< HEAD
 
 #ifdef CONFIG_DEBUG_FS
 	struct dentry *debugfs_dsp_root;
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 /* mixer control */
@@ -999,10 +936,7 @@ struct soc_enum {
 	unsigned int max;
 	unsigned int mask;
 	const char * const *texts;
-<<<<<<< HEAD
 	char **dtexts;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	const unsigned int *values;
 	void *dapm;
 };

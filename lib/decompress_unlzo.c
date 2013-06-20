@@ -31,11 +31,7 @@
  */
 
 #ifdef STATIC
-<<<<<<< HEAD
 #include "lzo/lzo1x_decompress_safe.c"
-=======
-#include "lzo/lzo1x_decompress.c"
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #else
 #include <linux/decompress/unlzo.h>
 #endif
@@ -283,11 +279,7 @@ STATIC inline int INIT unlzo(u8 *input, int in_len,
 	ret = 0;
 exit_2:
 	if (!input)
-<<<<<<< HEAD
 		free(in_buf_save);
-=======
-		free(in_buf);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 exit_1:
 	if (!output)
 		free(out_buf);

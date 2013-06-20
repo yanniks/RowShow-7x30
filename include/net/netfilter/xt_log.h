@@ -47,11 +47,7 @@ static void sb_close(struct sbuff *m)
 	if (likely(m != &emergency))
 		kfree(m);
 	else {
-<<<<<<< HEAD
 		(void) xchg(&emergency_ptr, m);
-=======
-		xchg(&emergency_ptr, m);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		local_bh_enable();
 	}
 }

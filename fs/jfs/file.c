@@ -28,39 +28,26 @@
 #include "jfs_acl.h"
 #include "jfs_debug.h"
 
-<<<<<<< HEAD
 int jfs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
-=======
-int jfs_fsync(struct file *file, int datasync)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inode *inode = file->f_mapping->host;
 	int rc = 0;
 
-<<<<<<< HEAD
 	rc = filemap_write_and_wait_range(inode->i_mapping, start, end);
 	if (rc)
 		return rc;
 
 	mutex_lock(&inode->i_mutex);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!(inode->i_state & I_DIRTY) ||
 	    (datasync && !(inode->i_state & I_DIRTY_DATASYNC))) {
 		/* Make sure committed changes hit the disk */
 		jfs_flush_journal(JFS_SBI(inode->i_sb)->log, 1);
-<<<<<<< HEAD
 		mutex_unlock(&inode->i_mutex);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return rc;
 	}
 
 	rc |= jfs_commit_inode(inode, 1);
-<<<<<<< HEAD
 	mutex_unlock(&inode->i_mutex);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return rc ? -EIO : 0;
 }
@@ -130,11 +117,8 @@ int jfs_setattr(struct dentry *dentry, struct iattr *iattr)
 
 	if ((iattr->ia_valid & ATTR_SIZE) &&
 	    iattr->ia_size != i_size_read(inode)) {
-<<<<<<< HEAD
 		inode_dio_wait(inode);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		rc = vmtruncate(inode, iattr->ia_size);
 		if (rc)
 			return rc;
@@ -156,11 +140,7 @@ const struct inode_operations jfs_file_inode_operations = {
 	.removexattr	= jfs_removexattr,
 	.setattr	= jfs_setattr,
 #ifdef CONFIG_JFS_POSIX_ACL
-<<<<<<< HEAD
 	.get_acl	= jfs_get_acl,
-=======
-	.check_acl	= jfs_check_acl,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 };
 

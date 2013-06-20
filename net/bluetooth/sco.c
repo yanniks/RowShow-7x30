@@ -1,10 +1,7 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
    Copyright (C) 2000-2001 Qualcomm Incorporated
-<<<<<<< HEAD
    Copyright (c) 2011, The Linux Foundation. All rights reserved.
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -65,11 +62,7 @@ static struct bt_sock_list sco_sk_list = {
 static void __sco_chan_add(struct sco_conn *conn, struct sock *sk, struct sock *parent);
 static void sco_chan_del(struct sock *sk, int err);
 
-<<<<<<< HEAD
 static int  sco_conn_del(struct hci_conn *conn, int err, u8 is_process);
-=======
-static int  sco_conn_del(struct hci_conn *conn, int err);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static void sco_sock_close(struct sock *sk);
 static void sco_sock_kill(struct sock *sk);
@@ -142,11 +135,7 @@ static inline struct sock *sco_chan_get(struct sco_conn *conn)
 	return sk;
 }
 
-<<<<<<< HEAD
 static int sco_conn_del(struct hci_conn *hcon, int err, u8 is_process)
-=======
-static int sco_conn_del(struct hci_conn *hcon, int err)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct sco_conn *conn = hcon->sco_data;
 	struct sock *sk;
@@ -159,7 +148,6 @@ static int sco_conn_del(struct hci_conn *hcon, int err)
 	/* Kill socket */
 	sk = sco_chan_get(conn);
 	if (sk) {
-<<<<<<< HEAD
 		if (is_process)
 			lock_sock(sk);
 		else
@@ -170,12 +158,6 @@ static int sco_conn_del(struct hci_conn *hcon, int err)
 			release_sock(sk);
 		else
 			bh_unlock_sock(sk);
-=======
-		bh_lock_sock(sk);
-		sco_sock_clear_timer(sk);
-		sco_chan_del(sk, err);
-		bh_unlock_sock(sk);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		sco_sock_kill(sk);
 	}
 
@@ -198,18 +180,11 @@ static inline int sco_chan_add(struct sco_conn *conn, struct sock *sk, struct so
 	return err;
 }
 
-<<<<<<< HEAD
 static int sco_connect(struct sock *sk, __s8 is_wbs)
 {
 	bdaddr_t *src = &bt_sk(sk)->src;
 	bdaddr_t *dst = &bt_sk(sk)->dst;
 	__u16 pkt_type = sco_pi(sk)->pkt_type;
-=======
-static int sco_connect(struct sock *sk)
-{
-	bdaddr_t *src = &bt_sk(sk)->src;
-	bdaddr_t *dst = &bt_sk(sk)->dst;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct sco_conn *conn;
 	struct hci_conn *hcon;
 	struct hci_dev  *hdev;
@@ -223,7 +198,6 @@ static int sco_connect(struct sock *sk)
 
 	hci_dev_lock_bh(hdev);
 
-<<<<<<< HEAD
 	hdev->is_wbs = is_wbs;
 
 	if (lmp_esco_capable(hdev) && !disable_esco) {
@@ -239,20 +213,11 @@ static int sco_connect(struct sock *sk)
 
 	hcon = hci_connect(hdev, type, pkt_type, dst,
 					BT_SECURITY_LOW, HCI_AT_NO_BONDING);
-=======
-	if (lmp_esco_capable(hdev) && !disable_esco)
-		type = ESCO_LINK;
-	else
-		type = SCO_LINK;
-
-	hcon = hci_connect(hdev, type, dst, BT_SECURITY_LOW, HCI_AT_NO_BONDING);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (IS_ERR(hcon)) {
 		err = PTR_ERR(hcon);
 		goto done;
 	}
 
-<<<<<<< HEAD
 	if (is_wbs && (hcon->type != ESCO_LINK)) {
 		BT_ERR("WBS [ hcon->type: 0x%x, hcon->pkt_type: 0x%x ]",
 				hcon->type, hcon->pkt_type);
@@ -260,8 +225,6 @@ static int sco_connect(struct sock *sk)
 		goto done;
 	}
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	conn = sco_conn_add(hcon, 0);
 	if (!conn) {
 		hci_conn_put(hcon);
@@ -433,15 +396,10 @@ static void __sco_sock_close(struct sock *sk)
 		if (sco_pi(sk)->conn) {
 			sk->sk_state = BT_DISCONN;
 			sco_sock_set_timer(sk, SCO_DISCONN_TIMEOUT);
-<<<<<<< HEAD
 			if (sco_pi(sk)->conn->hcon != NULL) {
 				hci_conn_put(sco_pi(sk)->conn->hcon);
 				sco_pi(sk)->conn->hcon = NULL;
 			}
-=======
-			hci_conn_put(sco_pi(sk)->conn->hcon);
-			sco_pi(sk)->conn->hcon = NULL;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		} else
 			sco_chan_del(sk, ECONNRESET);
 		break;
@@ -529,7 +487,6 @@ static int sco_sock_create(struct net *net, struct socket *sock, int protocol,
 	return 0;
 }
 
-<<<<<<< HEAD
 static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
 {
 	struct sockaddr_sco sa;
@@ -538,27 +495,14 @@ static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
 	int len, err = 0;
 
 	BT_DBG("sk %p %s", sk, batostr(&sa.sco_bdaddr));
-=======
-static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
-{
-	struct sockaddr_sco *sa = (struct sockaddr_sco *) addr;
-	struct sock *sk = sock->sk;
-	bdaddr_t *src = &sa->sco_bdaddr;
-	int err = 0;
-
-	BT_DBG("sk %p %s", sk, batostr(&sa->sco_bdaddr));
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (!addr || addr->sa_family != AF_BLUETOOTH)
 		return -EINVAL;
 
-<<<<<<< HEAD
 	memset(&sa, 0, sizeof(sa));
 	len = min_t(unsigned int, sizeof(sa), alen);
 	memcpy(&sa, addr, len);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	lock_sock(sk);
 
 	if (sk->sk_state != BT_OPEN) {
@@ -572,12 +516,8 @@ static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_le
 		err = -EADDRINUSE;
 	} else {
 		/* Save source address */
-<<<<<<< HEAD
 		bacpy(&bt_sk(sk)->src, &sa.sco_bdaddr);
 		sco_pi(sk)->pkt_type = sa.sco_pkt_type;
-=======
-		bacpy(&bt_sk(sk)->src, &sa->sco_bdaddr);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		sk->sk_state = BT_BOUND;
 	}
 
@@ -590,7 +530,6 @@ done:
 
 static int sco_sock_connect(struct socket *sock, struct sockaddr *addr, int alen, int flags)
 {
-<<<<<<< HEAD
 	struct sock *sk = sock->sk;
 	struct sockaddr_sco sa;
 	int len, err = 0;
@@ -621,31 +560,6 @@ static int sco_sock_connect(struct socket *sock, struct sockaddr *addr, int alen
 	sco_pi(sk)->pkt_type = sa.sco_pkt_type;
 
 	err = sco_connect(sk, sa.is_wbs);
-=======
-	struct sockaddr_sco *sa = (struct sockaddr_sco *) addr;
-	struct sock *sk = sock->sk;
-	int err = 0;
-
-
-	BT_DBG("sk %p", sk);
-
-	if (alen < sizeof(struct sockaddr_sco) ||
-	    addr->sa_family != AF_BLUETOOTH)
-		return -EINVAL;
-
-	if (sk->sk_state != BT_OPEN && sk->sk_state != BT_BOUND)
-		return -EBADFD;
-
-	if (sk->sk_type != SOCK_SEQPACKET)
-		return -EINVAL;
-
-	lock_sock(sk);
-
-	/* Set destination address and psm */
-	bacpy(&bt_sk(sk)->dst, &sa->sco_bdaddr);
-
-	err = sco_connect(sk);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (err)
 		goto done;
 
@@ -750,10 +664,7 @@ static int sco_sock_getname(struct socket *sock, struct sockaddr *addr, int *len
 		bacpy(&sa->sco_bdaddr, &bt_sk(sk)->dst);
 	else
 		bacpy(&sa->sco_bdaddr, &bt_sk(sk)->src);
-<<<<<<< HEAD
 	sa->sco_pkt_type = sco_pi(sk)->pkt_type;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return 0;
 }
@@ -903,12 +814,9 @@ static int sco_sock_shutdown(struct socket *sock, int how)
 		if (sock_flag(sk, SOCK_LINGER) && sk->sk_lingertime)
 			err = bt_sock_wait_state(sk, BT_CLOSED,
 							sk->sk_lingertime);
-<<<<<<< HEAD
 		else
 			err = bt_sock_wait_state(sk, BT_CLOSED,
 							SCO_DISCONN_TIMEOUT);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	release_sock(sk);
 	return err;
@@ -930,14 +838,11 @@ static int sco_sock_release(struct socket *sock)
 		lock_sock(sk);
 		err = bt_sock_wait_state(sk, BT_CLOSED, sk->sk_lingertime);
 		release_sock(sk);
-<<<<<<< HEAD
 	} else {
 		lock_sock(sk);
 		err = bt_sock_wait_state(sk, BT_CLOSED,
 							SCO_DISCONN_TIMEOUT);
 		release_sock(sk);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	sock_orphan(sk);
@@ -1040,11 +945,7 @@ static int sco_connect_ind(struct hci_dev *hdev, bdaddr_t *bdaddr, __u8 type)
 	int lm = 0;
 
 	if (type != SCO_LINK && type != ESCO_LINK)
-<<<<<<< HEAD
 		return 0;
-=======
-		return -EINVAL;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	BT_DBG("hdev %s, bdaddr %s", hdev->name, batostr(bdaddr));
 
@@ -1079,31 +980,19 @@ static int sco_connect_cfm(struct hci_conn *hcon, __u8 status)
 		if (conn)
 			sco_conn_ready(conn);
 	} else
-<<<<<<< HEAD
 		sco_conn_del(hcon, bt_err(status), 0);
-=======
-		sco_conn_del(hcon, bt_err(status));
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return 0;
 }
 
-<<<<<<< HEAD
 static int sco_disconn_cfm(struct hci_conn *hcon, __u8 reason, __u8 is_process)
-=======
-static int sco_disconn_cfm(struct hci_conn *hcon, __u8 reason)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	BT_DBG("hcon %p reason %d", hcon, reason);
 
 	if (hcon->type != SCO_LINK && hcon->type != ESCO_LINK)
 		return -EINVAL;
 
-<<<<<<< HEAD
 	sco_conn_del(hcon, bt_err(reason), is_process);
-=======
-	sco_conn_del(hcon, bt_err(reason));
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return 0;
 }

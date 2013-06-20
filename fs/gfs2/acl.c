@@ -67,48 +67,12 @@ static struct posix_acl *gfs2_acl_get(struct gfs2_inode *ip, int type)
 	return acl;
 }
 
-<<<<<<< HEAD
 struct posix_acl *gfs2_get_acl(struct inode *inode, int type)
 {
 	return gfs2_acl_get(GFS2_I(inode), type);
 }
 
 static int gfs2_set_mode(struct inode *inode, umode_t mode)
-=======
-/**
- * gfs2_check_acl - Check an ACL to see if we're allowed to do something
- * @inode: the file we want to do something to
- * @mask: what we want to do
- *
- * Returns: errno
- */
-
-int gfs2_check_acl(struct inode *inode, int mask, unsigned int flags)
-{
-	struct posix_acl *acl;
-	int error;
-
-	if (flags & IPERM_FLAG_RCU) {
-		if (!negative_cached_acl(inode, ACL_TYPE_ACCESS))
-			return -ECHILD;
-		return -EAGAIN;
-	}
-
-	acl = gfs2_acl_get(GFS2_I(inode), ACL_TYPE_ACCESS);
-	if (IS_ERR(acl))
-		return PTR_ERR(acl);
-
-	if (acl) {
-		error = posix_acl_permission(inode, acl, mask);
-		posix_acl_release(acl);
-		return error;
-	}
-
-	return -EAGAIN;
-}
-
-static int gfs2_set_mode(struct inode *inode, mode_t mode)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	int error = 0;
 
@@ -152,13 +116,8 @@ out:
 int gfs2_acl_create(struct gfs2_inode *dip, struct inode *inode)
 {
 	struct gfs2_sbd *sdp = GFS2_SB(&dip->i_inode);
-<<<<<<< HEAD
 	struct posix_acl *acl;
 	umode_t mode = inode->i_mode;
-=======
-	struct posix_acl *acl, *clone;
-	mode_t mode = inode->i_mode;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int error = 0;
 
 	if (!sdp->sd_args.ar_posix_acl)
@@ -182,23 +141,10 @@ int gfs2_acl_create(struct gfs2_inode *dip, struct inode *inode)
 			goto out;
 	}
 
-<<<<<<< HEAD
 	error = posix_acl_create(&acl, GFP_NOFS, &mode);
 	if (error < 0)
 		return error;
 
-=======
-	clone = posix_acl_clone(acl, GFP_NOFS);
-	error = -ENOMEM;
-	if (!clone)
-		goto out;
-	posix_acl_release(acl);
-	acl = clone;
-
-	error = posix_acl_create_masq(acl, &mode);
-	if (error < 0)
-		goto out;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (error == 0)
 		goto munge;
 
@@ -214,11 +160,7 @@ out:
 
 int gfs2_acl_chmod(struct gfs2_inode *ip, struct iattr *attr)
 {
-<<<<<<< HEAD
 	struct posix_acl *acl;
-=======
-	struct posix_acl *acl, *clone;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	char *data;
 	unsigned int len;
 	int error;
@@ -229,7 +171,6 @@ int gfs2_acl_chmod(struct gfs2_inode *ip, struct iattr *attr)
 	if (!acl)
 		return gfs2_setattr_simple(ip, attr);
 
-<<<<<<< HEAD
 	error = posix_acl_chmod(&acl, GFP_NOFS, attr->ia_mode);
 	if (error)
 		return error;
@@ -243,27 +184,6 @@ int gfs2_acl_chmod(struct gfs2_inode *ip, struct iattr *attr)
 	error = gfs2_xattr_acl_chmod(ip, attr, data);
 	kfree(data);
 	set_cached_acl(&ip->i_inode, ACL_TYPE_ACCESS, acl);
-=======
-	clone = posix_acl_clone(acl, GFP_NOFS);
-	error = -ENOMEM;
-	if (!clone)
-		goto out;
-	posix_acl_release(acl);
-	acl = clone;
-
-	error = posix_acl_chmod_masq(acl, attr->ia_mode);
-	if (!error) {
-		len = posix_acl_to_xattr(acl, NULL, 0);
-		data = kmalloc(len, GFP_NOFS);
-		error = -ENOMEM;
-		if (data == NULL)
-			goto out;
-		posix_acl_to_xattr(acl, data, len);
-		error = gfs2_xattr_acl_chmod(ip, attr, data);
-		kfree(data);
-		set_cached_acl(&ip->i_inode, ACL_TYPE_ACCESS, acl);
-	}
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 out:
 	posix_acl_release(acl);
@@ -356,11 +276,7 @@ static int gfs2_xattr_system_set(struct dentry *dentry, const char *name,
 		goto out_release;
 
 	if (type == ACL_TYPE_ACCESS) {
-<<<<<<< HEAD
 		umode_t mode = inode->i_mode;
-=======
-		mode_t mode = inode->i_mode;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		error = posix_acl_equiv_mode(acl, &mode);
 
 		if (error <= 0) {

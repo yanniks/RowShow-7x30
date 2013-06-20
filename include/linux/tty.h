@@ -52,10 +52,7 @@
 #define N_TI_WL		22	/* for TI's WL BT, FM, GPS combo chips */
 #define N_TRACESINK	23	/* Trace data routing for MIPI P1149.7 */
 #define N_TRACEROUTER	24	/* Trace data routing for MIPI P1149.7 */
-<<<<<<< HEAD
 #define N_TS2710        25      /* 3GPP TS 27.010 MUX over UART */
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /*
  * This character is the same as _POSIX_VDISABLE: it cannot be used as
@@ -64,13 +61,10 @@
  */
 #define __DISABLED_CHAR '\0'
 
-<<<<<<< HEAD
 #if defined(CONFIG_MSM_SMD0_WQ)
 extern struct workqueue_struct *tty_wq;
 #endif
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 struct tty_buffer {
 	struct tty_buffer *next;
 	char *char_buf_ptr;
@@ -341,14 +335,11 @@ struct tty_struct {
 	/* If the tty has a pending do_SAK, queue it here - akpm */
 	struct work_struct SAK_work;
 	struct tty_port *port;
-<<<<<<< HEAD
 	/* spinklock for changing receive_room */
 	spinlock_t rcv_lock;
 	int is_rcvlock;
 	struct mutex rcv_room_lock;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 /* Each of a tty's open files has private_data pointing to tty_file_private */

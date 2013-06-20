@@ -268,21 +268,12 @@ extern struct bio_vec *bvec_alloc_bs(gfp_t, int, unsigned long *, struct bio_set
 extern void bvec_free_bs(struct bio_set *, struct bio_vec *, unsigned int);
 extern unsigned int bvec_nr_vecs(unsigned short idx);
 
-<<<<<<< HEAD
 static inline ssize_t bvec_length(const struct bio_vec *bvec, unsigned long nr)
 {
 	ssize_t bytes = 0;
 	while (nr--)
 		bytes += (bvec++)->bv_len;
 	return bytes;
-=======
-/*
- * Allow queuer to specify a completion CPU for this bio
- */
-static inline void bio_set_completion_cpu(struct bio *bio, unsigned int cpu)
-{
-	bio->bi_comp_cpu = cpu;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /*

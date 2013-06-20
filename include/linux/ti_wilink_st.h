@@ -25,11 +25,8 @@
 #ifndef TI_WILINK_ST_H
 #define TI_WILINK_ST_H
 
-<<<<<<< HEAD
 #include <linux/serial_core.h>
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /**
  * enum proto-type - The protocol on WiLink chips which share a
  *	common physical interface like UART.
@@ -208,13 +205,8 @@ void gps_chrdrv_stub_init(void);
 /* time in msec to wait for
  * line discipline to be installed
  */
-<<<<<<< HEAD
 #define LDISC_TIME	5000
 #define CMD_RESP_TIME	4000
-=======
-#define LDISC_TIME	1000
-#define CMD_RESP_TIME	800
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define CMD_WR_TIME	5000
 #define MAKEWORD(a, b)  ((unsigned short)(((unsigned char)(a)) \
 	| ((unsigned short)((unsigned char)(b))) << 8))
@@ -279,13 +271,10 @@ struct kim_data_s {
 	unsigned char dev_name[UART_DEV_NAME_LEN];
 	unsigned char flow_cntrl;
 	unsigned long baud_rate;
-<<<<<<< HEAD
 	int (*bluetooth_set_power)(int);
 #ifdef LEGACY_RFKILL_SUPPORT
 	struct rfkill *rfkill[ST_GPIO_MAX];
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 /**
@@ -388,10 +377,7 @@ struct hci_command {
 #define LL_WAKE_UP_IND	0x32
 #define LL_WAKE_UP_ACK	0x33
 
-<<<<<<< HEAD
 #define HCILL_SLEEP_MODE_OPCODE 0xFD0C
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* initialize and de-init ST LL */
 long st_ll_init(struct st_data_s *);
 long st_ll_deinit(struct st_data_s *);
@@ -439,12 +425,9 @@ struct ti_st_plat_data {
 	unsigned long baud_rate;
 	int (*suspend)(struct platform_device *, pm_message_t);
 	int (*resume)(struct platform_device *);
-<<<<<<< HEAD
 	void (*chip_asleep)(struct uart_port *);
 	void (*chip_awake)(struct uart_port *);
 	int (*bluetooth_set_power)(int);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 #endif /* TI_WILINK_ST_H */

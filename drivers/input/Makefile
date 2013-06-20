@@ -24,9 +24,6 @@ obj-$(CONFIG_INPUT_TOUCHSCREEN)	+= touchscreen/
 obj-$(CONFIG_INPUT_MISC)	+= misc/
 
 obj-$(CONFIG_INPUT_APMPOWER)	+= apm-power.o
-<<<<<<< HEAD
 obj-$(CONFIG_INPUT_KEYRESET)	+= keyreset.o
 
 obj-$(CONFIG_INPUT_OPTICALJOYSTICK)		+= opticaljoystick/
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

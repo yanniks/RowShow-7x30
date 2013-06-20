@@ -159,10 +159,7 @@ extern int console_suspend_enabled;
 /* Suspend and resume console messages over PM events */
 extern void suspend_console(void);
 extern void resume_console(void);
-<<<<<<< HEAD
 extern int suspend_console_deferred;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 int mda_console_init(void);
 void prom_con_init(void);

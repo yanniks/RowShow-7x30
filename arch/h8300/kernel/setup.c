@@ -46,11 +46,7 @@
 #include <asm/regs267x.h>
 #endif
 
-<<<<<<< HEAD
 #define STUBSIZE 0xc000
-=======
-#define STUBSIZE 0xc000;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 unsigned long rom_length;
 unsigned long memory_start;

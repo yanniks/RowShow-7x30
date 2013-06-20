@@ -21,7 +21,6 @@ config IOSCHED_DEADLINE
 	  a new point in the service tree and doing a batch of IO from there
 	  in case of expiry.
 
-<<<<<<< HEAD
 config IOSCHED_ROW
 	tristate "ROW I/O scheduler"
 	default y
@@ -33,8 +32,6 @@ config IOSCHED_ROW
 	  according to queue priority.
 	  Most suitable for mobile devices.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config IOSCHED_CFQ
 	tristate "CFQ I/O scheduler"
 	# If BLK_CGROUP is a module, CFQ has to be built as module.
@@ -57,7 +54,6 @@ config CFQ_GROUP_IOSCHED
 	---help---
 	  Enable group IO scheduling in CFQ.
 
-<<<<<<< HEAD
 config IOSCHED_SIO
 	tristate "Simple I/O scheduler"
 	default y
@@ -98,8 +94,6 @@ config CGROUP_BFQIO
 	  filesystem interface.  The name of the subsystem will be
 	  bfqio.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 choice
 	prompt "Default I/O scheduler"
 	default DEFAULT_CFQ
@@ -110,7 +104,6 @@ choice
 	config DEFAULT_DEADLINE
 		bool "Deadline" if IOSCHED_DEADLINE=y
 
-<<<<<<< HEAD
 	config DEFAULT_ROW
 		bool "ROW" if IOSCHED_ROW=y
 		help
@@ -133,11 +126,6 @@ choice
 	config DEFAULT_BFQ
 		bool "BFQ" if IOSCHED_BFQ=y
 
-=======
-	config DEFAULT_CFQ
-		bool "CFQ" if IOSCHED_CFQ=y
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	config DEFAULT_NOOP
 		bool "No-op"
 
@@ -146,15 +134,11 @@ endchoice
 config DEFAULT_IOSCHED
 	string
 	default "deadline" if DEFAULT_DEADLINE
-<<<<<<< HEAD
 	default "row" if DEFAULT_ROW
 	default "cfq" if DEFAULT_CFQ
 	default "sio" if DEFAULT_SIO
 	default "bfq" if DEFAULT_BFQ
 	default "fiops" if DEFAULT_FIOPS
-=======
-	default "cfq" if DEFAULT_CFQ
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	default "noop" if DEFAULT_NOOP
 
 endmenu

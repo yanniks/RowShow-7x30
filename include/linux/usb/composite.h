@@ -36,10 +36,7 @@
 
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
-<<<<<<< HEAD
 #include <linux/switch.h>
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /*
  * USB function drivers should return USB_GADGET_DELAYED_STATUS if they
@@ -244,12 +241,9 @@ int usb_add_config(struct usb_composite_dev *,
 		struct usb_configuration *,
 		int (*)(struct usb_configuration *));
 
-<<<<<<< HEAD
 int usb_remove_config(struct usb_composite_dev *,
 		struct usb_configuration *);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /**
  * struct usb_composite_driver - groups configurations into a gadget
  * @name: For diagnostics, identifies the driver.
@@ -368,7 +362,6 @@ struct usb_composite_dev {
 
 	/* protects deactivations and delayed_status counts*/
 	spinlock_t			lock;
-<<<<<<< HEAD
 
 	/* switch indicating Connect_to_PC App only */
 	struct switch_dev		sw_connect2pc;
@@ -376,8 +369,6 @@ struct usb_composite_dev {
 	bool				connected;
 
 	struct work_struct switch_work;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 extern int usb_string_id(struct usb_composite_dev *c);

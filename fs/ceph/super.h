@@ -21,11 +21,7 @@
 
 /* large granularity for statfs utilization stats to facilitate
  * large volume sizes on 32-bit machines. */
-<<<<<<< HEAD
 #define CEPH_BLOCK_SHIFT   22  /* 4 MB */
-=======
-#define CEPH_BLOCK_SHIFT   20  /* 1 MB */
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define CEPH_BLOCK         (1 << CEPH_BLOCK_SHIFT)
 
 #define CEPH_MOUNT_OPT_DIRSTAT         (1<<4) /* `cat dirname` for stats */
@@ -696,11 +692,7 @@ extern void ceph_queue_invalidate(struct inode *inode);
 extern void ceph_queue_writeback(struct inode *inode);
 
 extern int ceph_do_getattr(struct inode *inode, int mask);
-<<<<<<< HEAD
 extern int ceph_permission(struct inode *inode, int mask);
-=======
-extern int ceph_permission(struct inode *inode, int mask, unsigned int flags);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern int ceph_setattr(struct dentry *dentry, struct iattr *attr);
 extern int ceph_getattr(struct vfsmount *mnt, struct dentry *dentry,
 			struct kstat *stat);
@@ -736,12 +728,8 @@ extern void ceph_put_cap(struct ceph_mds_client *mdsc,
 
 extern void ceph_queue_caps_release(struct inode *inode);
 extern int ceph_write_inode(struct inode *inode, struct writeback_control *wbc);
-<<<<<<< HEAD
 extern int ceph_fsync(struct file *file, loff_t start, loff_t end,
 		      int datasync);
-=======
-extern int ceph_fsync(struct file *file, int datasync);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern void ceph_kick_flushing_caps(struct ceph_mds_client *mdsc,
 				    struct ceph_mds_session *session);
 extern struct ceph_cap *ceph_get_cap_for_mds(struct ceph_inode_info *ci,

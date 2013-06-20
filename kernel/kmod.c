@@ -276,11 +276,7 @@ static void __call_usermodehelper(struct work_struct *work)
  * (used for preventing user land processes from being created after the user
  * land has been frozen during a system-wide hibernation or suspend operation).
  */
-<<<<<<< HEAD
 static int usermodehelper_disabled = 1;
-=======
-static int usermodehelper_disabled;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* Number of helpers running */
 static atomic_t running_helpers = ATOMIC_INIT(0);

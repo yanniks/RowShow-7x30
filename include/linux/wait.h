@@ -352,7 +352,6 @@ do {									\
 	__ret;								\
 })
 
-<<<<<<< HEAD
 #define __wait_io_event_interruptible(wq, condition, ret)		\
 do {									\
 	DEFINE_WAIT(__wait);						\
@@ -440,8 +439,6 @@ do {									\
 	__ret;								\
 })
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define __wait_event_interruptible_exclusive(wq, condition, ret)	\
 do {									\
 	DEFINE_WAIT(__wait);						\

@@ -251,10 +251,6 @@ struct inode *v9fs_alloc_inode(struct super_block *sb)
 static void v9fs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
-<<<<<<< HEAD
-=======
-	INIT_LIST_HEAD(&inode->i_dentry);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	kmem_cache_free(v9fs_inode_cache, V9FS_I(inode));
 }
 
@@ -682,11 +678,7 @@ error:
  */
 
 static int
-<<<<<<< HEAD
 v9fs_vfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
-=======
-v9fs_vfs_create(struct inode *dir, struct dentry *dentry, int mode,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		struct nameidata *nd)
 {
 	int err;
@@ -1383,11 +1375,7 @@ clunk_fid:
  */
 
 static int
-<<<<<<< HEAD
 v9fs_vfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t rdev)
-=======
-v9fs_vfs_mknod(struct inode *dir, struct dentry *dentry, int mode, dev_t rdev)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	int retval;
 	char *name;

@@ -95,10 +95,7 @@ struct tag_serialnr {
 
 struct tag_revision {
 	__u32 rev;
-<<<<<<< HEAD
 	__u32 rev2;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 /* initial values for vesafb-type framebuffers. see struct screen_info
@@ -147,7 +144,6 @@ struct tag_memclk {
 	__u32 fmemclk;
 };
 
-<<<<<<< HEAD
 /* Light sensor calibration value */
 #define ATAG_ALS	0x5441001b
 
@@ -155,8 +151,6 @@ struct tag_als_kadc {
 	__u32 kadc;
 };
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 struct tag {
 	struct tag_header hdr;
 	union {
@@ -169,11 +163,7 @@ struct tag {
 		struct tag_revision	revision;
 		struct tag_videolfb	videolfb;
 		struct tag_cmdline	cmdline;
-<<<<<<< HEAD
 		struct tag_als_kadc als_kadc;
-=======
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		/*
 		 * Acorn specific
 		 */
@@ -229,12 +219,8 @@ extern struct meminfo meminfo;
 	for (iter = 0; iter < (mi)->nr_banks; iter++)
 
 #define bank_pfn_start(bank)	__phys_to_pfn((bank)->start)
-<<<<<<< HEAD
 #define bank_pfn_end(bank)	(__phys_to_pfn((bank)->start) + \
 						__phys_to_pfn((bank)->size))
-=======
-#define bank_pfn_end(bank)	__phys_to_pfn((bank)->start + (bank)->size)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define bank_pfn_size(bank)	((bank)->size >> PAGE_SHIFT)
 #define bank_phys_start(bank)	(bank)->start
 #define bank_phys_end(bank)	((bank)->start + (bank)->size)
@@ -244,7 +230,6 @@ extern int arm_add_memory(phys_addr_t start, unsigned long size);
 extern void early_print(const char *str, ...);
 extern void dump_machine_table(void);
 
-<<<<<<< HEAD
 /*
  * Early command line parameters.
  */
@@ -257,8 +242,6 @@ struct early_params {
 static struct early_params __early_##fn __used			\
 __attribute__((__section__(".early_param.init"))) = { name, fn }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif  /*  __KERNEL__  */
 
 #endif

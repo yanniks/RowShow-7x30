@@ -408,11 +408,7 @@ static void async_completed(struct urb *urb)
 		sinfo.si_errno = as->status;
 		sinfo.si_code = SI_ASYNCIO;
 		sinfo.si_addr = as->userurb;
-<<<<<<< HEAD
 		pid = as->pid;
-=======
-		pid = get_pid(as->pid);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		uid = as->uid;
 		euid = as->euid;
 		secid = as->secid;
@@ -427,17 +423,9 @@ static void async_completed(struct urb *urb)
 		cancel_bulk_urbs(ps, as->bulk_addr);
 	spin_unlock(&ps->lock);
 
-<<<<<<< HEAD
 	if (signr)
 		kill_pid_info_as_uid(sinfo.si_signo, &sinfo, pid, uid,
 				      euid, secid);
-=======
-	if (signr) {
-		kill_pid_info_as_uid(sinfo.si_signo, &sinfo, pid, uid,
-				      euid, secid);
-		put_pid(pid);
-	}
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	wake_up(&ps->wait);
 }
@@ -624,16 +612,9 @@ static int findintfep(struct usb_device *dev, unsigned int ep)
 }
 
 static int check_ctrlrecip(struct dev_state *ps, unsigned int requesttype,
-<<<<<<< HEAD
 			   unsigned int index)
 {
 	int ret = 0;
-=======
-			   unsigned int request, unsigned int index)
-{
-	int ret = 0;
-	struct usb_host_interface *alt_setting;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (ps->dev->state != USB_STATE_UNAUTHENTICATED
 	 && ps->dev->state != USB_STATE_ADDRESS
@@ -642,22 +623,6 @@ static int check_ctrlrecip(struct dev_state *ps, unsigned int requesttype,
 	if (USB_TYPE_VENDOR == (USB_TYPE_MASK & requesttype))
 		return 0;
 
-<<<<<<< HEAD
-=======
-	/*
-	 * check for the special corner case 'get_device_id' in the printer
-	 * class specification, where wIndex is (interface << 8 | altsetting)
-	 * instead of just interface
-	 */
-	if (requesttype == 0xa1 && request == 0) {
-		alt_setting = usb_find_alt_setting(ps->dev->actconfig,
-						   index >> 8, index & 0xff);
-		if (alt_setting
-		 && alt_setting->desc.bInterfaceClass == USB_CLASS_PRINTER)
-			index >>= 8;
-	}
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	index &= 0xff;
 	switch (requesttype & USB_RECIP_MASK) {
 	case USB_RECIP_ENDPOINT:
@@ -812,12 +777,7 @@ static int proc_control(struct dev_state *ps, void __user *arg)
 
 	if (copy_from_user(&ctrl, arg, sizeof(ctrl)))
 		return -EFAULT;
-<<<<<<< HEAD
 	ret = check_ctrlrecip(ps, ctrl.bRequestType, ctrl.wIndex);
-=======
-	ret = check_ctrlrecip(ps, ctrl.bRequestType, ctrl.bRequest,
-			      ctrl.wIndex);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (ret)
 		return ret;
 	wLength = ctrl.wLength;		/* To suppress 64k PAGE_SIZE warning */
@@ -1147,11 +1107,7 @@ static int proc_do_submiturb(struct dev_state *ps, struct usbdevfs_urb *uurb,
 			kfree(dr);
 			return -EINVAL;
 		}
-<<<<<<< HEAD
 		ret = check_ctrlrecip(ps, dr->bRequestType,
-=======
-		ret = check_ctrlrecip(ps, dr->bRequestType, dr->bRequest,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				      le16_to_cpup(&dr->wIndex));
 		if (ret) {
 			kfree(dr);

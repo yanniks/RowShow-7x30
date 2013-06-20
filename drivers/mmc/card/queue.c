@@ -29,11 +29,8 @@
  */
 static int mmc_prep_request(struct request_queue *q, struct request *req)
 {
-<<<<<<< HEAD
 	struct mmc_queue *mq = q->queuedata;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/*
 	 * We only like normal block requests and discards.
 	 */
@@ -42,18 +39,14 @@ static int mmc_prep_request(struct request_queue *q, struct request *req)
 		return BLKPREP_KILL;
 	}
 
-<<<<<<< HEAD
 	if (mq && mmc_card_removed(mq->card))
 		return BLKPREP_KILL;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	req->cmd_flags |= REQ_DONTPREP;
 
 	return BLKPREP_OK;
 }
 
-<<<<<<< HEAD
 static int sd_queue_thread(void *d)
 {
 	struct mmc_queue *mq = d;
@@ -115,13 +108,10 @@ static int sd_queue_thread(void *d)
 	return 0;
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static int mmc_queue_thread(void *d)
 {
 	struct mmc_queue *mq = d;
 	struct request_queue *q = mq->queue;
-<<<<<<< HEAD
 	struct request *req;
 
 #ifdef CONFIG_MMC_PERF_PROFILING
@@ -130,18 +120,12 @@ static int mmc_queue_thread(void *d)
 	unsigned long bytes_xfer;
 #endif
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	current->flags |= PF_MEMALLOC;
 
 	down(&mq->thread_sem);
 	do {
-<<<<<<< HEAD
 		req = NULL;	/* Must be set to NULL at each iteration */
-=======
-		struct request *req = NULL;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		spin_lock_irq(q->queue_lock);
 		set_current_state(TASK_INTERRUPTIBLE);
@@ -161,7 +145,6 @@ static int mmc_queue_thread(void *d)
 		}
 		set_current_state(TASK_RUNNING);
 
-<<<<<<< HEAD
 #ifdef CONFIG_MMC_PERF_PROFILING
 		bytes_xfer = blk_rq_bytes(req);
 		if (rq_data_dir(req) == READ) {
@@ -182,9 +165,6 @@ static int mmc_queue_thread(void *d)
 #else
 			mq->issue_fn(mq, req);
 #endif
-=======
-		mq->issue_fn(mq, req);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	} while (1);
 	up(&mq->thread_sem);
 
@@ -319,16 +299,11 @@ int mmc_init_queue(struct mmc_queue *mq, struct mmc_card *card,
 
 	sema_init(&mq->thread_sem, 1);
 
-<<<<<<< HEAD
 	if (mmc_card_sd(card))
 		mq->thread = kthread_run(sd_queue_thread, mq, "sd-qd");
 	else
 		mq->thread = kthread_run(mmc_queue_thread, mq, "mmcqd/%d%s",
 					host->index, subname ? subname : "");
-=======
-	mq->thread = kthread_run(mmc_queue_thread, mq, "mmcqd/%d%s",
-		host->index, subname ? subname : "");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (IS_ERR(mq->thread)) {
 		ret = PTR_ERR(mq->thread);

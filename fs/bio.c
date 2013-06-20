@@ -255,10 +255,6 @@ void bio_init(struct bio *bio)
 {
 	memset(bio, 0, sizeof(*bio));
 	bio->bi_flags = 1 << BIO_UPTODATE;
-<<<<<<< HEAD
-=======
-	bio->bi_comp_cpu = -1;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	atomic_set(&bio->bi_cnt, 1);
 }
 EXPORT_SYMBOL(bio_init);
@@ -1555,13 +1551,8 @@ sector_t bio_sector_offset(struct bio *bio, unsigned short index,
 	sector_sz = queue_logical_block_size(bio->bi_bdev->bd_disk->queue);
 	sectors = 0;
 
-<<<<<<< HEAD
 	if (index > bio->bi_vcnt)
 		return 0;
-=======
-	if (index >= bio->bi_idx)
-		index = bio->bi_vcnt - 1;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	__bio_for_each_segment(bv, bio, i, 0) {
 		if (i == index) {

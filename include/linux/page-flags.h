@@ -51,12 +51,9 @@
  * PG_hwpoison indicates that a page got corrupted in hardware and contains
  * data with incorrect ECC bits that triggered a machine check. Accessing is
  * not safe since it may cause another machine check. Don't touch!
-<<<<<<< HEAD
  *
  * PG_wasactive reflects that a page previously was promoted to active status.
  * Such pages should be considered higher priority for cleancache backends.
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  */
 
 /*
@@ -113,12 +110,9 @@ enum pageflags {
 #ifdef CONFIG_TRANSPARENT_HUGEPAGE
 	PG_compound_lock,
 #endif
-<<<<<<< HEAD
 #ifdef CONFIG_CLEANCACHE
 	PG_was_active,
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	__NR_PAGEFLAGS,
 
 	/* Filesystems */
@@ -136,12 +130,6 @@ enum pageflags {
 
 	/* SLOB */
 	PG_slob_free = PG_private,
-<<<<<<< HEAD
-=======
-
-	/* SLUB */
-	PG_slub_frozen = PG_active,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 #ifndef __GENERATING_BOUNDS_H
@@ -227,15 +215,10 @@ PAGEFLAG(SwapBacked, swapbacked) __CLEARPAGEFLAG(SwapBacked, swapbacked)
 
 __PAGEFLAG(SlobFree, slob_free)
 
-<<<<<<< HEAD
 
 #ifdef CONFIG_CLEANCACHE
 PAGEFLAG(WasActive, was_active)
 #endif
-=======
-__PAGEFLAG(SlubFrozen, slub_frozen)
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * Private page markings that may be used by the filesystem that owns the page
  * for its own purposes.

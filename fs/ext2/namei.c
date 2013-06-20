@@ -67,23 +67,11 @@ static struct dentry *ext2_lookup(struct inode * dir, struct dentry *dentry, str
 	inode = NULL;
 	if (ino) {
 		inode = ext2_iget(dir->i_sb, ino);
-<<<<<<< HEAD
 		if (inode == ERR_PTR(-ESTALE)) {
 			ext2_error(dir->i_sb, __func__,
 					"deleted inode referenced: %lu",
 					(unsigned long) ino);
 			return ERR_PTR(-EIO);
-=======
-		if (IS_ERR(inode)) {
-			if (PTR_ERR(inode) == -ESTALE) {
-				ext2_error(dir->i_sb, __func__,
-						"deleted inode referenced: %lu",
-						(unsigned long) ino);
-				return ERR_PTR(-EIO);
-			} else {
-				return ERR_CAST(inode);
-			}
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		}
 	}
 	return d_splice_alias(inode, dentry);
@@ -106,11 +94,7 @@ struct dentry *ext2_get_parent(struct dentry *child)
  * If the create succeeds, we fill in the inode information
  * with d_instantiate(). 
  */
-<<<<<<< HEAD
 static int ext2_create (struct inode * dir, struct dentry * dentry, umode_t mode, struct nameidata *nd)
-=======
-static int ext2_create (struct inode * dir, struct dentry * dentry, int mode, struct nameidata *nd)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inode *inode;
 
@@ -135,11 +119,7 @@ static int ext2_create (struct inode * dir, struct dentry * dentry, int mode, st
 	return ext2_add_nondir(dentry, inode);
 }
 
-<<<<<<< HEAD
 static int ext2_mknod (struct inode * dir, struct dentry *dentry, umode_t mode, dev_t rdev)
-=======
-static int ext2_mknod (struct inode * dir, struct dentry *dentry, int mode, dev_t rdev)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inode * inode;
 	int err;
@@ -428,11 +408,7 @@ const struct inode_operations ext2_dir_inode_operations = {
 	.removexattr	= generic_removexattr,
 #endif
 	.setattr	= ext2_setattr,
-<<<<<<< HEAD
 	.get_acl	= ext2_get_acl,
-=======
-	.check_acl	= ext2_check_acl,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 const struct inode_operations ext2_special_inode_operations = {
@@ -443,9 +419,5 @@ const struct inode_operations ext2_special_inode_operations = {
 	.removexattr	= generic_removexattr,
 #endif
 	.setattr	= ext2_setattr,
-<<<<<<< HEAD
 	.get_acl	= ext2_get_acl,
-=======
-	.check_acl	= ext2_check_acl,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };

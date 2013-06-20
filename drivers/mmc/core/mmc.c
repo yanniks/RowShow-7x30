@@ -662,7 +662,6 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 
 		/* Erase size depends on CSD and Extended CSD */
 		mmc_set_erase_size(card);
-<<<<<<< HEAD
 
 		if (card->ext_csd.sectors && (rocr & MMC_CARD_SECTOR_ADDR))
 			mmc_card_set_blockaddr(card);
@@ -673,15 +672,6 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 	/* For 2GB eMMC, there will no HC_ERASE_GROUP define                   */
 
 	if (card->ext_csd.sectors > 4194304) {
-=======
-	}
-
-	/*
-	 * If enhanced_area_en is TRUE, host needs to enable ERASE_GRP_DEF
-	 * bit.  This bit will be lost every time after a reset or power off.
-	 */
-	if (card->ext_csd.enhanced_area_en) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
 				 EXT_CSD_ERASE_GROUP_DEF, 1, 0);
 
@@ -720,7 +710,6 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 			goto free_card;
 	}
 
-<<<<<<< HEAD
 	/* For SanDisk X3, we have to enable power class 4 */
 	if (card->cid.manfid == 0x45) {
 		if (card->ext_csd.sectors > 33554432) { /* the storage size larger than 16GB */
@@ -752,8 +741,6 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 		}
 	}
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/*
 	 * Activate high speed (if supported)
 	 */
@@ -913,7 +900,6 @@ static void mmc_remove(struct mmc_host *host)
 	BUG_ON(!host->card);
 
 	mmc_remove_card(host->card);
-<<<<<<< HEAD
 
 	mmc_claim_host(host);
 	host->card = NULL;
@@ -926,9 +912,6 @@ static void mmc_remove(struct mmc_host *host)
 static int mmc_alive(struct mmc_host *host)
 {
 	return mmc_send_status(host->card, NULL);
-=======
-	host->card = NULL;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /*
@@ -946,11 +929,7 @@ static void mmc_detect(struct mmc_host *host)
 	/*
 	 * Just check if our card has been removed.
 	 */
-<<<<<<< HEAD
 	err = _mmc_detect_card_removed(host);
-=======
-	err = mmc_send_status(host->card, NULL);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	mmc_release_host(host);
 
@@ -969,31 +948,20 @@ static void mmc_detect(struct mmc_host *host)
  */
 static int mmc_suspend(struct mmc_host *host)
 {
-<<<<<<< HEAD
 	int err = 0;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	BUG_ON(!host);
 	BUG_ON(!host->card);
 
 	mmc_claim_host(host);
-<<<<<<< HEAD
 	if (mmc_card_can_sleep(host))
 		err = mmc_card_sleep(host);
 	else if (!mmc_host_is_spi(host))
-=======
-	if (!mmc_host_is_spi(host))
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		mmc_deselect_cards(host);
 	host->card->state &= ~MMC_STATE_HIGHSPEED;
 	mmc_release_host(host);
 
-<<<<<<< HEAD
 	return err;
-=======
-	return 0;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /*
@@ -1047,7 +1015,6 @@ static int mmc_awake(struct mmc_host *host)
 {
 	struct mmc_card *card = host->card;
 	int err = -ENOSYS;
-<<<<<<< HEAD
 	int ddr = 0;
 	unsigned int max_dtr;
 	if (card && card->ext_csd.rev >= 3) {
@@ -1181,16 +1148,6 @@ static int mmc_awake(struct mmc_host *host)
 		}
 	}
 err:
-=======
-
-	if (card && card->ext_csd.rev >= 3) {
-		err = mmc_card_sleepawake(host, 0);
-		if (err < 0)
-			pr_debug("%s: Error %d while awaking sleeping card",
-				 mmc_hostname(host), err);
-	}
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return err;
 }
 
@@ -1202,10 +1159,7 @@ static const struct mmc_bus_ops mmc_ops = {
 	.suspend = NULL,
 	.resume = NULL,
 	.power_restore = mmc_power_restore,
-<<<<<<< HEAD
 	.alive = mmc_alive,
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 static const struct mmc_bus_ops mmc_ops_unsafe = {
@@ -1216,10 +1170,7 @@ static const struct mmc_bus_ops mmc_ops_unsafe = {
 	.suspend = mmc_suspend,
 	.resume = mmc_resume,
 	.power_restore = mmc_power_restore,
-<<<<<<< HEAD
 	.alive = mmc_alive,
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 static void mmc_attach_bus_ops(struct mmc_host *host)

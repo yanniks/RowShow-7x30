@@ -141,11 +141,7 @@ cifs_bp_rename_retry:
 /* Inode operations in similar order to how they appear in Linux file fs.h */
 
 int
-<<<<<<< HEAD
 cifs_create(struct inode *inode, struct dentry *direntry, umode_t mode,
-=======
-cifs_create(struct inode *inode, struct dentry *direntry, int mode,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		struct nameidata *nd)
 {
 	int rc = -ENOENT;
@@ -361,11 +357,7 @@ cifs_create_out:
 	return rc;
 }
 
-<<<<<<< HEAD
 int cifs_mknod(struct inode *inode, struct dentry *direntry, umode_t mode,
-=======
-int cifs_mknod(struct inode *inode, struct dentry *direntry, int mode,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		dev_t device_number)
 {
 	int rc = -EPERM;

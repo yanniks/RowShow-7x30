@@ -95,11 +95,7 @@ struct eth_dev {
 
 #ifdef CONFIG_USB_GADGET_DUALSPEED
 
-<<<<<<< HEAD
 static unsigned qmult = 10;
-=======
-static unsigned qmult = 5;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 module_param(qmult, uint, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(qmult, "queue length multiplier at high speed");
 
@@ -344,12 +340,8 @@ next_frame:
 		DBG(dev, "rx %s reset\n", ep->name);
 		defer_kevent(dev, WORK_RX_MEMORY);
 quiesce:
-<<<<<<< HEAD
 		if (skb)
 			dev_kfree_skb_any(skb);
-=======
-		dev_kfree_skb_any(skb);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		goto clean;
 
 	/* data overrun */
@@ -701,11 +693,7 @@ static int eth_stop(struct net_device *net)
 		usb_ep_disable(link->in_ep);
 		usb_ep_disable(link->out_ep);
 		if (netif_carrier_ok(net)) {
-<<<<<<< HEAD
 			INFO(dev, "host still using in/out endpoints\n");
-=======
-			DBG(dev, "host still using in/out endpoints\n");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			usb_ep_enable(link->in_ep, link->in);
 			usb_ep_enable(link->out_ep, link->out);
 		}
@@ -778,7 +766,6 @@ static struct device_type gadget_type = {
  */
 int gether_setup(struct usb_gadget *g, u8 ethaddr[ETH_ALEN])
 {
-<<<<<<< HEAD
 	return gether_setup_name(g, ethaddr, "usb");
 }
 
@@ -799,21 +786,14 @@ int gether_setup(struct usb_gadget *g, u8 ethaddr[ETH_ALEN])
 int gether_setup_name(struct usb_gadget *g, u8 ethaddr[ETH_ALEN],
 		const char *netname)
 {
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct eth_dev		*dev;
 	struct net_device	*net;
 	int			status;
 
-<<<<<<< HEAD
 	if (the_dev) {
 		memcpy(ethaddr, the_dev->host_mac, ETH_ALEN);
 		return 0;
 	}
-=======
-	if (the_dev)
-		return -EBUSY;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	net = alloc_etherdev(sizeof *dev);
 	if (!net)
@@ -830,11 +810,7 @@ int gether_setup_name(struct usb_gadget *g, u8 ethaddr[ETH_ALEN],
 
 	/* network device setup */
 	dev->net = net;
-<<<<<<< HEAD
 	snprintf(net->name, sizeof(net->name), "%s%%d", netname);
-=======
-	strcpy(net->name, "usb%d");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (get_ether_addr(dev_addr, net->dev_addr))
 		dev_warn(&g->dev,
@@ -990,10 +966,6 @@ void gether_disconnect(struct gether *link)
 	struct eth_dev		*dev = link->ioport;
 	struct usb_request	*req;
 
-<<<<<<< HEAD
-=======
-	WARN_ON(!dev);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!dev)
 		return;
 

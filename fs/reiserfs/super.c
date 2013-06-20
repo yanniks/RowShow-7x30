@@ -538,10 +538,6 @@ static struct inode *reiserfs_alloc_inode(struct super_block *sb)
 static void reiserfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
-<<<<<<< HEAD
-=======
-	INIT_LIST_HEAD(&inode->i_dentry);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	kmem_cache_free(reiserfs_inode_cachep, REISERFS_I(inode));
 }
 
@@ -2092,11 +2088,7 @@ static int reiserfs_quota_on(struct super_block *sb, int type, int format_id,
 	}
 
 	/* Quotafile not on the same filesystem? */
-<<<<<<< HEAD
 	if (path->dentry->d_sb != sb) {
-=======
-	if (path->mnt->mnt_sb != sb) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		err = -EXDEV;
 		goto out;
 	}

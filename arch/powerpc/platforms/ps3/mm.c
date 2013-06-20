@@ -319,10 +319,6 @@ static int __init ps3_mm_add_memory(void)
 	}
 
 	memblock_add(start_addr, map.r1.size);
-<<<<<<< HEAD
-=======
-	memblock_analyze();
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	result = online_pages(start_pfn, nr_pages);
 

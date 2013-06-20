@@ -245,10 +245,7 @@ struct uart_ops {
 	void		(*pm)(struct uart_port *, unsigned int state,
 			      unsigned int oldstate);
 	int		(*set_wake)(struct uart_port *, unsigned int state);
-<<<<<<< HEAD
 	void		(*wake_peer)(struct uart_port *);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/*
 	 * Return a string describing the type of the port

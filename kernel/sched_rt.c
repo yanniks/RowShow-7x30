@@ -485,10 +485,7 @@ balanced:
 		 * runtime - in which case borrowing doesn't make sense.
 		 */
 		rt_rq->rt_runtime = RUNTIME_INF;
-<<<<<<< HEAD
 		rt_rq->rt_throttled = 0;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		raw_spin_unlock(&rt_rq->rt_runtime_lock);
 		raw_spin_unlock(&rt_b->rt_runtime_lock);
 	}
@@ -564,7 +561,6 @@ static int do_sched_rt_period_timer(struct rt_bandwidth *rt_b, int overrun)
 		return 1;
 
 	span = sched_rt_period_mask();
-<<<<<<< HEAD
 #ifdef CONFIG_RT_GROUP_SCHED
 	/*
 	 * FIXME: isolated CPUs should really leave the root task group,
@@ -578,8 +574,6 @@ static int do_sched_rt_period_timer(struct rt_bandwidth *rt_b, int overrun)
 	if (rt_b == &root_task_group.rt_bandwidth)
 		span = cpu_online_mask;
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	for_each_cpu(i, span) {
 		int enqueue = 0;
 		struct rt_rq *rt_rq = sched_rt_period_rt_rq(rt_b, i);
@@ -969,11 +963,8 @@ enqueue_task_rt(struct rq *rq, struct task_struct *p, int flags)
 
 	if (!task_current(rq, p) && p->rt.nr_cpus_allowed > 1)
 		enqueue_pushable_task(rq, p);
-<<<<<<< HEAD
 
 	inc_nr_running(rq);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static void dequeue_task_rt(struct rq *rq, struct task_struct *p, int flags)
@@ -984,11 +975,8 @@ static void dequeue_task_rt(struct rq *rq, struct task_struct *p, int flags)
 	dequeue_rt_entity(rt_se);
 
 	dequeue_pushable_task(rq, p);
-<<<<<<< HEAD
 
 	dec_nr_running(rq);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /*
@@ -1156,11 +1144,7 @@ static struct task_struct *_pick_next_task_rt(struct rq *rq)
 
 	rt_rq = &rq->rt;
 
-<<<<<<< HEAD
 	if (!rt_rq->rt_nr_running)
-=======
-	if (unlikely(!rt_rq->rt_nr_running))
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return NULL;
 
 	if (rt_rq_throttled(rt_rq))
@@ -1241,11 +1225,7 @@ static struct task_struct *pick_next_highest_task_rt(struct rq *rq, int cpu)
 next_idx:
 		if (idx >= MAX_RT_PRIO)
 			continue;
-<<<<<<< HEAD
 		if (next && next->prio <= idx)
-=======
-		if (next && next->prio < idx)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			continue;
 		list_for_each_entry(rt_se, array->queue + idx, run_list) {
 			struct task_struct *p;
@@ -1591,11 +1571,7 @@ skip:
 static void pre_schedule_rt(struct rq *rq, struct task_struct *prev)
 {
 	/* Try to pull RT tasks here if we lower this rq's prio */
-<<<<<<< HEAD
 	if (rq->rt.highest_prio.curr > prev->prio)
-=======
-	if (unlikely(rt_task(prev)) && rq->rt.highest_prio.curr > prev->prio)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		pull_rt_task(rq);
 }
 
@@ -1898,7 +1874,3 @@ static void print_rt_stats(struct seq_file *m, int cpu)
 	rcu_read_unlock();
 }
 #endif /* CONFIG_SCHED_DEBUG */
-<<<<<<< HEAD
-=======
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

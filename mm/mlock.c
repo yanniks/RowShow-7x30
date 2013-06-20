@@ -14,11 +14,7 @@
 #include <linux/mempolicy.h>
 #include <linux/syscalls.h>
 #include <linux/sched.h>
-<<<<<<< HEAD
 #include <linux/export.h>
-=======
-#include <linux/module.h>
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <linux/rmap.h>
 #include <linux/mmzone.h>
 #include <linux/hugetlb.h>
@@ -114,7 +110,6 @@ void munlock_vma_page(struct page *page)
 	if (TestClearPageMlocked(page)) {
 		dec_zone_page_state(page, NR_MLOCK);
 		if (!isolate_lru_page(page)) {
-<<<<<<< HEAD
 			int ret = SWAP_AGAIN;
 
 			/*
@@ -124,9 +119,6 @@ void munlock_vma_page(struct page *page)
 			 */
 			if (page_mapcount(page) > 1)
 				ret = try_to_munlock(page);
-=======
-			int ret = try_to_munlock(page);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			/*
 			 * did try_to_unlock() succeed or punt?
 			 */
@@ -565,12 +557,8 @@ SYSCALL_DEFINE1(mlockall, int, flags)
 	if (!can_do_mlock())
 		goto out;
 
-<<<<<<< HEAD
 	if (flags & MCL_CURRENT)
 		lru_add_drain_all();	/* flush pagevec */
-=======
-	lru_add_drain_all();	/* flush pagevec */
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	down_write(&current->mm->mmap_sem);
 

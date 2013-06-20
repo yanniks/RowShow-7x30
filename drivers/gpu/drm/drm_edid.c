@@ -584,11 +584,7 @@ static bool
 drm_monitor_supports_rb(struct edid *edid)
 {
 	if (edid->revision >= 4) {
-<<<<<<< HEAD
 		bool ret;
-=======
-		bool ret = false;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		drm_for_each_detailed_block((u8 *)edid, is_rb, &ret);
 		return ret;
 	}

@@ -16,11 +16,8 @@
 #include <linux/freezer.h>
 #include <linux/delay.h>
 #include <linux/workqueue.h>
-<<<<<<< HEAD
 #include <linux/wakelock.h>
 #include "power.h"
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* 
  * Timeout for stopping processes
@@ -87,13 +84,10 @@ static int try_to_freeze_tasks(bool sig_only)
 			todo += wq_busy;
 		}
 
-<<<<<<< HEAD
 		if (todo && has_wake_lock(WAKE_LOCK_SUSPEND)) {
 			wakeup = 1;
 			break;
 		}
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (!todo || time_after(jiffies, end_time))
 			break;
 
@@ -120,7 +114,6 @@ static int try_to_freeze_tasks(bool sig_only)
 		 * and caller must call thaw_processes() if something fails),
 		 * but it cleans up leftover PF_FREEZE requests.
 		 */
-<<<<<<< HEAD
 		if(wakeup) {
 			printk("\n");
 			printk(KERN_ERR "Freezing of %s aborted\n",
@@ -148,26 +141,6 @@ static int try_to_freeze_tasks(bool sig_only)
 			} while_each_thread(g, p);
 			read_unlock(&tasklist_lock);
 		}
-=======
-		printk("\n");
-		printk(KERN_ERR "Freezing of tasks %s after %d.%02d seconds "
-		       "(%d tasks refusing to freeze, wq_busy=%d):\n",
-		       wakeup ? "aborted" : "failed",
-		       elapsed_csecs / 100, elapsed_csecs % 100,
-		       todo - wq_busy, wq_busy);
-
-		thaw_workqueues();
-
-		read_lock(&tasklist_lock);
-		do_each_thread(g, p) {
-			task_lock(p);
-			if (!wakeup && freezing(p) && !freezer_should_skip(p))
-				sched_show_task(p);
-			cancel_freezing(p);
-			task_unlock(p);
-		} while_each_thread(g, p);
-		read_unlock(&tasklist_lock);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	} else {
 		printk("(elapsed %d.%02d seconds) ", elapsed_csecs / 100,
 			elapsed_csecs % 100);
@@ -189,13 +162,10 @@ int freeze_processes(void)
 		goto Exit;
 	printk("done.\n");
 
-<<<<<<< HEAD
 	error = suspend_sys_sync_wait();
 	if (error)
 		goto Exit;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	printk("Freezing remaining freezable tasks ... ");
 	error = try_to_freeze_tasks(false);
 	if (error)
@@ -225,11 +195,7 @@ static void thaw_tasks(bool nosig_only)
 		if (cgroup_freezing_or_frozen(p))
 			continue;
 
-<<<<<<< HEAD
 		__thaw_task(p);
-=======
-		thaw_process(p);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	} while_each_thread(g, p);
 	read_unlock(&tasklist_lock);
 }

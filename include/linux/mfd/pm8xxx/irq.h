@@ -24,10 +24,7 @@
 struct pm8xxx_irq_core_data {
 	u32		rev;
 	int		nirqs;
-<<<<<<< HEAD
 	unsigned int	base_addr;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 struct pm8xxx_irq_platform_data {
@@ -35,10 +32,7 @@ struct pm8xxx_irq_platform_data {
 	struct pm8xxx_irq_core_data	irq_cdata;
 	int				devirq;
 	int				irq_trigger_flag;
-<<<<<<< HEAD
 	int				dev_id;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 struct pm_irq_chip;
@@ -48,12 +42,9 @@ int pm8xxx_get_irq_stat(struct pm_irq_chip *chip, int irq);
 struct pm_irq_chip * __devinit pm8xxx_irq_init(struct device *dev,
 				const struct pm8xxx_irq_platform_data *pdata);
 int __devexit pm8xxx_irq_exit(struct pm_irq_chip *chip);
-<<<<<<< HEAD
 int pm8xxx_get_irq_wake_stat(struct pm_irq_chip *chip, int irq);
 int pm8xxx_get_irq_base(struct pm_irq_chip *chip);
 int pm8xxx_get_irq_it_stat(struct pm_irq_chip *chip, int irq);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #else
 static inline int pm8xxx_get_irq_stat(struct pm_irq_chip *chip, int irq)
 {
@@ -69,7 +60,6 @@ static inline int __devexit pm8xxx_irq_exit(struct pm_irq_chip *chip)
 {
 	return -ENXIO;
 }
-<<<<<<< HEAD
 static inline int pm8xxx_get_wake_stat(struct pm_irq_chip *chip, int irq)
 {
 	return -ENXIO;
@@ -86,7 +76,5 @@ static inline int pm8xxx_get_irq_it_stat(struct pm_irq_chip *chip, int irq)
 {
 	return -ENXIO;
 }
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif /* CONFIG_MFD_PM8XXX_IRQ */
 #endif /* __MFD_PM8XXX_IRQ_H */

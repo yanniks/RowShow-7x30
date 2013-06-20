@@ -564,13 +564,7 @@ void __init default_get_smp_config(unsigned int early)
 
 static void __init smp_reserve_memory(struct mpf_intel *mpf)
 {
-<<<<<<< HEAD
 	memblock_reserve(mpf->physptr, get_mpc_size(mpf->physptr));
-=======
-	unsigned long size = get_mpc_size(mpf->physptr);
-
-	memblock_x86_reserve_range(mpf->physptr, mpf->physptr+size, "* MP-table mpc");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static int __init smp_scan_config(unsigned long base, unsigned long length)
@@ -599,11 +593,7 @@ static int __init smp_scan_config(unsigned long base, unsigned long length)
 			       mpf, (u64)virt_to_phys(mpf));
 
 			mem = virt_to_phys(mpf);
-<<<<<<< HEAD
 			memblock_reserve(mem, sizeof(*mpf));
-=======
-			memblock_x86_reserve_range(mem, mem + sizeof(*mpf), "* MP-table mpf");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			if (mpf->physptr)
 				smp_reserve_memory(mpf);
 

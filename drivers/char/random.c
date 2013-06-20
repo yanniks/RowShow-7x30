@@ -283,22 +283,14 @@
  * The minimum number of bits of entropy before we wake up a read on
  * /dev/random.  Should be enough to do a significant reseed.
  */
-<<<<<<< HEAD
 static int random_read_wakeup_thresh = 1024;
-=======
-static int random_read_wakeup_thresh = 64;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /*
  * If the entropy count falls under this number of bits, then we
  * should wake up processes which are selecting or polling on write
  * access to /dev/random.
  */
-<<<<<<< HEAD
 static int random_write_wakeup_thresh = 2048;
-=======
-static int random_write_wakeup_thresh = 128;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /*
  * When the input pool goes over trickle_thresh, start dropping most
@@ -691,15 +683,11 @@ static void add_timer_randomness(struct timer_rand_state *state, unsigned num)
 		goto out;
 
 	sample.jiffies = jiffies;
-<<<<<<< HEAD
 
 	/* Use arch random value, fall back to cycles */
 	if (!arch_get_random_int(&sample.cycles))
 		sample.cycles = get_cycles();
 
-=======
-	sample.cycles = get_cycles();
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	sample.num = num;
 	mix_pool_bytes(&input_pool, &sample, sizeof(sample), NULL);
 

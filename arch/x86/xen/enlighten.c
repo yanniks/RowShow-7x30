@@ -1236,11 +1236,6 @@ asmlinkage void __init xen_start_kernel(void)
 	local_irq_disable();
 	early_boot_irqs_disabled = true;
 
-<<<<<<< HEAD
-=======
-	memblock_init();
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	xen_raw_console_write("mapping kernel into physical memory\n");
 	pgd = xen_setup_kernel_pagetable(pgd, xen_start_info->nr_pages);
 	xen_ident_map_ISA();

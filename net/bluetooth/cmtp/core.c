@@ -300,14 +300,10 @@ static int cmtp_session(void *arg)
 
 		while ((skb = skb_dequeue(&sk->sk_receive_queue))) {
 			skb_orphan(skb);
-<<<<<<< HEAD
 			if (!skb_linearize(skb))
 				cmtp_recv_frame(session, skb);
 			else
 				kfree_skb(skb);
-=======
-			cmtp_recv_frame(session, skb);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		}
 
 		cmtp_process_transmit(session);
@@ -353,12 +349,7 @@ int cmtp_add_connection(struct cmtp_connadd_req *req, struct socket *sock)
 
 	bacpy(&session->bdaddr, &bt_sk(sock->sk)->dst);
 
-<<<<<<< HEAD
 	session->mtu = min_t(uint, l2cap_pi(sock->sk)->omtu, l2cap_pi(sock->sk)->imtu);
-=======
-	session->mtu = min_t(uint, l2cap_pi(sock->sk)->chan->omtu,
-					l2cap_pi(sock->sk)->chan->imtu);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	BT_DBG("mtu %d", session->mtu);
 

@@ -17,11 +17,7 @@
 #include <linux/if_arp.h>
 #include <linux/etherdevice.h>
 #include <linux/rtnetlink.h>
-<<<<<<< HEAD
 #include <linux/pm_qos.h>
-=======
-#include <linux/pm_qos_params.h>
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <linux/crc32.h>
 #include <linux/slab.h>
 #include <net/mac80211.h>

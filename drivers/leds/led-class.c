@@ -20,7 +20,6 @@
 #include <linux/err.h>
 #include <linux/ctype.h>
 #include <linux/leds.h>
-<<<<<<< HEAD
 #include <linux/slab.h>
 #include "leds.h"
 
@@ -84,11 +83,6 @@ int queue_brightness_change(struct led_classdev *led_cdev,
 }
 
 #endif
-=======
-#include "leds.h"
-
-static struct class *leds_class;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static void led_update_brightness(struct led_classdev *led_cdev)
 {
@@ -104,11 +98,7 @@ static ssize_t led_brightness_show(struct device *dev,
 	/* no lock needed for this */
 	led_update_brightness(led_cdev);
 
-<<<<<<< HEAD
 	return snprintf(buf, LED_BUFF_SIZE, "%u\n", led_cdev->brightness);
-=======
-	return sprintf(buf, "%u\n", led_cdev->brightness);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static ssize_t led_brightness_store(struct device *dev,
@@ -134,7 +124,6 @@ static ssize_t led_brightness_store(struct device *dev,
 	return ret;
 }
 
-<<<<<<< HEAD
 static ssize_t led_offset_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -187,29 +176,19 @@ static ssize_t led_max_brightness_store(struct device *dev,
 	return ret;
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static ssize_t led_max_brightness_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *led_cdev = dev_get_drvdata(dev);
 
-<<<<<<< HEAD
 	return snprintf(buf, LED_BUFF_SIZE, "%u\n", led_cdev->max_brightness);
-=======
-	return sprintf(buf, "%u\n", led_cdev->max_brightness);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static struct device_attribute led_class_attrs[] = {
 	__ATTR(brightness, 0644, led_brightness_show, led_brightness_store),
-<<<<<<< HEAD
 	__ATTR(offset, 0644, led_offset_show, led_offset_store),
 	__ATTR(max_brightness, 0644, led_max_brightness_show,
 			led_max_brightness_store),
-=======
-	__ATTR(max_brightness, 0444, led_max_brightness_show, NULL),
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_LEDS_TRIGGERS
 	__ATTR(trigger, 0644, led_trigger_show, led_trigger_store),
 #endif
@@ -432,23 +411,17 @@ static int __init leds_init(void)
 	leds_class->suspend = led_suspend;
 	leds_class->resume = led_resume;
 	leds_class->dev_attrs = led_class_attrs;
-<<<<<<< HEAD
 
 	/* create an ordered workqueue to process every call to sysfs */
 	leds_workqueue = alloc_ordered_workqueue("leds_wq", 0);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 
 static void __exit leds_exit(void)
 {
 	class_destroy(leds_class);
-<<<<<<< HEAD
 	destroy_workqueue(leds_workqueue);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 subsys_initcall(leds_init);

@@ -172,7 +172,6 @@ static inline void dma_free_noncoherent(struct device *dev, size_t size,
 {
 }
 
-<<<<<<< HEAD
 
 /*
  * dma_coherent_pre_ops - barrier functions for coherent memory before DMA.
@@ -213,8 +212,6 @@ static inline void dma_coherent_post_ops(void)
 #endif
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /**
  * dma_alloc_coherent - allocate consistent memory for DMA
  * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
@@ -429,7 +426,6 @@ static inline dma_addr_t dma_map_single(struct device *dev, void *cpu_addr,
 }
 
 /**
-<<<<<<< HEAD
  * dma_cache_pre_ops - clean or invalidate cache before dma transfer is
  *                     initiated and perform a barrier operation.
  * @virtual_addr: A kernel logical or kernel virtual address
@@ -482,8 +478,6 @@ static inline void dma_cache_post_ops(void *virtual_addr,
 }
 
 /**
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * dma_map_page - map a portion of a page for streaming DMA
  * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
  * @page: page that buffer resides in

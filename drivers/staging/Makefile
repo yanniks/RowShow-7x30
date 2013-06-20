@@ -29,10 +29,7 @@ obj-$(CONFIG_R8712U)		+= rtl8712/
 obj-$(CONFIG_RTS_PSTOR)		+= rts_pstor/
 obj-$(CONFIG_SPECTRA)		+= spectra/
 obj-$(CONFIG_TRANZPORT)		+= frontier/
-<<<<<<< HEAD
 obj-$(CONFIG_ANDROID)		+= android/
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 obj-$(CONFIG_POHMELFS)		+= pohmelfs/
 obj-$(CONFIG_IDE_PHISON)	+= phison/
 obj-$(CONFIG_LINE6_USB)		+= line6/
@@ -46,11 +43,8 @@ obj-$(CONFIG_VME_BUS)		+= vme/
 obj-$(CONFIG_DX_SEP)            += sep/
 obj-$(CONFIG_IIO)		+= iio/
 obj-$(CONFIG_CS5535_GPIO)	+= cs5535_gpio/
-<<<<<<< HEAD
 obj-$(CONFIG_SNAPPY_COMPRESS)	+= snappy/
 obj-$(CONFIG_SNAPPY_DECOMPRESS)	+= snappy/
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 obj-$(CONFIG_ZRAM)		+= zram/
 obj-$(CONFIG_XVMALLOC)		+= zram/
 obj-$(CONFIG_ZCACHE)		+= zcache/
@@ -60,10 +54,7 @@ obj-$(CONFIG_FB_SM7XX)		+= sm7xx/
 obj-$(CONFIG_VIDEO_DT3155)	+= dt3155v4l/
 obj-$(CONFIG_CRYSTALHD)		+= crystalhd/
 obj-$(CONFIG_CXT1E1)		+= cxt1e1/
-<<<<<<< HEAD
 obj-$(CONFIG_TI_ST)		+= ti-st/
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 obj-$(CONFIG_FB_XGI)		+= xgifb/
 obj-$(CONFIG_MSM_STAGING)	+= msm/
 obj-$(CONFIG_EASYCAP)		+= easycap/

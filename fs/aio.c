@@ -434,11 +434,6 @@ void exit_aio(struct mm_struct *mm)
 static struct kiocb *__aio_get_req(struct kioctx *ctx)
 {
 	struct kiocb *req = NULL;
-<<<<<<< HEAD
-=======
-	struct aio_ring *ring;
-	int okay = 0;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	req = kmem_cache_alloc(kiocb_cachep, GFP_KERNEL);
 	if (unlikely(!req))
@@ -456,7 +451,6 @@ static struct kiocb *__aio_get_req(struct kioctx *ctx)
 	INIT_LIST_HEAD(&req->ki_run_list);
 	req->ki_eventfd = NULL;
 
-<<<<<<< HEAD
 	return req;
 }
 
@@ -574,41 +568,6 @@ static inline struct kiocb *aio_get_req(struct kioctx *ctx,
 			return NULL;
 	req = list_first_entry(&batch->head, struct kiocb, ki_batch);
 	list_del(&req->ki_batch);
-=======
-	/* Check if the completion queue has enough free space to
-	 * accept an event from this io.
-	 */
-	spin_lock_irq(&ctx->ctx_lock);
-	ring = kmap_atomic(ctx->ring_info.ring_pages[0], KM_USER0);
-	if (ctx->reqs_active < aio_ring_avail(&ctx->ring_info, ring)) {
-		list_add(&req->ki_list, &ctx->active_reqs);
-		ctx->reqs_active++;
-		okay = 1;
-	}
-	kunmap_atomic(ring, KM_USER0);
-	spin_unlock_irq(&ctx->ctx_lock);
-
-	if (!okay) {
-		kmem_cache_free(kiocb_cachep, req);
-		req = NULL;
-	}
-
-	return req;
-}
-
-static inline struct kiocb *aio_get_req(struct kioctx *ctx)
-{
-	struct kiocb *req;
-	/* Handle a potential starvation case -- should be exceedingly rare as 
-	 * requests will be stuck on fput_head only if the aio_fput_routine is 
-	 * delayed and the requests were the last user of the struct file.
-	 */
-	req = __aio_get_req(ctx);
-	if (unlikely(NULL == req)) {
-		aio_fput_routine(NULL);
-		req = __aio_get_req(ctx);
-	}
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return req;
 }
 
@@ -1038,13 +997,10 @@ int aio_complete(struct kiocb *iocb, long res, long res2)
 		iocb->ki_users = 0;
 		wake_up_process(iocb->ki_obj.tsk);
 		return 1;
-<<<<<<< HEAD
 	} else if (is_kernel_kiocb(iocb)) {
 		iocb->ki_obj.complete(iocb->ki_user_data, res);
 		aio_kernel_free(iocb);
 		return 0;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	info = &ctx->ring_info;
@@ -1515,21 +1471,13 @@ static ssize_t aio_setup_vectored_rw(int type, struct kiocb *kiocb, bool compat)
 		ret = compat_rw_copy_check_uvector(type,
 				(struct compat_iovec __user *)kiocb->ki_buf,
 				kiocb->ki_nbytes, 1, &kiocb->ki_inline_vec,
-<<<<<<< HEAD
 				&kiocb->ki_iovec, 1);
-=======
-				&kiocb->ki_iovec);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	else
 #endif
 		ret = rw_copy_check_uvector(type,
 				(struct iovec __user *)kiocb->ki_buf,
 				kiocb->ki_nbytes, 1, &kiocb->ki_inline_vec,
-<<<<<<< HEAD
 				&kiocb->ki_iovec, 1);
-=======
-				&kiocb->ki_iovec);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (ret < 0)
 		goto out;
 
@@ -1564,7 +1512,6 @@ static ssize_t aio_setup_single_vector(int type, struct file * file, struct kioc
 	return 0;
 }
 
-<<<<<<< HEAD
 static ssize_t aio_read_iter(struct kiocb *iocb)
 {
 	struct file *file = iocb->ki_filp;
@@ -1585,8 +1532,6 @@ static ssize_t aio_write_iter(struct kiocb *iocb)
 	return ret;
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * aio_setup_iocb:
  *	Performs the initial checks and aio retry method
@@ -1650,7 +1595,6 @@ static ssize_t aio_setup_iocb(struct kiocb *kiocb, bool compat)
 		if (file->f_op->aio_write)
 			kiocb->ki_retry = aio_rw_vect_retry;
 		break;
-<<<<<<< HEAD
 	case IOCB_CMD_READ_ITER:
 		ret = -EINVAL;
 		if (unlikely(!is_kernel_kiocb(kiocb)))
@@ -1679,8 +1623,6 @@ static ssize_t aio_setup_iocb(struct kiocb *kiocb, bool compat)
 		if (file->f_op->write_iter)
 			kiocb->ki_retry = aio_write_iter;
 		break;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	case IOCB_CMD_FDSYNC:
 		ret = -EINVAL;
 		if (file->f_op->aio_fsync)
@@ -1702,7 +1644,6 @@ static ssize_t aio_setup_iocb(struct kiocb *kiocb, bool compat)
 	return 0;
 }
 
-<<<<<<< HEAD
  /*
  * This allocates an iocb that will be used to submit and track completion of
  * an IO that is issued from kernel space.
@@ -1810,10 +1751,6 @@ EXPORT_SYMBOL_GPL(aio_kernel_submit);
 static int io_submit_one(struct kioctx *ctx, struct iocb __user *user_iocb,
 			 struct iocb *iocb, struct kiocb_batch *batch,
 			 bool compat)
-=======
-static int io_submit_one(struct kioctx *ctx, struct iocb __user *user_iocb,
-			 struct iocb *iocb, bool compat)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct kiocb *req;
 	struct file *file;
@@ -1839,11 +1776,7 @@ static int io_submit_one(struct kioctx *ctx, struct iocb __user *user_iocb,
 	if (unlikely(!file))
 		return -EBADF;
 
-<<<<<<< HEAD
 	req = aio_get_req(ctx, batch);  /* returns with 2 references to req */
-=======
-	req = aio_get_req(ctx);		/* returns with 2 references to req */
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (unlikely(!req)) {
 		fput(file);
 		return -EAGAIN;
@@ -1923,13 +1856,8 @@ long do_io_submit(aio_context_t ctx_id, long nr,
 {
 	struct kioctx *ctx;
 	long ret = 0;
-<<<<<<< HEAD
 	int i = 0;
 	struct kiocb_batch batch;
-=======
-	int i;
-	struct blk_plug plug;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (unlikely(nr < 0))
 		return -EINVAL;
@@ -1946,11 +1874,7 @@ long do_io_submit(aio_context_t ctx_id, long nr,
 		return -EINVAL;
 	}
 
-<<<<<<< HEAD
 	kiocb_batch_init(&batch, nr);
-=======
-	blk_start_plug(&plug);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/*
 	 * AKPM: should this return a partial result if some of the IOs were
@@ -1970,21 +1894,12 @@ long do_io_submit(aio_context_t ctx_id, long nr,
 			break;
 		}
 
-<<<<<<< HEAD
 		ret = io_submit_one(ctx, user_iocb, &tmp, &batch, compat);
 		if (ret)
 			break;
 	}
 
 	kiocb_batch_free(ctx, &batch);
-=======
-		ret = io_submit_one(ctx, user_iocb, &tmp, compat);
-		if (ret)
-			break;
-	}
-	blk_finish_plug(&plug);
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	put_ioctx(ctx);
 	return i ? i : ret;
 }

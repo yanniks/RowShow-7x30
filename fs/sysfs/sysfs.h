@@ -201,11 +201,7 @@ static inline void __sysfs_put(struct sysfs_dirent *sd)
 struct inode *sysfs_get_inode(struct super_block *sb, struct sysfs_dirent *sd);
 void sysfs_evict_inode(struct inode *inode);
 int sysfs_sd_setattr(struct sysfs_dirent *sd, struct iattr *iattr);
-<<<<<<< HEAD
 int sysfs_permission(struct inode *inode, int mask);
-=======
-int sysfs_permission(struct inode *inode, int mask, unsigned int flags);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 int sysfs_setattr(struct dentry *dentry, struct iattr *iattr);
 int sysfs_getattr(struct vfsmount *mnt, struct dentry *dentry, struct kstat *stat);
 int sysfs_setxattr(struct dentry *dentry, const char *name, const void *value,

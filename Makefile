@@ -1,12 +1,7 @@
 VERSION = 3
 PATCHLEVEL = 0
-<<<<<<< HEAD
 SUBLEVEL = 83
 EXTRAVERSION = -rc1
-=======
-SUBLEVEL = 82
-EXTRAVERSION =
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 NAME = Sneaky Weasel
 
 # *DOCUMENTATION*
@@ -176,10 +171,7 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
 				  -e s/ppc.*/powerpc/ -e s/mips.*/mips/ \
 				  -e s/sh[234].*/sh/ )
 
-<<<<<<< HEAD
 SUBARCH := arm
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 # Cross compiling and selecting different set of gcc/bin-utils
 # ---------------------------------------------------------------------------
 #
@@ -200,7 +192,6 @@ SUBARCH := arm
 # "make" in the configured kernel build directory always uses that.
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
-<<<<<<< HEAD
 SUBARCH := arm
 export KBUILD_BUILDHOST := $(SUBARCH)
 ARCH		?= $(SUBARCH)
@@ -208,12 +199,6 @@ CROSS_COMPILE	?= /home/yannik/toolchain4.7/bin/arm-eabi-
 CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
 
 
-=======
-export KBUILD_BUILDHOST := $(SUBARCH)
-ARCH		?= $(SUBARCH)
-CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
 SRCARCH 	:= $(ARCH)
@@ -264,13 +249,8 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 
 HOSTCC       = gcc
 HOSTCXX      = g++
-<<<<<<< HEAD
 HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O3 -fomit-frame-pointer
 HOSTCXXFLAGS = -O3
-=======
-HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
-HOSTCXXFLAGS = -O2
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 # Decide whether to build built-in, modular, or both.
 # Normally, just do built-in.
@@ -350,21 +330,14 @@ MAKEFLAGS += --include-dir=$(srctree)
 $(srctree)/scripts/Kbuild.include: ;
 include $(srctree)/scripts/Kbuild.include
 
-<<<<<<< HEAD
 # ccache
 CCACHE	= $(shell which ccache)
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 # Make variables (CC, etc...)
 
 AS		= $(CROSS_COMPILE)as
 LD		= $(CROSS_COMPILE)ld
-<<<<<<< HEAD
 REAL_CC		= $(CCACHE) $(CROSS_COMPILE)gcc
-=======
-CC		= $(CROSS_COMPILE)gcc
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 CPP		= $(CC) -E
 AR		= $(CROSS_COMPILE)ar
 NM		= $(CROSS_COMPILE)nm
@@ -379,7 +352,6 @@ KALLSYMS	= scripts/kallsyms
 PERL		= perl
 CHECK		= sparse
 
-<<<<<<< HEAD
 # Use the wrapper for the compiler.  This wrapper scans for new
 # warnings and causes the build to stop upon encountering them.
 CC		= $(srctree)/scripts/gcc-wrapper.py $(REAL_CC)
@@ -392,16 +364,6 @@ LDFLAGS_MODULE  =
 CFLAGS_KERNEL   =
 AFLAGS_KERNEL   =
 CFLAGS_GCOV     = -fprofile-arcs -ftest-coverage
-=======
-CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
-		  -Wbitwise -Wno-return-void $(CF)
-CFLAGS_MODULE   =
-AFLAGS_MODULE   =
-LDFLAGS_MODULE  =
-CFLAGS_KERNEL	=
-AFLAGS_KERNEL	=
-CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 
 # Use LINUXINCLUDE when you must reference the include/ directory.
@@ -417,7 +379,6 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
-<<<<<<< HEAD
 		   -fno-delete-null-pointer-checks -mno-unaligned-access \
 		   -mcpu=cortex-a8 -mtune=cortex-a8 -march=armv7-a -mfpu=neon \
 		   -funsafe-math-optimizations \
@@ -434,9 +395,6 @@ ifdef CONFIG_CC_LINK_TIME_OPTIMIZATION
 KBUILD_CFLAGS	:= -flto -fno-toplevel-reorder
 endif
 
-=======
-		   -fno-delete-null-pointer-checks
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
@@ -628,7 +586,6 @@ all: vmlinux
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os
-<<<<<<< HEAD
 endif
 ifdef CONFIG_CC_OPTIMIZE_ALITTLE
 KBUILD_CFLAGS	+= -O1
@@ -638,10 +595,6 @@ KBUILD_CLAGS    += -O2
 endif
 ifdef CONFIG_CC_OPTIMIZE_ALOT
 KBUILD_CFLAGS   += -O3
-=======
-else
-KBUILD_CFLAGS	+= -O2
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 endif
 
 include $(srctree)/arch/$(SRCARCH)/Makefile

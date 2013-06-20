@@ -28,10 +28,6 @@ modules.builtin
 *.gz
 *.bz2
 *.lzma
-<<<<<<< HEAD
-=======
-*.xz
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 *.lzo
 *.patch
 *.gcno
@@ -60,7 +56,6 @@ modules.builtin
 include/config
 include/linux/version.h
 include/generated
-<<<<<<< HEAD
 
 #
 # Generated build output
@@ -71,9 +66,6 @@ arch/arm/boot/compressed/piggy.gzip
 arch/arm/boot/compressed/piggy.xzkern
 arch/arm/boot/compressed/vmlinux
 arch/arm/mach-msm/smd_rpc_sym.c
-=======
-arch/*/include/generated
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 # stgit generated dirs
 patches-*
@@ -95,7 +87,6 @@ GTAGS
 *.orig
 *~
 \#*#
-<<<<<<< HEAD
 
 # compressed boot files
 arch/arm/boot/compressed/lib1funcs.S
@@ -103,5 +94,3 @@ arch/arm/boot/compressed/ashldi3.S
 arch/arm/boot/compressed/piggy.gzip
 arch/arm/boot/compressed/piggy.xzkern
 arch/arm/boot/compressed/vmlinux
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

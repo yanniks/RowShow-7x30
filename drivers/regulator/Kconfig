@@ -303,7 +303,6 @@ config REGULATOR_TPS65910
 	help
 	  This driver supports TPS65910 voltage regulator chips.
 
-<<<<<<< HEAD
 config REGULATOR_PMIC8058
         tristate "PMIC8058 regulator driver"
         depends on PMIC8058 && (ARCH_MSM8X60 || ARCH_FSM9XXX)
@@ -355,7 +354,5 @@ config REGULATOR_PM8018
 	  chip.  The PM8018 provides several different varieties of LDO and
 	  switching regulators.  It also provides a voltage switch.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 endif
 

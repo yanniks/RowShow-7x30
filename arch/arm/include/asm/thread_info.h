@@ -118,7 +118,6 @@ extern void iwmmxt_task_switch(struct thread_info *);
 extern void vfp_sync_hwstate(struct thread_info *);
 extern void vfp_flush_hwstate(struct thread_info *);
 
-<<<<<<< HEAD
 struct user_vfp;
 struct user_vfp_exc;
 
@@ -126,8 +125,6 @@ extern int vfp_preserve_user_hwstate(struct user_vfp __user *,
 				     struct user_vfp_exc __user *);
 extern int vfp_restore_user_hwstate(struct user_vfp __user *,
 				    struct user_vfp_exc __user *);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 
 /*

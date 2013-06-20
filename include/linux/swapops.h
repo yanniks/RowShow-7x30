@@ -1,11 +1,8 @@
-<<<<<<< HEAD
 #ifndef _LINUX_SWAPOPS_H
 #define _LINUX_SWAPOPS_H
 
 #include <linux/radix-tree.h>
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * swapcache pages are stored in the swapper_space radix tree.  We want to
  * get good packing density in that tree, so the index should be dense in
@@ -84,7 +81,6 @@ static inline pte_t swp_entry_to_pte(swp_entry_t entry)
 	return __swp_entry_to_pte(arch_entry);
 }
 
-<<<<<<< HEAD
 static inline swp_entry_t radix_to_swp_entry(void *arg)
 {
 	swp_entry_t entry;
@@ -101,8 +97,6 @@ static inline void *swp_to_radix_entry(swp_entry_t entry)
 	return (void *)(value | RADIX_TREE_EXCEPTIONAL_ENTRY);
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_MIGRATION
 static inline swp_entry_t make_migration_entry(struct page *page, int write)
 {
@@ -140,10 +134,7 @@ static inline void make_migration_entry_read(swp_entry_t *entry)
 
 extern void migration_entry_wait(struct mm_struct *mm, pmd_t *pmd,
 					unsigned long address);
-<<<<<<< HEAD
 extern void migration_entry_wait_huge(struct mm_struct *mm, pte_t *pte);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #else
 
 #define make_migration_entry(page, write) swp_entry(0, 0)
@@ -155,11 +146,8 @@ static inline int is_migration_entry(swp_entry_t swp)
 static inline void make_migration_entry_read(swp_entry_t *entryp) { }
 static inline void migration_entry_wait(struct mm_struct *mm, pmd_t *pmd,
 					 unsigned long address) { }
-<<<<<<< HEAD
 static inline void migration_entry_wait_huge(struct mm_struct *mm,
 					pte_t *pte) { }
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static inline int is_write_migration_entry(swp_entry_t entry)
 {
 	return 0;
@@ -205,8 +193,5 @@ static inline int non_swap_entry(swp_entry_t entry)
 	return 0;
 }
 #endif
-<<<<<<< HEAD
 
 #endif /* _LINUX_SWAPOPS_H */
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

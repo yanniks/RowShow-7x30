@@ -14,12 +14,8 @@
 extern const struct reiserfs_key MIN_KEY;
 
 static int reiserfs_readdir(struct file *, void *, filldir_t);
-<<<<<<< HEAD
 static int reiserfs_dir_fsync(struct file *filp, loff_t start, loff_t end,
 			      int datasync);
-=======
-static int reiserfs_dir_fsync(struct file *filp, int datasync);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 const struct file_operations reiserfs_dir_operations = {
 	.llseek = generic_file_llseek,
@@ -32,7 +28,6 @@ const struct file_operations reiserfs_dir_operations = {
 #endif
 };
 
-<<<<<<< HEAD
 static int reiserfs_dir_fsync(struct file *filp, loff_t start, loff_t end,
 			      int datasync)
 {
@@ -48,15 +43,6 @@ static int reiserfs_dir_fsync(struct file *filp, loff_t start, loff_t end,
 	err = reiserfs_commit_for_inode(inode);
 	reiserfs_write_unlock(inode->i_sb);
 	mutex_unlock(&inode->i_mutex);
-=======
-static int reiserfs_dir_fsync(struct file *filp, int datasync)
-{
-	struct inode *inode = filp->f_mapping->host;
-	int err;
-	reiserfs_write_lock(inode->i_sb);
-	err = reiserfs_commit_for_inode(inode);
-	reiserfs_write_unlock(inode->i_sb);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (err < 0)
 		return err;
 	return 0;

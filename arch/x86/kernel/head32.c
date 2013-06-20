@@ -31,14 +31,8 @@ static void __init i386_default_early_setup(void)
 
 void __init i386_start_kernel(void)
 {
-<<<<<<< HEAD
 	memblock_reserve(__pa_symbol(&_text),
 			 __pa_symbol(&__bss_stop) - __pa_symbol(&_text));
-=======
-	memblock_init();
-
-	memblock_x86_reserve_range(__pa_symbol(&_text), __pa_symbol(&__bss_stop), "TEXT DATA BSS");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #ifdef CONFIG_BLK_DEV_INITRD
 	/* Reserve INITRD */
@@ -47,11 +41,7 @@ void __init i386_start_kernel(void)
 		u64 ramdisk_image = boot_params.hdr.ramdisk_image;
 		u64 ramdisk_size  = boot_params.hdr.ramdisk_size;
 		u64 ramdisk_end   = PAGE_ALIGN(ramdisk_image + ramdisk_size);
-<<<<<<< HEAD
 		memblock_reserve(ramdisk_image, ramdisk_end - ramdisk_image);
-=======
-		memblock_x86_reserve_range(ramdisk_image, ramdisk_end, "RAMDISK");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 #endif
 

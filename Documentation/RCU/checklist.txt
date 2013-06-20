@@ -180,7 +180,6 @@ over a rather long period of time, but improvements are always welcome!
 	operations that would not normally be undertaken while a real-time
 	workload is running.
 
-<<<<<<< HEAD
 	In particular, if you find yourself invoking one of the expedited
 	primitives repeatedly in a loop, please do everyone a favor:
 	Restructure your code so that it batches the updates, allowing
@@ -195,8 +194,6 @@ over a rather long period of time, but improvements are always welcome!
 	by a CPU-hotplug notifier.  Failing to observe this restriction
 	will result in deadlock.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 7.	If the updater uses call_rcu() or synchronize_rcu(), then the
 	corresponding readers must use rcu_read_lock() and
 	rcu_read_unlock().  If the updater uses call_rcu_bh() or

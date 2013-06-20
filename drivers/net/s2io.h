@@ -968,13 +968,8 @@ struct s2io_nic {
 	u8  serial_num[VPD_STRING_LEN];
 };
 
-<<<<<<< HEAD
 #define RESET_ERROR 1
 #define CMD_ERROR   2
-=======
-#define RESET_ERROR 1;
-#define CMD_ERROR   2;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /*  OS related system calls */
 #ifndef readq

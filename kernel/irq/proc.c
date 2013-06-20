@@ -315,11 +315,7 @@ void register_irq_proc(unsigned int irq, struct irq_desc *desc)
 		return;
 
 	memset(name, 0, MAX_NAMELEN);
-<<<<<<< HEAD
 	snprintf(name, MAX_NAMELEN, "%d", irq);
-=======
-	sprintf(name, "%d", irq);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* create /proc/irq/1234 */
 	desc->dir = proc_mkdir(name, root_irq_dir);
@@ -362,11 +358,7 @@ void unregister_irq_proc(unsigned int irq, struct irq_desc *desc)
 	remove_proc_entry("spurious", desc->dir);
 
 	memset(name, 0, MAX_NAMELEN);
-<<<<<<< HEAD
 	snprintf(name, MAX_NAMELEN, "%u", irq);
-=======
-	sprintf(name, "%u", irq);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	remove_proc_entry(name, root_irq_dir);
 }
 

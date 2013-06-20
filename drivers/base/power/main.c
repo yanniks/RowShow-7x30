@@ -27,10 +27,7 @@
 #include <linux/sched.h>
 #include <linux/async.h>
 #include <linux/suspend.h>
-<<<<<<< HEAD
 #include <linux/timer.h>
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #include "../base.h"
 #include "power.h"
@@ -53,15 +50,12 @@ LIST_HEAD(dpm_noirq_list);
 static DEFINE_MUTEX(dpm_list_mtx);
 static pm_message_t pm_transition;
 
-<<<<<<< HEAD
 static void dpm_drv_timeout(unsigned long data);
 struct dpm_drv_wd_data {
 	struct device *dev;
 	struct task_struct *tsk;
 };
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static int async_error;
 
 /**
@@ -149,7 +143,6 @@ void device_pm_move_before(struct device *deva, struct device *devb)
  */
 void device_pm_move_after(struct device *deva, struct device *devb)
 {
-<<<<<<< HEAD
 	if (devb) {
 		pr_debug("PM: Moving %s:%s after %s:%s\n",
 			 deva->bus ? deva->bus->name : "No Bus", dev_name(deva),
@@ -157,13 +150,6 @@ void device_pm_move_after(struct device *deva, struct device *devb)
 		/* Delete deva from dpm_list and reinsert after devb. */
 		list_move(&deva->power.entry, &devb->power.entry);
 	}
-=======
-	pr_debug("PM: Moving %s:%s after %s:%s\n",
-		 deva->bus ? deva->bus->name : "No Bus", dev_name(deva),
-		 devb->bus ? devb->bus->name : "No Bus", dev_name(devb));
-	/* Delete deva from dpm_list and reinsert after devb. */
-	list_move(&deva->power.entry, &devb->power.entry);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /**
@@ -607,7 +593,6 @@ static bool is_async(struct device *dev)
 }
 
 /**
-<<<<<<< HEAD
  *	dpm_drv_timeout - Driver suspend / resume watchdog handler
  *	@data: struct device which timed out
  *
@@ -632,8 +617,6 @@ static void dpm_drv_timeout(unsigned long data)
 }
 
 /**
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * dpm_resume - Execute "resume" callbacks for non-sysdev devices.
  * @state: PM transition of the system being carried out.
  *
@@ -891,7 +874,6 @@ static int legacy_suspend(struct device *dev, pm_message_t state,
 static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 {
 	int error = 0;
-<<<<<<< HEAD
 	struct timer_list timer;
 	struct dpm_drv_wd_data data;
 
@@ -905,10 +887,6 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 	timer.data = (unsigned long)&data;
 	add_timer(&timer);
 
-=======
-
-	dpm_wait_for_children(dev, async);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	device_lock(dev);
 
 	if (async_error)
@@ -958,13 +936,10 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 
  Unlock:
 	device_unlock(dev);
-<<<<<<< HEAD
 
 	del_timer_sync(&timer);
 	destroy_timer_on_stack(&timer);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	complete_all(&dev->power.completion);
 
 	if (error)

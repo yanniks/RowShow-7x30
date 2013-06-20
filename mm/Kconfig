@@ -131,25 +131,18 @@ config SPARSEMEM_VMEMMAP
 config HAVE_MEMBLOCK
 	boolean
 
-<<<<<<< HEAD
 config HAVE_MEMBLOCK_NODE_MAP
 	boolean
 
 config ARCH_DISCARD_MEMBLOCK
 	boolean
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 # eventually, we can have this option just 'select SPARSEMEM'
 config MEMORY_HOTPLUG
 	bool "Allow for memory hot-add"
 	depends on SPARSEMEM || X86_64_ACPI_NUMA
 	depends on HOTPLUG && ARCH_ENABLE_MEMORY_HOTPLUG
-<<<<<<< HEAD
 	depends on (IA64 || X86 || PPC_BOOK3S_64 || SUPERH || S390 || ARM)
-=======
-	depends on (IA64 || X86 || PPC_BOOK3S_64 || SUPERH || S390)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 config MEMORY_HOTPLUG_SPARSE
 	def_bool y
@@ -383,7 +376,6 @@ config CLEANCACHE
 	  in a negligible performance hit.
 
 	  If unsure, say Y to enable cleancache
-<<<<<<< HEAD
 
 config FRONTSWAP
 	bool "Enable frontswap to cache swap pages if tmem is present"
@@ -401,5 +393,3 @@ config FRONTSWAP
 	  and swap data is stored as normal on the matching swap device.
 
 	  If unsure, say Y to enable frontswap.
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

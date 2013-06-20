@@ -211,13 +211,8 @@ static ssize_t fat_direct_IO(int rw, struct kiocb *iocb,
 	 * FAT need to use the DIO_LOCKING for avoiding the race
 	 * condition of fat_get_block() and ->truncate().
 	 */
-<<<<<<< HEAD
 	ret = blockdev_direct_IO(rw, iocb, inode, iov, offset, nr_segs,
 				 fat_get_block);
-=======
-	ret = blockdev_direct_IO(rw, iocb, inode, inode->i_sb->s_bdev,
-				 iov, offset, nr_segs, fat_get_block, NULL);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (ret < 0 && (rw & WRITE))
 		fat_write_failed(mapping, offset + iov_length(iov, nr_segs));
 
@@ -229,15 +224,9 @@ static sector_t _fat_bmap(struct address_space *mapping, sector_t block)
 	sector_t blocknr;
 
 	/* fat_get_cluster() assumes the requested blocknr isn't truncated. */
-<<<<<<< HEAD
 	down_read(&MSDOS_I(mapping->host)->truncate_lock);
 	blocknr = generic_block_bmap(mapping, block, fat_get_block);
 	up_read(&MSDOS_I(mapping->host)->truncate_lock);
-=======
-	down_read(&mapping->host->i_alloc_sem);
-	blocknr = generic_block_bmap(mapping, block, fat_get_block);
-	up_read(&mapping->host->i_alloc_sem);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return blocknr;
 }
@@ -521,21 +510,14 @@ static struct inode *fat_alloc_inode(struct super_block *sb)
 	ei = kmem_cache_alloc(fat_inode_cachep, GFP_NOFS);
 	if (!ei)
 		return NULL;
-<<<<<<< HEAD
 
 	init_rwsem(&ei->truncate_lock);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return &ei->vfs_inode;
 }
 
 static void fat_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
-<<<<<<< HEAD
-=======
-	INIT_LIST_HEAD(&inode->i_dentry);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	kmem_cache_free(fat_inode_cachep, MSDOS_I(inode));
 }
 
@@ -1277,10 +1259,7 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 	struct inode *root_inode = NULL, *fat_inode = NULL;
 	struct buffer_head *bh;
 	struct fat_boot_sector *b;
-<<<<<<< HEAD
 	struct fat_boot_bsx *bsx;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct msdos_sb_info *sbi;
 	u16 logical_sector_size;
 	u32 total_sectors, total_clusters, fat_clusters, rootdir_sectors;
@@ -1426,11 +1405,8 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 			goto out_fail;
 		}
 
-<<<<<<< HEAD
 		bsx = (struct fat_boot_bsx *)(bh->b_data + FAT32_BSX_OFFSET);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		fsinfo = (struct fat_boot_fsinfo *)fsinfo_bh->b_data;
 		if (!IS_FSINFO(fsinfo)) {
 			fat_msg(sb, KERN_WARNING, "Invalid FSINFO signature: "
@@ -1446,7 +1422,6 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 		}
 
 		brelse(fsinfo_bh);
-<<<<<<< HEAD
 	} else {
 		bsx = (struct fat_boot_bsx *)(bh->b_data + FAT16_BSX_OFFSET);
 	}
@@ -1455,10 +1430,6 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 	sbi->vol_id = (((u32)bsx->vol_id[0]) | ((u32)bsx->vol_id[1] << 8) |
 		((u32)bsx->vol_id[2] << 16) | ((u32)bsx->vol_id[3] << 24));
 
-=======
-	}
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	sbi->dir_per_block = sb->s_blocksize / sizeof(struct msdos_dir_entry);
 	sbi->dir_per_block_bits = ffs(sbi->dir_per_block) - 1;
 
@@ -1591,7 +1562,6 @@ static int writeback_inode(struct inode *inode)
 {
 
 	int ret;
-<<<<<<< HEAD
 
 	/* if we used wait=1, sync_inode_metadata waits for the io for the
 	* inode to finish.  So wait=0 is sent down to sync_inode_metadata
@@ -1600,20 +1570,6 @@ static int writeback_inode(struct inode *inode)
 	ret = sync_inode_metadata(inode, 0);
 	if (!ret)
 	       ret = filemap_fdatawrite(inode->i_mapping);
-=======
-	struct address_space *mapping = inode->i_mapping;
-	struct writeback_control wbc = {
-	       .sync_mode = WB_SYNC_NONE,
-	      .nr_to_write = 0,
-	};
-	/* if we used WB_SYNC_ALL, sync_inode waits for the io for the
-	* inode to finish.  So WB_SYNC_NONE is sent down to sync_inode
-	* and filemap_fdatawrite is used for the data blocks
-	*/
-	ret = sync_inode(inode, &wbc);
-	if (!ret)
-	       ret = filemap_fdatawrite(mapping);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return ret;
 }
 

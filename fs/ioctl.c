@@ -42,11 +42,7 @@ static long vfs_ioctl(struct file *filp, unsigned int cmd,
 
 	error = filp->f_op->unlocked_ioctl(filp, cmd, arg);
 	if (error == -ENOIOCTLCMD)
-<<<<<<< HEAD
 		error = -ENOTTY;
-=======
-		error = -EINVAL;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  out:
 	return error;
 }

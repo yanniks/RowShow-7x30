@@ -702,10 +702,7 @@ const char * const vmstat_text[] = {
 	"nr_unstable",
 	"nr_bounce",
 	"nr_vmscan_write",
-<<<<<<< HEAD
 	"nr_vmscan_immediate_reclaim",
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	"nr_writeback_temp",
 	"nr_isolated_anon",
 	"nr_isolated_file",

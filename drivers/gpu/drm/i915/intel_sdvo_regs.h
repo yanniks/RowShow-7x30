@@ -61,14 +61,6 @@ struct intel_sdvo_caps {
     u16 output_flags;
 } __attribute__((packed));
 
-<<<<<<< HEAD
-=======
-/* Note: SDVO detailed timing flags match EDID misc flags. */
-#define DTD_FLAG_HSYNC_POSITIVE (1 << 1)
-#define DTD_FLAG_VSYNC_POSITIVE (1 << 2)
-#define DTD_FLAG_INTERLACE	(1 << 7)
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /** This matches the EDID DTD structure, more or less */
 struct intel_sdvo_dtd {
     struct {

@@ -850,9 +850,6 @@ ia32_sys_call_table:
 	.quad sys_syncfs
 	.quad compat_sys_sendmmsg	/* 345 */
 	.quad sys_setns
-<<<<<<< HEAD
 	.quad compat_sys_process_vm_readv
 	.quad compat_sys_process_vm_writev
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 ia32_syscall_end:

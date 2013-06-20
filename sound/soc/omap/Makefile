@@ -1,26 +1,19 @@
 # OMAP Platform Support
 snd-soc-omap-objs := omap-pcm.o
 snd-soc-omap-mcbsp-objs := omap-mcbsp.o
-<<<<<<< HEAD
 snd-soc-omap-mcpdm-objs := omap-mcpdm.o
 snd-soc-omap-dmic-objs := omap-dmic.o
 snd-soc-omap-hdmi-objs := omap-hdmi.o
 snd-soc-omap-abe-objs := omap-abe.o
 snd-soc-omap-abe-dsp-objs := omap-abe-dsp.o
-=======
-snd-soc-omap-mcpdm-objs := omap-mcpdm.o mcpdm.o
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 obj-$(CONFIG_SND_OMAP_SOC) += snd-soc-omap.o
 obj-$(CONFIG_SND_OMAP_SOC_MCBSP) += snd-soc-omap-mcbsp.o
 obj-$(CONFIG_SND_OMAP_SOC_MCPDM) += snd-soc-omap-mcpdm.o
-<<<<<<< HEAD
 obj-$(CONFIG_SND_OMAP_SOC_DMIC) += snd-soc-omap-dmic.o
 obj-$(CONFIG_SND_OMAP_SOC_HDMI) += snd-soc-omap-hdmi.o
 obj-$(CONFIG_SND_OMAP_SOC_ABE) += snd-soc-omap-abe.o
 obj-$(CONFIG_SND_OMAP_SOC_ABE_DSP) += snd-soc-omap-abe-dsp.o abe/
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 # OMAP Machine Support
 snd-soc-n810-objs := n810.o

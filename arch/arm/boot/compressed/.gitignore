@@ -5,7 +5,6 @@ piggy.lzo
 piggy.lzma
 vmlinux
 vmlinux.lds
-<<<<<<< HEAD
 
 # borrowed libfdt files
 fdt.c
@@ -15,5 +14,3 @@ fdt_rw.c
 fdt_wip.c
 libfdt.h
 libfdt_internal.h
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

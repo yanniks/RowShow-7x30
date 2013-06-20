@@ -21,10 +21,7 @@
 long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	struct inode *inode = filp->f_dentry->d_inode;
-<<<<<<< HEAD
 	struct super_block *sb = inode->i_sb;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct ext4_inode_info *ei = EXT4_I(inode);
 	unsigned int flags;
 
@@ -182,7 +179,6 @@ setversion_out:
 		mnt_drop_write(filp->f_path.mnt);
 		return err;
 	}
-<<<<<<< HEAD
 	case EXT4_IOC_GROUP_EXTEND: {
 		ext4_fsblk_t n_blocks_count;
 		int err, err2=0;
@@ -190,44 +186,10 @@ setversion_out:
 		err = ext4_resize_begin(sb);
 		if (err)
 			return err;
-=======
-#ifdef CONFIG_JBD2_DEBUG
-	case EXT4_IOC_WAIT_FOR_READONLY:
-		/*
-		 * This is racy - by the time we're woken up and running,
-		 * the superblock could be released.  And the module could
-		 * have been unloaded.  So sue me.
-		 *
-		 * Returns 1 if it slept, else zero.
-		 */
-		{
-			struct super_block *sb = inode->i_sb;
-			DECLARE_WAITQUEUE(wait, current);
-			int ret = 0;
-
-			set_current_state(TASK_INTERRUPTIBLE);
-			add_wait_queue(&EXT4_SB(sb)->ro_wait_queue, &wait);
-			if (timer_pending(&EXT4_SB(sb)->turn_ro_timer)) {
-				schedule();
-				ret = 1;
-			}
-			remove_wait_queue(&EXT4_SB(sb)->ro_wait_queue, &wait);
-			return ret;
-		}
-#endif
-	case EXT4_IOC_GROUP_EXTEND: {
-		ext4_fsblk_t n_blocks_count;
-		struct super_block *sb = inode->i_sb;
-		int err, err2=0;
-
-		if (!capable(CAP_SYS_RESOURCE))
-			return -EPERM;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		if (get_user(n_blocks_count, (__u32 __user *)arg))
 			return -EFAULT;
 
-<<<<<<< HEAD
 		if (EXT4_HAS_RO_COMPAT_FEATURE(sb,
 			       EXT4_FEATURE_RO_COMPAT_BIGALLOC)) {
 			ext4_msg(sb, KERN_ERR,
@@ -235,8 +197,6 @@ setversion_out:
 			return -EOPNOTSUPP;
 		}
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		err = mnt_want_write(filp->f_path.mnt);
 		if (err)
 			return err;
@@ -250,10 +210,7 @@ setversion_out:
 		if (err == 0)
 			err = err2;
 		mnt_drop_write(filp->f_path.mnt);
-<<<<<<< HEAD
 		ext4_resize_end(sb);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		return err;
 	}
@@ -281,7 +238,6 @@ setversion_out:
 			goto mext_out;
 		}
 
-<<<<<<< HEAD
 		if (EXT4_HAS_RO_COMPAT_FEATURE(sb,
 			       EXT4_FEATURE_RO_COMPAT_BIGALLOC)) {
 			ext4_msg(sb, KERN_ERR,
@@ -289,8 +245,6 @@ setversion_out:
 			return -EOPNOTSUPP;
 		}
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		err = mnt_want_write(filp->f_path.mnt);
 		if (err)
 			goto mext_out;
@@ -298,11 +252,6 @@ setversion_out:
 		err = ext4_move_extents(filp, donor_filp, me.orig_start,
 					me.donor_start, me.len, &me.moved_len);
 		mnt_drop_write(filp->f_path.mnt);
-<<<<<<< HEAD
-=======
-		if (me.moved_len > 0)
-			file_remove_suid(donor_filp);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		if (copy_to_user((struct move_extent __user *)arg,
 				 &me, sizeof(me)))
@@ -314,25 +263,16 @@ mext_out:
 
 	case EXT4_IOC_GROUP_ADD: {
 		struct ext4_new_group_data input;
-<<<<<<< HEAD
 		int err, err2=0;
 
 		err = ext4_resize_begin(sb);
 		if (err)
 			return err;
-=======
-		struct super_block *sb = inode->i_sb;
-		int err, err2=0;
-
-		if (!capable(CAP_SYS_RESOURCE))
-			return -EPERM;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		if (copy_from_user(&input, (struct ext4_new_group_input __user *)arg,
 				sizeof(input)))
 			return -EFAULT;
 
-<<<<<<< HEAD
 		if (EXT4_HAS_RO_COMPAT_FEATURE(sb,
 			       EXT4_FEATURE_RO_COMPAT_BIGALLOC)) {
 			ext4_msg(sb, KERN_ERR,
@@ -340,8 +280,6 @@ mext_out:
 			return -EOPNOTSUPP;
 		}
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		err = mnt_want_write(filp->f_path.mnt);
 		if (err)
 			return err;
@@ -355,10 +293,7 @@ mext_out:
 		if (err == 0)
 			err = err2;
 		mnt_drop_write(filp->f_path.mnt);
-<<<<<<< HEAD
 		ext4_resize_end(sb);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		return err;
 	}
@@ -401,10 +336,6 @@ mext_out:
 
 	case FITRIM:
 	{
-<<<<<<< HEAD
-=======
-		struct super_block *sb = inode->i_sb;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		struct request_queue *q = bdev_get_queue(sb->s_bdev);
 		struct fstrim_range range;
 		int ret = 0;
@@ -415,7 +346,6 @@ mext_out:
 		if (!blk_queue_discard(q))
 			return -EOPNOTSUPP;
 
-<<<<<<< HEAD
 		if (EXT4_HAS_RO_COMPAT_FEATURE(sb,
 			       EXT4_FEATURE_RO_COMPAT_BIGALLOC)) {
 			ext4_msg(sb, KERN_ERR,
@@ -424,9 +354,6 @@ mext_out:
 		}
 
 		if (copy_from_user(&range, (struct fstrim_range __user *)arg,
-=======
-		if (copy_from_user(&range, (struct fstrim_range *)arg,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		    sizeof(range)))
 			return -EFAULT;
 
@@ -436,11 +363,7 @@ mext_out:
 		if (ret < 0)
 			return ret;
 
-<<<<<<< HEAD
 		if (copy_to_user((struct fstrim_range __user *)arg, &range,
-=======
-		if (copy_to_user((struct fstrim_range *)arg, &range,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		    sizeof(range)))
 			return -EFAULT;
 
@@ -478,14 +401,6 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	case EXT4_IOC32_SETVERSION_OLD:
 		cmd = EXT4_IOC_SETVERSION_OLD;
 		break;
-<<<<<<< HEAD
-=======
-#ifdef CONFIG_JBD2_DEBUG
-	case EXT4_IOC32_WAIT_FOR_READONLY:
-		cmd = EXT4_IOC_WAIT_FOR_READONLY;
-		break;
-#endif
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	case EXT4_IOC32_GETRSVSZ:
 		cmd = EXT4_IOC_GETRSVSZ;
 		break;

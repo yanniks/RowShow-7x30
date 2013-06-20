@@ -16,14 +16,6 @@
 #include <asm/setup.h>
 #include <asm/irq.h>
 
-<<<<<<< HEAD
-=======
-static inline void irq_dispose_mapping(unsigned int virq)
-{
-	return;
-}
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern struct machine_desc *setup_machine_fdt(unsigned int dt_phys);
 extern void arm_dt_memblock_reserve(void);
 

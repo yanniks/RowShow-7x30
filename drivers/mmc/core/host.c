@@ -284,14 +284,10 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
 
 	spin_lock_init(&host->lock);
 	init_waitqueue_head(&host->wq);
-<<<<<<< HEAD
 	wake_lock_init(&host->detect_wake_lock, WAKE_LOCK_SUSPEND,
 		kasprintf(GFP_KERNEL, "%s_detect", mmc_hostname(host)));
 	INIT_DELAYED_WORK(&host->detect, mmc_rescan);
 	INIT_DELAYED_WORK(&host->remove, mmc_remove_sd_card);
-=======
-	INIT_DELAYED_WORK(&host->detect, mmc_rescan);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	INIT_DELAYED_WORK_DEFERRABLE(&host->disable, mmc_host_deeper_disable);
 #ifdef CONFIG_PM
 	host->pm_notify.notifier_call = mmc_pm_notify;
@@ -316,7 +312,6 @@ free:
 }
 
 EXPORT_SYMBOL(mmc_alloc_host);
-<<<<<<< HEAD
 #ifdef CONFIG_MMC_PERF_PROFILING
 static ssize_t
 show_perf(struct device *dev, struct device_attribute *attr, char *buf)
@@ -381,8 +376,6 @@ static struct attribute *dev_attrs[] = {
 static struct attribute_group dev_attr_grp = {
 	.attrs = dev_attrs,
 };
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /**
  *	mmc_add_host - initialise host hardware
@@ -402,19 +395,13 @@ int mmc_add_host(struct mmc_host *host)
 	err = device_add(&host->class_dev);
 	if (err)
 		return err;
-<<<<<<< HEAD
 #if 0  /* 2011-11-14 FIR ITS#55, may cause kernel panic */
 	led_trigger_register_simple(dev_name(&host->class_dev), &host->led);
 #endif
-=======
-
-	led_trigger_register_simple(dev_name(&host->class_dev), &host->led);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #ifdef CONFIG_DEBUG_FS
 	mmc_add_host_debugfs(host);
 #endif
-<<<<<<< HEAD
 	err = sysfs_create_group(&host->parent->kobj, &dev_attr_grp);
 	if (err)
 		pr_err("%s: failed to create sysfs group with err %d\n",
@@ -423,11 +410,6 @@ int mmc_add_host(struct mmc_host *host)
 	mmc_start_host(host);
 	if (!(host->pm_flags & MMC_PM_IGNORE_PM_NOTIFY))
 		register_pm_notifier(&host->pm_notify);
-=======
-
-	mmc_start_host(host);
-	register_pm_notifier(&host->pm_notify);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return 0;
 }
@@ -444,19 +426,14 @@ EXPORT_SYMBOL(mmc_add_host);
  */
 void mmc_remove_host(struct mmc_host *host)
 {
-<<<<<<< HEAD
 	if (!(host->pm_flags & MMC_PM_IGNORE_PM_NOTIFY))
 		unregister_pm_notifier(&host->pm_notify);
 
-=======
-	unregister_pm_notifier(&host->pm_notify);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	mmc_stop_host(host);
 
 #ifdef CONFIG_DEBUG_FS
 	mmc_remove_host_debugfs(host);
 #endif
-<<<<<<< HEAD
 	sysfs_remove_group(&host->parent->kobj, &dev_attr_grp);
 
 
@@ -464,13 +441,6 @@ void mmc_remove_host(struct mmc_host *host)
 #if 0  /* 2011-11-14 FIR ITS#55, may cause kernel panic */
 	led_trigger_unregister_simple(host->led);
 #endif
-=======
-
-	device_del(&host->class_dev);
-
-	led_trigger_unregister_simple(host->led);
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	mmc_host_clk_exit(host);
 }
 
@@ -487,10 +457,7 @@ void mmc_free_host(struct mmc_host *host)
 	spin_lock(&mmc_host_lock);
 	idr_remove(&mmc_host_idr, host->index);
 	spin_unlock(&mmc_host_lock);
-<<<<<<< HEAD
 	wake_lock_destroy(&host->detect_wake_lock);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	put_device(&host->class_dev);
 }

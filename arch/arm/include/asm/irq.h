@@ -23,10 +23,7 @@ struct pt_regs;
 extern void migrate_irqs(void);
 
 extern void asm_do_IRQ(unsigned int, struct pt_regs *);
-<<<<<<< HEAD
 void handle_IRQ(unsigned int, struct pt_regs *);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 void init_IRQ(void);
 
 #endif

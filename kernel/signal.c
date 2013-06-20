@@ -37,12 +37,9 @@
 #include <asm/siginfo.h>
 #include "audit.h"	/* audit_signal_info() */
 
-<<<<<<< HEAD
 static struct dying_pid dying_pid_buf[MAX_DYING_PROC_COUNT];
 static unsigned int dying_pid_buf_idx;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * SLAB caches for signal bits.
  */
@@ -1043,7 +1040,6 @@ out_set:
 	return 0;
 }
 
-<<<<<<< HEAD
 int dying_processors_read_proc(char *page, char **start, off_t off,
 			   int count, int *eof, void *data)
 {
@@ -1057,14 +1053,11 @@ int dying_processors_read_proc(char *page, char **start, off_t off,
 	return p - page;
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static int send_signal(int sig, struct siginfo *info, struct task_struct *t,
 			int group)
 {
 	int from_ancestor_ns = 0;
 
-<<<<<<< HEAD
 	if (sig == SIGKILL) {
 		dying_pid_buf[dying_pid_buf_idx].pid = t->pid;
 		dying_pid_buf[dying_pid_buf_idx].jiffy = jiffies;
@@ -1073,8 +1066,6 @@ static int send_signal(int sig, struct siginfo *info, struct task_struct *t,
 		dying_pid_buf_idx = (dying_pid_buf_idx % MAX_DYING_PROC_COUNT);
 	}
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_PID_NS
 	from_ancestor_ns = si_fromuser(info) &&
 			   !task_pid_nr_ns(current, task_active_pid_ns(t));

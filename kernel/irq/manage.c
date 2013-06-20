@@ -195,11 +195,7 @@ int irq_set_affinity(unsigned int irq, const struct cpumask *mask)
 int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
 {
 	unsigned long flags;
-<<<<<<< HEAD
 	struct irq_desc *desc = irq_get_desc_lock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
-=======
-	struct irq_desc *desc = irq_get_desc_lock(irq, &flags);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (!desc)
 		return -EINVAL;
@@ -360,11 +356,7 @@ void __disable_irq(struct irq_desc *desc, unsigned int irq, bool suspend)
 static int __disable_irq_nosync(unsigned int irq)
 {
 	unsigned long flags;
-<<<<<<< HEAD
 	struct irq_desc *desc = irq_get_desc_buslock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
-=======
-	struct irq_desc *desc = irq_get_desc_buslock(irq, &flags);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (!desc)
 		return -EINVAL;
@@ -456,11 +448,7 @@ void __enable_irq(struct irq_desc *desc, unsigned int irq, bool resume)
 void enable_irq(unsigned int irq)
 {
 	unsigned long flags;
-<<<<<<< HEAD
 	struct irq_desc *desc = irq_get_desc_buslock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
-=======
-	struct irq_desc *desc = irq_get_desc_buslock(irq, &flags);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (!desc)
 		return;
@@ -500,11 +488,7 @@ static int set_irq_wake_real(unsigned int irq, unsigned int on)
 int irq_set_irq_wake(unsigned int irq, unsigned int on)
 {
 	unsigned long flags;
-<<<<<<< HEAD
 	struct irq_desc *desc = irq_get_desc_buslock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
-=======
-	struct irq_desc *desc = irq_get_desc_buslock(irq, &flags);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int ret = 0;
 
 	if (!desc)
@@ -537,7 +521,6 @@ int irq_set_irq_wake(unsigned int irq, unsigned int on)
 }
 EXPORT_SYMBOL(irq_set_irq_wake);
 
-<<<<<<< HEAD
 /**
  *     irq_read_line - read the value on an irq line
  *     @irq: Interrupt number representing a hardware line
@@ -564,8 +547,6 @@ int irq_read_line(unsigned int irq)
 }
 EXPORT_SYMBOL_GPL(irq_read_line);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * Internal function that tells the architecture code whether a
  * particular irq has been exclusively allocated or is available
@@ -574,11 +555,7 @@ EXPORT_SYMBOL_GPL(irq_read_line);
 int can_request_irq(unsigned int irq, unsigned long irqflags)
 {
 	unsigned long flags;
-<<<<<<< HEAD
 	struct irq_desc *desc = irq_get_desc_lock(irq, &flags, 0);
-=======
-	struct irq_desc *desc = irq_get_desc_lock(irq, &flags);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int canrequest = 0;
 
 	if (!desc)
@@ -836,10 +813,7 @@ static int irq_thread(void *data)
 
 	sched_setscheduler(current, SCHED_FIFO, &param);
 	current->irqaction = action;
-<<<<<<< HEAD
 	irq_thread_check_affinity(desc, action);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	while (!irq_wait_for_interrupt(action)) {
 
@@ -955,15 +929,10 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 	 */
 	nested = irq_settings_is_nested_thread(desc);
 	if (nested) {
-<<<<<<< HEAD
 		if (!new->thread_fn) {
 			ret = -EINVAL;
 			goto out_mput;
 		}
-=======
-		if (!new->thread_fn)
-			return -EINVAL;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		/*
 		 * Replace the primary handler which was provided from
 		 * the driver for non nested interrupt handling by the
@@ -985,15 +954,10 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 
 		t = kthread_create(irq_thread, new, "irq/%d-%s", irq,
 				   new->name);
-<<<<<<< HEAD
 		if (IS_ERR(t)) {
 			ret = PTR_ERR(t);
 			goto out_mput;
 		}
-=======
-		if (IS_ERR(t))
-			return PTR_ERR(t);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		/*
 		 * We keep the reference to the task struct even if
 		 * the thread dies to avoid that the interrupt code
@@ -1092,11 +1056,7 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 		 * thread_mask assigned. See the loop above which or's
 		 * all existing action->thread_mask bits.
 		 */
-<<<<<<< HEAD
 		new->thread_mask = 1UL << ffz(thread_mask);
-=======
-		new->thread_mask = 1 << ffz(thread_mask);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	if (!shared) {
@@ -1123,16 +1083,10 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 		if (new->flags & IRQF_ONESHOT)
 			desc->istate |= IRQS_ONESHOT;
 
-<<<<<<< HEAD
 		if (irq_settings_can_autoenable(desc)) {
 			irq_startup(desc, true);
 			check_irq_resend(desc, irq);
 		} else
-=======
-		if (irq_settings_can_autoenable(desc))
-			irq_startup(desc, true);
-		else
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			/* Undo nested disables: */
 			desc->depth = 1;
 
@@ -1211,11 +1165,8 @@ out_thread:
 			kthread_stop(t);
 		put_task_struct(t);
 	}
-<<<<<<< HEAD
 out_mput:
 	module_put(desc->owner);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return ret;
 }
 
@@ -1231,11 +1182,8 @@ int setup_irq(unsigned int irq, struct irqaction *act)
 	int retval;
 	struct irq_desc *desc = irq_to_desc(irq);
 
-<<<<<<< HEAD
 	if (WARN_ON(irq_settings_is_per_cpu_devid(desc)))
 		return -EINVAL;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	chip_bus_lock(desc);
 	retval = __setup_irq(irq, desc, act);
 	chip_bus_sync_unlock(desc);
@@ -1244,11 +1192,7 @@ int setup_irq(unsigned int irq, struct irqaction *act)
 }
 EXPORT_SYMBOL_GPL(setup_irq);
 
-<<<<<<< HEAD
 /*
-=======
- /*
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * Internal function to unregister an irqaction - used to free
  * regular and special interrupts that are part of the architecture.
  */
@@ -1295,7 +1239,6 @@ static struct irqaction *__free_irq(unsigned int irq, void *dev_id)
 #endif
 
 	/* If this was the last handler, shut down the IRQ line: */
-<<<<<<< HEAD
 	if (!desc->action) {
 		irq_shutdown(desc);
 
@@ -1306,11 +1249,6 @@ static struct irqaction *__free_irq(unsigned int irq, void *dev_id)
 			desc->irq_data.chip->irq_mask_ack(&desc->irq_data);
 	}
 
-=======
-	if (!desc->action)
-		irq_shutdown(desc);
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_SMP
 	/* make sure affinity_hint is cleaned up */
 	if (WARN_ON_ONCE(desc->affinity_hint))
@@ -1346,10 +1284,7 @@ static struct irqaction *__free_irq(unsigned int irq, void *dev_id)
 		put_task_struct(action->thread);
 	}
 
-<<<<<<< HEAD
 	module_put(desc->owner);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return action;
 }
 
@@ -1362,14 +1297,10 @@ static struct irqaction *__free_irq(unsigned int irq, void *dev_id)
  */
 void remove_irq(unsigned int irq, struct irqaction *act)
 {
-<<<<<<< HEAD
 	struct irq_desc *desc = irq_to_desc(irq);
 
 	if (desc && !WARN_ON(irq_settings_is_per_cpu_devid(desc)))
 	    __free_irq(irq, act->dev_id);
-=======
-	__free_irq(irq, act->dev_id);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL_GPL(remove_irq);
 
@@ -1391,11 +1322,7 @@ void free_irq(unsigned int irq, void *dev_id)
 {
 	struct irq_desc *desc = irq_to_desc(irq);
 
-<<<<<<< HEAD
 	if (!desc || WARN_ON(irq_settings_is_per_cpu_devid(desc)))
-=======
-	if (!desc)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return;
 
 #ifdef CONFIG_SMP
@@ -1472,12 +1399,8 @@ int request_threaded_irq(unsigned int irq, irq_handler_t handler,
 	if (!desc)
 		return -EINVAL;
 
-<<<<<<< HEAD
 	if (!irq_settings_can_request(desc) ||
 	    WARN_ON(irq_settings_is_per_cpu_devid(desc)))
-=======
-	if (!irq_settings_can_request(desc))
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return -EINVAL;
 
 	if (!handler) {
@@ -1562,7 +1485,6 @@ int request_any_context_irq(unsigned int irq, irq_handler_t handler,
 	return !ret ? IRQC_IS_HARDIRQ : ret;
 }
 EXPORT_SYMBOL_GPL(request_any_context_irq);
-<<<<<<< HEAD
 
 void irq_set_pending(unsigned int irq)
 {
@@ -1767,5 +1689,3 @@ int request_percpu_irq(unsigned int irq, irq_handler_t handler,
 
 	return retval;
 }
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

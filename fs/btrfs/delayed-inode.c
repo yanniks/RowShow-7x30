@@ -735,11 +735,7 @@ static int btrfs_batch_insert_items(struct btrfs_trans_handle *trans,
 	}
 
 	/* reset all the locked nodes in the patch to spinning locks. */
-<<<<<<< HEAD
 	btrfs_clear_path_blocking(path, NULL, 0);
-=======
-	btrfs_clear_path_blocking(path, NULL);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* insert the keys of the items */
 	ret = setup_items_for_insert(trans, root, path, keys, data_size,

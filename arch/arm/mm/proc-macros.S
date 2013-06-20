@@ -137,13 +137,10 @@
 	.macro	armv6_set_pte_ext pfx
 	str	r1, [r0], #2048			@ linux version
 
-<<<<<<< HEAD
 	tst	r1, #L_PTE_YOUNG
 	tstne	r1, #L_PTE_PRESENT
 	moveq	r3, #0
 	beq	1f
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	bic	r3, r1, #0x000003fc
 	bic	r3, r3, #PTE_TYPE_MASK
 	orr	r3, r3, r2
@@ -170,14 +167,7 @@
 
 	orr	r3, r3, r2
 
-<<<<<<< HEAD
 1:
-=======
-	tst	r1, #L_PTE_YOUNG
-	tstne	r1, #L_PTE_PRESENT
-	moveq	r3, #0
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	str	r3, [r0]
 	mcr	p15, 0, r0, c7, c10, 1		@ flush_pte
 	.endm

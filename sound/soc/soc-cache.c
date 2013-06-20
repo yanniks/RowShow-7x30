@@ -187,13 +187,8 @@ static unsigned int snd_soc_8_8_read_i2c(struct snd_soc_codec *codec,
 					 unsigned int r)
 {
 	u8 reg = r;
-<<<<<<< HEAD
 	u8 data = 0;
 	int ret = 0;
-=======
-	u8 data;
-	int ret;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	ret = do_i2c_read(codec, &reg, 1, &data, 1);
 	if (ret < 0)
@@ -209,13 +204,8 @@ static unsigned int snd_soc_8_16_read_i2c(struct snd_soc_codec *codec,
 					  unsigned int r)
 {
 	u8 reg = r;
-<<<<<<< HEAD
 	u16 data = 0;
 	int ret = 0;
-=======
-	u16 data;
-	int ret;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	ret = do_i2c_read(codec, &reg, 1, &data, 2);
 	if (ret < 0)
@@ -231,13 +221,8 @@ static unsigned int snd_soc_16_8_read_i2c(struct snd_soc_codec *codec,
 					  unsigned int r)
 {
 	u16 reg = r;
-<<<<<<< HEAD
 	u8 data = 0;
 	int ret = 0;
-=======
-	u8 data;
-	int ret;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	ret = do_i2c_read(codec, &reg, 2, &data, 1);
 	if (ret < 0)
@@ -271,13 +256,8 @@ static unsigned int snd_soc_16_16_read_i2c(struct snd_soc_codec *codec,
 					   unsigned int r)
 {
 	u16 reg = cpu_to_be16(r);
-<<<<<<< HEAD
 	u16 data = 0;
 	int ret = 0;
-=======
-	u16 data;
-	int ret;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	ret = do_i2c_read(codec, &reg, 2, &data, 2);
 	if (ret < 0)

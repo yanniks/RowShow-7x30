@@ -262,7 +262,6 @@ static inline void __kernel_param_unlock(void)
 			    .str = &__param_string_##name, 0, perm);	\
 	__MODULE_PARM_TYPE(name, "string")
 
-<<<<<<< HEAD
 /**
  * parameq - checks if two parameter names match
  * @name1: parameter name 1
@@ -283,8 +282,6 @@ extern bool parameq(const char *name1, const char *name2);
  */
 extern bool parameqn(const char *name1, const char *name2, size_t n);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* Called on module insert or kernel boot */
 extern int parse_args(const char *name,
 		      char *args,

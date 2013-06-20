@@ -287,16 +287,12 @@ static void __init get_fs_names(char *page)
 
 static int __init do_mount_root(char *name, char *fs, int flags, void *data)
 {
-<<<<<<< HEAD
 	struct super_block *s;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int err = sys_mount(name, "/root", fs, flags, data);
 	if (err)
 		return err;
 
 	sys_chdir((const char __user __force *)"/root");
-<<<<<<< HEAD
 	s = current->fs->pwd.dentry->d_sb;
 	ROOT_DEV = s->s_dev;
 	printk(KERN_INFO
@@ -304,14 +300,6 @@ static int __init do_mount_root(char *name, char *fs, int flags, void *data)
 	       s->s_type->name,
 	       s->s_flags & MS_RDONLY ?  " readonly" : "",
 	       MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
-=======
-	ROOT_DEV = current->fs->pwd.mnt->mnt_sb->s_dev;
-	printk(KERN_INFO
-	       "VFS: Mounted root (%s filesystem)%s on device %u:%u.\n",
-	       current->fs->pwd.mnt->mnt_sb->s_type->name,
-	       current->fs->pwd.mnt->mnt_sb->s_flags & MS_RDONLY ?
-	       " readonly" : "", MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 

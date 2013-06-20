@@ -9,10 +9,7 @@
 
 struct snd_soc_jack;
 struct snd_soc_codec;
-<<<<<<< HEAD
 struct snd_soc_platform;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 struct snd_soc_card;
 struct snd_soc_dapm_widget;
 
@@ -63,7 +60,6 @@ DEFINE_EVENT(snd_soc_reg, snd_soc_reg_read,
 
 );
 
-<<<<<<< HEAD
 DECLARE_EVENT_CLASS(snd_soc_preg,
 
 	TP_PROTO(struct snd_soc_platform *platform, unsigned int reg,
@@ -108,8 +104,6 @@ DEFINE_EVENT(snd_soc_preg, snd_soc_preg_read,
 
 );
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 DECLARE_EVENT_CLASS(snd_soc_card,
 
 	TP_PROTO(struct snd_soc_card *card, int val),

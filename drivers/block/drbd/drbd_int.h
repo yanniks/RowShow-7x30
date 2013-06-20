@@ -1507,11 +1507,7 @@ extern void drbd_free_mdev(struct drbd_conf *mdev);
 extern int proc_details;
 
 /* drbd_req */
-<<<<<<< HEAD
 extern void drbd_make_request(struct request_queue *q, struct bio *bio);
-=======
-extern int drbd_make_request(struct request_queue *q, struct bio *bio);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern int drbd_read_remote(struct drbd_conf *mdev, struct drbd_request *req);
 extern int drbd_merge_bvec(struct request_queue *q, struct bvec_merge_data *bvm, struct bio_vec *bvec);
 extern int is_valid_ar_handle(struct drbd_request *, sector_t);

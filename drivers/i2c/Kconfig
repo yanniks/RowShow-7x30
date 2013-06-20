@@ -59,10 +59,7 @@ config I2C_MUX
 	  will be called i2c-mux.
 
 source drivers/i2c/muxes/Kconfig
-<<<<<<< HEAD
 source drivers/i2c/chips/Kconfig
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 config I2C_HELPER_AUTO
 	bool "Autoselect pertinent helper modules"

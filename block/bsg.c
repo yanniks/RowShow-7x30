@@ -769,19 +769,10 @@ static struct bsg_device *bsg_add_device(struct inode *inode,
 					 struct file *file)
 {
 	struct bsg_device *bd;
-<<<<<<< HEAD
 #ifdef BSG_DEBUG
 	unsigned char buf[32];
 #endif
 	if (!blk_get_queue(rq))
-=======
-	int ret;
-#ifdef BSG_DEBUG
-	unsigned char buf[32];
-#endif
-	ret = blk_get_queue(rq);
-	if (ret)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return ERR_PTR(-ENXIO);
 
 	bd = bsg_alloc_device();

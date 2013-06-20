@@ -87,12 +87,8 @@ static int bad_file_release(struct inode *inode, struct file *filp)
 	return -EIO;
 }
 
-<<<<<<< HEAD
 static int bad_file_fsync(struct file *file, loff_t start, loff_t end,
 			  int datasync)
-=======
-static int bad_file_fsync(struct file *file, int datasync)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	return -EIO;
 }
@@ -177,11 +173,7 @@ static const struct file_operations bad_file_ops =
 };
 
 static int bad_inode_create (struct inode *dir, struct dentry *dentry,
-<<<<<<< HEAD
 		umode_t mode, struct nameidata *nd)
-=======
-		int mode, struct nameidata *nd)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	return -EIO;
 }
@@ -221,11 +213,7 @@ static int bad_inode_rmdir (struct inode *dir, struct dentry *dentry)
 }
 
 static int bad_inode_mknod (struct inode *dir, struct dentry *dentry,
-<<<<<<< HEAD
 			umode_t mode, dev_t rdev)
-=======
-			int mode, dev_t rdev)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	return -EIO;
 }
@@ -242,11 +230,7 @@ static int bad_inode_readlink(struct dentry *dentry, char __user *buffer,
 	return -EIO;
 }
 
-<<<<<<< HEAD
 static int bad_inode_permission(struct inode *inode, int mask)
-=======
-static int bad_inode_permission(struct inode *inode, int mask, unsigned int flags)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	return -EIO;
 }

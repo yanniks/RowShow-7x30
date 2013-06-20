@@ -14,13 +14,8 @@
 
 #include <linux/kernel.h>
 #include <linux/cpuidle.h>
-<<<<<<< HEAD
 #include <linux/pm_qos.h>
 #include <linux/module.h>
-=======
-#include <linux/pm_qos_params.h>
-#include <linux/moduleparam.h>
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <linux/jiffies.h>
 
 #include <asm/io.h>

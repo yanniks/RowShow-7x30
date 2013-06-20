@@ -1,10 +1,7 @@
 /* linux/arch/arm/mach-msm/devices.h
  *
  * Copyright (C) 2008 Google, Inc.
-<<<<<<< HEAD
  * Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -21,7 +18,6 @@
 #define __ARCH_ARM_MACH_MSM_DEVICES_H
 
 #include <linux/clkdev.h>
-<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include "clock.h"
 
@@ -47,16 +43,11 @@ extern struct platform_device asoc_mvs_dai1;
 
 extern struct platform_device msm_ebi0_thermal;
 extern struct platform_device msm_ebi1_thermal;
-=======
-
-#include "clock.h"
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 extern struct platform_device msm_device_uart1;
 extern struct platform_device msm_device_uart2;
 extern struct platform_device msm_device_uart3;
 
-<<<<<<< HEAD
 extern struct platform_device msm_device_uart_dm1;
 extern struct platform_device msm_device_uart_dm2;
 extern struct platform_device msm_device_uart_dm3;
@@ -92,17 +83,12 @@ extern struct platform_device msm9615_device_qup_i2c_gsbi5;
 extern struct platform_device msm9615_device_qup_spi_gsbi3;
 extern struct platform_device msm9615_device_ssbi_pmic1;
 extern struct platform_device msm9615_device_tsens;
-=======
-extern struct platform_device msm8960_device_uart_gsbi2;
-extern struct platform_device msm8960_device_uart_gsbi5;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 extern struct platform_device msm_device_sdc1;
 extern struct platform_device msm_device_sdc2;
 extern struct platform_device msm_device_sdc3;
 extern struct platform_device msm_device_sdc4;
 
-<<<<<<< HEAD
 extern struct platform_device msm_device_gadget_peripheral;
 extern struct platform_device msm_device_hsusb_host;
 extern struct platform_device msm_device_hsusb_host2;
@@ -272,29 +258,4 @@ extern struct platform_device msm_tpiu_device;
 extern struct platform_device msm_funnel_device;
 extern struct platform_device msm_debug_device;
 extern struct platform_device msm_ptm_device;
-=======
-extern struct platform_device msm_device_hsusb;
-extern struct platform_device msm_device_otg;
-extern struct platform_device msm_device_hsusb_host;
-
-extern struct platform_device msm_device_i2c;
-
-extern struct platform_device msm_device_smd;
-
-extern struct platform_device msm_device_nand;
-
-extern struct platform_device msm_device_mddi0;
-extern struct platform_device msm_device_mddi1;
-extern struct platform_device msm_device_mdp;
-
-extern struct clk_lookup msm_clocks_7x01a[];
-extern unsigned msm_num_clocks_7x01a;
-
-extern struct clk_lookup msm_clocks_7x30[];
-extern unsigned msm_num_clocks_7x30;
-
-extern struct clk_lookup msm_clocks_8x50[];
-extern unsigned msm_num_clocks_8x50;
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif

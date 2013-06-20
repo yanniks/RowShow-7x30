@@ -199,11 +199,7 @@ void __init setup_log_buf(int early)
 		unsigned long mem;
 
 		mem = memblock_alloc(new_log_buf_len, PAGE_SIZE);
-<<<<<<< HEAD
 		if (!mem)
-=======
-		if (mem == MEMBLOCK_ERROR)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			return;
 		new_log_buf = __va(mem);
 	} else {
@@ -294,7 +290,6 @@ static inline void boot_delay_msec(void)
 }
 #endif
 
-<<<<<<< HEAD
 /*
  * Return the number of unread characters in the log buffer.
  */
@@ -342,8 +337,6 @@ int log_buf_copy(char *dest, int idx, int len)
 	return ret;
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_SECURITY_DMESG_RESTRICT
 int dmesg_restrict = 1;
 #else
@@ -833,14 +826,11 @@ static volatile unsigned int printk_cpu = UINT_MAX;
  */
 static inline int can_use_console(unsigned int cpu)
 {
-<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG_CPU
 	if (!cpu_active(cpu) && cpu_hotplug_inprogress())
 		return 0;
 #endif
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return cpu_online(cpu) || have_callable_console();
 }
 
@@ -947,10 +937,7 @@ asmlinkage int vprintk(const char *fmt, va_list args)
 	printed_len += vscnprintf(printk_buf + printed_len,
 				  sizeof(printk_buf) - printed_len, fmt, args);
 
-<<<<<<< HEAD
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	p = printk_buf;
 
 	/* Read log level and handle special printk prefix */
@@ -1185,7 +1172,6 @@ static int __init console_suspend_disable(char *str)
 __setup("no_console_suspend", console_suspend_disable);
 
 /**
-<<<<<<< HEAD
  * suspend_console_deferred:
  * Parameter to decide whether to defer suspension of console. If set as 1, suspend
  * console is deferred to latter stages. Currently used in 8x60 projects only.
@@ -1196,8 +1182,6 @@ module_param_named(
 );
 
 /**
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * suspend_console - suspend the console subsystem
  *
  * This disables printk() while we go into suspend states
@@ -1221,7 +1205,6 @@ void resume_console(void)
 	console_unlock();
 }
 
-<<<<<<< HEAD
 static void __cpuinit console_flush(struct work_struct *work)
 {
 	console_lock();
@@ -1230,8 +1213,6 @@ static void __cpuinit console_flush(struct work_struct *work)
 
 static __cpuinitdata DECLARE_WORK(console_cpu_notify_work, console_flush);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /**
  * console_cpu_notify - print deferred console messages after CPU hotplug
  * @self: notifier struct
@@ -1242,12 +1223,9 @@ static __cpuinitdata DECLARE_WORK(console_cpu_notify_work, console_flush);
  * will be spooled but will not show up on the console.  This function is
  * called when a new CPU comes online (or fails to come up), and ensures
  * that any such output gets printed.
-<<<<<<< HEAD
  *
  * Special handling must be done for cases invoked from an atomic context,
  * as we can't be taking the console semaphore here.
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  */
 static int __cpuinit console_cpu_notify(struct notifier_block *self,
 	unsigned long action, void *hcpu)
@@ -1255,23 +1233,16 @@ static int __cpuinit console_cpu_notify(struct notifier_block *self,
 	switch (action) {
 	case CPU_ONLINE:
 	case CPU_DEAD:
-<<<<<<< HEAD
-=======
-	case CPU_DYING:
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	case CPU_DOWN_FAILED:
 	case CPU_UP_CANCELED:
 		console_lock();
 		console_unlock();
-<<<<<<< HEAD
 	/* invoked with preemption disabled, so defer */
 	case CPU_DYING:
 		if (!console_trylock())
 			schedule_work(&console_cpu_notify_work);
 		else
 			console_unlock();
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	return NOTIFY_OK;
 }
@@ -1478,11 +1449,7 @@ void console_start(struct console *console)
 }
 EXPORT_SYMBOL(console_start);
 
-<<<<<<< HEAD
 static int __read_mostly keep_bootcon = 1;
-=======
-static int __read_mostly keep_bootcon;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static int __init keep_bootcon_setup(char *str)
 {

@@ -132,15 +132,9 @@
  */
 
 #ifdef CONFIG_DEBUG_SLAB
-<<<<<<< HEAD
 #define	DEBUG		0
 #define	STATS		0
 #define	FORCED_DEBUG	0
-=======
-#define	DEBUG		1
-#define	STATS		1
-#define	FORCED_DEBUG	1
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #else
 #define	DEBUG		0
 #define	STATS		0
@@ -3159,30 +3153,17 @@ static void *cache_alloc_debugcheck_after(struct kmem_cache *cachep,
 	objp += obj_offset(cachep);
 	if (cachep->ctor && cachep->flags & SLAB_POISON)
 		cachep->ctor(objp);
-<<<<<<< HEAD
 	if (ARCH_SLAB_MINALIGN &&
 	    ((unsigned long)objp & (ARCH_SLAB_MINALIGN-1))) {
-=======
-#if ARCH_SLAB_MINALIGN
-	if ((u32)objp & (ARCH_SLAB_MINALIGN-1)) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		printk(KERN_ERR "0x%p: not aligned to ARCH_SLAB_MINALIGN=%d\n",
 		       objp, ARCH_SLAB_MINALIGN);
 	}
 #endif
-<<<<<<< HEAD
 //	return objp;
 //}
 //#else
 #define cache_alloc_debugcheck_after(a,b,objp,d) (objp)
 //#endif
-=======
-	return objp;
-}
-#else
-#define cache_alloc_debugcheck_after(a,b,objp,d) (objp)
-#endif
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static bool slab_should_failslab(struct kmem_cache *cachep, gfp_t flags)
 {
@@ -4554,11 +4535,7 @@ static const struct file_operations proc_slabstats_operations = {
 
 static int __init slab_proc_init(void)
 {
-<<<<<<< HEAD
 	proc_create("slabinfo",S_IWUSR|S_IRUSR,NULL,&proc_slabinfo_operations);
-=======
-	proc_create("slabinfo",S_IWUSR|S_IRUGO,NULL,&proc_slabinfo_operations);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_DEBUG_SLAB_LEAK
 	proc_create("slab_allocators", 0, NULL, &proc_slabstats_operations);
 #endif

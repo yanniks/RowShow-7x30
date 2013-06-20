@@ -978,11 +978,7 @@ static const struct dentry_operations pipefs_dentry_operations = {
 
 static struct inode * get_pipe_inode(void)
 {
-<<<<<<< HEAD
 	struct inode *inode = new_inode_pseudo(pipe_mnt->mnt_sb);
-=======
-	struct inode *inode = new_inode(pipe_mnt->mnt_sb);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct pipe_inode_info *pipe;
 
 	if (!inode)
@@ -1325,13 +1321,8 @@ static int __init init_pipe_fs(void)
 
 static void __exit exit_pipe_fs(void)
 {
-<<<<<<< HEAD
 	kern_unmount(pipe_mnt);
 	unregister_filesystem(&pipe_fs_type);
-=======
-	unregister_filesystem(&pipe_fs_type);
-	mntput(pipe_mnt);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 fs_initcall(init_pipe_fs);

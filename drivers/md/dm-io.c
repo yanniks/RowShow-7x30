@@ -314,13 +314,10 @@ static void do_region(int rw, unsigned region, struct dm_io_region *where,
 					  dm_sector_div_up(remaining, (PAGE_SIZE >> SECTOR_SHIFT)));
 
 		bio = bio_alloc_bioset(GFP_NOIO, num_bvecs, io->client->bios);
-<<<<<<< HEAD
 		if (!bio) {
 			printk(KERN_WARNING "%s : %s() failed\n", __FILE__, __func__);
 			BUG_ON(1);
 		}
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		bio->bi_sector = where->sector + (where->count - remaining);
 		bio->bi_bdev = where->bdev;
 		bio->bi_end_io = endio;

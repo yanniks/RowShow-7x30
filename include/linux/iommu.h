@@ -19,13 +19,10 @@
 #ifndef __LINUX_IOMMU_H
 #define __LINUX_IOMMU_H
 
-<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/errno.h>
 #include <linux/scatterlist.h>
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define IOMMU_READ	(1)
 #define IOMMU_WRITE	(2)
 #define IOMMU_CACHE	(4) /* DMA cache coherency */
@@ -40,11 +37,7 @@ struct iommu_domain {
 #define IOMMU_CAP_INTR_REMAP		0x2	/* isolates device intrs */
 
 struct iommu_ops {
-<<<<<<< HEAD
 	int (*domain_init)(struct iommu_domain *domain, int flags);
-=======
-	int (*domain_init)(struct iommu_domain *domain);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	void (*domain_destroy)(struct iommu_domain *domain);
 	int (*attach_dev)(struct iommu_domain *domain, struct device *dev);
 	void (*detach_dev)(struct iommu_domain *domain, struct device *dev);
@@ -52,13 +45,10 @@ struct iommu_ops {
 		   phys_addr_t paddr, int gfp_order, int prot);
 	int (*unmap)(struct iommu_domain *domain, unsigned long iova,
 		     int gfp_order);
-<<<<<<< HEAD
 	int (*map_range)(struct iommu_domain *domain, unsigned int iova,
 		    struct scatterlist *sg, unsigned int len, int prot);
 	int (*unmap_range)(struct iommu_domain *domain, unsigned int iova,
 		      unsigned int len);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	phys_addr_t (*iova_to_phys)(struct iommu_domain *domain,
 				    unsigned long iova);
 	int (*domain_has_cap)(struct iommu_domain *domain,
@@ -69,11 +59,7 @@ struct iommu_ops {
 
 extern void register_iommu(struct iommu_ops *ops);
 extern bool iommu_found(void);
-<<<<<<< HEAD
 extern struct iommu_domain *iommu_domain_alloc(int flags);
-=======
-extern struct iommu_domain *iommu_domain_alloc(void);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern void iommu_domain_free(struct iommu_domain *domain);
 extern int iommu_attach_device(struct iommu_domain *domain,
 			       struct device *dev);
@@ -83,13 +69,10 @@ extern int iommu_map(struct iommu_domain *domain, unsigned long iova,
 		     phys_addr_t paddr, int gfp_order, int prot);
 extern int iommu_unmap(struct iommu_domain *domain, unsigned long iova,
 		       int gfp_order);
-<<<<<<< HEAD
 extern int iommu_map_range(struct iommu_domain *domain, unsigned int iova,
 		    struct scatterlist *sg, unsigned int len, int prot);
 extern int iommu_unmap_range(struct iommu_domain *domain, unsigned int iova,
 		      unsigned int len);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern phys_addr_t iommu_iova_to_phys(struct iommu_domain *domain,
 				      unsigned long iova);
 extern int iommu_domain_has_cap(struct iommu_domain *domain,
@@ -106,11 +89,7 @@ static inline bool iommu_found(void)
 	return false;
 }
 
-<<<<<<< HEAD
 static inline struct iommu_domain *iommu_domain_alloc(int flags)
-=======
-static inline struct iommu_domain *iommu_domain_alloc(void)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	return NULL;
 }
@@ -142,7 +121,6 @@ static inline int iommu_unmap(struct iommu_domain *domain, unsigned long iova,
 	return -ENODEV;
 }
 
-<<<<<<< HEAD
 static inline int iommu_map_range(struct iommu_domain *domain,
 				  unsigned int iova, struct scatterlist *sg,
 				  unsigned int len, int prot)
@@ -156,8 +134,6 @@ static inline int iommu_unmap_range(struct iommu_domain *domain,
 	return -ENODEV;
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static inline phys_addr_t iommu_iova_to_phys(struct iommu_domain *domain,
 					     unsigned long iova)
 {

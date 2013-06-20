@@ -232,23 +232,11 @@ int notify_change(struct dentry * dentry, struct iattr * attr)
 	if (error)
 		return error;
 
-<<<<<<< HEAD
-=======
-	if (ia_valid & ATTR_SIZE)
-		down_write(&dentry->d_inode->i_alloc_sem);
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (inode->i_op->setattr)
 		error = inode->i_op->setattr(dentry, attr);
 	else
 		error = simple_setattr(dentry, attr);
 
-<<<<<<< HEAD
-=======
-	if (ia_valid & ATTR_SIZE)
-		up_write(&dentry->d_inode->i_alloc_sem);
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!error)
 		fsnotify_change(dentry, ia_valid);
 

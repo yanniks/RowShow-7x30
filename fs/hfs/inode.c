@@ -123,13 +123,8 @@ static ssize_t hfs_direct_IO(int rw, struct kiocb *iocb,
 	struct inode *inode = file->f_path.dentry->d_inode->i_mapping->host;
 	ssize_t ret;
 
-<<<<<<< HEAD
 	ret = blockdev_direct_IO(rw, iocb, inode, iov, offset, nr_segs,
 				 hfs_get_block);
-=======
-	ret = blockdev_direct_IO(rw, iocb, inode, inode->i_sb->s_bdev, iov,
-				  offset, nr_segs, hfs_get_block, NULL);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/*
 	 * In case of error extending write may have instantiated a few
@@ -620,11 +615,8 @@ int hfs_inode_setattr(struct dentry *dentry, struct iattr * attr)
 
 	if ((attr->ia_valid & ATTR_SIZE) &&
 	    attr->ia_size != i_size_read(inode)) {
-<<<<<<< HEAD
 		inode_dio_wait(inode);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		error = vmtruncate(inode, attr->ia_size);
 		if (error)
 			return error;
@@ -635,25 +627,18 @@ int hfs_inode_setattr(struct dentry *dentry, struct iattr * attr)
 	return 0;
 }
 
-<<<<<<< HEAD
 static int hfs_file_fsync(struct file *filp, loff_t start, loff_t end,
 			  int datasync)
-=======
-static int hfs_file_fsync(struct file *filp, int datasync)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inode *inode = filp->f_mapping->host;
 	struct super_block * sb;
 	int ret, err;
 
-<<<<<<< HEAD
 	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
 	if (ret)
 		return ret;
 	mutex_lock(&inode->i_mutex);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* sync the inode to buffers */
 	ret = write_inode_now(inode, 0);
 
@@ -670,10 +655,7 @@ static int hfs_file_fsync(struct file *filp, int datasync)
 	err = sync_blockdev(sb->s_bdev);
 	if (!ret)
 		ret = err;
-<<<<<<< HEAD
 	mutex_unlock(&inode->i_mutex);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return ret;
 }
 

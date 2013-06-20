@@ -67,7 +67,6 @@ config CPU_FREQ_DEFAULT_GOV_POWERSAVE
 	  the frequency statically to the lowest frequency supported by
 	  the CPU.
 
-<<<<<<< HEAD
 config CPU_FREQ_DEFAULT_GOV_SMARTASS2
 	bool "smartass2"
 	select CPU_FREQ_GOV_SMARTASS2
@@ -75,8 +74,6 @@ config CPU_FREQ_DEFAULT_GOV_SMARTASS2
 	help
 	  Use the CPUFreq governor 'smartass2' as default.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config CPU_FREQ_DEFAULT_GOV_USERSPACE
 	bool "userspace"
 	select CPU_FREQ_GOV_USERSPACE
@@ -109,7 +106,6 @@ config CPU_FREQ_DEFAULT_GOV_CONSERVATIVE
 	  Be aware that not all cpufreq drivers support the conservative
 	  governor. If unsure have a look at the help section of the
 	  driver. Fallback governor will be the performance governor.
-<<<<<<< HEAD
 
 config CPU_FREQ_DEFAULT_GOV_INTERACTIVEX
   	bool "interactiveX"
@@ -168,8 +164,6 @@ config CPU_FREQ_DEFAULT_GOV_SCARY
 	help
 	A modified ondemand governor.
         
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -183,7 +177,6 @@ config CPU_FREQ_GOV_PERFORMANCE
 
 	  If in doubt, say Y.
 
-<<<<<<< HEAD
 config CPU_FREQ_GOV_SMARTASS2
 	tristate "'smartass2' cpufreq governor"
 	depends on CPU_FREQ
@@ -192,8 +185,6 @@ config CPU_FREQ_GOV_SMARTASS2
 
 	  If in doubt, say Y.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config CPU_FREQ_GOV_POWERSAVE
 	tristate "'powersave' governor"
 	help
@@ -238,7 +229,6 @@ config CPU_FREQ_GOV_ONDEMAND
 
 	  If in doubt, say N.
 
-<<<<<<< HEAD
 config CPU_FREQ_GOV_INTERACTIVEX
 	tristate "'interactiveX' cpufreq governor"
 	depends on CPU_FREQ
@@ -264,8 +254,6 @@ config CPU_FREQ_GOV_INTERACTIVE
 
 	  If in doubt, say N.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config CPU_FREQ_GOV_CONSERVATIVE
 	tristate "'conservative' cpufreq governor"
 	depends on CPU_FREQ
@@ -289,7 +277,6 @@ config CPU_FREQ_GOV_CONSERVATIVE
 
 	  If in doubt, say N.
 
-<<<<<<< HEAD
 config CPU_FREQ_GOV_WHEATLEY
 	tristate "'wheatley' cpufreq governor"
 	depends on CPU_FREQ
@@ -352,14 +339,11 @@ config SEC_LIMIT_LCD_OFF_CPU_MAX_FREQ
 	default y
 	depends on CPU_FREQ_GOV_ONDEMAND
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 menu "x86 CPU frequency scaling drivers"
 depends on X86
 source "drivers/cpufreq/Kconfig.x86"
 endmenu
 
-<<<<<<< HEAD
 config VDD_SYSFS_INTERFACE
 	bool "VDD SYSFS Interface"
 	depends on CPU_FREQ_STAT
@@ -367,7 +351,5 @@ config VDD_SYSFS_INTERFACE
 	default n
 	help
 	  Creates a sysfs interface for VDD entries
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 endif
 endmenu

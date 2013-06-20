@@ -177,14 +177,6 @@ static int ehci_msm_probe(struct platform_device *pdev)
 	}
 
 	device_init_wakeup(&pdev->dev, 1);
-<<<<<<< HEAD
-=======
-	/*
-	 * OTG device parent of HCD takes care of putting
-	 * hardware into low power mode.
-	 */
-	pm_runtime_no_callbacks(&pdev->dev);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	pm_runtime_enable(&pdev->dev);
 
 	return 0;
@@ -215,7 +207,6 @@ static int __devexit ehci_msm_remove(struct platform_device *pdev)
 	return 0;
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_PM_RUNTIME
 static int ehci_msm_runtime_idle(struct device *dev)
 {
@@ -241,9 +232,6 @@ static int ehci_msm_runtime_resume(struct device *dev)
 #endif
 
 #ifdef CONFIG_PM_SLEEP
-=======
-#ifdef CONFIG_PM
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static int ehci_msm_pm_suspend(struct device *dev)
 {
 	struct usb_hcd *hcd = dev_get_drvdata(dev);
@@ -251,12 +239,9 @@ static int ehci_msm_pm_suspend(struct device *dev)
 
 	dev_dbg(dev, "ehci-msm PM suspend\n");
 
-<<<<<<< HEAD
 	if (!hcd->rh_registered)
 		return 0;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/*
 	 * EHCI helper function has also the same check before manipulating
 	 * port wakeup flags.  We do check here the same condition before
@@ -270,11 +255,7 @@ static int ehci_msm_pm_suspend(struct device *dev)
 				wakeup);
 	}
 
-<<<<<<< HEAD
 	return otg_set_suspend(otg, 1);
-=======
-	return 0;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static int ehci_msm_pm_resume(struct device *dev)
@@ -282,7 +263,6 @@ static int ehci_msm_pm_resume(struct device *dev)
 	struct usb_hcd *hcd = dev_get_drvdata(dev);
 
 	dev_dbg(dev, "ehci-msm PM resume\n");
-<<<<<<< HEAD
 
 	if (!hcd->rh_registered)
 		return 0;
@@ -297,20 +277,6 @@ static const struct dev_pm_ops ehci_msm_dev_pm_ops = {
 	SET_SYSTEM_SLEEP_PM_OPS(ehci_msm_pm_suspend, ehci_msm_pm_resume)
 	SET_RUNTIME_PM_OPS(ehci_msm_runtime_suspend, ehci_msm_runtime_resume,
 				ehci_msm_runtime_idle)
-=======
-	ehci_prepare_ports_for_controller_resume(hcd_to_ehci(hcd));
-
-	return 0;
-}
-#else
-#define ehci_msm_pm_suspend	NULL
-#define ehci_msm_pm_resume	NULL
-#endif
-
-static const struct dev_pm_ops ehci_msm_dev_pm_ops = {
-	.suspend         = ehci_msm_pm_suspend,
-	.resume          = ehci_msm_pm_resume,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 static struct platform_driver ehci_msm_driver = {

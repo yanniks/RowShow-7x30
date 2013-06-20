@@ -18,7 +18,6 @@
 #include <linux/pagevec.h>
 #include <linux/pagemap.h>
 
-<<<<<<< HEAD
 unsigned long max_readahead_pages = VM_MAX_READAHEAD * 1024 / PAGE_CACHE_SIZE;
 
 static int __init readahead(char *str)
@@ -45,8 +44,6 @@ static int __init readahead(char *str)
 
 early_param("readahead", readahead);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * Initialise a struct file's readahead state.  Assumes that the caller has
  * memset *ra to zero.

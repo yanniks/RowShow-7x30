@@ -13,7 +13,6 @@ endif
 nf_nat-y		:= nf_nat_core.o nf_nat_helper.o nf_nat_proto_unknown.o nf_nat_proto_common.o nf_nat_proto_tcp.o nf_nat_proto_udp.o nf_nat_proto_icmp.o
 iptable_nat-y	:= nf_nat_rule.o nf_nat_standalone.o
 
-<<<<<<< HEAD
 CFLAGS_nf_nat_standalone.o = -Wno-address
 CFLAGS_nf_nat_core.o = -Wno-address
 CFLAGS_nf_nat_amanda.o = -Wno-address
@@ -24,8 +23,6 @@ CFLAGS_nf_nat_h323.o = -Wno-address
 CFLAGS_nf_nat_sip.o = -Wno-address
 CFLAGS_nf_nat_tftp.o = -Wno-address
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 # connection tracking
 obj-$(CONFIG_NF_CONNTRACK_IPV4) += nf_conntrack_ipv4.o
 
@@ -82,7 +79,3 @@ obj-$(CONFIG_IP_NF_ARP_MANGLE) += arpt_mangle.o
 obj-$(CONFIG_IP_NF_ARPFILTER) += arptable_filter.o
 
 obj-$(CONFIG_IP_NF_QUEUE) += ip_queue.o
-<<<<<<< HEAD
-=======
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

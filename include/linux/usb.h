@@ -314,10 +314,7 @@ struct usb_bus {
 	int busnum;			/* Bus number (in order of reg) */
 	const char *bus_name;		/* stable id (PCI slot_name etc) */
 	u8 uses_dma;			/* Does the host controller use DMA? */
-<<<<<<< HEAD
 	u8 dma_align;			/* Should the DMA buffer be aligned? */
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	u8 uses_pio_for_control;	/*
 					 * Does the host controller use PIO
 					 * for control transfers?
@@ -325,11 +322,8 @@ struct usb_bus {
 	u8 otg_port;			/* 0, or number of OTG/HNP port */
 	unsigned is_b_host:1;		/* true during some HNP roleswitches */
 	unsigned b_hnp_enable:1;	/* OTG: did A-Host enable HNP? */
-<<<<<<< HEAD
 	unsigned hnp_support:1;		/* OTG: HNP is supported on OTG port */
 	struct delayed_work hnp_polling;/* OTG: HNP polling work */
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	unsigned sg_tablesize;		/* 0 or largest number of sg list entries */
 
 	int devnum_next;		/* Next open device number in
@@ -371,7 +365,6 @@ struct usb_bus {
  * limit. Because the arrays need to add a bit for hub status data, we
  * do 31, so plus one evens out to four bytes.
  */
-<<<<<<< HEAD
 
 #if defined(CONFIG_USB_PEHCI_HCD) || defined(CONFIG_USB_PEHCI_HCD_MODULE)
 #define USB_OTG_SUSPEND		0x1
@@ -382,8 +375,6 @@ struct usb_bus {
 #define USB_OTG_WAKEUP_ALL	0x20
 #endif
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define USB_MAXCHILDREN		(31)
 
 struct usb_tt;
@@ -497,7 +488,6 @@ struct usb_device {
 	struct dentry *usbfs_dentry;
 #endif
 
-<<<<<<< HEAD
 #if defined(CONFIG_USB_PEHCI_HCD) || defined(CONFIG_USB_PEHCI_HCD_MODULE)
 	/*otg add ons */
 	u8 otgdevice;				/*device is otg type */
@@ -510,8 +500,6 @@ struct usb_device {
 	void *hcd_priv;
 	void (*hcd_suspend) (void *hcd_priv);
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int maxchild;
 	struct usb_device *children[USB_MAXCHILDREN];
 
@@ -1643,7 +1631,6 @@ usb_maxpacket(struct usb_device *udev, int pipe, int is_out)
 #define USB_DEVICE_REMOVE	0x0002
 #define USB_BUS_ADD		0x0003
 #define USB_BUS_REMOVE		0x0004
-<<<<<<< HEAD
 #define USB_DEVICE_CONFIG	0x0005
 
 #ifdef CONFIG_USB
@@ -1653,10 +1640,6 @@ extern void usb_unregister_notify(struct notifier_block *nb);
 static inline void usb_register_notify(struct notifier_block *nb) {}
 static inline void usb_unregister_notify(struct notifier_block *nb) {}
 #endif
-=======
-extern void usb_register_notify(struct notifier_block *nb);
-extern void usb_unregister_notify(struct notifier_block *nb);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #ifdef DEBUG
 #define dbg(format, arg...)						\

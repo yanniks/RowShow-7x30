@@ -147,10 +147,7 @@ struct tmem_obj {
 	unsigned int objnode_tree_height;
 	unsigned long objnode_count;
 	long pampd_count;
-<<<<<<< HEAD
 	void *extra; /* for private use by pampd implementation */
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	DECL_SENTINEL
 };
 
@@ -170,7 +167,6 @@ struct tmem_objnode {
 
 /* pampd abstract datatype methods provided by the PAM implementation */
 struct tmem_pamops {
-<<<<<<< HEAD
 	void *(*create)(char *, size_t, bool, int,
 			struct tmem_pool *, struct tmem_oid *, uint32_t);
 	int (*get_data)(char *, size_t *, bool, void *, struct tmem_pool *,
@@ -183,12 +179,6 @@ struct tmem_pamops {
 	bool (*is_remote)(void *);
 	void (*new_obj)(struct tmem_obj *);
 	int (*replace_in_obj)(void *, struct tmem_obj *);
-=======
-	void *(*create)(struct tmem_pool *, struct tmem_oid *, uint32_t,
-			struct page *);
-	int (*get_data)(struct page *, void *, struct tmem_pool *);
-	void (*free)(void *, struct tmem_pool *);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 extern void tmem_register_pamops(struct tmem_pamops *m);
 
@@ -203,17 +193,11 @@ extern void tmem_register_hostops(struct tmem_hostops *m);
 
 /* core tmem accessor functions */
 extern int tmem_put(struct tmem_pool *, struct tmem_oid *, uint32_t index,
-<<<<<<< HEAD
 			char *, size_t, bool, bool);
 extern int tmem_get(struct tmem_pool *, struct tmem_oid *, uint32_t index,
 			char *, size_t *, bool, int);
 extern int tmem_replace(struct tmem_pool *, struct tmem_oid *, uint32_t index,
 			void *);
-=======
-			struct page *page);
-extern int tmem_get(struct tmem_pool *, struct tmem_oid *, uint32_t index,
-			struct page *page);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern int tmem_flush_page(struct tmem_pool *, struct tmem_oid *,
 			uint32_t index);
 extern int tmem_flush_object(struct tmem_pool *, struct tmem_oid *);

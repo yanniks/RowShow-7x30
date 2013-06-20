@@ -22,7 +22,6 @@ config THERMAL_HWMON
 	  requires a 2.10.7/3.0.2 or later lm-sensors userspace.
 
 	  Say Y if your user-space is new enough.
-<<<<<<< HEAD
 
 config THERMAL_PM8901
 	tristate "Qualcomm PM8901 Temperature Alarm"
@@ -92,5 +91,3 @@ config THERMAL_PM8XXX
 	  Enabling the thermal zone device via the mode file results in
 	  shifting over temperature shutdown control of the PMIC from hardware
 	  to software.
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

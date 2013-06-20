@@ -62,20 +62,12 @@ static inline struct dev_cgroup *task_devcgroup(struct task_struct *task)
 struct cgroup_subsys devices_subsys;
 
 static int devcgroup_can_attach(struct cgroup_subsys *ss,
-<<<<<<< HEAD
 			struct cgroup *new_cgrp, struct cgroup_taskset *set)
 {
 	struct task_struct *task = cgroup_taskset_first(set);
 
 	if (current != task && !capable(CAP_SYS_ADMIN))
 		return -EPERM;
-=======
-		struct cgroup *new_cgroup, struct task_struct *task)
-{
-	if (current != task && !capable(CAP_SYS_ADMIN))
-			return -EPERM;
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 

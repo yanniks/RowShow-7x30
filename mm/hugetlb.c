@@ -1591,15 +1591,9 @@ static void __init hugetlb_sysfs_init(void)
 
 /*
  * node_hstate/s - associate per node hstate attributes, via their kobjects,
-<<<<<<< HEAD
  * with node devices in node_devices[] using a parallel array.  The array
  * index of a node device or _hstate == node id.
  * This is here to avoid any static dependency of the node device driver, in
-=======
- * with node sysdevs in node_devices[] using a parallel array.  The array
- * index of a node sysdev or _hstate == node id.
- * This is here to avoid any static dependency of the node sysdev driver, in
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * the base kernel, on the hugetlb module.
  */
 struct node_hstate {
@@ -1609,11 +1603,7 @@ struct node_hstate {
 struct node_hstate node_hstates[MAX_NUMNODES];
 
 /*
-<<<<<<< HEAD
  * A subset of global hstate attributes for node devices
-=======
- * A subset of global hstate attributes for node sysdevs
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  */
 static struct attribute *per_node_hstate_attrs[] = {
 	&nr_hugepages_attr.attr,
@@ -1627,11 +1617,7 @@ static struct attribute_group per_node_hstate_attr_group = {
 };
 
 /*
-<<<<<<< HEAD
  * kobj_to_node_hstate - lookup global hstate for node device hstate attr kobj.
-=======
- * kobj_to_node_hstate - lookup global hstate for node sysdev hstate attr kobj.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * Returns node id via non-NULL nidp.
  */
 static struct hstate *kobj_to_node_hstate(struct kobject *kobj, int *nidp)
@@ -1654,21 +1640,13 @@ static struct hstate *kobj_to_node_hstate(struct kobject *kobj, int *nidp)
 }
 
 /*
-<<<<<<< HEAD
  * Unregister hstate attributes from a single node device.
-=======
- * Unregister hstate attributes from a single node sysdev.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * No-op if no hstate attributes attached.
  */
 void hugetlb_unregister_node(struct node *node)
 {
 	struct hstate *h;
-<<<<<<< HEAD
 	struct node_hstate *nhs = &node_hstates[node->dev.id];
-=======
-	struct node_hstate *nhs = &node_hstates[node->sysdev.id];
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (!nhs->hugepages_kobj)
 		return;		/* no hstate attributes */
@@ -1684,11 +1662,7 @@ void hugetlb_unregister_node(struct node *node)
 }
 
 /*
-<<<<<<< HEAD
  * hugetlb module exit:  unregister hstate attributes from node devices
-=======
- * hugetlb module exit:  unregister hstate attributes from node sysdevs
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * that have them.
  */
 static void hugetlb_unregister_all_nodes(void)
@@ -1696,11 +1670,7 @@ static void hugetlb_unregister_all_nodes(void)
 	int nid;
 
 	/*
-<<<<<<< HEAD
 	 * disable node device registrations.
-=======
-	 * disable node sysdev registrations.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	 */
 	register_hugetlbfs_with_node(NULL, NULL);
 
@@ -1712,32 +1682,20 @@ static void hugetlb_unregister_all_nodes(void)
 }
 
 /*
-<<<<<<< HEAD
  * Register hstate attributes for a single node device.
-=======
- * Register hstate attributes for a single node sysdev.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * No-op if attributes already registered.
  */
 void hugetlb_register_node(struct node *node)
 {
 	struct hstate *h;
-<<<<<<< HEAD
 	struct node_hstate *nhs = &node_hstates[node->dev.id];
-=======
-	struct node_hstate *nhs = &node_hstates[node->sysdev.id];
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int err;
 
 	if (nhs->hugepages_kobj)
 		return;		/* already allocated */
 
 	nhs->hugepages_kobj = kobject_create_and_add("hugepages",
-<<<<<<< HEAD
 							&node->dev.kobj);
-=======
-							&node->sysdev.kobj);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!nhs->hugepages_kobj)
 		return;
 
@@ -1748,11 +1706,7 @@ void hugetlb_register_node(struct node *node)
 		if (err) {
 			printk(KERN_ERR "Hugetlb: Unable to add hstate %s"
 					" for node %d\n",
-<<<<<<< HEAD
 						h->name, node->dev.id);
-=======
-						h->name, node->sysdev.id);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			hugetlb_unregister_node(node);
 			break;
 		}
@@ -1761,13 +1715,8 @@ void hugetlb_register_node(struct node *node)
 
 /*
  * hugetlb init time:  register hstate attributes for all registered node
-<<<<<<< HEAD
  * devices of nodes that have memory.  All on-line nodes should have
  * registered their associated device by this time.
-=======
- * sysdevs of nodes that have memory.  All on-line nodes should have
- * registered their associated sysdev by this time.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  */
 static void hugetlb_register_all_nodes(void)
 {
@@ -1775,20 +1724,12 @@ static void hugetlb_register_all_nodes(void)
 
 	for_each_node_state(nid, N_HIGH_MEMORY) {
 		struct node *node = &node_devices[nid];
-<<<<<<< HEAD
 		if (node->dev.id == nid)
-=======
-		if (node->sysdev.id == nid)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			hugetlb_register_node(node);
 	}
 
 	/*
-<<<<<<< HEAD
 	 * Let the node device driver know we're here so it can
-=======
-	 * Let the node sysdev driver know we're here so it can
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	 * [un]register hstate attributes on node hotplug.
 	 */
 	register_hugetlbfs_with_node(hugetlb_register_node,
@@ -2586,10 +2527,7 @@ static int hugetlb_no_page(struct mm_struct *mm, struct vm_area_struct *vma,
 {
 	struct hstate *h = hstate_vma(vma);
 	int ret = VM_FAULT_SIGBUS;
-<<<<<<< HEAD
 	int anon_rmap = 0;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	pgoff_t idx;
 	unsigned long size;
 	struct page *page;
@@ -2644,21 +2582,13 @@ retry:
 			spin_lock(&inode->i_lock);
 			inode->i_blocks += blocks_per_huge_page(h);
 			spin_unlock(&inode->i_lock);
-<<<<<<< HEAD
-=======
-			page_dup_rmap(page);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		} else {
 			lock_page(page);
 			if (unlikely(anon_vma_prepare(vma))) {
 				ret = VM_FAULT_OOM;
 				goto backout_unlocked;
 			}
-<<<<<<< HEAD
 			anon_rmap = 1;
-=======
-			hugepage_add_new_anon_rmap(page, vma, address);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		}
 	} else {
 		/*
@@ -2671,10 +2601,6 @@ retry:
 			      VM_FAULT_SET_HINDEX(h - hstates);
 			goto backout_unlocked;
 		}
-<<<<<<< HEAD
-=======
-		page_dup_rmap(page);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	/*
@@ -2698,13 +2624,10 @@ retry:
 	if (!huge_pte_none(huge_ptep_get(ptep)))
 		goto backout;
 
-<<<<<<< HEAD
 	if (anon_rmap)
 		hugepage_add_new_anon_rmap(page, vma, address);
 	else
 		page_dup_rmap(page);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	new_pte = make_huge_pte(vma, page, ((vma->vm_flags & VM_WRITE)
 				&& (vma->vm_flags & VM_SHARED)));
 	set_huge_pte_at(mm, address, ptep, new_pte);
@@ -2742,11 +2665,7 @@ int hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 	if (ptep) {
 		entry = huge_ptep_get(ptep);
 		if (unlikely(is_hugetlb_entry_migration(entry))) {
-<<<<<<< HEAD
 			migration_entry_wait_huge(mm, ptep);
-=======
-			migration_entry_wait(mm, (pmd_t *)ptep, address);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			return 0;
 		} else if (unlikely(is_hugetlb_entry_hwpoisoned(entry)))
 			return VM_FAULT_HWPOISON_LARGE | 

@@ -790,11 +790,7 @@ static int find_node(unsigned long addr)
 	return -1;
 }
 
-<<<<<<< HEAD
 static u64 memblock_nid_range(u64 start, u64 end, int *nid)
-=======
-u64 memblock_nid_range(u64 start, u64 end, int *nid)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	*nid = find_node(start);
 	start += PAGE_SIZE;
@@ -812,11 +808,7 @@ u64 memblock_nid_range(u64 start, u64 end, int *nid)
 	return start;
 }
 #else
-<<<<<<< HEAD
 static u64 memblock_nid_range(u64 start, u64 end, int *nid)
-=======
-u64 memblock_nid_range(u64 start, u64 end, int *nid)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	*nid = 0;
 	return end;
@@ -1777,11 +1769,6 @@ void __init paging_init(void)
 		sun4v_ktsb_init();
 	}
 
-<<<<<<< HEAD
-=======
-	memblock_init();
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* Find available physical memory...
 	 *
 	 * Read it twice in order to work around a bug in openfirmware.
@@ -1807,11 +1794,7 @@ void __init paging_init(void)
 
 	memblock_enforce_memory_limit(cmdline_memory_size);
 
-<<<<<<< HEAD
 	memblock_allow_resize();
-=======
-	memblock_analyze();
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	memblock_dump_all();
 
 	set_bit(0, mmu_context_bmap);

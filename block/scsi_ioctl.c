@@ -566,11 +566,7 @@ int scsi_cmd_ioctl(struct request_queue *q, struct gendisk *bd_disk, fmode_t mod
 {
 	int err;
 
-<<<<<<< HEAD
 	if (!q)
-=======
-	if (!q || blk_get_queue(q))
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return -ENXIO;
 
 	switch (cmd) {
@@ -691,10 +687,6 @@ int scsi_cmd_ioctl(struct request_queue *q, struct gendisk *bd_disk, fmode_t mod
 			err = -ENOTTY;
 	}
 
-<<<<<<< HEAD
-=======
-	blk_put_queue(q);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return err;
 }
 EXPORT_SYMBOL(scsi_cmd_ioctl);

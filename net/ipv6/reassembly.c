@@ -385,11 +385,7 @@ found:
 	}
 
 	if (fq->q.last_in == (INET_FRAG_FIRST_IN | INET_FRAG_LAST_IN) &&
-<<<<<<< HEAD
 		fq->q.meat == fq->q.len) {
-=======
-	    fq->q.meat == fq->q.len) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		int res;
 		unsigned long orefdst = skb->_skb_refdst;
 

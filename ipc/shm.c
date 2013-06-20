@@ -277,21 +277,13 @@ static int shm_release(struct inode *ino, struct file *file)
 	return 0;
 }
 
-<<<<<<< HEAD
 static int shm_fsync(struct file *file, loff_t start, loff_t end, int datasync)
-=======
-static int shm_fsync(struct file *file, int datasync)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct shm_file_data *sfd = shm_file_data(file);
 
 	if (!sfd->file->f_op->fsync)
 		return -EINVAL;
-<<<<<<< HEAD
 	return sfd->file->f_op->fsync(sfd->file, start, end, datasync);
-=======
-	return sfd->file->f_op->fsync(sfd->file, datasync);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static unsigned long shm_get_unmapped_area(struct file *file,
@@ -770,13 +762,7 @@ SYSCALL_DEFINE3(shmctl, int, shmid, int, cmd, struct shmid_ds __user *, buf)
 	case SHM_LOCK:
 	case SHM_UNLOCK:
 	{
-<<<<<<< HEAD
 		struct file *shm_file;
-=======
-		struct file *uninitialized_var(shm_file);
-
-		lru_add_drain_all();  /* drain pagevecs to lru lists */
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		shp = shm_lock_check(ns, shmid);
 		if (IS_ERR(shp)) {
@@ -799,7 +785,6 @@ SYSCALL_DEFINE3(shmctl, int, shmid, int, cmd, struct shmid_ds __user *, buf)
 		err = security_shm_shmctl(shp, cmd);
 		if (err)
 			goto out_unlock;
-<<<<<<< HEAD
 
 		shm_file = shp->shm_file;
 		if (is_file_hugepages(shm_file))
@@ -825,24 +810,6 @@ SYSCALL_DEFINE3(shmctl, int, shmid, int, cmd, struct shmid_ds __user *, buf)
 		shm_unlock(shp);
 		shmem_unlock_mapping(shm_file->f_mapping);
 		fput(shm_file);
-=======
-		
-		if(cmd==SHM_LOCK) {
-			struct user_struct *user = current_user();
-			if (!is_file_hugepages(shp->shm_file)) {
-				err = shmem_lock(shp->shm_file, 1, user);
-				if (!err && !(shp->shm_perm.mode & SHM_LOCKED)){
-					shp->shm_perm.mode |= SHM_LOCKED;
-					shp->mlock_user = user;
-				}
-			}
-		} else if (!is_file_hugepages(shp->shm_file)) {
-			shmem_lock(shp->shm_file, 0, shp->mlock_user);
-			shp->shm_perm.mode &= ~SHM_LOCKED;
-			shp->mlock_user = NULL;
-		}
-		shm_unlock(shp);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		goto out;
 	}
 	case IPC_RMID:

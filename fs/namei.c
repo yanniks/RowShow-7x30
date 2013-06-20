@@ -16,11 +16,8 @@
 
 #include <linux/init.h>
 #include <linux/module.h>
-<<<<<<< HEAD
 #include <linux/export.h>
 #include <linux/kernel.h>
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <linux/slab.h>
 #include <linux/fs.h>
 #include <linux/namei.h>
@@ -37,10 +34,7 @@
 #include <linux/fcntl.h>
 #include <linux/device_cgroup.h>
 #include <linux/fs_struct.h>
-<<<<<<< HEAD
 #include <linux/posix_acl.h>
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <asm/uaccess.h>
 
 #include "internal.h"
@@ -184,7 +178,6 @@ void putname(const char *name)
 EXPORT_SYMBOL(putname);
 #endif
 
-<<<<<<< HEAD
 static int check_acl(struct inode *inode, int mask)
 {
 	struct posix_acl *acl;
@@ -242,17 +235,6 @@ static int acl_permission_check(struct inode *inode, int mask)
 	unsigned int mode = inode->i_mode;
 
 	mask &= MAY_READ | MAY_WRITE | MAY_EXEC | MAY_NOT_BLOCK;
-=======
-/*
- * This does basic POSIX ACL permission checking
- */
-static int acl_permission_check(struct inode *inode, int mask, unsigned int flags,
-		int (*check_acl)(struct inode *inode, int mask, unsigned int flags))
-{
-	unsigned int mode = inode->i_mode;
-
-	mask &= MAY_READ | MAY_WRITE | MAY_EXEC;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (current_user_ns() != inode_userns(inode))
 		goto other_perms;
@@ -260,13 +242,8 @@ static int acl_permission_check(struct inode *inode, int mask, unsigned int flag
 	if (current_fsuid() == inode->i_uid)
 		mode >>= 6;
 	else {
-<<<<<<< HEAD
 		if (IS_POSIXACL(inode) && (mode & S_IRWXG)) {
 			int error = check_acl(inode, mask);
-=======
-		if (IS_POSIXACL(inode) && (mode & S_IRWXG) && check_acl) {
-			int error = check_acl(inode, mask, flags);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			if (error != -EAGAIN)
 				return error;
 		}
@@ -279,11 +256,7 @@ other_perms:
 	/*
 	 * If the DACs are ok we don't need any capability check.
 	 */
-<<<<<<< HEAD
 	if ((mask & ~mode & (MAY_READ | MAY_WRITE | MAY_EXEC)) == 0)
-=======
-	if ((mask & ~mode) == 0)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return 0;
 	return -EACCES;
 }
@@ -292,10 +265,6 @@ other_perms:
  * generic_permission -  check for access rights on a Posix-like filesystem
  * @inode:	inode to check access rights for
  * @mask:	right to check for (%MAY_READ, %MAY_WRITE, %MAY_EXEC)
-<<<<<<< HEAD
-=======
- * @check_acl:	optional callback to check for Posix ACLs
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * @flags:	IPERM_FLAG_ flags.
  *
  * Used to check for read/write/execute permissions on a file.
@@ -307,19 +276,13 @@ other_perms:
  * request cannot be satisfied (eg. requires blocking or too much complexity).
  * It would then be called again in ref-walk mode.
  */
-<<<<<<< HEAD
 int generic_permission(struct inode *inode, int mask)
-=======
-int generic_permission(struct inode *inode, int mask, unsigned int flags,
-	int (*check_acl)(struct inode *inode, int mask, unsigned int flags))
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	int ret;
 
 	/*
 	 * Do the basic POSIX ACL permission checks.
 	 */
-<<<<<<< HEAD
 	ret = acl_permission_check(inode, mask);
 	if (ret != -EACCES)
 		return ret;
@@ -339,18 +302,6 @@ int generic_permission(struct inode *inode, int mask, unsigned int flags,
 	 * at least one exec bit set.
 	 */
 	if (!(mask & MAY_EXEC) || (inode->i_mode & S_IXUGO))
-=======
-	ret = acl_permission_check(inode, mask, flags, check_acl);
-	if (ret != -EACCES)
-		return ret;
-
-	/*
-	 * Read/write DACs are always overridable.
-	 * Executable DACs are overridable for all directories and
-	 * for non-directories that have least one exec bit set.
-	 */
-	if (!(mask & MAY_EXEC) || execute_ok(inode))
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (ns_capable(inode_userns(inode), CAP_DAC_OVERRIDE))
 			return 0;
 
@@ -358,11 +309,7 @@ int generic_permission(struct inode *inode, int mask, unsigned int flags,
 	 * Searching includes executable on directories, else just read.
 	 */
 	mask &= MAY_READ | MAY_WRITE | MAY_EXEC;
-<<<<<<< HEAD
 	if (mask == MAY_READ)
-=======
-	if (mask == MAY_READ || (S_ISDIR(inode->i_mode) && !(mask & MAY_WRITE)))
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (ns_capable(inode_userns(inode), CAP_DAC_READ_SEARCH))
 			return 0;
 
@@ -401,16 +348,9 @@ int inode_permission(struct inode *inode, int mask)
 	}
 
 	if (inode->i_op->permission)
-<<<<<<< HEAD
 		retval = inode->i_op->permission(inode, mask);
 	else
 		retval = generic_permission(inode, mask);
-=======
-		retval = inode->i_op->permission(inode, mask, 0);
-	else
-		retval = generic_permission(inode, mask, 0,
-				inode->i_op->check_acl);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (retval)
 		return retval;
@@ -423,72 +363,6 @@ int inode_permission(struct inode *inode, int mask)
 }
 
 /**
-<<<<<<< HEAD
-=======
- * file_permission  -  check for additional access rights to a given file
- * @file:	file to check access rights for
- * @mask:	right to check for (%MAY_READ, %MAY_WRITE, %MAY_EXEC)
- *
- * Used to check for read/write/execute permissions on an already opened
- * file.
- *
- * Note:
- *	Do not use this function in new code.  All access checks should
- *	be done using inode_permission().
- */
-int file_permission(struct file *file, int mask)
-{
-	return inode_permission(file->f_path.dentry->d_inode, mask);
-}
-
-/*
- * get_write_access() gets write permission for a file.
- * put_write_access() releases this write permission.
- * This is used for regular files.
- * We cannot support write (and maybe mmap read-write shared) accesses and
- * MAP_DENYWRITE mmappings simultaneously. The i_writecount field of an inode
- * can have the following values:
- * 0: no writers, no VM_DENYWRITE mappings
- * < 0: (-i_writecount) vm_area_structs with VM_DENYWRITE set exist
- * > 0: (i_writecount) users are writing to the file.
- *
- * Normally we operate on that counter with atomic_{inc,dec} and it's safe
- * except for the cases where we don't hold i_writecount yet. Then we need to
- * use {get,deny}_write_access() - these functions check the sign and refuse
- * to do the change if sign is wrong. Exclusion between them is provided by
- * the inode->i_lock spinlock.
- */
-
-int get_write_access(struct inode * inode)
-{
-	spin_lock(&inode->i_lock);
-	if (atomic_read(&inode->i_writecount) < 0) {
-		spin_unlock(&inode->i_lock);
-		return -ETXTBSY;
-	}
-	atomic_inc(&inode->i_writecount);
-	spin_unlock(&inode->i_lock);
-
-	return 0;
-}
-
-int deny_write_access(struct file * file)
-{
-	struct inode *inode = file->f_path.dentry->d_inode;
-
-	spin_lock(&inode->i_lock);
-	if (atomic_read(&inode->i_writecount) > 0) {
-		spin_unlock(&inode->i_lock);
-		return -ETXTBSY;
-	}
-	atomic_dec(&inode->i_writecount);
-	spin_unlock(&inode->i_lock);
-
-	return 0;
-}
-
-/**
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * path_get - get a reference to a path
  * @path: path to get the reference to
  *
@@ -614,31 +488,6 @@ static inline int d_revalidate(struct dentry *dentry, struct nameidata *nd)
 	return dentry->d_op->d_revalidate(dentry, nd);
 }
 
-<<<<<<< HEAD
-=======
-static struct dentry *
-do_revalidate(struct dentry *dentry, struct nameidata *nd)
-{
-	int status = d_revalidate(dentry, nd);
-	if (unlikely(status <= 0)) {
-		/*
-		 * The dentry failed validation.
-		 * If d_revalidate returned 0 attempt to invalidate
-		 * the dentry otherwise d_revalidate is asking us
-		 * to return a fail status.
-		 */
-		if (status < 0) {
-			dput(dentry);
-			dentry = ERR_PTR(status);
-		} else if (!d_invalidate(dentry)) {
-			dput(dentry);
-			dentry = NULL;
-		}
-	}
-	return dentry;
-}
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /**
  * complete_walk - successful completion of path walk
  * @nd:  pointer nameidata
@@ -693,43 +542,6 @@ static int complete_walk(struct nameidata *nd)
 	return status;
 }
 
-<<<<<<< HEAD
-=======
-/*
- * Short-cut version of permission(), for calling on directories
- * during pathname resolution.  Combines parts of permission()
- * and generic_permission(), and tests ONLY for MAY_EXEC permission.
- *
- * If appropriate, check DAC only.  If not appropriate, or
- * short-cut DAC fails, then call ->permission() to do more
- * complete permission check.
- */
-static inline int exec_permission(struct inode *inode, unsigned int flags)
-{
-	int ret;
-	struct user_namespace *ns = inode_userns(inode);
-
-	if (inode->i_op->permission) {
-		ret = inode->i_op->permission(inode, MAY_EXEC, flags);
-	} else {
-		ret = acl_permission_check(inode, MAY_EXEC, flags,
-				inode->i_op->check_acl);
-	}
-	if (likely(!ret))
-		goto ok;
-	if (ret == -ECHILD)
-		return ret;
-
-	if (ns_capable(ns, CAP_DAC_OVERRIDE) ||
-			ns_capable(ns, CAP_DAC_READ_SEARCH))
-		goto ok;
-
-	return ret;
-ok:
-	return security_inode_exec_permission(inode, flags);
-}
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static __always_inline void set_root(struct nameidata *nd)
 {
 	if (!nd->root.mnt)
@@ -1266,7 +1078,6 @@ static struct dentry *d_alloc_and_lookup(struct dentry *parent,
 }
 
 /*
-<<<<<<< HEAD
  * We already have a dentry, but require a lookup to be performed on the parent
  * directory to fill in d_inode. Returns the new dentry, or ERR_PTR on error.
  * parent->d_inode->i_mutex must be held. d_lookup must have verified that no
@@ -1291,8 +1102,6 @@ static struct dentry *d_inode_lookup(struct dentry *parent, struct dentry *dentr
 }
 
 /*
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *  It's more convoluted than I'd like it to be, but... it's still fairly
  *  small and for now I'd prefer to have fast path as straight as possible.
  *  It _is_ time-critical.
@@ -1331,11 +1140,8 @@ static int do_lookup(struct nameidata *nd, struct qstr *name,
 				goto unlazy;
 			}
 		}
-<<<<<<< HEAD
 		if (unlikely(d_need_lookup(dentry)))
 			goto unlazy;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		path->mnt = mnt;
 		path->dentry = dentry;
 		if (unlikely(!__follow_mount_rcu(nd, path, inode)))
@@ -1350,13 +1156,10 @@ unlazy:
 		dentry = __d_lookup(parent, name);
 	}
 
-<<<<<<< HEAD
 	if (dentry && unlikely(d_need_lookup(dentry))) {
 		dput(dentry);
 		dentry = NULL;
 	}
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 retry:
 	if (unlikely(!dentry)) {
 		struct inode *dir = parent->d_inode;
@@ -1373,7 +1176,6 @@ retry:
 			/* known good */
 			need_reval = 0;
 			status = 1;
-<<<<<<< HEAD
 		} else if (unlikely(d_need_lookup(dentry))) {
 			dentry = d_inode_lookup(parent, dentry, nd);
 			if (IS_ERR(dentry)) {
@@ -1383,8 +1185,6 @@ retry:
 			/* known good */
 			need_reval = 0;
 			status = 1;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		}
 		mutex_unlock(&dir->i_mutex);
 	}
@@ -1419,21 +1219,13 @@ retry:
 static inline int may_lookup(struct nameidata *nd)
 {
 	if (nd->flags & LOOKUP_RCU) {
-<<<<<<< HEAD
 		int err = inode_permission(nd->inode, MAY_EXEC|MAY_NOT_BLOCK);
-=======
-		int err = exec_permission(nd->inode, IPERM_FLAG_RCU);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (err != -ECHILD)
 			return err;
 		if (unlazy_walk(nd, NULL))
 			return -ECHILD;
 	}
-<<<<<<< HEAD
 	return inode_permission(nd->inode, MAY_EXEC);
-=======
-	return exec_permission(nd->inode, 0);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static inline int handle_dots(struct nameidata *nd, int type)
@@ -1708,11 +1500,7 @@ static int path_init(int dfd, const char *name, unsigned int flags,
 			if (!S_ISDIR(dentry->d_inode->i_mode))
 				goto fput_fail;
 
-<<<<<<< HEAD
 			retval = inode_permission(dentry->d_inode, MAY_EXEC);
-=======
-			retval = file_permission(file, MAY_EXEC);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			if (retval)
 				goto fput_fail;
 		}
@@ -1869,11 +1657,7 @@ static struct dentry *__lookup_hash(struct qstr *name,
 	struct dentry *dentry;
 	int err;
 
-<<<<<<< HEAD
 	err = inode_permission(inode, MAY_EXEC);
-=======
-	err = exec_permission(inode, 0);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (err)
 		return ERR_PTR(err);
 
@@ -1884,7 +1668,6 @@ static struct dentry *__lookup_hash(struct qstr *name,
 	 */
 	dentry = d_lookup(base, name);
 
-<<<<<<< HEAD
 	if (dentry && d_need_lookup(dentry)) {
 		/*
 		 * __lookup_hash is called with the parent dir's i_mutex already
@@ -1913,10 +1696,6 @@ static struct dentry *__lookup_hash(struct qstr *name,
 			}
 		}
 	}
-=======
-	if (dentry && (dentry->d_flags & DCACHE_OP_REVALIDATE))
-		dentry = do_revalidate(dentry, nd);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (!dentry)
 		dentry = d_alloc_and_lookup(base, name, nd);
@@ -2152,11 +1931,7 @@ void unlock_rename(struct dentry *p1, struct dentry *p2)
 	}
 }
 
-<<<<<<< HEAD
 int vfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
-=======
-int vfs_create(struct inode *dir, struct dentry *dentry, int mode,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		struct nameidata *nd)
 {
 	int error = may_create(dir, dentry);
@@ -2633,11 +2408,7 @@ fail:
 }
 EXPORT_SYMBOL_GPL(lookup_create);
 
-<<<<<<< HEAD
 int vfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t dev)
-=======
-int vfs_mknod(struct inode *dir, struct dentry *dentry, int mode, dev_t dev)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	int error = may_create(dir, dentry);
 
@@ -2686,11 +2457,7 @@ SYSCALL_DEFINE4(mknodat, int, dfd, const char __user *, filename, int, mode,
 		unsigned, dev)
 {
 	int error;
-<<<<<<< HEAD
 	char *tmp = 0;
-=======
-	char *tmp;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct dentry *dentry;
 	struct nameidata nd;
 
@@ -2719,11 +2486,7 @@ SYSCALL_DEFINE4(mknodat, int, dfd, const char __user *, filename, int, mode,
 		goto out_drop_write;
 	switch (mode & S_IFMT) {
 		case 0: case S_IFREG:
-<<<<<<< HEAD
 			error = vfs_create(nd.path.dentry->d_inode,dentry,mode,NULL);
-=======
-			error = vfs_create(nd.path.dentry->d_inode,dentry,mode,&nd);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			break;
 		case S_IFCHR: case S_IFBLK:
 			error = vfs_mknod(nd.path.dentry->d_inode,dentry,mode,
@@ -2774,11 +2537,7 @@ int vfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 SYSCALL_DEFINE3(mkdirat, int, dfd, const char __user *, pathname, int, mode)
 {
 	int error = 0;
-<<<<<<< HEAD
 	char * tmp = 0;
-=======
-	char * tmp;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct dentry *dentry;
 	struct nameidata nd;
 
@@ -2881,11 +2640,7 @@ out:
 static long do_rmdir(int dfd, const char __user *pathname)
 {
 	int error = 0;
-<<<<<<< HEAD
 	char * name = 0;
-=======
-	char * name;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct dentry *dentry;
 	struct nameidata nd;
 
@@ -2981,11 +2736,7 @@ int vfs_unlink(struct inode *dir, struct dentry *dentry)
 static long do_unlinkat(int dfd, const char __user *pathname)
 {
 	int error;
-<<<<<<< HEAD
 	char *name = 0;
-=======
-	char *name;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct dentry *dentry;
 	struct nameidata nd;
 	struct inode *inode = NULL;
@@ -3078,11 +2829,7 @@ SYSCALL_DEFINE3(symlinkat, const char __user *, oldname,
 {
 	int error;
 	char *from;
-<<<<<<< HEAD
 	char *to = 0;
-=======
-	char *to;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct dentry *dentry;
 	struct nameidata nd;
 
@@ -3182,11 +2929,7 @@ SYSCALL_DEFINE5(linkat, int, olddfd, const char __user *, oldname,
 	struct path old_path;
 	int how = 0;
 	int error;
-<<<<<<< HEAD
 	char *to = 0;
-=======
-	char *to;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if ((flags & ~(AT_SYMLINK_FOLLOW | AT_EMPTY_PATH)) != 0)
 		return -EINVAL;
@@ -3398,13 +3141,8 @@ SYSCALL_DEFINE4(renameat, int, olddfd, const char __user *, oldname,
 	struct dentry *old_dentry, *new_dentry;
 	struct dentry *trap;
 	struct nameidata oldnd, newnd;
-<<<<<<< HEAD
 	char *from = 0;
 	char *to = 0;
-=======
-	char *from;
-	char *to;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int error;
 
 	error = user_path_parent(olddfd, oldname, &oldnd, &from);
@@ -3650,10 +3388,6 @@ EXPORT_SYMBOL(kern_path_parent);
 EXPORT_SYMBOL(kern_path);
 EXPORT_SYMBOL(vfs_path_lookup);
 EXPORT_SYMBOL(inode_permission);
-<<<<<<< HEAD
-=======
-EXPORT_SYMBOL(file_permission);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 EXPORT_SYMBOL(unlock_rename);
 EXPORT_SYMBOL(vfs_create);
 EXPORT_SYMBOL(vfs_follow_link);

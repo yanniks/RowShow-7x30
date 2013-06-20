@@ -486,7 +486,6 @@ static struct attribute_group khugepaged_attr_group = {
 	.attrs = khugepaged_attr,
 	.name = "khugepaged",
 };
-<<<<<<< HEAD
 
 static int __init hugepage_init_sysfs(struct kobject **hugepage_kobj)
 {
@@ -549,43 +548,6 @@ static int __init hugepage_init(void)
 	err = hugepage_init_sysfs(&hugepage_kobj);
 	if (err)
 		return err;
-=======
-#endif /* CONFIG_SYSFS */
-
-static int __init hugepage_init(void)
-{
-	int err;
-#ifdef CONFIG_SYSFS
-	static struct kobject *hugepage_kobj;
-#endif
-
-	err = -EINVAL;
-	if (!has_transparent_hugepage()) {
-		transparent_hugepage_flags = 0;
-		goto out;
-	}
-
-#ifdef CONFIG_SYSFS
-	err = -ENOMEM;
-	hugepage_kobj = kobject_create_and_add("transparent_hugepage", mm_kobj);
-	if (unlikely(!hugepage_kobj)) {
-		printk(KERN_ERR "hugepage: failed kobject create\n");
-		goto out;
-	}
-
-	err = sysfs_create_group(hugepage_kobj, &hugepage_attr_group);
-	if (err) {
-		printk(KERN_ERR "hugepage: failed register hugeage group\n");
-		goto out;
-	}
-
-	err = sysfs_create_group(hugepage_kobj, &khugepaged_attr_group);
-	if (err) {
-		printk(KERN_ERR "hugepage: failed register hugeage group\n");
-		goto out;
-	}
-#endif
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	err = khugepaged_slab_init();
 	if (err)
@@ -609,13 +571,9 @@ static int __init hugepage_init(void)
 
 	set_recommended_min_free_kbytes();
 
-<<<<<<< HEAD
 	return 0;
 out:
 	hugepage_exit_sysfs(hugepage_kobj);
-=======
-out:
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return err;
 }
 module_init(hugepage_init)
@@ -1071,11 +1029,7 @@ out:
 }
 
 int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
-<<<<<<< HEAD
 		 pmd_t *pmd, unsigned long addr)
-=======
-		 pmd_t *pmd)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	int ret = 0;
 
@@ -1091,10 +1045,7 @@ int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
 			pgtable = get_pmd_huge_pte(tlb->mm);
 			page = pmd_page(*pmd);
 			pmd_clear(pmd);
-<<<<<<< HEAD
 			tlb_remove_pmd_tlb_entry(tlb, pmd, addr);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			page_remove_rmap(page);
 			VM_BUG_ON(page_mapcount(page) < 0);
 			add_mm_counter(tlb->mm, MM_ANONPAGES, -HPAGE_PMD_NR);
@@ -1154,10 +1105,6 @@ int change_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
 			entry = pmd_modify(entry, newprot);
 			set_pmd_at(mm, addr, pmd, entry);
 			spin_unlock(&vma->vm_mm->page_table_lock);
-<<<<<<< HEAD
-=======
-			flush_tlb_range(vma, addr, addr + HPAGE_PMD_SIZE);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			ret = 1;
 		}
 	} else
@@ -1240,10 +1187,6 @@ static int __split_huge_page_splitting(struct page *page,
 static void __split_huge_page_refcount(struct page *page)
 {
 	int i;
-<<<<<<< HEAD
-=======
-	unsigned long head_index = page->index;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct zone *zone = page_zone(page);
 	int zonestat;
 	int tail_count = 0;
@@ -1251,15 +1194,10 @@ static void __split_huge_page_refcount(struct page *page)
 	/* prevent PageLRU to go away from under us, and freeze lru stats */
 	spin_lock_irq(&zone->lru_lock);
 	compound_lock(page);
-<<<<<<< HEAD
 	/* complete memcg works before add pages to LRU */
 	mem_cgroup_split_huge_fixup(page);
 
 	for (i = HPAGE_PMD_NR - 1; i >= 1; i--) {
-=======
-
-	for (i = 1; i < HPAGE_PMD_NR; i++) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		struct page *page_tail = page + i;
 
 		/* tail_page->_mapcount cannot change */
@@ -1322,21 +1260,13 @@ static void __split_huge_page_refcount(struct page *page)
 		BUG_ON(page_tail->mapping);
 		page_tail->mapping = page->mapping;
 
-<<<<<<< HEAD
 		page_tail->index = page->index + i;
-=======
-		page_tail->index = ++head_index;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		BUG_ON(!PageAnon(page_tail));
 		BUG_ON(!PageUptodate(page_tail));
 		BUG_ON(!PageDirty(page_tail));
 		BUG_ON(!PageSwapBacked(page_tail));
 
-<<<<<<< HEAD
-=======
-		mem_cgroup_split_huge_fixup(page, page_tail);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		lru_add_page_tail(zone, page, page_tail);
 	}

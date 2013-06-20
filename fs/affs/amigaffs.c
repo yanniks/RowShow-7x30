@@ -316,11 +316,7 @@ affs_remove_header(struct dentry *dentry)
 	if (inode->i_nlink > 1)
 		retval = affs_remove_link(dentry);
 	else
-<<<<<<< HEAD
 		clear_nlink(inode);
-=======
-		inode->i_nlink = 0;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	affs_unlock_link(inode);
 	inode->i_ctime = CURRENT_TIME_SEC;
 	mark_inode_dirty(inode);

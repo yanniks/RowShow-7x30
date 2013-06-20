@@ -20,17 +20,13 @@
  */
 
 #define pr_fmt(fmt) "(stll) :" fmt
-<<<<<<< HEAD
 #include <linux/platform_device.h>
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <linux/skbuff.h>
 #include <linux/module.h>
 #include <linux/ti_wilink_st.h>
 
 /**********************************************************************/
 /* internal functions */
-<<<<<<< HEAD
 static void chip_pm_ctl(struct st_data_s *st_data, int request_awake)
 {
 	struct kim_data_s *kim_data;
@@ -53,8 +49,6 @@ static void chip_pm_ctl(struct st_data_s *st_data, int request_awake)
 		}
 	}
 }
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static void send_ll_cmd(struct st_data_s *st_data,
 	unsigned char cmd)
 {
@@ -75,20 +69,14 @@ static void ll_device_want_to_sleep(struct st_data_s *st_data)
 	send_ll_cmd(st_data, LL_SLEEP_ACK);
 	/* update state */
 	st_data->ll_state = ST_LL_ASLEEP;
-<<<<<<< HEAD
 	/* Request CLK off */
 	chip_pm_ctl(st_data, 0);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static void ll_device_want_to_wakeup(struct st_data_s *st_data)
 {
-<<<<<<< HEAD
 	/* Request CLK on */
 	chip_pm_ctl(st_data, 1);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* diff actions in diff states */
 	switch (st_data->ll_state) {
 	case ST_LL_ASLEEP:
@@ -101,10 +89,7 @@ static void ll_device_want_to_wakeup(struct st_data_s *st_data)
 	case ST_LL_AWAKE:
 		/* duplicate wake_ind */
 		pr_err("duplicate wake_ind already AWAKE");
-<<<<<<< HEAD
 		send_ll_cmd(st_data, LL_WAKE_UP_ACK);	/* send wake_ack */
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		break;
 	case ST_LL_AWAKE_TO_ASLEEP:
 		/* duplicate wake_ind */
@@ -136,10 +121,7 @@ void st_ll_disable(struct st_data_s *ll)
 void st_ll_wakeup(struct st_data_s *ll)
 {
 	if (likely(ll->ll_state != ST_LL_AWAKE)) {
-<<<<<<< HEAD
 		chip_pm_ctl(ll, 1);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		send_ll_cmd(ll, LL_WAKE_UP_IND);	/* WAKE_IND */
 		ll->ll_state = ST_LL_ASLEEP_TO_AWAKE;
 	} else {

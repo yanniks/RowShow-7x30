@@ -1969,7 +1969,6 @@ void tcp_v4_destroy_sock(struct sock *sk)
 }
 EXPORT_SYMBOL(tcp_v4_destroy_sock);
 
-<<<<<<< HEAD
 /*
  * tcp_v4_nuke_addr - destroy all sockets on the given local address
  */
@@ -2013,8 +2012,6 @@ restart:
 	}
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_PROC_FS
 /* Proc filesystem TCP sock list dumping. */
 

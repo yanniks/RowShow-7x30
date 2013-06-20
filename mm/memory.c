@@ -298,11 +298,7 @@ int __tlb_remove_page(struct mmu_gather *tlb, struct page *page)
 {
 	struct mmu_gather_batch *batch;
 
-<<<<<<< HEAD
 	VM_BUG_ON(!tlb->need_flush);
-=======
-	tlb->need_flush = 1;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (tlb_fast_mode(tlb)) {
 		free_page_and_swap_cache(page);
@@ -887,7 +883,6 @@ copy_one_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 			}
 			if (likely(!non_swap_entry(entry)))
 				rss[MM_SWAPENTS]++;
-<<<<<<< HEAD
 			else if (is_migration_entry(entry)) {
 				page = migration_entry_to_page(entry);
 
@@ -906,17 +901,6 @@ copy_one_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 					pte = swp_entry_to_pte(entry);
 					set_pte_at(src_mm, addr, src_pte, pte);
 				}
-=======
-			else if (is_write_migration_entry(entry) &&
-					is_cow_mapping(vm_flags)) {
-				/*
-				 * COW mappings require pages in both parent
-				 * and child to be set to read.
-				 */
-				make_migration_entry_read(&entry);
-				pte = swp_entry_to_pte(entry);
-				set_pte_at(src_mm, addr, src_pte, pte);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			}
 		}
 		goto out_set_pte;
@@ -1221,7 +1205,6 @@ again:
 
 			if (!non_swap_entry(entry))
 				rss[MM_SWAPENTS]--;
-<<<<<<< HEAD
 			else if (is_migration_entry(entry)) {
 				struct page *page;
 
@@ -1232,8 +1215,6 @@ again:
 				else
 					rss[MM_FILEPAGES]--;
 			}
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			if (unlikely(!free_swap_and_cache(entry)))
 				print_bad_pte(vma, addr, ptent, NULL);
 		}
@@ -1274,13 +1255,8 @@ static inline unsigned long zap_pmd_range(struct mmu_gather *tlb,
 			if (next - addr != HPAGE_PMD_SIZE) {
 				VM_BUG_ON(!rwsem_is_locked(&tlb->mm->mmap_sem));
 				split_huge_page_pmd(vma->vm_mm, pmd);
-<<<<<<< HEAD
 			} else if (zap_huge_pmd(tlb, vma, pmd, addr))
 				continue;
-=======
-			} else if (zap_huge_pmd(tlb, vma, pmd))
-				goto next;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			/* fall through */
 		}
 		/*
@@ -3098,11 +3074,7 @@ static int do_swap_page(struct mm_struct *mm, struct vm_area_struct *vma,
 	mem_cgroup_commit_charge_swapin(page, ptr);
 
 	swap_free(entry);
-<<<<<<< HEAD
 	if ((vma->vm_flags & VM_LOCKED) || PageMlocked(page))
-=======
-	if (vm_swap_full() || (vma->vm_flags & VM_LOCKED) || PageMlocked(page))
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		try_to_free_swap(page);
 	unlock_page(page);
 	if (swapcache) {

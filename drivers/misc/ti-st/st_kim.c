@@ -268,11 +268,8 @@ static long download_firmware(struct kim_data_s *kim_gdata)
 	int wr_room_space;
 	int cmd_size;
 	unsigned long timeout;
-<<<<<<< HEAD
 	struct st_data_s *core_data;
 	core_data = kim_gdata->core_data;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	err = read_local_version(kim_gdata, bts_scr_name);
 	if (err != 0) {
@@ -314,10 +311,7 @@ static long download_firmware(struct kim_data_s *kim_gdata)
 				skip_change_remote_baud(&ptr, &len);
 				break;
 			}
-<<<<<<< HEAD
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			/*
 			 * Make sure we have enough free space in uart
 			 * tx buffer to write current firmware command
@@ -395,7 +389,6 @@ static long download_firmware(struct kim_data_s *kim_gdata)
 	}
 	/* fw download complete */
 	release_firmware(kim_gdata->fw_entry);
-<<<<<<< HEAD
 
 	pr_info("[BT]Download firmware completed");
 	/* If the firmware wasn't parsed completely, warn user about remaining commands
@@ -403,8 +396,6 @@ static long download_firmware(struct kim_data_s *kim_gdata)
 	 */
 	if (len != 0)
 		pr_warn("%s:incomplete, script not parsed completely", __func__);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 
@@ -456,7 +447,6 @@ long st_kim_start(void *kim_data)
 	struct kim_data_s	*kim_gdata = (struct kim_data_s *)kim_data;
 
 	pr_info(" %s", __func__);
-<<<<<<< HEAD
 	if (kim_gdata->bluetooth_set_power == NULL)
 		return -1;
 	do {
@@ -465,15 +455,6 @@ long st_kim_start(void *kim_data)
 		kim_gdata->bluetooth_set_power(1);
 
 		mdelay(300);
-=======
-
-	do {
-		/* Configure BT nShutdown to HIGH state */
-		gpio_set_value(kim_gdata->nshutdown, GPIO_LOW);
-		mdelay(5);	/* FIXME: a proper toggle */
-		gpio_set_value(kim_gdata->nshutdown, GPIO_HIGH);
-		mdelay(100);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		/* re-initialize the completion */
 		INIT_COMPLETION(kim_gdata->ldisc_installed);
 		/* send notification to UIM */
@@ -519,10 +500,6 @@ long st_kim_stop(void *kim_data)
 {
 	long err = 0;
 	struct kim_data_s	*kim_gdata = (struct kim_data_s *)kim_data;
-<<<<<<< HEAD
-=======
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	INIT_COMPLETION(kim_gdata->ldisc_installed);
 
 	/* Flush any pending characters in the driver and discipline. */
@@ -543,15 +520,7 @@ long st_kim_stop(void *kim_data)
 	}
 
 	/* By default configure BT nShutdown to LOW state */
-<<<<<<< HEAD
 	kim_gdata->bluetooth_set_power(0);
-=======
-	gpio_set_value(kim_gdata->nshutdown, GPIO_LOW);
-	mdelay(1);
-	gpio_set_value(kim_gdata->nshutdown, GPIO_HIGH);
-	mdelay(1);
-	gpio_set_value(kim_gdata->nshutdown, GPIO_LOW);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return err;
 }
 
@@ -641,13 +610,6 @@ void st_kim_ref(struct st_data_s **core_data, int id)
 	struct kim_data_s	*kim_gdata;
 	/* get kim_gdata reference from platform device */
 	pdev = st_get_plat_device(id);
-<<<<<<< HEAD
-=======
-	if (!pdev) {
-		*core_data = NULL;
-		return;
-	}
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	kim_gdata = dev_get_drvdata(&pdev->dev);
 	*core_data = kim_gdata->core_data;
 }
@@ -703,10 +665,7 @@ static int kim_probe(struct platform_device *pdev)
 		pr_err("no mem to allocate");
 		return -ENOMEM;
 	}
-<<<<<<< HEAD
 	kim_gdata->bluetooth_set_power = pdata->bluetooth_set_power;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	dev_set_drvdata(&pdev->dev, kim_gdata);
 
 	status = st_core_init(&kim_gdata->core_data);
@@ -717,23 +676,6 @@ static int kim_probe(struct platform_device *pdev)
 	/* refer to itself */
 	kim_gdata->core_data->kim_data = kim_gdata;
 
-<<<<<<< HEAD
-=======
-	/* Claim the chip enable nShutdown gpio from the system */
-	kim_gdata->nshutdown = pdata->nshutdown_gpio;
-	status = gpio_request(kim_gdata->nshutdown, "kim");
-	if (unlikely(status)) {
-		pr_err(" gpio %ld request failed ", kim_gdata->nshutdown);
-		return status;
-	}
-
-	/* Configure nShutdown GPIO as output=0 */
-	status = gpio_direction_output(kim_gdata->nshutdown, 0);
-	if (unlikely(status)) {
-		pr_err(" unable to configure gpio %ld", kim_gdata->nshutdown);
-		return status;
-	}
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* get reference of pdev for request_firmware
 	 */
 	kim_gdata->kim_pdev = pdev;

@@ -51,10 +51,7 @@
 #include <trace/events/sched.h>
 #include <linux/hw_breakpoint.h>
 #include <linux/oom.h>
-<<<<<<< HEAD
 #include <linux/writeback.h>
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #include <asm/uaccess.h>
 #include <asm/unistd.h>
@@ -89,10 +86,6 @@ static void __exit_signal(struct task_struct *tsk)
 	struct tty_struct *uninitialized_var(tty);
 
 	sighand = rcu_dereference_check(tsk->sighand,
-<<<<<<< HEAD
-=======
-					rcu_read_lock_held() ||
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 					lockdep_tasklist_lock_is_held());
 	spin_lock(&sighand->siglock);
 
@@ -702,11 +695,6 @@ static void exit_mm(struct task_struct * tsk)
 	enter_lazy_tlb(mm, current);
 	/* We don't want this task to be frozen prematurely */
 	clear_freeze_flag(tsk);
-<<<<<<< HEAD
-=======
-	if (tsk->signal->oom_score_adj == OOM_SCORE_ADJ_MIN)
-		atomic_dec(&mm->oom_disable_count);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	task_unlock(tsk);
 	mm_update_next_owner(mm);
 	mmput(mm);
@@ -726,11 +714,8 @@ static struct task_struct *find_new_reaper(struct task_struct *father)
 	struct pid_namespace *pid_ns = task_active_pid_ns(father);
 	struct task_struct *thread;
 
-<<<<<<< HEAD
 	BUG_ON(!pid_ns);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	thread = father;
 	while_each_thread(father, thread) {
 		if (thread->flags & PF_EXITING)
@@ -921,10 +906,6 @@ NORET_TYPE void do_exit(long code)
 
 	profile_task_exit(tsk);
 
-<<<<<<< HEAD
-=======
-	WARN_ON(atomic_read(&tsk->fs_excl));
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	WARN_ON(blk_needs_flush_plug(tsk));
 
 	if (unlikely(in_interrupt()))
@@ -1066,11 +1047,8 @@ NORET_TYPE void do_exit(long code)
 	validate_creds_for_do_exit(tsk);
 
 	preempt_disable();
-<<<<<<< HEAD
 	if (tsk->nr_dirtied)
 		__this_cpu_add(dirty_throttle_leaks, tsk->nr_dirtied);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	exit_rcu();
 
 	/*

@@ -12,10 +12,7 @@
 
 #include <linux/leds.h>
 #include <linux/sched.h>
-<<<<<<< HEAD
 #include <linux/wakelock.h>
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #include <linux/mmc/core.h>
 #include <linux/mmc/pm.h>
@@ -225,11 +222,7 @@ struct mmc_host {
 	struct work_struct	clk_gate_work; /* delayed clock gate */
 	unsigned int		clk_old;	/* old clock value cache */
 	spinlock_t		clk_lock;	/* lock for clk fields */
-<<<<<<< HEAD
 	struct mutex clk_gate_mutex; /* mutex for clock gating */
-=======
-	struct mutex		clk_gate_mutex;	/* mutex for clock gating */
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 
 	/* host specific block data */
@@ -266,7 +259,6 @@ struct mmc_host {
 
 	wait_queue_head_t	wq;
 	struct task_struct	*claimer;	/* task that has host claimed */
-<<<<<<< HEAD
 	struct task_struct	*suspend_task;
 	int			claim_cnt;	/* "claim" nesting count */
 
@@ -274,23 +266,15 @@ struct mmc_host {
 	struct delayed_work	remove;
 	struct wake_lock	detect_wake_lock;
 	int                     detect_change;  /* card detect flag */
-=======
-	int			claim_cnt;	/* "claim" nesting count */
-
-	struct delayed_work	detect;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	const struct mmc_bus_ops *bus_ops;	/* current bus driver */
 	unsigned int		bus_refs;	/* reference counter */
 
-<<<<<<< HEAD
 	unsigned int		bus_resume_flags;
 #define MMC_BUSRESUME_MANUAL_RESUME	(1 << 0)
 #define MMC_BUSRESUME_NEEDS_RESUME	(1 << 1)
 #define MMC_BUSRESUME_FAILS_RESUME	(1 << 2)
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	unsigned int		sdio_irqs;
 	struct task_struct	*sdio_irq_thread;
 	bool			sdio_irq_pending;
@@ -308,7 +292,6 @@ struct mmc_host {
 
 	struct dentry		*debugfs_root;
 
-<<<<<<< HEAD
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 	struct {
 		struct sdio_cis			*cis;
@@ -332,8 +315,6 @@ struct mmc_host {
 		ktime_t start;
 	} perf;
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	unsigned long		private[0] ____cacheline_aligned;
 };
 
@@ -342,7 +323,6 @@ extern int mmc_add_host(struct mmc_host *);
 extern void mmc_remove_host(struct mmc_host *);
 extern void mmc_free_host(struct mmc_host *);
 
-<<<<<<< HEAD
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
 extern void mmc_set_embedded_sdio_data(struct mmc_host *host,
 				       struct sdio_cis *cis,
@@ -351,8 +331,6 @@ extern void mmc_set_embedded_sdio_data(struct mmc_host *host,
 				       int num_funcs);
 #endif
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static inline void *mmc_priv(struct mmc_host *host)
 {
 	return (void *)host->private;
@@ -363,7 +341,6 @@ static inline void *mmc_priv(struct mmc_host *host)
 #define mmc_dev(x)	((x)->parent)
 #define mmc_classdev(x)	(&(x)->class_dev)
 #define mmc_hostname(x)	(dev_name(&(x)->class_dev))
-<<<<<<< HEAD
 #define mmc_bus_needs_resume(host) ((host)->bus_resume_flags & MMC_BUSRESUME_NEEDS_RESUME)
 #define mmc_bus_manual_resume(host) ((host)->bus_resume_flags & MMC_BUSRESUME_MANUAL_RESUME)
 #define mmc_bus_fails_resume(host)  \
@@ -383,8 +360,6 @@ static inline void mmc_init_bus_resume_flags(struct mmc_host *host)
 }
 
 extern int mmc_resume_bus(struct mmc_host *host);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 extern int mmc_suspend_host(struct mmc_host *);
 extern int mmc_resume_host(struct mmc_host *);
@@ -430,16 +405,12 @@ int mmc_card_can_sleep(struct mmc_host *host);
 int mmc_host_enable(struct mmc_host *host);
 int mmc_host_disable(struct mmc_host *host);
 int mmc_host_lazy_disable(struct mmc_host *host);
-<<<<<<< HEAD
 #ifdef CONFIG_PM
 int mmc_pm_notify(struct notifier_block *notify_block, unsigned long mode,
 		  void *unused);
 #else
 #define mmc_pm_notify NULL
 #endif
-=======
-int mmc_pm_notify(struct notifier_block *notify_block, unsigned long, void *);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static inline void mmc_set_disable_delay(struct mmc_host *host,
 					 unsigned int disable_delay)
@@ -469,7 +440,6 @@ static inline int mmc_host_cmd23(struct mmc_host *host)
 {
 	return host->caps & MMC_CAP_CMD23;
 }
-<<<<<<< HEAD
 
 #ifdef CONFIG_MMC_CLKGATE
 void mmc_host_clk_hold(struct mmc_host *host);
@@ -490,7 +460,5 @@ static inline unsigned int mmc_host_clk_rate(struct mmc_host *host)
 	return host->ios.clock;
 }
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 

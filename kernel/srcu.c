@@ -172,13 +172,10 @@ static void __synchronize_srcu(struct srcu_struct *sp, void (*sync_func)(void))
 {
 	int idx;
 
-<<<<<<< HEAD
 	rcu_lockdep_assert(!lock_is_held(&sp->dep_map),
 			   "Illegal SRCU grace period in same-type "
 			   "SRCU read-side critical section");
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	idx = sp->completed;
 	mutex_lock(&sp->mutex);
 
@@ -287,7 +284,6 @@ void synchronize_srcu(struct srcu_struct *sp)
 EXPORT_SYMBOL_GPL(synchronize_srcu);
 
 /**
-<<<<<<< HEAD
  * synchronize_srcu_expedited - Brute-force SRCU grace period
  * @sp: srcu_struct with which to synchronize.
  *
@@ -308,21 +304,6 @@ EXPORT_SYMBOL_GPL(synchronize_srcu);
  * perfectly legal to call synchronize_srcu_expedited() on one srcu_struct
  * from some other srcu_struct's read-side critical section, as long as
  * the resulting graph of srcu_structs is acyclic.
-=======
- * synchronize_srcu_expedited - like synchronize_srcu, but less patient
- * @sp: srcu_struct with which to synchronize.
- *
- * Flip the completed counter, and wait for the old count to drain to zero.
- * As with classic RCU, the updater must use some separate means of
- * synchronizing concurrent updates.  Can block; must be called from
- * process context.
- *
- * Note that it is illegal to call synchronize_srcu_expedited()
- * from the corresponding SRCU read-side critical section; doing so
- * will result in deadlock.  However, it is perfectly legal to call
- * synchronize_srcu_expedited() on one srcu_struct from some other
- * srcu_struct's read-side critical section.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  */
 void synchronize_srcu_expedited(struct srcu_struct *sp)
 {

@@ -7185,26 +7185,9 @@ int ocfs2_init_security_and_acl(struct inode *dir,
 {
 	int ret = 0;
 	struct buffer_head *dir_bh = NULL;
-<<<<<<< HEAD
 
 	ret = ocfs2_init_security_get(inode, dir, qstr, NULL);
 	if (!ret) {
-=======
-	struct ocfs2_security_xattr_info si = {
-		.enable = 1,
-	};
-
-	ret = ocfs2_init_security_get(inode, dir, qstr, &si);
-	if (!ret) {
-		ret = ocfs2_xattr_set(inode, OCFS2_XATTR_INDEX_SECURITY,
-				      si.name, si.value, si.value_len,
-				      XATTR_CREATE);
-		if (ret) {
-			mlog_errno(ret);
-			goto leave;
-		}
-	} else if (ret != -EOPNOTSUPP) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		mlog_errno(ret);
 		goto leave;
 	}
@@ -7261,7 +7244,6 @@ static int ocfs2_xattr_security_set(struct dentry *dentry, const char *name,
 			       name, value, size, flags);
 }
 
-<<<<<<< HEAD
 int ocfs2_initxattrs(struct inode *inode, const struct xattr *xattr_array,
 		     void *fs_info)
 {
@@ -7278,8 +7260,6 @@ int ocfs2_initxattrs(struct inode *inode, const struct xattr *xattr_array,
 	return err;
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 int ocfs2_init_security_get(struct inode *inode,
 			    struct inode *dir,
 			    const struct qstr *qstr,
@@ -7288,7 +7268,6 @@ int ocfs2_init_security_get(struct inode *inode,
 	/* check whether ocfs2 support feature xattr */
 	if (!ocfs2_supports_xattr(OCFS2_SB(dir->i_sb)))
 		return -EOPNOTSUPP;
-<<<<<<< HEAD
 	if (si)
 		return security_old_inode_init_security(inode, dir, qstr,
 							&si->name, &si->value,
@@ -7296,10 +7275,6 @@ int ocfs2_init_security_get(struct inode *inode,
 
 	return security_inode_init_security(inode, dir, qstr,
 					    &ocfs2_initxattrs, NULL);
-=======
-	return security_inode_init_security(inode, dir, qstr, &si->name,
-					    &si->value, &si->value_len);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 int ocfs2_init_security_set(handle_t *handle,

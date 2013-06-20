@@ -1,10 +1,7 @@
 /* arch/arm/mach-msm/include/mach/board.h
  *
  * Copyright (C) 2007 Google, Inc.
-<<<<<<< HEAD
  * Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -22,7 +19,6 @@
 #define __ASM_ARCH_MSM_BOARD_H
 
 #include <linux/types.h>
-<<<<<<< HEAD
 #include <asm/setup.h>
 #include <linux/input.h>
 #include <linux/usb.h>
@@ -689,35 +685,5 @@ extern int processor_name_read_proc(char *page, char **start, off_t off,
 
 extern int dying_processors_read_proc(char *page, char **start, off_t off,
 			   int count, int *eof, void *data);
-=======
-#include <mach/mmc.h>
-
-/* platform device data structures */
-
-struct msm_acpu_clock_platform_data
-{
-	uint32_t acpu_switch_time_us;
-	uint32_t max_speed_delta_khz;
-	uint32_t vdd_switch_time_us;
-	unsigned long power_collapse_khz;
-	unsigned long wait_for_irq_khz;
-};
-
-struct clk_lookup;
-
-extern struct sys_timer msm_timer;
-
-/* common init routines for use by arch/arm/mach-msm/board-*.c */
-
-void __init msm_add_devices(void);
-void __init msm_map_common_io(void);
-void __init msm_init_irq(void);
-void __init msm_init_gpio(void);
-void __init msm_clock_init(struct clk_lookup *clock_tbl, unsigned num_clocks);
-void __init msm_acpu_clock_init(struct msm_acpu_clock_platform_data *);
-int __init msm_add_sdcc(unsigned int controller,
-			struct msm_mmc_platform_data *plat,
-			unsigned int stat_irq, unsigned long stat_irq_flags);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #endif

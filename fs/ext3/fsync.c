@@ -43,11 +43,7 @@
  * inode to disk.
  */
 
-<<<<<<< HEAD
 int ext3_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
-=======
-int ext3_sync_file(struct file *file, int datasync)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inode *inode = file->f_mapping->host;
 	struct ext3_inode_info *ei = EXT3_I(inode);
@@ -58,7 +54,6 @@ int ext3_sync_file(struct file *file, int datasync)
 	if (inode->i_sb->s_flags & MS_RDONLY)
 		return 0;
 
-<<<<<<< HEAD
 	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
 	if (ret)
 		return ret;
@@ -70,8 +65,6 @@ int ext3_sync_file(struct file *file, int datasync)
 	 */
 	mutex_lock(&inode->i_mutex);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	J_ASSERT(ext3_journal_current_handle() == NULL);
 
 	/*
@@ -88,15 +81,10 @@ int ext3_sync_file(struct file *file, int datasync)
 	 *  (they were dirtied by commit).  But that's OK - the blocks are
 	 *  safe in-journal, which is all fsync() needs to ensure.
 	 */
-<<<<<<< HEAD
 	if (ext3_should_journal_data(inode)) {
 		mutex_unlock(&inode->i_mutex);
 		return ext3_force_commit(inode->i_sb);
 	}
-=======
-	if (ext3_should_journal_data(inode))
-		return ext3_force_commit(inode->i_sb);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (datasync)
 		commit_tid = atomic_read(&ei->i_datasync_tid);
@@ -116,9 +104,6 @@ int ext3_sync_file(struct file *file, int datasync)
 	 */
 	if (needs_barrier)
 		blkdev_issue_flush(inode->i_sb->s_bdev, GFP_KERNEL, NULL);
-<<<<<<< HEAD
 	mutex_unlock(&inode->i_mutex);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return ret;
 }

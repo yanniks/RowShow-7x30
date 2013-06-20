@@ -422,7 +422,6 @@ static void gen6_pm_rps_work(struct work_struct *work)
 	mutex_unlock(&dev_priv->dev->struct_mutex);
 }
 
-<<<<<<< HEAD
 static void pch_irq_handler(struct drm_device *dev)
 {
 	drm_i915_private_t *dev_priv = (drm_i915_private_t *) dev->dev_private;
@@ -431,13 +430,6 @@ static void pch_irq_handler(struct drm_device *dev)
 
 	pch_iir = I915_READ(SDEIIR);
 
-=======
-static void pch_irq_handler(struct drm_device *dev, u32 pch_iir)
-{
-	drm_i915_private_t *dev_priv = (drm_i915_private_t *) dev->dev_private;
-	int pipe;
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (pch_iir & SDE_AUDIO_POWER_MASK)
 		DRM_DEBUG_DRIVER("PCH audio power change on port %d\n",
 				 (pch_iir & SDE_AUDIO_POWER_MASK) >>
@@ -535,11 +527,7 @@ static irqreturn_t ivybridge_irq_handler(DRM_IRQ_ARGS)
 	if (de_iir & DE_PCH_EVENT_IVB) {
 		if (pch_iir & SDE_HOTPLUG_MASK_CPT)
 			queue_work(dev_priv->wq, &dev_priv->hotplug_work);
-<<<<<<< HEAD
 		pch_irq_handler(dev);
-=======
-		pch_irq_handler(dev, pch_iir);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	if (pm_iir & GEN6_PM_DEFERRED_EVENTS) {
@@ -638,11 +626,7 @@ static irqreturn_t ironlake_irq_handler(DRM_IRQ_ARGS)
 	if (de_iir & DE_PCH_EVENT) {
 		if (pch_iir & hotplug_mask)
 			queue_work(dev_priv->wq, &dev_priv->hotplug_work);
-<<<<<<< HEAD
 		pch_irq_handler(dev);
-=======
-		pch_irq_handler(dev, pch_iir);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	if (de_iir & DE_PCU_EVENT) {
@@ -836,10 +820,6 @@ static void i915_gem_record_fences(struct drm_device *dev,
 
 	/* Fences */
 	switch (INTEL_INFO(dev)->gen) {
-<<<<<<< HEAD
-=======
-	case 7:
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	case 6:
 		for (i = 0; i < 16; i++)
 			error->fence[i] = I915_READ64(FENCE_REG_SANDYBRIDGE_0 + (i * 8));
@@ -1684,11 +1664,7 @@ void i915_hangcheck_elapsed(unsigned long data)
 {
 	struct drm_device *dev = (struct drm_device *)data;
 	drm_i915_private_t *dev_priv = dev->dev_private;
-<<<<<<< HEAD
 	uint32_t acthd, instdone, instdone1;
-=======
-	uint32_t acthd, instdone, instdone1, acthd_bsd, acthd_blt;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	bool err = false;
 
 	/* If all work is done then ACTHD clearly hasn't advanced. */
@@ -1702,7 +1678,6 @@ void i915_hangcheck_elapsed(unsigned long data)
 	}
 
 	if (INTEL_INFO(dev)->gen < 4) {
-<<<<<<< HEAD
 		acthd = I915_READ(ACTHD);
 		instdone = I915_READ(INSTDONE);
 		instdone1 = 0;
@@ -1713,23 +1688,6 @@ void i915_hangcheck_elapsed(unsigned long data)
 	}
 
 	if (dev_priv->last_acthd == acthd &&
-=======
-		instdone = I915_READ(INSTDONE);
-		instdone1 = 0;
-	} else {
-		instdone = I915_READ(INSTDONE_I965);
-		instdone1 = I915_READ(INSTDONE1);
-	}
-	acthd = intel_ring_get_active_head(&dev_priv->ring[RCS]);
-	acthd_bsd = HAS_BSD(dev) ?
-		intel_ring_get_active_head(&dev_priv->ring[VCS]) : 0;
-	acthd_blt = HAS_BLT(dev) ?
-		intel_ring_get_active_head(&dev_priv->ring[BCS]) : 0;
-
-	if (dev_priv->last_acthd == acthd &&
-	    dev_priv->last_acthd_bsd == acthd_bsd &&
-	    dev_priv->last_acthd_blt == acthd_blt &&
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	    dev_priv->last_instdone == instdone &&
 	    dev_priv->last_instdone1 == instdone1) {
 		if (dev_priv->hangcheck_count++ > 1) {
@@ -1761,11 +1719,6 @@ void i915_hangcheck_elapsed(unsigned long data)
 		dev_priv->hangcheck_count = 0;
 
 		dev_priv->last_acthd = acthd;
-<<<<<<< HEAD
-=======
-		dev_priv->last_acthd_bsd = acthd_bsd;
-		dev_priv->last_acthd_blt = acthd_blt;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		dev_priv->last_instdone = instdone;
 		dev_priv->last_instdone1 = instdone1;
 	}

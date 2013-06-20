@@ -2955,12 +2955,8 @@ static int relocate_file_extent_cluster(struct inode *inode,
 			page_cache_sync_readahead(inode->i_mapping,
 						  ra, NULL, index,
 						  last_index + 1 - index);
-<<<<<<< HEAD
 			page = find_or_create_page(inode->i_mapping, index,
 						   GFP_NOFS);
-=======
-			page = grab_cache_page(inode->i_mapping, index);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			if (!page) {
 				btrfs_delalloc_release_metadata(inode,
 							PAGE_CACHE_SIZE);

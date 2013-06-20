@@ -79,13 +79,10 @@
 /* The following flags affect the page allocator grouping pages by mobility */
 #define SLAB_RECLAIM_ACCOUNT	0x00020000UL		/* Objects are reclaimable */
 #define SLAB_TEMPORARY		SLAB_RECLAIM_ACCOUNT	/* Objects are short-lived */
-<<<<<<< HEAD
 
 /* Following flags should only be used by allocator specific flags */
 #define SLAB_ALLOC_PRIVATE      0x000000ffUL
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * ZERO_SIZE_PTR will be returned for zero sized kmalloc requests.
  *
@@ -170,11 +167,8 @@ size_t ksize(const void *);
  */
 #ifdef CONFIG_SLUB
 #include <linux/slub_def.h>
-<<<<<<< HEAD
 #elif defined(CONFIG_SLQB)
 #include <linux/slqb_def.h>
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #elif defined(CONFIG_SLOB)
 #include <linux/slob_def.h>
 #else
@@ -277,11 +271,7 @@ static inline void *kmem_cache_alloc_node(struct kmem_cache *cachep,
  * allocator where we care about the real place the memory allocation
  * request comes from.
  */
-<<<<<<< HEAD
 #if defined(CONFIG_DEBUG_SLAB) || defined(CONFIG_SLUB) || defined(CONFIG_SLQB_DEBUG) || \
-=======
-#if defined(CONFIG_DEBUG_SLAB) || defined(CONFIG_SLUB) || \
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	(defined(CONFIG_SLAB) && defined(CONFIG_TRACING))
 extern void *__kmalloc_track_caller(size_t, gfp_t, unsigned long);
 #define kmalloc_track_caller(size, flags) \
@@ -300,11 +290,7 @@ extern void *__kmalloc_track_caller(size_t, gfp_t, unsigned long);
  * standard allocator where we care about the real place the memory
  * allocation request comes from.
  */
-<<<<<<< HEAD
 #if defined(CONFIG_DEBUG_SLAB) || defined(CONFIG_SLUB) || defined(CONFIG_SLQB_DEBUG) || \
-=======
-#if defined(CONFIG_DEBUG_SLAB) || defined(CONFIG_SLUB) || \
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	(defined(CONFIG_SLAB) && defined(CONFIG_TRACING))
 extern void *__kmalloc_node_track_caller(size_t, gfp_t, int, unsigned long);
 #define kmalloc_node_track_caller(size, flags, node) \

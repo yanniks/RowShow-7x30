@@ -173,11 +173,7 @@ long udf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	long old_block, new_block;
 	int result = -EINVAL;
 
-<<<<<<< HEAD
 	if (inode_permission(inode, MAY_READ) != 0) {
-=======
-	if (file_permission(filp, MAY_READ) != 0) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		udf_debug("no permission to access inode %lu\n", inode->i_ino);
 		result = -EPERM;
 		goto out;

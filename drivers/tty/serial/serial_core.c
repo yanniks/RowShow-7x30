@@ -91,12 +91,9 @@ static void __uart_start(struct tty_struct *tty)
 	struct uart_state *state = tty->driver_data;
 	struct uart_port *port = state->uart_port;
 
-<<<<<<< HEAD
 	if (port->ops->wake_peer)
 		port->ops->wake_peer(port);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!uart_circ_empty(&state->xmit) && state->xmit.buf &&
 	    !tty->stopped && !tty->hw_stopped)
 		port->ops->start_tx(port);
@@ -1916,11 +1913,7 @@ int uart_suspend_port(struct uart_driver *drv, struct uart_port *uport)
 	mutex_lock(&port->mutex);
 
 	tty_dev = device_find_child(uport->dev, &match, serial_match_port);
-<<<<<<< HEAD
 	if (tty_dev && device_may_wakeup(tty_dev)) {
-=======
-	if (device_may_wakeup(tty_dev)) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (!enable_irq_wake(uport->irq))
 			uport->irq_wake = 1;
 		put_device(tty_dev);
@@ -1989,11 +1982,7 @@ int uart_resume_port(struct uart_driver *drv, struct uart_port *uport)
 	mutex_lock(&port->mutex);
 
 	tty_dev = device_find_child(uport->dev, &match, serial_match_port);
-<<<<<<< HEAD
 	if (!uport->suspended && tty_dev && device_may_wakeup(tty_dev)) {
-=======
-	if (!uport->suspended && device_may_wakeup(tty_dev)) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (uport->irq_wake) {
 			disable_irq_wake(uport->irq);
 			uport->irq_wake = 0;
@@ -2020,15 +2009,11 @@ int uart_resume_port(struct uart_driver *drv, struct uart_port *uport)
 		 */
 		if (port->tty && port->tty->termios && termios.c_cflag == 0)
 			termios = *(port->tty->termios);
-<<<<<<< HEAD
 		/*
 		 * As we need to set the uart clock rate back to 7.3 MHz.
 		 * We need this change.
 		 *
 		 */
-=======
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (console_suspend_enabled)
 			uart_change_pm(state, 0);
 		uport->ops->set_termios(uport, &termios, NULL);

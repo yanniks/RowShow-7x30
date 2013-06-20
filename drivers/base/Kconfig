@@ -168,7 +168,6 @@ config SYS_HYPERVISOR
 	bool
 	default n
 
-<<<<<<< HEAD
 config GENLOCK
 	bool "Enable a generic cross-process locking mechanism"
 	depends on ANON_INODES
@@ -219,6 +218,4 @@ config SW_SYNC_USER
          Provides a user space API to the sw sync object.
          *WARNING* improper use of this can result in deadlocking kernel
 	 drivers from userspace.
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 endmenu

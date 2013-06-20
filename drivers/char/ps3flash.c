@@ -305,7 +305,6 @@ static int ps3flash_flush(struct file *file, fl_owner_t id)
 	return ps3flash_writeback(ps3flash_dev);
 }
 
-<<<<<<< HEAD
 static int ps3flash_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 {
 	struct inode *inode = file->f_path.dentry->d_inode;
@@ -314,11 +313,6 @@ static int ps3flash_fsync(struct file *file, loff_t start, loff_t end, int datas
 	err = ps3flash_writeback(ps3flash_dev);
 	mutex_unlock(&inode->i_mutex);
 	return err;
-=======
-static int ps3flash_fsync(struct file *file, int datasync)
-{
-	return ps3flash_writeback(ps3flash_dev);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static irqreturn_t ps3flash_interrupt(int irq, void *data)

@@ -65,10 +65,6 @@ static struct usb_device_id ath3k_table[] = {
 	{ USB_DEVICE(0x13d3, 0x3304) },
 	{ USB_DEVICE(0x0930, 0x0215) },
 	{ USB_DEVICE(0x0489, 0xE03D) },
-<<<<<<< HEAD
-=======
-	{ USB_DEVICE(0x0489, 0xE027) },
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* Atheros AR9285 Malbec with sflash firmware */
 	{ USB_DEVICE(0x03F0, 0x311D) },
@@ -84,12 +80,6 @@ static struct usb_device_id ath3k_table[] = {
 	/* Atheros AR5BBU12 with sflash firmware */
 	{ USB_DEVICE(0x0489, 0xE02C) },
 
-<<<<<<< HEAD
-=======
-	/* Atheros AR5BBU22 with sflash firmware */
-	{ USB_DEVICE(0x0489, 0xE03C) },
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	{ }	/* Terminating entry */
 };
 
@@ -108,12 +98,6 @@ static struct usb_device_id ath3k_blist_tbl[] = {
 	{ USB_DEVICE(0x13d3, 0x3375), .driver_info = BTUSB_ATH3012 },
 	{ USB_DEVICE(0x04ca, 0x3005), .driver_info = BTUSB_ATH3012 },
 
-<<<<<<< HEAD
-=======
-	/* Atheros AR5BBU22 with sflash firmware */
-	{ USB_DEVICE(0x0489, 0xE03C), .driver_info = BTUSB_ATH3012 },
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	{ }	/* Terminating entry */
 };
 
@@ -403,14 +387,6 @@ static int ath3k_probe(struct usb_interface *intf,
 
 	/* load patch and sysconfig files for AR3012 */
 	if (id->driver_info & BTUSB_ATH3012) {
-<<<<<<< HEAD
-=======
-
-		/* New firmware with patch and sysconfig files already loaded */
-		if (le16_to_cpu(udev->descriptor.bcdDevice) > 0x0001)
-			return -ENODEV;
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		ret = ath3k_load_patch(udev);
 		if (ret < 0) {
 			BT_ERR("Loading patch file failed");

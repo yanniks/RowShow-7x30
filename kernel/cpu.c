@@ -40,11 +40,7 @@ static RAW_NOTIFIER_HEAD(cpu_chain);
 /* If set, cpu_up and cpu_down will return -EBUSY and do nothing.
  * Should always be manipulated under cpu_add_remove_lock
  */
-<<<<<<< HEAD
 int cpu_hotplug_disabled;
-=======
-static int cpu_hotplug_disabled;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #ifdef CONFIG_HOTPLUG_CPU
 
@@ -128,7 +124,6 @@ static void cpu_hotplug_done(void)
 	mutex_unlock(&cpu_hotplug.lock);
 }
 
-<<<<<<< HEAD
 bool cpu_hotplug_inprogress(void)
 {
 	if (cpu_hotplug.active_writer)
@@ -137,8 +132,6 @@ bool cpu_hotplug_inprogress(void)
 	return false;
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #else /* #if CONFIG_HOTPLUG_CPU */
 static void cpu_hotplug_begin(void) {}
 static void cpu_hotplug_done(void) {}
@@ -683,7 +676,6 @@ void init_cpu_online(const struct cpumask *src)
 {
 	cpumask_copy(to_cpumask(cpu_online_bits), src);
 }
-<<<<<<< HEAD
 
 static ATOMIC_NOTIFIER_HEAD(idle_notifier);
 
@@ -704,5 +696,3 @@ void idle_notifier_call_chain(unsigned long val)
 	atomic_notifier_call_chain(&idle_notifier, val, NULL);
 }
 EXPORT_SYMBOL_GPL(idle_notifier_call_chain);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

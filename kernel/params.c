@@ -67,18 +67,13 @@ static void maybe_kfree_parameter(void *param)
 	}
 }
 
-<<<<<<< HEAD
 static char dash2underscore(char c)
-=======
-static inline char dash2underscore(char c)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	if (c == '-')
 		return '_';
 	return c;
 }
 
-<<<<<<< HEAD
 bool parameqn(const char *a, const char *b, size_t n)
 {
 	size_t i;
@@ -93,15 +88,6 @@ bool parameqn(const char *a, const char *b, size_t n)
 bool parameq(const char *a, const char *b)
 {
 	return parameqn(a, b, strlen(a)+1);
-=======
-static inline int parameq(const char *input, const char *paramname)
-{
-	unsigned int i;
-	for (i = 0; dash2underscore(input[i]) == paramname[i]; i++)
-		if (input[i] == '\0')
-			return 1;
-	return 0;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static int parse_one(char *param,

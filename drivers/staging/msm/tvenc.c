@@ -32,11 +32,7 @@
 #include <linux/uaccess.h>
 #include <linux/clk.h>
 #include <linux/platform_device.h>
-<<<<<<< HEAD
 #include <linux/pm_qos.h>
-=======
-#include <linux/pm_qos_params.h>
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #define TVENC_C
 #include "tvenc.h"

@@ -16,7 +16,6 @@
 
 #ifdef CONFIG_9P_FS_POSIX_ACL
 extern int v9fs_get_acl(struct inode *, struct p9_fid *);
-<<<<<<< HEAD
 extern struct posix_acl *v9fs_iop_get_acl(struct inode *inode, int type);
 extern int v9fs_acl_chmod(struct dentry *);
 extern int v9fs_set_create_acl(struct dentry *,
@@ -25,16 +24,6 @@ extern int v9fs_acl_mode(struct inode *dir, umode_t *modep,
 			 struct posix_acl **dpacl, struct posix_acl **pacl);
 #else
 #define v9fs_iop_get_acl NULL
-=======
-extern int v9fs_check_acl(struct inode *inode, int mask, unsigned int flags);
-extern int v9fs_acl_chmod(struct dentry *);
-extern int v9fs_set_create_acl(struct dentry *,
-			       struct posix_acl **, struct posix_acl **);
-extern int v9fs_acl_mode(struct inode *dir, mode_t *modep,
-			 struct posix_acl **dpacl, struct posix_acl **pacl);
-#else
-#define v9fs_check_acl NULL
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static inline int v9fs_get_acl(struct inode *inode, struct p9_fid *fid)
 {
 	return 0;
@@ -49,11 +38,7 @@ static inline int v9fs_set_create_acl(struct dentry *dentry,
 {
 	return 0;
 }
-<<<<<<< HEAD
 static inline int v9fs_acl_mode(struct inode *dir, umode_t *modep,
-=======
-static inline int v9fs_acl_mode(struct inode *dir, mode_t *modep,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				struct posix_acl **dpacl,
 				struct posix_acl **pacl)
 {

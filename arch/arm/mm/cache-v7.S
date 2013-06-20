@@ -259,11 +259,7 @@ ENDPROC(v7_flush_kern_dcache_area)
  *	- start   - virtual start address of region
  *	- end     - virtual end address of region
  */
-<<<<<<< HEAD
 ENTRY(v7_dma_inv_range)
-=======
-v7_dma_inv_range:
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	dcache_line_size r2, r3
 	sub	r3, r2, #1
 	tst	r0, r3
@@ -291,11 +287,7 @@ ENDPROC(v7_dma_inv_range)
  *	- start   - virtual start address of region
  *	- end     - virtual end address of region
  */
-<<<<<<< HEAD
 ENTRY(v7_dma_clean_range)
-=======
-v7_dma_clean_range:
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	dcache_line_size r2, r3
 	sub	r3, r2, #1
 	bic	r0, r0, r3
@@ -373,10 +365,7 @@ ENTRY(v7_cache_fns)
 	.long	v7_flush_kern_dcache_area
 	.long	v7_dma_map_area
 	.long	v7_dma_unmap_area
-<<<<<<< HEAD
 	.long	v7_dma_inv_range
 	.long	v7_dma_clean_range
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	.long	v7_dma_flush_range
 	.size	v7_cache_fns, . - v7_cache_fns

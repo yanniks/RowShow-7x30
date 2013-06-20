@@ -37,10 +37,7 @@
 #include <linux/uaccess.h>
 #include <linux/io.h>
 #include <linux/ftrace.h>
-<<<<<<< HEAD
 #include <linux/cpuidle.h>
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #include <asm/pgtable.h>
 #include <asm/system.h>
@@ -140,12 +137,8 @@ void cpu_idle(void)
 			enter_idle();
 			/* Don't trace irqs off for idle */
 			stop_critical_timings();
-<<<<<<< HEAD
 			if (cpuidle_idle_call())
 				pm_idle();
-=======
-			pm_idle();
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			start_critical_timings();
 
 			/* In many cases the interrupt that ended idle

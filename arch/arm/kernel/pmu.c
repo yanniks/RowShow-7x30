@@ -45,20 +45,13 @@ static int __devinit pmu_device_probe(struct platform_device *pdev)
 	return 0;
 }
 
-<<<<<<< HEAD
 static struct platform_driver cpu_pmu_driver = {
 	.driver		= {
 		.name	= "cpu-arm-pmu",
-=======
-static struct platform_driver pmu_driver = {
-	.driver		= {
-		.name	= "arm-pmu",
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	},
 	.probe		= pmu_device_probe,
 };
 
-<<<<<<< HEAD
 static struct platform_driver l2_pmu_driver = {
 	.driver		= {
 		.name	= "l2-arm-pmu",
@@ -87,11 +80,6 @@ static int __init register_pmu_driver(void)
 	}
 
 	return err;
-=======
-static int __init register_pmu_driver(void)
-{
-	return platform_driver_register(&pmu_driver);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 device_initcall(register_pmu_driver);
 

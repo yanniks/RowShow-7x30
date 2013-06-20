@@ -139,7 +139,6 @@ static inline void account_system_vtime(struct task_struct *tsk)
 extern void account_system_vtime(struct task_struct *tsk);
 #endif
 
-<<<<<<< HEAD
 #if defined(CONFIG_JRCU)
 extern int rcu_nmi_seen;
 # define rcu_irq_enter() do { } while (0)
@@ -148,22 +147,6 @@ extern int rcu_nmi_seen;
 # define rcu_nmi_exit() do { } while (0)
 #endif
 #if defined(CONFIG_TINY_RCU) || defined(CONFIG_TINY_PREEMPT_RCU)
-=======
-#if defined(CONFIG_NO_HZ)
-#if defined(CONFIG_TINY_RCU) || defined(CONFIG_TINY_PREEMPT_RCU)
-extern void rcu_enter_nohz(void);
-extern void rcu_exit_nohz(void);
-
-static inline void rcu_irq_enter(void)
-{
-	rcu_exit_nohz();
-}
-
-static inline void rcu_irq_exit(void)
-{
-	rcu_enter_nohz();
-}
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static inline void rcu_nmi_enter(void)
 {
@@ -174,23 +157,9 @@ static inline void rcu_nmi_exit(void)
 }
 
 #else
-<<<<<<< HEAD
 extern void rcu_nmi_enter(void);
 extern void rcu_nmi_exit(void);
 #endif
-=======
-extern void rcu_irq_enter(void);
-extern void rcu_irq_exit(void);
-extern void rcu_nmi_enter(void);
-extern void rcu_nmi_exit(void);
-#endif
-#else
-# define rcu_irq_enter() do { } while (0)
-# define rcu_irq_exit() do { } while (0)
-# define rcu_nmi_enter() do { } while (0)
-# define rcu_nmi_exit() do { } while (0)
-#endif /* #if defined(CONFIG_NO_HZ) */
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /*
  * It is safe to do non-atomic ops on ->hardirq_context,

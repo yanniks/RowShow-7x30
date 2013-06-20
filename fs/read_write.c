@@ -35,7 +35,6 @@ static inline int unsigned_offsets(struct file *file)
 	return file->f_mode & FMODE_UNSIGNED_OFFSET;
 }
 
-<<<<<<< HEAD
 static loff_t lseek_execute(struct file *file, struct inode *inode,
 		loff_t offset, loff_t maxsize)
 {
@@ -69,29 +68,12 @@ static loff_t lseek_execute(struct file *file, struct inode *inode,
 loff_t
 generic_file_llseek_size(struct file *file, loff_t offset, int origin,
 		loff_t maxsize)
-=======
-/**
- * generic_file_llseek_unlocked - lockless generic llseek implementation
- * @file:	file structure to seek on
- * @offset:	file offset to seek to
- * @origin:	type of seek
- *
- * Updates the file offset to the value specified by @offset and @origin.
- * Locking must be provided by the caller.
- */
-loff_t
-generic_file_llseek_unlocked(struct file *file, loff_t offset, int origin)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inode *inode = file->f_mapping->host;
 
 	switch (origin) {
 	case SEEK_END:
-<<<<<<< HEAD
 		offset += i_size_read(inode);
-=======
-		offset += inode->i_size;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		break;
 	case SEEK_CUR:
 		/*
@@ -102,7 +84,6 @@ generic_file_llseek_unlocked(struct file *file, loff_t offset, int origin)
 		 */
 		if (offset == 0)
 			return file->f_pos;
-<<<<<<< HEAD
 		/*
 		 * f_lock protects against read/modify/write race with other
 		 * SEEK_CURs. Note that parallel writes and reads behave
@@ -135,26 +116,6 @@ generic_file_llseek_unlocked(struct file *file, loff_t offset, int origin)
 	return lseek_execute(file, inode, offset, maxsize);
 }
 EXPORT_SYMBOL(generic_file_llseek_size);
-=======
-		offset += file->f_pos;
-		break;
-	}
-
-	if (offset < 0 && !unsigned_offsets(file))
-		return -EINVAL;
-	if (offset > inode->i_sb->s_maxbytes)
-		return -EINVAL;
-
-	/* Special lock needed here? */
-	if (offset != file->f_pos) {
-		file->f_pos = offset;
-		file->f_version = 0;
-	}
-
-	return offset;
-}
-EXPORT_SYMBOL(generic_file_llseek_unlocked);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /**
  * generic_file_llseek - generic llseek implementation for regular files
@@ -168,20 +129,10 @@ EXPORT_SYMBOL(generic_file_llseek_unlocked);
  */
 loff_t generic_file_llseek(struct file *file, loff_t offset, int origin)
 {
-<<<<<<< HEAD
 	struct inode *inode = file->f_mapping->host;
 
 	return generic_file_llseek_size(file, offset, origin,
 					inode->i_sb->s_maxbytes);
-=======
-	loff_t rval;
-
-	mutex_lock(&file->f_dentry->d_inode->i_mutex);
-	rval = generic_file_llseek_unlocked(file, offset, origin);
-	mutex_unlock(&file->f_dentry->d_inode->i_mutex);
-
-	return rval;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL(generic_file_llseek);
 
@@ -210,7 +161,6 @@ EXPORT_SYMBOL(no_llseek);
 
 loff_t default_llseek(struct file *file, loff_t offset, int origin)
 {
-<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
 	loff_t retval;
 
@@ -218,14 +168,6 @@ loff_t default_llseek(struct file *file, loff_t offset, int origin)
 	switch (origin) {
 		case SEEK_END:
 			offset += i_size_read(inode);
-=======
-	loff_t retval;
-
-	mutex_lock(&file->f_dentry->d_inode->i_mutex);
-	switch (origin) {
-		case SEEK_END:
-			offset += i_size_read(file->f_path.dentry->d_inode);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			break;
 		case SEEK_CUR:
 			if (offset == 0) {
@@ -233,7 +175,6 @@ loff_t default_llseek(struct file *file, loff_t offset, int origin)
 				goto out;
 			}
 			offset += file->f_pos;
-<<<<<<< HEAD
 			break;
 		case SEEK_DATA:
 			/*
@@ -258,8 +199,6 @@ loff_t default_llseek(struct file *file, loff_t offset, int origin)
 			}
 			offset = inode->i_size;
 			break;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	retval = -EINVAL;
 	if (offset >= 0 || unsigned_offsets(file)) {
@@ -270,11 +209,7 @@ loff_t default_llseek(struct file *file, loff_t offset, int origin)
 		retval = offset;
 	}
 out:
-<<<<<<< HEAD
 	mutex_unlock(&inode->i_mutex);
-=======
-	mutex_unlock(&file->f_dentry->d_inode->i_mutex);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return retval;
 }
 EXPORT_SYMBOL(default_llseek);
@@ -698,12 +633,8 @@ ssize_t do_loop_readv_writev(struct file *filp, struct iovec *iov,
 ssize_t rw_copy_check_uvector(int type, const struct iovec __user * uvector,
 			      unsigned long nr_segs, unsigned long fast_segs,
 			      struct iovec *fast_pointer,
-<<<<<<< HEAD
 			      struct iovec **ret_pointer,
 			      int check_access)
-=======
-			      struct iovec **ret_pointer)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	unsigned long seg;
 	ssize_t ret;
@@ -759,12 +690,8 @@ ssize_t rw_copy_check_uvector(int type, const struct iovec __user * uvector,
 			ret = -EINVAL;
 			goto out;
 		}
-<<<<<<< HEAD
 		if (check_access
 		    && unlikely(!access_ok(vrfy_dir(type), buf, len))) {
-=======
-		if (unlikely(!access_ok(vrfy_dir(type), buf, len))) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			ret = -EFAULT;
 			goto out;
 		}
@@ -796,11 +723,7 @@ static ssize_t do_readv_writev(int type, struct file *file,
 	}
 
 	ret = rw_copy_check_uvector(type, uvector, nr_segs,
-<<<<<<< HEAD
 				    ARRAY_SIZE(iovstack), iovstack, &iov, 1);
-=======
-			ARRAY_SIZE(iovstack), iovstack, &iov);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (ret <= 0)
 		goto out;
 

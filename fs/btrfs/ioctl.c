@@ -867,13 +867,8 @@ again:
 	/* step one, lock all the pages */
 	for (i = 0; i < num_pages; i++) {
 		struct page *page;
-<<<<<<< HEAD
 		page = find_or_create_page(inode->i_mapping,
 					    start_index + i, GFP_NOFS);
-=======
-		page = grab_cache_page(inode->i_mapping,
-					    start_index + i);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (!page)
 			break;
 
@@ -943,13 +938,9 @@ again:
 			  GFP_NOFS);
 
 	if (i_done != num_pages) {
-<<<<<<< HEAD
 		spin_lock(&BTRFS_I(inode)->lock);
 		BTRFS_I(inode)->outstanding_extents++;
 		spin_unlock(&BTRFS_I(inode)->lock);
-=======
-		atomic_inc(&BTRFS_I(inode)->outstanding_extents);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		btrfs_delalloc_release_space(inode,
 				     (num_pages - i_done) << PAGE_CACHE_SHIFT);
 	}
@@ -1064,7 +1055,6 @@ int btrfs_defrag_file(struct inode *inode, struct file *file,
 	if (!max_to_defrag)
 		max_to_defrag = last_index - 1;
 
-<<<<<<< HEAD
 	/*
 	 * make writeback starts from i, so the defrag range can be
 	 * written sequentially.
@@ -1075,9 +1065,6 @@ int btrfs_defrag_file(struct inode *inode, struct file *file,
 	while (i <= last_index && defrag_count < max_to_defrag &&
 	       (i < (i_size_read(inode) + PAGE_CACHE_SIZE - 1) >>
 		PAGE_CACHE_SHIFT)) {
-=======
-	while (i <= last_index && defrag_count < max_to_defrag) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		/*
 		 * make sure we stop running if someone unmounts
 		 * the FS
@@ -1779,18 +1766,10 @@ static noinline int btrfs_search_path_in_tree(struct btrfs_fs_info *info,
 		key.objectid = key.offset;
 		key.offset = (u64)-1;
 		dirid = key.objectid;
-<<<<<<< HEAD
 	}
 	if (ptr < name)
 		goto out;
 	memmove(name, ptr, total_len);
-=======
-
-	}
-	if (ptr < name)
-		goto out;
-	memcpy(name, ptr, total_len);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	name[total_len]='\0';
 	ret = 0;
 out:
@@ -2215,14 +2194,11 @@ static noinline long btrfs_ioctl_clone(struct file *file, unsigned long srcfd,
 	if (!(src_file->f_mode & FMODE_READ))
 		goto out_fput;
 
-<<<<<<< HEAD
 	/* don't make the dst file partly checksummed */
 	if ((BTRFS_I(src)->flags & BTRFS_INODE_NODATASUM) !=
 	    (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM))
 		goto out_fput;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	ret = -EISDIR;
 	if (S_ISDIR(src->i_mode) || S_ISDIR(inode->i_mode))
 		goto out_fput;
@@ -2266,7 +2242,6 @@ static noinline long btrfs_ioctl_clone(struct file *file, unsigned long srcfd,
 	    !IS_ALIGNED(destoff, bs))
 		goto out_unlock;
 
-<<<<<<< HEAD
 	if (destoff > inode->i_size) {
 		ret = btrfs_cont_expand(inode, inode->i_size, destoff);
 		if (ret)
@@ -2277,8 +2252,6 @@ static noinline long btrfs_ioctl_clone(struct file *file, unsigned long srcfd,
 	truncate_inode_pages_range(&inode->i_data, destoff,
 				   PAGE_CACHE_ALIGN(destoff + len) - 1);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* do any pending delalloc/csum calc on src, one way or
 	   another, and lock file content */
 	while (1) {
@@ -2372,16 +2345,12 @@ static noinline long btrfs_ioctl_clone(struct file *file, unsigned long srcfd,
 			else
 				new_key.offset = destoff;
 
-<<<<<<< HEAD
 			/*
 			 * 1 - adjusting old extent (we may have to split it)
 			 * 1 - add new extent
 			 * 1 - inode update
 			 */
 			trans = btrfs_start_transaction(root, 3);
-=======
-			trans = btrfs_start_transaction(root, 1);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			if (IS_ERR(trans)) {
 				ret = PTR_ERR(trans);
 				goto out;
@@ -2389,7 +2358,6 @@ static noinline long btrfs_ioctl_clone(struct file *file, unsigned long srcfd,
 
 			if (type == BTRFS_FILE_EXTENT_REG ||
 			    type == BTRFS_FILE_EXTENT_PREALLOC) {
-<<<<<<< HEAD
 				/*
 				 *    a  | --- range to clone ---|  b
 				 * | ------------- extent ------------- |
@@ -2400,19 +2368,11 @@ static noinline long btrfs_ioctl_clone(struct file *file, unsigned long srcfd,
 					datal = off + len - key.offset;
 
 				/* substract range a */
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				if (off > key.offset) {
 					datao += off - key.offset;
 					datal -= off - key.offset;
 				}
 
-<<<<<<< HEAD
-=======
-				if (key.offset + datal > off + len)
-					datal = off + len - key.offset;
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				ret = btrfs_drop_extents(trans, inode,
 							 new_key.offset,
 							 new_key.offset + datal,
@@ -2509,10 +2469,6 @@ static noinline long btrfs_ioctl_clone(struct file *file, unsigned long srcfd,
 			if (endoff > inode->i_size)
 				btrfs_i_size_write(inode, endoff);
 
-<<<<<<< HEAD
-=======
-			BTRFS_I(inode)->flags = BTRFS_I(src)->flags;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			ret = btrfs_update_inode(trans, root, inode);
 			BUG_ON(ret);
 			btrfs_end_transaction(trans, root);

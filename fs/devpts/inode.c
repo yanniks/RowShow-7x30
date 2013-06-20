@@ -549,11 +549,7 @@ void devpts_pty_kill(struct tty_struct *tty)
 
 	dentry = d_find_alias(inode);
 
-<<<<<<< HEAD
 	drop_nlink(inode);
-=======
-	inode->i_nlink--;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	d_delete(dentry);
 	dput(dentry);	/* d_alloc_name() in devpts_pty_new() */
 	dput(dentry);		/* d_find_alias above */

@@ -1,11 +1,8 @@
 #ifndef BLK_INTERNAL_H
 #define BLK_INTERNAL_H
 
-<<<<<<< HEAD
 #include <linux/idr.h>
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* Amount of time in which a process may batch requests */
 #define BLK_BATCH_TIME	(HZ/50UL)
 
@@ -14,31 +11,23 @@
 
 extern struct kmem_cache *blk_requestq_cachep;
 extern struct kobj_type blk_queue_ktype;
-<<<<<<< HEAD
 extern struct ida blk_queue_ida;
 
 static inline void __blk_get_queue(struct request_queue *q)
 {
 	kobject_get(&q->kobj);
 }
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 void init_request_from_bio(struct request *req, struct bio *bio);
 void blk_rq_bio_prep(struct request_queue *q, struct request *rq,
 			struct bio *bio);
 int blk_rq_append_bio(struct request_queue *q, struct request *rq,
 		      struct bio *bio);
-<<<<<<< HEAD
 void blk_drain_queue(struct request_queue *q, bool drain_all);
 void blk_dequeue_request(struct request *rq);
 void __blk_queue_free_tags(struct request_queue *q);
 bool __blk_end_bidi_request(struct request *rq, int error,
 			    unsigned int nr_bytes, unsigned int bidi_bytes);
-=======
-void blk_dequeue_request(struct request *rq);
-void __blk_queue_free_tags(struct request_queue *q);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 void blk_rq_timed_out_timer(unsigned long data);
 void blk_delete_timer(struct request *);
@@ -104,13 +93,8 @@ static inline struct request *__elv_next_request(struct request_queue *q)
 			q->flush_queue_delayed = 1;
 			return NULL;
 		}
-<<<<<<< HEAD
 		if (unlikely(blk_queue_dead(q)) ||
 		    !q->elevator->type->ops.elevator_dispatch_fn(q, 0))
-=======
-		if (test_bit(QUEUE_FLAG_DEAD, &q->queue_flags) ||
-		    !q->elevator->ops->elevator_dispatch_fn(q, 0))
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			return NULL;
 	}
 }
@@ -119,26 +103,16 @@ static inline void elv_activate_rq(struct request_queue *q, struct request *rq)
 {
 	struct elevator_queue *e = q->elevator;
 
-<<<<<<< HEAD
 	if (e->type->ops.elevator_activate_req_fn)
 		e->type->ops.elevator_activate_req_fn(q, rq);
-=======
-	if (e->ops->elevator_activate_req_fn)
-		e->ops->elevator_activate_req_fn(q, rq);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static inline void elv_deactivate_rq(struct request_queue *q, struct request *rq)
 {
 	struct elevator_queue *e = q->elevator;
 
-<<<<<<< HEAD
 	if (e->type->ops.elevator_deactivate_req_fn)
 		e->type->ops.elevator_deactivate_req_fn(q, rq);
-=======
-	if (e->ops->elevator_deactivate_req_fn)
-		e->ops->elevator_deactivate_req_fn(q, rq);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 #ifdef CONFIG_FAIL_IO_TIMEOUT
@@ -153,11 +127,6 @@ static inline int blk_should_fake_timeout(struct request_queue *q)
 }
 #endif
 
-<<<<<<< HEAD
-=======
-struct io_context *current_io_context(gfp_t gfp_flags, int node);
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 int ll_back_merge_fn(struct request_queue *q, struct request *req,
 		     struct bio *bio);
 int ll_front_merge_fn(struct request_queue *q, struct request *req, 
@@ -168,11 +137,8 @@ int blk_attempt_req_merge(struct request_queue *q, struct request *rq,
 				struct request *next);
 void blk_recalc_rq_segments(struct request *rq);
 void blk_rq_set_mixed_merge(struct request *rq);
-<<<<<<< HEAD
 bool blk_rq_merge_ok(struct request *rq, struct bio *bio);
 int blk_try_merge(struct request *rq, struct bio *bio);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 void blk_queue_congestion_threshold(struct request_queue *q);
 
@@ -231,7 +197,6 @@ static inline int blk_do_io_stat(struct request *rq)
 	        (rq->cmd_flags & REQ_DISCARD));
 }
 
-<<<<<<< HEAD
 /*
  * Internal io_context interface
  */
@@ -286,6 +251,3 @@ static inline void blk_throtl_release(struct request_queue *q) { }
 #endif /* CONFIG_BLK_DEV_THROTTLING */
 
 #endif /* BLK_INTERNAL_H */
-=======
-#endif
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

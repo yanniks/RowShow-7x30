@@ -5,12 +5,7 @@
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
-<<<<<<< HEAD
  *   the Free Software Foundation; only version 2 of the License.
-=======
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,11 +22,7 @@
 #include <linux/file.h>
 #include <linux/slab.h>
 #include <linux/time.h>
-<<<<<<< HEAD
 #include <linux/pm_qos.h>
-=======
-#include <linux/pm_qos_params.h>
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <linux/uio.h>
 #include <linux/dma-mapping.h>
 #include <sound/core.h>
@@ -858,10 +849,7 @@ static int snd_pcm_pre_start(struct snd_pcm_substream *substream, int state)
 	if (runtime->status->state != SNDRV_PCM_STATE_PREPARED)
 		return -EBADFD;
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
-<<<<<<< HEAD
 	    !substream->hw_no_buffer &&
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	    !snd_pcm_playback_data(substream))
 		return -EPIPE;
 	runtime->trigger_master = substream;
@@ -2060,15 +2048,12 @@ int snd_pcm_open_substream(struct snd_pcm *pcm, int stream,
 		goto error;
 	}
 
-<<<<<<< HEAD
 	if (substream->ops == NULL) {
 		snd_printd("cannot open back end PCMs directly\n");
 		err = -ENODEV;
 		goto error;
 	}
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if ((err = substream->ops->open(substream)) < 0)
 		goto error;
 

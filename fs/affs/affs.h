@@ -156,11 +156,7 @@ extern void	affs_free_bitmap(struct super_block *sb);
 extern int	affs_hash_name(struct super_block *sb, const u8 *name, unsigned int len);
 extern struct dentry *affs_lookup(struct inode *dir, struct dentry *dentry, struct nameidata *);
 extern int	affs_unlink(struct inode *dir, struct dentry *dentry);
-<<<<<<< HEAD
 extern int	affs_create(struct inode *dir, struct dentry *dentry, umode_t mode, struct nameidata *);
-=======
-extern int	affs_create(struct inode *dir, struct dentry *dentry, int mode, struct nameidata *);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern int	affs_mkdir(struct inode *dir, struct dentry *dentry, int mode);
 extern int	affs_rmdir(struct inode *dir, struct dentry *dentry);
 extern int	affs_link(struct dentry *olddentry, struct inode *dir,
@@ -186,11 +182,7 @@ extern int			 affs_add_entry(struct inode *dir, struct inode *inode, struct dent
 
 void		affs_free_prealloc(struct inode *inode);
 extern void	affs_truncate(struct inode *);
-<<<<<<< HEAD
 int		affs_file_fsync(struct file *, loff_t, loff_t, int);
-=======
-int		affs_file_fsync(struct file *, int);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* dir.c */
 

@@ -257,19 +257,6 @@ void intel_fbdev_fini(struct drm_device *dev)
 	kfree(dev_priv->fbdev);
 	dev_priv->fbdev = NULL;
 }
-<<<<<<< HEAD
-=======
-
-void intel_fbdev_set_suspend(struct drm_device *dev, int state)
-{
-	drm_i915_private_t *dev_priv = dev->dev_private;
-	if (!dev_priv->fbdev)
-		return;
-
-	fb_set_suspend(dev_priv->fbdev->helper.fbdev, state);
-}
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 MODULE_LICENSE("GPL and additional rights");
 
 void intel_fb_output_poll_changed(struct drm_device *dev)

@@ -32,10 +32,7 @@ enum perf_type_id {
 	PERF_TYPE_HW_CACHE			= 3,
 	PERF_TYPE_RAW				= 4,
 	PERF_TYPE_BREAKPOINT			= 5,
-<<<<<<< HEAD
 	PERF_TYPE_SHARED			= 6,
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	PERF_TYPE_MAX,				/* non-ABI */
 };
@@ -58,10 +55,7 @@ enum perf_hw_id {
 	PERF_COUNT_HW_BUS_CYCLES		= 6,
 	PERF_COUNT_HW_STALLED_CYCLES_FRONTEND	= 7,
 	PERF_COUNT_HW_STALLED_CYCLES_BACKEND	= 8,
-<<<<<<< HEAD
 	PERF_COUNT_HW_L2_CYCLES			= 9,
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	PERF_COUNT_HW_MAX,			/* non-ABI */
 };
@@ -226,14 +220,9 @@ struct perf_event_attr {
 				precise_ip     :  2, /* skid constraint       */
 				mmap_data      :  1, /* non-exec mmap data    */
 				sample_id_all  :  1, /* sample_type all events */
-<<<<<<< HEAD
 				single_instance:1, /* per-cpu event if unset */
 
 				__reserved_1:44;
-=======
-
-				__reserved_1   : 45;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	union {
 		__u32		wakeup_events;	  /* wakeup every n events */

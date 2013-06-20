@@ -718,11 +718,6 @@ void __init early_init_devtree(void *params)
 	of_scan_flat_dt(early_init_dt_scan_chosen_ppc, cmd_line);
 
 	/* Scan memory nodes and rebuild MEMBLOCKs */
-<<<<<<< HEAD
-=======
-	memblock_init();
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	of_scan_flat_dt(early_init_dt_scan_root, NULL);
 	of_scan_flat_dt(early_init_dt_scan_memory_ppc, NULL);
 	setup_initial_memory_limit(memstart_addr, first_memblock_size);
@@ -754,11 +749,7 @@ void __init early_init_devtree(void *params)
 	}
 	memblock_enforce_memory_limit(limit);
 
-<<<<<<< HEAD
 	memblock_allow_resize();
-=======
-	memblock_analyze();
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	memblock_dump_all();
 
 	DBG("Phys. mem: %llx\n", memblock_phys_mem_size());

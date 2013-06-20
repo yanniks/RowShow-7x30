@@ -61,7 +61,6 @@ nreaders	This is the number of RCU reading threads supported.
 		To properly exercise RCU implementations with preemptible
 		read-side critical sections.
 
-<<<<<<< HEAD
 onoff_interval
 		The number of seconds between each attempt to execute a
 		randomly selected CPU-hotplug operation.  Defaults to
@@ -77,14 +76,11 @@ onoff_holdoff	The number of seconds to wait until starting CPU-hotplug
 		in order to avoid confusing boot-time code with CPUs
 		coming and going.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 shuffle_interval
 		The number of seconds to keep the test threads affinitied
 		to a particular subset of the CPUs, defaults to 3 seconds.
 		Used in conjunction with test_no_idle_hz.
 
-<<<<<<< HEAD
 shutdown_secs	The number of seconds to run the test before terminating
 		the test and powering off the system.  The default is
 		zero, which disables test termination and system shutdown.
@@ -108,8 +104,6 @@ stall_cpu_holdoff
 		The number of seconds to wait after rcutorture starts
 		before stalling a CPU.  Defaults to 10 seconds.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 stat_interval	The number of seconds between output of torture
 		statistics (via printk()).  Regardless of the interval,
 		statistics are printed when the module is unloaded.
@@ -136,12 +130,9 @@ torture_type	The type of RCU to test: "rcu" for the rcu_read_lock() API,
 		preempt_disable() together with synchronize_sched(),
 		and "sched_expedited" for the use of preempt_disable()
 		with synchronize_sched_expedited().
-<<<<<<< HEAD
 		"rcu_bh_expedited": rcu_read_lock_bh(), rcu_read_unlock_bh(),
 			and synchronize_rcu_bh_expedited().
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 verbose		Enable debug printk()s.  Default is disabled.
 
@@ -241,22 +232,13 @@ The following script may be used to torture RCU:
 	#!/bin/sh
 
 	modprobe rcutorture
-<<<<<<< HEAD
 	sleep 3600
-=======
-	sleep 100
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	rmmod rcutorture
 	dmesg | grep torture:
 
 The output can be manually inspected for the error flag of "!!!".
 One could of course create a more elaborate script that automatically
-<<<<<<< HEAD
 checked for such errors.  The "rmmod" command forces a "SUCCESS",
 "FAILURE", or "RCU_HOTPLUG" indication to be printk()ed.  The first
 two are self-explanatory, while the last indicates that while there
 were no RCU failures, CPU-hotplug problems were detected.
-=======
-checked for such errors.  The "rmmod" command forces a "SUCCESS" or
-"FAILURE" indication to be printk()ed.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

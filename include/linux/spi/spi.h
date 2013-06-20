@@ -71,10 +71,7 @@ struct spi_device {
 	struct spi_master	*master;
 	u32			max_speed_hz;
 	u8			chip_select;
-<<<<<<< HEAD
 	u8			ext_gpio_cs;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	u8			mode;
 #define	SPI_CPHA	0x01			/* clock phase */
 #define	SPI_CPOL	0x02			/* clock polarity */
@@ -105,7 +102,6 @@ struct spi_device {
 	 */
 };
 
-<<<<<<< HEAD
 struct spi_msg
 {
 	u8 cmd;
@@ -114,8 +110,6 @@ struct spi_msg
 	unsigned char buffer[128];
 };
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static inline struct spi_device *to_spi_device(struct device *dev)
 {
 	return dev ? container_of(dev, struct spi_device, dev) : NULL;
@@ -638,7 +632,6 @@ extern int spi_write_then_read(struct spi_device *spi,
 		const void *txbuf, unsigned n_tx,
 		void *rxbuf, unsigned n_rx);
 
-<<<<<<< HEAD
 /* HTC: to support write/read in full duplex mode */
 extern int spi_write_and_read(struct spi_device *spi,
 		u8 *txbuf, u8 *rxbuf, unsigned size);
@@ -652,8 +645,6 @@ extern int spi_write_and_read(struct spi_device *spi,
 */
 extern int
 spi_read_write_lock(struct spi_device *spidev, struct spi_msg * msg, char *buf, int size, int func);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /**
  * spi_w8r8 - SPI synchronous 8 bit write followed by 8 bit read
  * @spi: device with which data will be exchanged

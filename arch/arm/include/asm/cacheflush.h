@@ -87,7 +87,6 @@
  *	DMA Cache Coherency
  *	===================
  *
-<<<<<<< HEAD
  *	dma_inv_range(start, end)
  *
  *		Invalidate (discard) the specified virtual address range.
@@ -103,8 +102,6 @@
  *		- start  - virtual start address
  *		- end    - virtual end address
  *
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *	dma_flush_range(start, end)
  *
  *		Clean and invalidate the specified virtual address range.
@@ -125,11 +122,8 @@ struct cpu_cache_fns {
 	void (*dma_map_area)(const void *, size_t, int);
 	void (*dma_unmap_area)(const void *, size_t, int);
 
-<<<<<<< HEAD
 	void (*dma_inv_range)(const void *, const void *);
 	void (*dma_clean_range)(const void *, const void *);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	void (*dma_flush_range)(const void *, const void *);
 };
 
@@ -156,11 +150,8 @@ extern struct cpu_cache_fns cpu_cache;
  */
 #define dmac_map_area			cpu_cache.dma_map_area
 #define dmac_unmap_area			cpu_cache.dma_unmap_area
-<<<<<<< HEAD
 #define dmac_inv_range			cpu_cache.dma_inv_range
 #define dmac_clean_range		cpu_cache.dma_clean_range
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define dmac_flush_range		cpu_cache.dma_flush_range
 
 #else
@@ -181,11 +172,8 @@ extern void __cpuc_flush_dcache_area(void *, size_t);
  */
 extern void dmac_map_area(const void *, size_t, int);
 extern void dmac_unmap_area(const void *, size_t, int);
-<<<<<<< HEAD
 extern void dmac_inv_range(const void *, const void *);
 extern void dmac_clean_range(const void *, const void *);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern void dmac_flush_range(const void *, const void *);
 
 #endif

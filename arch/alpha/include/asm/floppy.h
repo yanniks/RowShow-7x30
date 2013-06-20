@@ -27,11 +27,7 @@
 #define fd_cacheflush(addr,size) /* nothing */
 #define fd_request_irq()        request_irq(FLOPPY_IRQ, floppy_interrupt,\
 					    IRQF_DISABLED, "floppy", NULL)
-<<<<<<< HEAD
 #define fd_free_irq()           free_irq(FLOPPY_IRQ, NULL)
-=======
-#define fd_free_irq()           free_irq(FLOPPY_IRQ, NULL);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #ifdef CONFIG_PCI
 

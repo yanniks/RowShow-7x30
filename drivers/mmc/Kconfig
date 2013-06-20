@@ -19,7 +19,6 @@ config MMC_DEBUG
 	  This is an option for use by developers; most people should
 	  say N here.  This enables MMC core and driver debugging.
 
-<<<<<<< HEAD
 config MMC_PERF_PROFILING
 	bool "MMC performance profiling"
 	depends on MMC != n
@@ -35,8 +34,6 @@ config ZIMMER
 	help
 	  This is an option to enable Zimmer.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 if MMC
 
 source "drivers/mmc/core/Kconfig"

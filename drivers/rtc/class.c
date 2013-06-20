@@ -41,19 +41,13 @@ static void rtc_device_release(struct device *dev)
  * system's wall clock; restore it on resume().
  */
 
-<<<<<<< HEAD
 static struct timespec old_rtc, old_system, old_delta;
 
-=======
-static time_t		oldtime;
-static struct timespec	oldts;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static int rtc_suspend(struct device *dev, pm_message_t mesg)
 {
 	struct rtc_device	*rtc = to_rtc_device(dev);
 	struct rtc_time		tm;
-<<<<<<< HEAD
 	struct timespec		delta, delta_delta;
 	if (strcmp(dev_name(&rtc->dev), CONFIG_RTC_HCTOSYS_DEVICE) != 0)
 		return 0;
@@ -82,15 +76,6 @@ static int rtc_suspend(struct device *dev, pm_message_t mesg)
 		/* Otherwise try to adjust old_system to compensate */
 		old_system = timespec_sub(old_system, delta_delta);
 	}
-=======
-
-	if (strcmp(dev_name(&rtc->dev), CONFIG_RTC_HCTOSYS_DEVICE) != 0)
-		return 0;
-
-	rtc_read_time(rtc, &tm);
-	ktime_get_ts(&oldts);
-	rtc_tm_to_time(&tm, &oldtime);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return 0;
 }
@@ -99,30 +84,19 @@ static int rtc_resume(struct device *dev)
 {
 	struct rtc_device	*rtc = to_rtc_device(dev);
 	struct rtc_time		tm;
-<<<<<<< HEAD
 	struct timespec		new_system, new_rtc;
 	struct timespec		sleep_time;
-=======
-	time_t			newtime;
-	struct timespec		time;
-	struct timespec		newts;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (strcmp(dev_name(&rtc->dev), CONFIG_RTC_HCTOSYS_DEVICE) != 0)
 		return 0;
 
-<<<<<<< HEAD
 	/* snapshot the current rtc and system time at resume */
 	getnstimeofday(&new_system);
-=======
-	ktime_get_ts(&newts);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	rtc_read_time(rtc, &tm);
 	if (rtc_valid_tm(&tm) != 0) {
 		pr_debug("%s:  bogus resume time\n", dev_name(&rtc->dev));
 		return 0;
 	}
-<<<<<<< HEAD
 	rtc_tm_to_time(&tm, &new_rtc.tv_sec);
 	new_rtc.tv_nsec = 0;
 
@@ -146,21 +120,6 @@ static int rtc_resume(struct device *dev)
 
 	if (sleep_time.tv_sec >= 0)
 		timekeeping_inject_sleeptime(&sleep_time);
-=======
-	rtc_tm_to_time(&tm, &newtime);
-	if (newtime <= oldtime) {
-		if (newtime < oldtime)
-			pr_debug("%s:  time travel!\n", dev_name(&rtc->dev));
-		return 0;
-	}
-	/* calculate the RTC time delta */
-	set_normalized_timespec(&time, newtime - oldtime, 0);
-
-	/* subtract kernel time between rtc_suspend to rtc_resume */
-	time = timespec_sub(time, timespec_sub(newts, oldts));
-
-	timekeeping_inject_sleeptime(&time);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 

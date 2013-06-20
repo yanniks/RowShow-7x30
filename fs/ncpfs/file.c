@@ -20,15 +20,9 @@
 
 #include "ncp_fs.h"
 
-<<<<<<< HEAD
 static int ncp_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 {
 	return filemap_write_and_wait_range(file->f_mapping, start, end);
-=======
-static int ncp_fsync(struct file *file, int datasync)
-{
-	return 0;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /*

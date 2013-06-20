@@ -32,12 +32,9 @@ extern void error(char *);
 #  define Tracecv(c,x)
 #endif
 
-<<<<<<< HEAD
 /* Not needed, but used in some headers pulled in by decompressors */
 extern char * strstr(const char * s1, const char *s2);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_KERNEL_GZIP
 #include "../../../../lib/decompress_inflate.c"
 #endif
@@ -50,7 +47,6 @@ extern char * strstr(const char * s1, const char *s2);
 #include "../../../../lib/decompress_unlzma.c"
 #endif
 
-<<<<<<< HEAD
 #ifdef CONFIG_KERNEL_XZ
 #include "../../../../lib/decompress_unxz.c"
 #endif
@@ -58,9 +54,4 @@ extern char * strstr(const char * s1, const char *s2);
 void do_decompress(u8 *input, int len, u8 *output, void (*error)(char *x))
 {
 	decompress(input, len, NULL, NULL, output, NULL, error);
-=======
-int do_decompress(u8 *input, int len, u8 *output, void (*error)(char *x))
-{
-	return decompress(input, len, NULL, NULL, output, NULL, error);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }

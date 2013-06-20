@@ -49,11 +49,7 @@ static __inline__ void scm_set_cred(struct scm_cookie *scm,
 				    struct pid *pid, const struct cred *cred)
 {
 	scm->pid  = get_pid(pid);
-<<<<<<< HEAD
 	scm->cred = cred ? get_cred(cred) : NULL;
-=======
-	scm->cred = get_cred(cred);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	cred_to_ucred(pid, cred, &scm->creds, false);
 }
 
@@ -75,18 +71,11 @@ static __inline__ void scm_destroy(struct scm_cookie *scm)
 }
 
 static __inline__ int scm_send(struct socket *sock, struct msghdr *msg,
-<<<<<<< HEAD
 			       struct scm_cookie *scm, bool forcecreds)
 {
 	memset(scm, 0, sizeof(*scm));
 	if (forcecreds)
 		scm_set_cred(scm, task_tgid(current), current_cred());
-=======
-			       struct scm_cookie *scm)
-{
-	scm_set_cred(scm, task_tgid(current), current_cred());
-	scm->fp = NULL;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	unix_get_peersec_dgram(sock, scm);
 	if (msg->msg_controllen <= 0)
 		return 0;

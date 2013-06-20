@@ -1970,11 +1970,7 @@ pki_encrypt_session_key(struct key *auth_tok_key,
 {
 	struct ecryptfs_msg_ctx *msg_ctx = NULL;
 	char *payload = NULL;
-<<<<<<< HEAD
 	size_t payload_len = 0;
-=======
-	size_t payload_len;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct ecryptfs_message *msg;
 	int rc;
 
@@ -2259,11 +2255,7 @@ write_tag_3_packet(char *dest, size_t *remaining_bytes,
 		       auth_tok->token.password.session_key_encryption_key,
 		       crypt_stat->key_size);
 		ecryptfs_printk(KERN_DEBUG,
-<<<<<<< HEAD
 				"Cached session key encryption key:\n");
-=======
-				"Cached session key " "encryption key: \n");
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (ecryptfs_verbosity > 0)
 			ecryptfs_dump_hex(session_key_encryption_key, 16);
 	}

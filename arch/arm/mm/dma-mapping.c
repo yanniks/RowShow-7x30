@@ -431,7 +431,6 @@ EXPORT_SYMBOL(dma_free_coherent);
 void ___dma_single_cpu_to_dev(const void *kaddr, size_t size,
 	enum dma_data_direction dir)
 {
-<<<<<<< HEAD
 #ifdef CONFIG_OUTER_CACHE
 	unsigned long paddr;
 
@@ -441,24 +440,13 @@ void ___dma_single_cpu_to_dev(const void *kaddr, size_t size,
 	dmac_map_area(kaddr, size, dir);
 
 #ifdef CONFIG_OUTER_CACHE
-=======
-	unsigned long paddr;
-
-	BUG_ON(!virt_addr_valid(kaddr) || !virt_addr_valid(kaddr + size - 1));
-
-	dmac_map_area(kaddr, size, dir);
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	paddr = __pa(kaddr);
 	if (dir == DMA_FROM_DEVICE) {
 		outer_inv_range(paddr, paddr + size);
 	} else {
 		outer_clean_range(paddr, paddr + size);
 	}
-<<<<<<< HEAD
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* FIXME: non-speculating: flush on bidirectional mappings? */
 }
 EXPORT_SYMBOL(___dma_single_cpu_to_dev);
@@ -466,10 +454,7 @@ EXPORT_SYMBOL(___dma_single_cpu_to_dev);
 void ___dma_single_dev_to_cpu(const void *kaddr, size_t size,
 	enum dma_data_direction dir)
 {
-<<<<<<< HEAD
 #ifdef CONFIG_OUTER_CACHE
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	BUG_ON(!virt_addr_valid(kaddr) || !virt_addr_valid(kaddr + size - 1));
 
 	/* FIXME: non-speculating: not required */
@@ -478,11 +463,7 @@ void ___dma_single_dev_to_cpu(const void *kaddr, size_t size,
 		unsigned long paddr = __pa(kaddr);
 		outer_inv_range(paddr, paddr + size);
 	}
-<<<<<<< HEAD
 #endif
-=======
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	dmac_unmap_area(kaddr, size, dir);
 }
 EXPORT_SYMBOL(___dma_single_dev_to_cpu);

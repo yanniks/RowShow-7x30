@@ -50,15 +50,11 @@ void blk_execute_rq_nowait(struct request_queue *q, struct gendisk *bd_disk,
 {
 	int where = at_head ? ELEVATOR_INSERT_FRONT : ELEVATOR_INSERT_BACK;
 
-<<<<<<< HEAD
 	WARN_ON(irqs_disabled());
 	spin_lock_irq(q->queue_lock);
 
 	if (unlikely(blk_queue_dead(q))) {
 		spin_unlock_irq(q->queue_lock);
-=======
-	if (unlikely(test_bit(QUEUE_FLAG_DEAD, &q->queue_flags))) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		rq->errors = -ENXIO;
 		if (rq->end_io)
 			rq->end_io(rq, rq->errors);
@@ -67,11 +63,6 @@ void blk_execute_rq_nowait(struct request_queue *q, struct gendisk *bd_disk,
 
 	rq->rq_disk = bd_disk;
 	rq->end_io = done;
-<<<<<<< HEAD
-=======
-	WARN_ON(irqs_disabled());
-	spin_lock_irq(q->queue_lock);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	__elv_add_request(q, rq, where);
 	__blk_run_queue(q);
 	/* the queue is stopped so it won't be run */

@@ -13,10 +13,7 @@
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <linux/device.h>
-<<<<<<< HEAD
 #include <mach/usb_gadget_fserial.h>
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #include "u_serial.h"
 #include "gadget_chips.h"
@@ -34,12 +31,9 @@
 struct gser_descs {
 	struct usb_endpoint_descriptor	*in;
 	struct usb_endpoint_descriptor	*out;
-<<<<<<< HEAD
 #ifdef CONFIG_MODEM_SUPPORT
 	struct usb_endpoint_descriptor	*notify;
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 struct f_gser {
@@ -49,7 +43,6 @@ struct f_gser {
 
 	struct gser_descs		fs;
 	struct gser_descs		hs;
-<<<<<<< HEAD
 	u8				online;
 	enum transport_type		transport;
 
@@ -98,16 +91,11 @@ static inline bool is_transport_sdio(enum transport_type t)
 	return 0;
 }
 
-=======
-};
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static inline struct f_gser *func_to_gser(struct usb_function *f)
 {
 	return container_of(f, struct f_gser, port.func);
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_MODEM_SUPPORT
 static inline struct f_gser *port_to_gser(struct gserial *p)
 {
@@ -116,13 +104,10 @@ static inline struct f_gser *port_to_gser(struct gserial *p)
 #define GS_LOG2_NOTIFY_INTERVAL		5	/* 1 << 5 == 32 msec */
 #define GS_NOTIFY_MAXPACKET		10	/* notification + 2 bytes */
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*-------------------------------------------------------------------------*/
 
 /* interface descriptor: */
 
-<<<<<<< HEAD
 static struct usb_interface_descriptor gser_interface_desc = {
 	.bLength =		USB_DT_INTERFACE_SIZE,
 	.bDescriptorType =	USB_DT_INTERFACE,
@@ -182,40 +167,19 @@ static struct usb_endpoint_descriptor gser_fs_notify_desc = {
 #endif
 
 static struct usb_endpoint_descriptor gser_fs_in_desc = {
-=======
-static struct usb_interface_descriptor gser_interface_desc __initdata = {
-	.bLength =		USB_DT_INTERFACE_SIZE,
-	.bDescriptorType =	USB_DT_INTERFACE,
-	/* .bInterfaceNumber = DYNAMIC */
-	.bNumEndpoints =	2,
-	.bInterfaceClass =	USB_CLASS_VENDOR_SPEC,
-	.bInterfaceSubClass =	0,
-	.bInterfaceProtocol =	0,
-	/* .iInterface = DYNAMIC */
-};
-
-/* full speed support: */
-
-static struct usb_endpoint_descriptor gser_fs_in_desc __initdata = {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 	.bEndpointAddress =	USB_DIR_IN,
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
 };
 
-<<<<<<< HEAD
 static struct usb_endpoint_descriptor gser_fs_out_desc = {
-=======
-static struct usb_endpoint_descriptor gser_fs_out_desc __initdata = {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 	.bEndpointAddress =	USB_DIR_OUT,
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
 };
 
-<<<<<<< HEAD
 static struct usb_descriptor_header *gser_fs_function[] = {
 	(struct usb_descriptor_header *) &gser_interface_desc,
 #ifdef CONFIG_MODEM_SUPPORT
@@ -229,17 +193,12 @@ static struct usb_descriptor_header *gser_fs_function[] = {
 */
 	(struct usb_descriptor_header *) &gser_fs_notify_desc,
 #endif
-=======
-static struct usb_descriptor_header *gser_fs_function[] __initdata = {
-	(struct usb_descriptor_header *) &gser_interface_desc,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	(struct usb_descriptor_header *) &gser_fs_in_desc,
 	(struct usb_descriptor_header *) &gser_fs_out_desc,
 	NULL,
 };
 
 /* high speed support: */
-<<<<<<< HEAD
 #ifdef CONFIG_MODEM_SUPPORT
 static struct usb_endpoint_descriptor gser_hs_notify_desc  = {
 	.bLength =		USB_DT_ENDPOINT_SIZE,
@@ -278,32 +237,12 @@ static struct usb_descriptor_header *gser_hs_function[] = {
 */
 	(struct usb_descriptor_header *) &gser_hs_notify_desc,
 #endif
-=======
-
-static struct usb_endpoint_descriptor gser_hs_in_desc __initdata = {
-	.bLength =		USB_DT_ENDPOINT_SIZE,
-	.bDescriptorType =	USB_DT_ENDPOINT,
-	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
-	.wMaxPacketSize =	cpu_to_le16(512),
-};
-
-static struct usb_endpoint_descriptor gser_hs_out_desc __initdata = {
-	.bLength =		USB_DT_ENDPOINT_SIZE,
-	.bDescriptorType =	USB_DT_ENDPOINT,
-	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
-	.wMaxPacketSize =	cpu_to_le16(512),
-};
-
-static struct usb_descriptor_header *gser_hs_function[] __initdata = {
-	(struct usb_descriptor_header *) &gser_interface_desc,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	(struct usb_descriptor_header *) &gser_hs_in_desc,
 	(struct usb_descriptor_header *) &gser_hs_out_desc,
 	NULL,
 };
 
 /* string descriptors: */
-<<<<<<< HEAD
 static struct usb_string modem_string_defs[] = {
 	[0].s = "HTC Modem",
 	[1].s = "HTC 9k Modem",
@@ -322,11 +261,6 @@ static struct usb_gadget_strings *modem_strings[] = {
 
 static struct usb_string gser_string_defs[] = {
 	[0].s = "HTC Serial",
-=======
-
-static struct usb_string gser_string_defs[] = {
-	[0].s = "Generic Serial",
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	{  } /* end of list */
 };
 
@@ -340,7 +274,6 @@ static struct usb_gadget_strings *gser_strings[] = {
 	NULL,
 };
 
-<<<<<<< HEAD
 static char *transport_to_str(enum transport_type t)
 {
 	switch (t) {
@@ -553,15 +486,10 @@ invalid:
 	return value;
 }
 #endif
-=======
-/*-------------------------------------------------------------------------*/
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static int gser_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 {
 	struct f_gser		*gser = func_to_gser(f);
 	struct usb_composite_dev *cdev = f->config->cdev;
-<<<<<<< HEAD
 	int rc = 0;
 
 	/* we know alt == 0, so this is an activation or a reset */
@@ -598,23 +526,6 @@ static int gser_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 
 	gser->online = 1;
 	return rc;
-=======
-
-	/* we know alt == 0, so this is an activation or a reset */
-
-	if (gser->port.in->driver_data) {
-		DBG(cdev, "reset generic ttyGS%d\n", gser->port_num);
-		gserial_disconnect(&gser->port);
-	} else {
-		DBG(cdev, "activate generic ttyGS%d\n", gser->port_num);
-		gser->port.in_desc = ep_choose(cdev->gadget,
-				gser->hs.in, gser->fs.in);
-		gser->port.out_desc = ep_choose(cdev->gadget,
-				gser->hs.out, gser->fs.out);
-	}
-	gserial_connect(&gser->port, gser->port_num);
-	return 0;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static void gser_disable(struct usb_function *f)
@@ -623,7 +534,6 @@ static void gser_disable(struct usb_function *f)
 	struct usb_composite_dev *cdev = f->config->cdev;
 
 	DBG(cdev, "generic ttyGS%d deactivated\n", gser->port_num);
-<<<<<<< HEAD
 
 	gport_disconnect(gser);
 
@@ -798,20 +708,11 @@ static int gser_send_modem_ctrl_bits(struct gserial *port, int ctrl_bits)
 	return gser_notify_serial_state(gser);
 }
 #endif
-=======
-	gserial_disconnect(&gser->port);
-}
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*-------------------------------------------------------------------------*/
 
 /* serial function driver setup/binding */
 
-<<<<<<< HEAD
 static int
-=======
-static int __init
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 gser_bind(struct usb_configuration *c, struct usb_function *f)
 {
 	struct usb_composite_dev *cdev = c->cdev;
@@ -841,7 +742,6 @@ gser_bind(struct usb_configuration *c, struct usb_function *f)
 	gser->port.out = ep;
 	ep->driver_data = cdev;	/* claim */
 
-<<<<<<< HEAD
 #ifdef CONFIG_MODEM_SUPPORT
 	ep = usb_ep_autoconfig(cdev->gadget, &gser_fs_notify_desc);
 	if (!ep)
@@ -865,22 +765,14 @@ gser_bind(struct usb_configuration *c, struct usb_function *f)
 	if (!f->descriptors)
 		goto fail;
 
-=======
-	/* copy descriptors, and track endpoint copies */
-	f->descriptors = usb_copy_descriptors(gser_fs_function);
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	gser->fs.in = usb_find_endpoint(gser_fs_function,
 			f->descriptors, &gser_fs_in_desc);
 	gser->fs.out = usb_find_endpoint(gser_fs_function,
 			f->descriptors, &gser_fs_out_desc);
-<<<<<<< HEAD
 #ifdef CONFIG_MODEM_SUPPORT
 	gser->fs.notify = usb_find_endpoint(gser_fs_function,
 			f->descriptors, &gser_fs_notify_desc);
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 
 	/* support all relevant hardware speeds... we expect that when
@@ -892,34 +784,25 @@ gser_bind(struct usb_configuration *c, struct usb_function *f)
 				gser_fs_in_desc.bEndpointAddress;
 		gser_hs_out_desc.bEndpointAddress =
 				gser_fs_out_desc.bEndpointAddress;
-<<<<<<< HEAD
 #ifdef CONFIG_MODEM_SUPPORT
 		gser_hs_notify_desc.bEndpointAddress =
 				gser_fs_notify_desc.bEndpointAddress;
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		/* copy descriptors, and track endpoint copies */
 		f->hs_descriptors = usb_copy_descriptors(gser_hs_function);
 
-<<<<<<< HEAD
 		if (!f->hs_descriptors)
 			goto fail;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		gser->hs.in = usb_find_endpoint(gser_hs_function,
 				f->hs_descriptors, &gser_hs_in_desc);
 		gser->hs.out = usb_find_endpoint(gser_hs_function,
 				f->hs_descriptors, &gser_hs_out_desc);
-<<<<<<< HEAD
 #ifdef CONFIG_MODEM_SUPPORT
 		gser->hs.notify = usb_find_endpoint(gser_hs_function,
 				f->hs_descriptors, &gser_hs_notify_desc);
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	DBG(cdev, "generic ttyGS%d: %s speed IN/%s OUT/%s\n",
@@ -929,7 +812,6 @@ gser_bind(struct usb_configuration *c, struct usb_function *f)
 	return 0;
 
 fail:
-<<<<<<< HEAD
 	if (f->descriptors)
 		usb_free_descriptors(f->descriptors);
 #ifdef CONFIG_MODEM_SUPPORT
@@ -940,8 +822,6 @@ fail:
 	if (gser->notify)
 		gser->notify->driver_data = NULL;
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* we might as well release our claims on endpoints */
 	if (gser->port.out)
 		gser->port.out->driver_data = NULL;
@@ -956,7 +836,6 @@ fail:
 static void
 gser_unbind(struct usb_configuration *c, struct usb_function *f)
 {
-<<<<<<< HEAD
 #ifdef CONFIG_MODEM_SUPPORT
 	struct f_gser *gser = func_to_gser(f);
 #endif
@@ -966,11 +845,6 @@ gser_unbind(struct usb_configuration *c, struct usb_function *f)
 #ifdef CONFIG_MODEM_SUPPORT
 	gs_free_req(gser->notify, gser->notify_req);
 #endif
-=======
-	if (gadget_is_dualspeed(c->cdev->gadget))
-		usb_free_descriptors(f->hs_descriptors);
-	usb_free_descriptors(f->descriptors);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	kfree(func_to_gser(f));
 }
 
@@ -986,7 +860,6 @@ gser_unbind(struct usb_configuration *c, struct usb_function *f)
  * handle all the ones it binds.  Caller is also responsible
  * for calling @gserial_cleanup() before module unload.
  */
-<<<<<<< HEAD
 int gser_bind_config(struct usb_configuration *c, u8 port_num)
 {
 	struct f_gser	*gser;
@@ -999,19 +872,12 @@ int gser_bind_config(struct usb_configuration *c, u8 port_num)
 	}
 	pr_info("%s: type:%d, trasport: %s\n", __func__, p->func_type,
 			transport_to_str(p->transport));
-=======
-int __init gser_bind_config(struct usb_configuration *c, u8 port_num)
-{
-	struct f_gser	*gser;
-	int		status;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* REVISIT might want instance-specific strings to help
 	 * distinguish instances ...
 	 */
 
 	/* maybe allocate device-global string ID */
-<<<<<<< HEAD
 	/* HTC modem port_num is 0 */
 #if 0
 	if (port_num != 0) {
@@ -1052,12 +918,6 @@ int __init gser_bind_config(struct usb_configuration *c, u8 port_num)
 			printk(KERN_ERR "%s: return %d\n", __func__, status);
 			return status;
 		}
-=======
-	if (gser_string_defs[0].id == 0) {
-		status = usb_string_id(c->cdev);
-		if (status < 0)
-			return status;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		gser_string_defs[0].id = status;
 	}
 
@@ -1066,12 +926,9 @@ int __init gser_bind_config(struct usb_configuration *c, u8 port_num)
 	if (!gser)
 		return -ENOMEM;
 
-<<<<<<< HEAD
 #ifdef CONFIG_MODEM_SUPPORT
 	spin_lock_init(&gser->lock);
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	gser->port_num = port_num;
 
 	gser->port.func.name = "gser";
@@ -1080,7 +937,6 @@ int __init gser_bind_config(struct usb_configuration *c, u8 port_num)
 	gser->port.func.unbind = gser_unbind;
 	gser->port.func.set_alt = gser_set_alt;
 	gser->port.func.disable = gser_disable;
-<<<<<<< HEAD
 	gser->transport		= gserial_ports[port_num].transport;
 #ifdef CONFIG_MODEM_SUPPORT
 	/* We support only two ports for now */
@@ -1123,15 +979,12 @@ int __init gser_bind_config(struct usb_configuration *c, u8 port_num)
 		break;
 	}
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	status = usb_add_function(c, &gser->port.func);
 	if (status)
 		kfree(gser);
 	return status;
 }
-<<<<<<< HEAD
 
 /**
  * gserial_init_port - bind a gserial_port to its transport
@@ -1179,5 +1032,3 @@ static int gserial_init_port(int port_num, const char *name, char *serial_type)
 
 	return 0;
 }
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

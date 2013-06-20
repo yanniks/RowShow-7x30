@@ -21,21 +21,15 @@ obj-$(CONFIG_USB_LED)			+= usbled.o
 obj-$(CONFIG_USB_LEGOTOWER)		+= legousbtower.o
 obj-$(CONFIG_USB_RIO500)		+= rio500.o
 obj-$(CONFIG_USB_TEST)			+= usbtest.o
-<<<<<<< HEAD
 obj-$(CONFIG_USB_EHSET_TEST_FIXTURE)	+= ehset.o
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 obj-$(CONFIG_USB_TRANCEVIBRATOR)	+= trancevibrator.o
 obj-$(CONFIG_USB_USS720)		+= uss720.o
 obj-$(CONFIG_USB_SEVSEG)		+= usbsevseg.o
 obj-$(CONFIG_USB_YUREX)			+= yurex.o
 
 obj-$(CONFIG_USB_SISUSBVGA)		+= sisusbvga/
-<<<<<<< HEAD
 
 obj-$(CONFIG_USB_QCOM_DIAG_BRIDGE)	+= diag_bridge.o
 obj-$(CONFIG_USB_QCOM_DIAG_BRIDGE_TEST)	+= diag_bridge_test.o
 mdm_bridge-y				:= mdm_ctrl_bridge.o mdm_data_bridge.o
 obj-$(CONFIG_USB_QCOM_MDM_BRIDGE) 	+= mdm_bridge.o
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

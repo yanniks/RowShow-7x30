@@ -124,11 +124,8 @@ struct ehci_hcd {			/* one per controller */
 	ktime_t			last_periodic_enable;
 	u32			command;
 
-<<<<<<< HEAD
 	void (*start_hnp)(struct ehci_hcd *ehci);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* SILICON QUIRKS */
 	unsigned		no_selective_suspend:1;
 	unsigned		has_fsl_port_bug:1; /* FreeScale */
@@ -142,10 +139,6 @@ struct ehci_hcd {			/* one per controller */
 	unsigned		fs_i_thresh:1;	/* Intel iso scheduling */
 	unsigned		use_dummy_qh:1;	/* AMD Frame List table quirk*/
 	unsigned		has_synopsys_hc_bug:1; /* Synopsys HC */
-<<<<<<< HEAD
-=======
-	unsigned		frame_index_bug:1; /* MosChip (AKA NetMos) */
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* required for usb32 quirk */
 	#define OHCI_CTRL_HCFS          (3 << 6)
@@ -745,7 +738,6 @@ static inline u32 hc32_to_cpup (const struct ehci_hcd *ehci, const __hc32 *x)
 
 #endif
 
-<<<<<<< HEAD
 /*
  * Writing to dma coherent memory on ARM may be delayed via L2
  * writing buffer, so introduce the helper which can flush L2 writing
@@ -761,22 +753,6 @@ static inline void ehci_sync_mem(void)
 static inline void ehci_sync_mem(void)
 {
 }
-=======
-/*-------------------------------------------------------------------------*/
-
-#ifdef CONFIG_PCI
-
-/* For working around the MosChip frame-index-register bug */
-static unsigned ehci_read_frame_index(struct ehci_hcd *ehci);
-
-#else
-
-static inline unsigned ehci_read_frame_index(struct ehci_hcd *ehci)
-{
-	return ehci_readl(ehci, &ehci->regs->frame_index);
-}
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 
 /*-------------------------------------------------------------------------*/

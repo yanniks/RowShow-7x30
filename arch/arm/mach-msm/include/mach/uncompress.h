@@ -14,7 +14,6 @@
  */
 
 #ifndef __ASM_ARCH_MSM_UNCOMPRESS_H
-<<<<<<< HEAD
 #define __ASM_ARCH_MSM_UNCOMPRESS_H
 
 #include <linux/io.h>
@@ -53,27 +52,11 @@ static void putc(int c)
 #endif
 }
 #endif
-=======
-
-#include "hardware.h"
-#include "linux/io.h"
-#include "mach/msm_iomap.h"
-
-static void putc(int c)
-{
-#if defined(MSM_DEBUG_UART_PHYS)
-	unsigned base = MSM_DEBUG_UART_PHYS;
-	while (!(readl(base + 0x08) & 0x04)) ;
-	writel(c, base + 0x0c);
-#endif
-}
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static inline void flush(void)
 {
 }
 
-<<<<<<< HEAD
 #define DEBUG_LL_HS_ENTRY(machine)		\
 	if (machine_is_##machine()) {		\
 		msm_serial_hsl = true;		\
@@ -96,10 +79,6 @@ static inline void arch_decomp_setup(void)
 		DEBUG_LL_HS_ENTRY(msm8960_apq);
 		DEBUG_LL_HS_ENTRY(msm8960_liquid);
 	} while (0);
-=======
-static inline void arch_decomp_setup(void)
-{
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static inline void arch_decomp_wdog(void)

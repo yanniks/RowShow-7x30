@@ -101,10 +101,7 @@ int arch_update_cpu_topology(void);
 				| 1*SD_SHARE_CPUPOWER			\
 				| 0*SD_POWERSAVINGS_BALANCE		\
 				| 1*SD_SHARE_PKG_RESOURCES		\
-<<<<<<< HEAD
 				| arch_sd_share_power_line()		\
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				| 0*SD_SERIALIZE			\
 				| 0*SD_PREFER_SIBLING			\
 				| arch_sd_sibling_asym_packing()	\
@@ -138,10 +135,7 @@ int arch_update_cpu_topology(void);
 				| 0*SD_PREFER_LOCAL			\
 				| 0*SD_SHARE_CPUPOWER			\
 				| 1*SD_SHARE_PKG_RESOURCES		\
-<<<<<<< HEAD
 				| arch_sd_share_power_line()		\
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				| 0*SD_SERIALIZE			\
 				| sd_balance_for_mc_power()		\
 				| sd_power_saving_flags()		\
@@ -175,10 +169,7 @@ int arch_update_cpu_topology(void);
 				| 0*SD_PREFER_LOCAL			\
 				| 0*SD_SHARE_CPUPOWER			\
 				| 0*SD_SHARE_PKG_RESOURCES		\
-<<<<<<< HEAD
 				| arch_sd_share_power_line()		\
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				| 0*SD_SERIALIZE			\
 				| sd_balance_for_package_power()	\
 				| sd_power_saving_flags()		\

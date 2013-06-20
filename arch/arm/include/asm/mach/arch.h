@@ -35,10 +35,7 @@ struct machine_desc {
 					 struct meminfo *);
 	void			(*reserve)(void);/* reserve mem blocks	*/
 	void			(*map_io)(void);/* IO mapping function	*/
-<<<<<<< HEAD
 	void			(*init_very_early)(void);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	void			(*init_early)(void);
 	void			(*init_irq)(void);
 	struct sys_timer	*timer;		/* system tick timer	*/
@@ -74,7 +71,6 @@ static const struct machine_desc __mach_desc_##_type	\
 #define MACHINE_END				\
 };
 
-<<<<<<< HEAD
 #define DT_MACHINE_START(_name, _namestr)		\
 static const struct machine_desc __mach_desc_##_name	\
  __used							\
@@ -82,6 +78,4 @@ static const struct machine_desc __mach_desc_##_name	\
 	.nr		= ~0,				\
 	.name		= _namestr,
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif

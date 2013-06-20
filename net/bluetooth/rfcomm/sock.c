@@ -544,10 +544,6 @@ static int rfcomm_sock_getname(struct socket *sock, struct sockaddr *addr, int *
 
 	BT_DBG("sock %p, sk %p", sock, sk);
 
-<<<<<<< HEAD
-=======
-	memset(sa, 0, sizeof(*sa));
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	sa->rc_family  = AF_BLUETOOTH;
 	sa->rc_channel = rfcomm_pi(sk)->channel;
 	if (peer)
@@ -748,10 +744,6 @@ static int rfcomm_sock_getsockopt_old(struct socket *sock, int optname, char __u
 	struct sock *sk = sock->sk;
 	struct sock *l2cap_sk;
 	struct rfcomm_conninfo cinfo;
-<<<<<<< HEAD
-=======
-	struct l2cap_conn *conn = l2cap_pi(sk)->chan->conn;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int len, err = 0;
 	u32 opt;
 
@@ -796,14 +788,8 @@ static int rfcomm_sock_getsockopt_old(struct socket *sock, int optname, char __u
 
 		l2cap_sk = rfcomm_pi(sk)->dlc->session->sock->sk;
 
-<<<<<<< HEAD
 		cinfo.hci_handle = l2cap_pi(l2cap_sk)->conn->hcon->handle;
 		memcpy(cinfo.dev_class, l2cap_pi(l2cap_sk)->conn->hcon->dev_class, 3);
-=======
-		memset(&cinfo, 0, sizeof(cinfo));
-		cinfo.hci_handle = conn->hcon->handle;
-		memcpy(cinfo.dev_class, conn->hcon->dev_class, 3);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		len = min_t(unsigned int, len, sizeof(cinfo));
 		if (copy_to_user(optval, (char *) &cinfo, len))

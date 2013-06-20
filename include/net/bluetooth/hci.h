@@ -1,10 +1,6 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
-<<<<<<< HEAD
    Copyright (c) 2000-2001, 2010-2012 The Linux Foundation. All rights reserved.
-=======
-   Copyright (C) 2000-2001 Qualcomm Incorporated
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -29,11 +25,7 @@
 #ifndef __HCI_H
 #define __HCI_H
 
-<<<<<<< HEAD
 #define HCI_MAX_ACL_SIZE	1500
-=======
-#define HCI_MAX_ACL_SIZE	1024
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define HCI_MAX_SCO_SIZE	255
 #define HCI_MAX_EVENT_SIZE	260
 #define HCI_MAX_FRAME_SIZE	(HCI_MAX_ACL_SIZE + 4)
@@ -45,10 +37,7 @@
 #define HCI_DEV_DOWN			4
 #define HCI_DEV_SUSPEND			5
 #define HCI_DEV_RESUME			6
-<<<<<<< HEAD
 #define HCI_DEV_WRITE			7
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* HCI notify events */
 #define HCI_NOTIFY_CONN_ADD		1
@@ -63,10 +52,7 @@
 #define HCI_RS232	4
 #define HCI_PCI		5
 #define HCI_SDIO	6
-<<<<<<< HEAD
 #define HCI_SMD		7
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* HCI controller types */
 #define HCI_BREDR	0x00
@@ -116,10 +102,7 @@ enum {
 #define HCIGETCONNLIST	_IOR('H', 212, int)
 #define HCIGETCONNINFO	_IOR('H', 213, int)
 #define HCIGETAUTHINFO	_IOR('H', 215, int)
-<<<<<<< HEAD
 #define HCISETAUTHINFO  _IOR('H', 216, int)
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #define HCISETRAW	_IOW('H', 220, int)
 #define HCISETSCAN	_IOW('H', 221, int)
@@ -142,11 +125,7 @@ enum {
 #define HCI_PAIRING_TIMEOUT	(60000)	/* 60 seconds */
 #define HCI_IDLE_TIMEOUT	(6000)	/* 6 seconds */
 #define HCI_INIT_TIMEOUT	(10000)	/* 10 seconds */
-<<<<<<< HEAD
 #define HCI_CMD_TIMEOUT		(5000)	/* 5 seconds */
-=======
-#define HCI_CMD_TIMEOUT		(1000)	/* 1 seconds */
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* HCI data types */
 #define HCI_COMMAND_PKT		0x01
@@ -182,7 +161,6 @@ enum {
 #define ESCO_2EV5	0x0100
 #define ESCO_3EV5	0x0200
 
-<<<<<<< HEAD
 #define ESCO_WBS	(ESCO_EV3 | (EDR_ESCO_MASK ^ ESCO_2EV3))
 
 #define SCO_ESCO_MASK	(ESCO_HV1 | ESCO_HV2 | ESCO_HV3)
@@ -201,27 +179,17 @@ enum {
 #define RE_POWER_CONSUMP	0x01;
 #define RE_LINK_QUALITY		0x02;
 #define RE_DONT_CARE		0xFF;
-=======
-#define SCO_ESCO_MASK  (ESCO_HV1 | ESCO_HV2 | ESCO_HV3)
-#define EDR_ESCO_MASK  (ESCO_2EV3 | ESCO_3EV3 | ESCO_2EV5 | ESCO_3EV5)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* ACL flags */
 #define ACL_START_NO_FLUSH	0x00
 #define ACL_CONT		0x01
 #define ACL_START		0x02
-<<<<<<< HEAD
 #define ACL_COMPLETE		0x03
 #define ACL_ACTIVE_BCAST	0x04
 #define ACL_PICO_BCAST		0x08
 
 #define ACL_PB_MASK	(ACL_CONT | ACL_START)
 
-=======
-#define ACL_ACTIVE_BCAST	0x04
-#define ACL_PICO_BCAST		0x08
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* Baseband links */
 #define SCO_LINK	0x00
 #define ACL_LINK	0x01
@@ -301,20 +269,9 @@ enum {
 #define HCI_AT_GENERAL_BONDING		0x04
 #define HCI_AT_GENERAL_BONDING_MITM	0x05
 
-<<<<<<< HEAD
 /* Flow control modes */
 #define HCI_PACKET_BASED_FLOW_CTL_MODE	0x00
 #define HCI_BLOCK_BASED_FLOW_CTL_MODE	0x01
-=======
-/* Link Key types */
-#define HCI_LK_COMBINATION		0x00
-#define HCI_LK_LOCAL_UNIT		0x01
-#define HCI_LK_REMOTE_UNIT		0x02
-#define HCI_LK_DEBUG_COMBINATION	0x03
-#define HCI_LK_UNAUTH_COMBINATION	0x04
-#define HCI_LK_AUTH_COMBINATION		0x05
-#define HCI_LK_CHANGED_COMBINATION	0x06
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* -----  HCI Commands ---- */
 #define HCI_OP_NOP			0x0000
@@ -375,14 +332,11 @@ struct hci_cp_link_key_reply {
 	__u8     link_key[16];
 } __packed;
 
-<<<<<<< HEAD
 struct hci_rp_link_key_reply {
 	__u8     status;
 	bdaddr_t bdaddr;
 } __packed;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define HCI_OP_LINK_KEY_NEG_REPLY	0x040c
 struct hci_cp_link_key_neg_reply {
 	bdaddr_t bdaddr;
@@ -524,7 +478,6 @@ struct hci_cp_io_capability_neg_reply {
 	__u8     reason;
 } __packed;
 
-<<<<<<< HEAD
 #define HCI_OP_CREATE_PHYS_LINK		0x0435
 struct hci_cp_create_phys_link {
 	__u8     phy_handle;
@@ -588,8 +541,6 @@ struct hci_cp_flow_spec_modify {
 	struct hci_ext_fs  rx_fs;
 } __packed;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define HCI_OP_SNIFF_MODE		0x0803
 struct hci_cp_sniff_mode {
 	__le16   handle;
@@ -750,15 +701,12 @@ struct hci_cp_write_voice_setting {
 	__le16   voice_setting;
 } __packed;
 
-<<<<<<< HEAD
 #define HCI_OP_WRITE_AUTOMATIC_FLUSH_TIMEOUT	0x0c28
 struct hci_cp_write_automatic_flush_timeout {
 	__le16   handle;
 	__le16   timeout;
 } __packed;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define HCI_OP_HOST_BUFFER_SIZE		0x0c33
 struct hci_cp_host_buffer_size {
 	__le16   acl_mtu;
@@ -767,15 +715,12 @@ struct hci_cp_host_buffer_size {
 	__le16   sco_max_pkt;
 } __packed;
 
-<<<<<<< HEAD
 #define HCI_OP_WRITE_CURRENT_IAC_LAP	0x0c3a
 struct hci_cp_write_current_iac_lap {
 	__u8     num_current_iac;
 	__u8     lap[6];
 } __packed;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define HCI_OP_WRITE_INQUIRY_MODE	0x0c45
 
 #define HCI_MAX_EIR_LENGTH		240
@@ -806,7 +751,6 @@ struct hci_rp_read_local_oob_data {
 
 #define HCI_OP_READ_INQ_RSP_TX_POWER	0x0c58
 
-<<<<<<< HEAD
 #define HCI_OP_READ_LL_TIMEOUT		0x0c61
 struct hci_rp_read_ll_timeout {
 	__u8     status;
@@ -873,8 +817,6 @@ struct hci_cp_short_range_mode {
 	__u8     mode;
 } __packed;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define HCI_OP_READ_LOCAL_VERSION	0x1001
 struct hci_rp_read_local_version {
 	__u8     status;
@@ -920,7 +862,6 @@ struct hci_rp_read_bd_addr {
 	bdaddr_t bdaddr;
 } __packed;
 
-<<<<<<< HEAD
 #define HCI_OP_READ_DATA_BLOCK_SIZE	0x100a
 struct hci_rp_read_data_block_size {
 	__u8     status;
@@ -982,8 +923,6 @@ struct hci_rp_write_remote_amp_assoc {
 	__u8     phy_handle;
 } __packed;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define HCI_OP_LE_SET_EVENT_MASK	0x2001
 struct hci_cp_le_set_event_mask {
 	__u8     mask[8];
@@ -996,7 +935,6 @@ struct hci_rp_le_read_buffer_size {
 	__u8     le_max_pkt;
 } __packed;
 
-<<<<<<< HEAD
 #define HCI_OP_LE_SET_SCAN_PARAMETERS	0x200b
 struct hci_cp_le_set_scan_parameters {
 	__u8	type;
@@ -1012,8 +950,6 @@ struct hci_cp_le_set_scan_enable {
 	__u8	filter_dup;
 } __packed;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define HCI_OP_LE_CREATE_CONN		0x200d
 struct hci_cp_le_create_conn {
 	__le16   scan_interval;
@@ -1032,7 +968,6 @@ struct hci_cp_le_create_conn {
 
 #define HCI_OP_LE_CREATE_CONN_CANCEL	0x200e
 
-<<<<<<< HEAD
 #define HCI_OP_LE_READ_WHITE_LIST_SIZE	0x200F
 struct hci_rp_le_read_white_list_size {
 	__u8     status;
@@ -1053,8 +988,6 @@ struct hci_cp_le_remove_dev_white_list {
 	bdaddr_t addr;
 } __packed;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define HCI_OP_LE_CONN_UPDATE		0x2013
 struct hci_cp_le_conn_update {
 	__le16   handle;
@@ -1066,7 +999,6 @@ struct hci_cp_le_conn_update {
 	__le16   max_ce_len;
 } __packed;
 
-<<<<<<< HEAD
 #define HCI_OP_LE_ENCRYPT		0x2017
 struct hci_cp_le_encrypt {
 	__u8	key[16];
@@ -1104,8 +1036,6 @@ struct hci_rp_le_ltk_neg_reply {
 	__le16	handle;
 } __packed;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* ---- HCI Events ---- */
 #define HCI_EV_INQUIRY_COMPLETE		0x01
 
@@ -1360,14 +1290,11 @@ struct hci_ev_user_confirm_req {
 	__le32		passkey;
 } __packed;
 
-<<<<<<< HEAD
 #define HCI_EV_USER_PASSKEY_REQUEST	0x34
 struct hci_ev_user_passkey_request {
 	bdaddr_t bdaddr;
 } __packed;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define HCI_EV_REMOTE_OOB_DATA_REQUEST	0x35
 struct hci_ev_remote_oob_data_request {
 	bdaddr_t bdaddr;
@@ -1379,15 +1306,12 @@ struct hci_ev_simple_pair_complete {
 	bdaddr_t bdaddr;
 } __packed;
 
-<<<<<<< HEAD
 #define HCI_EV_USER_PASSKEY_NOTIFICATION	0x3b
 struct hci_ev_user_passkey_notification {
 	bdaddr_t	bdaddr;
 	__le32		passkey;
 } __packed;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define HCI_EV_REMOTE_HOST_FEATURES	0x3d
 struct hci_ev_remote_host_features {
 	bdaddr_t bdaddr;
@@ -1413,7 +1337,6 @@ struct hci_ev_le_conn_complete {
 	__u8     clk_accurancy;
 } __packed;
 
-<<<<<<< HEAD
 #define ADV_IND		0x00
 #define ADV_DIRECT_IND	0x01
 #define ADV_SCAN_IND	0x02
@@ -1507,8 +1430,6 @@ struct hci_ev_amp_status_change {
 	__u8     amp_status;
 } __packed;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* Internal events generated by Bluetooth stack */
 #define HCI_EV_STACK_INTERNAL	0xfd
 struct hci_ev_stack_internal {
@@ -1556,10 +1477,7 @@ struct hci_sco_hdr {
 	__u8	dlen;
 } __packed;
 
-<<<<<<< HEAD
 #ifdef __KERNEL__
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <linux/skbuff.h>
 static inline struct hci_event_hdr *hci_event_hdr(const struct sk_buff *skb)
 {
@@ -1575,10 +1493,7 @@ static inline struct hci_sco_hdr *hci_sco_hdr(const struct sk_buff *skb)
 {
 	return (struct hci_sco_hdr *) skb->data;
 }
-<<<<<<< HEAD
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* Command opcode pack/unpack */
 #define hci_opcode_pack(ogf, ocf)	(__u16) ((ocf & 0x03ff)|(ogf << 10))
@@ -1672,14 +1587,11 @@ struct hci_conn_info {
 	__u8     out;
 	__u16    state;
 	__u32    link_mode;
-<<<<<<< HEAD
 	__u32    mtu;
 	__u32    cnt;
 	__u32    pkts;
 	__u8     pending_sec_level;
 	__u8     ssp_mode;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 struct hci_dev_req {

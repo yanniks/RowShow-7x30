@@ -96,10 +96,7 @@ config SND_SOC_ALL_CODECS
 	select SND_SOC_WM9705 if SND_SOC_AC97_BUS
 	select SND_SOC_WM9712 if SND_SOC_AC97_BUS
 	select SND_SOC_WM9713 if SND_SOC_AC97_BUS
-<<<<<<< HEAD
 	select SND_SOC_TIMPANI if MARIMBA_CORE
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
         help
           Normally ASoC codec drivers are only built if a machine driver which
           uses them is also built since they are only usable with a machine
@@ -240,18 +237,11 @@ config SND_SOC_TLV320DAC33
 	tristate
 
 config SND_SOC_TWL4030
-<<<<<<< HEAD
 	select MFD_TWL4030_AUDIO
 	tristate
 
 config SND_SOC_TWL6040
 	select TWL6040_CORE
-=======
-	select TWL4030_CODEC
-	tristate
-
-config SND_SOC_TWL6040
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	tristate
 
 config SND_SOC_UDA134X
@@ -260,12 +250,9 @@ config SND_SOC_UDA134X
 config SND_SOC_UDA1380
         tristate
 
-<<<<<<< HEAD
 config SND_SOC_WCD9310
         tristate
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config SND_SOC_WL1273
 	tristate
 
@@ -404,9 +391,6 @@ config SND_SOC_WM2000
 
 config SND_SOC_WM9090
 	tristate
-<<<<<<< HEAD
 
 config SND_SOC_MSM_STUB
 	tristate
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

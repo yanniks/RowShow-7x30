@@ -34,11 +34,8 @@
 #if defined(CONFIG_ARCH_MSM7X30)
 #define MSM_GPIO1_REG(off) (MSM_GPIO1_BASE + (off))
 #define MSM_GPIO2_REG(off) (MSM_GPIO2_BASE + 0x400 + (off))
-<<<<<<< HEAD
 #elif defined(CONFIG_ARCH_FSM9XXX)
 #define MSM_GPIO1_REG(off) (MSM_TLMM_BASE + (off))
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #else
 #define MSM_GPIO1_REG(off) (MSM_GPIO1_BASE + 0x800 + (off))
 #define MSM_GPIO2_REG(off) (MSM_GPIO2_BASE + 0xC00 + (off))
@@ -280,7 +277,6 @@
 
 #endif
 
-<<<<<<< HEAD
 #if defined(CONFIG_ARCH_FSM9XXX)
 
 /* output value */
@@ -319,6 +315,4 @@
 
 #endif /* CONFIG_ARCH_FSM9XXX */
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif

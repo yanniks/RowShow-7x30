@@ -250,10 +250,6 @@ static void hostfs_evict_inode(struct inode *inode)
 static void hostfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
-<<<<<<< HEAD
-=======
-	INIT_LIST_HEAD(&inode->i_dentry);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	kfree(HOSTFS_I(inode));
 }
 
@@ -365,7 +361,6 @@ retry:
 	return 0;
 }
 
-<<<<<<< HEAD
 int hostfs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 {
 	struct inode *inode = file->f_mapping->host;
@@ -380,11 +375,6 @@ int hostfs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 	mutex_unlock(&inode->i_mutex);
 
 	return ret;
-=======
-int hostfs_fsync(struct file *file, int datasync)
-{
-	return fsync_file(HOSTFS_I(file->f_mapping->host)->fd, datasync);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static const struct file_operations hostfs_file_fops = {
@@ -561,11 +551,7 @@ static int read_name(struct inode *ino, char *name)
 	return 0;
 }
 
-<<<<<<< HEAD
 int hostfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
-=======
-int hostfs_create(struct inode *dir, struct dentry *dentry, int mode,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		  struct nameidata *nd)
 {
 	struct inode *inode;
@@ -714,11 +700,7 @@ int hostfs_rmdir(struct inode *ino, struct dentry *dentry)
 	return err;
 }
 
-<<<<<<< HEAD
 static int hostfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t dev)
-=======
-int hostfs_mknod(struct inode *dir, struct dentry *dentry, int mode, dev_t dev)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inode *inode;
 	char *name;
@@ -776,20 +758,12 @@ int hostfs_rename(struct inode *from_ino, struct dentry *from,
 	return err;
 }
 
-<<<<<<< HEAD
 int hostfs_permission(struct inode *ino, int desired)
-=======
-int hostfs_permission(struct inode *ino, int desired, unsigned int flags)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	char *name;
 	int r = 0, w = 0, x = 0, err;
 
-<<<<<<< HEAD
 	if (desired & MAY_NOT_BLOCK)
-=======
-	if (flags & IPERM_FLAG_RCU)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return -ECHILD;
 
 	if (desired & MAY_READ) r = 1;
@@ -806,11 +780,7 @@ int hostfs_permission(struct inode *ino, int desired, unsigned int flags)
 		err = access_file(name, r, w, x);
 	__putname(name);
 	if (!err)
-<<<<<<< HEAD
 		err = generic_permission(ino, desired);
-=======
-		err = generic_permission(ino, desired, flags, NULL);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return err;
 }
 

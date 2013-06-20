@@ -500,10 +500,6 @@ static struct inode *ext3_alloc_inode(struct super_block *sb)
 static void ext3_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
-<<<<<<< HEAD
-=======
-	INIT_LIST_HEAD(&inode->i_dentry);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	kmem_cache_free(ext3_inode_cachep, EXT3_I(inode));
 }
 
@@ -2219,19 +2215,11 @@ static journal_t *ext3_get_dev_journal(struct super_block *sb,
 		goto out_bdev;
 	}
 	journal->j_private = sb;
-<<<<<<< HEAD
 	if (!bh_uptodate_or_lock(journal->j_sb_buffer)) {
 		if (bh_submit_read(journal->j_sb_buffer)) {
 			ext3_msg(sb, KERN_ERR, "I/O error on journal device");
 			goto out_journal;
 		}
-=======
-	ll_rw_block(READ, 1, &journal->j_sb_buffer);
-	wait_on_buffer(journal->j_sb_buffer);
-	if (!buffer_uptodate(journal->j_sb_buffer)) {
-		ext3_msg(sb, KERN_ERR, "I/O error on journal device");
-		goto out_journal;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	if (be32_to_cpu(journal->j_superblock->s_nr_users) != 1) {
 		ext3_msg(sb, KERN_ERR,
@@ -2906,11 +2894,7 @@ static int ext3_quota_on(struct super_block *sb, int type, int format_id,
 		return -EINVAL;
 
 	/* Quotafile not on the same filesystem? */
-<<<<<<< HEAD
 	if (path->dentry->d_sb != sb)
-=======
-	if (path->mnt->mnt_sb != sb)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return -EXDEV;
 	/* Journaling quota? */
 	if (EXT3_SB(sb)->s_qf_names[type]) {

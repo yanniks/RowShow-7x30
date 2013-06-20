@@ -1495,7 +1495,6 @@ static int functionfs_bind_config(struct usb_composite_dev *cdev,
 
 static void ffs_func_free(struct ffs_function *func)
 {
-<<<<<<< HEAD
 	struct ffs_ep *ep         = func->eps;
 	unsigned count            = func->ffs->eps_count;
 	unsigned long flags;
@@ -1512,10 +1511,6 @@ static void ffs_func_free(struct ffs_function *func)
 	} while (--count);
 	spin_unlock_irqrestore(&func->ffs->eps_lock, flags);
 
-=======
-	ENTER();
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	ffs_data_put(func->ffs);
 
 	kfree(func->eps);

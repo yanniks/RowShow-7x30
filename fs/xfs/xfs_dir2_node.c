@@ -1641,11 +1641,7 @@ xfs_dir2_node_addname_int(
 
 			if (unlikely(xfs_dir2_db_to_fdb(mp, dbno) != fbno)) {
 				xfs_alert(mp,
-<<<<<<< HEAD
 			"%s: dir ino %llu needed freesp block %lld for\n"
-=======
-			"%s: dir ino " "%llu needed freesp block %lld for\n"
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			"  data block %lld, got %lld ifbno %llu lastfbno %d",
 					__func__, (unsigned long long)dp->i_ino,
 					(long long)xfs_dir2_db_to_fdb(mp, dbno),

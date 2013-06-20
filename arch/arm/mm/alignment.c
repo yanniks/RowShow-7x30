@@ -726,11 +726,8 @@ do_alignment(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 	int isize = 4;
 	int thumb2_32b = 0;
 
-<<<<<<< HEAD
 	offset.un = 0;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	instrptr = instruction_pointer(regs);
 
 	if (thumb_mode(regs)) {

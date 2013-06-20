@@ -872,12 +872,9 @@ static void usb_bus_init (struct usb_bus *bus)
 	bus->bandwidth_isoc_reqs = 0;
 
 	INIT_LIST_HEAD (&bus->bus_list);
-<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG
 	INIT_DELAYED_WORK(&bus->hnp_polling, usb_hnp_polling_work);
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /*-------------------------------------------------------------------------*/
@@ -907,14 +904,11 @@ static int usb_register_bus(struct usb_bus *bus)
 	/* Add it to the local list of buses */
 	list_add (&bus->bus_list, &usb_bus_list);
 	mutex_unlock(&usb_bus_list_lock);
-<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG
 	/* Obvioulsy HNP is supported on B-host */
 	if (bus->is_b_host)
 		bus->hnp_support = 1;
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	usb_notify_add_bus(bus);
 
@@ -1775,11 +1769,6 @@ int usb_hcd_alloc_bandwidth(struct usb_device *udev,
 		struct usb_interface *iface = usb_ifnum_to_if(udev,
 				cur_alt->desc.bInterfaceNumber);
 
-<<<<<<< HEAD
-=======
-		if (!iface)
-			return -EINVAL;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (iface->resetting_device) {
 			/*
 			 * The USB core just reset the device, so the xHCI host

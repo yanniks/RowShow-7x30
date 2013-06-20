@@ -155,11 +155,7 @@ struct bsd_db {
 #define LAST	255
 
 #define MAXCODE(b)	((1 << (b)) - 1)
-<<<<<<< HEAD
 #define BADCODEM1	MAXCODE(MAX_BSD_BITS)
-=======
-#define BADCODEM1	MAXCODE(MAX_BSD_BITS);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #define BSD_HASH(prefix,suffix,hshift) ((((unsigned long)(suffix))<<(hshift)) \
 					 ^ (unsigned long)(prefix))

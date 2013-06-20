@@ -96,13 +96,10 @@ static inline int usb_remote_wakeup(struct usb_device *udev)
 
 #endif
 
-<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG
 extern void usb_hnp_polling_work(struct work_struct *work);
 #endif
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern struct bus_type usb_bus_type;
 extern struct device_type usb_device_type;
 extern struct device_type usb_if_device_type;
@@ -166,10 +163,7 @@ extern void usb_devio_cleanup(void);
 /* internal notify stuff */
 extern void usb_notify_add_device(struct usb_device *udev);
 extern void usb_notify_remove_device(struct usb_device *udev);
-<<<<<<< HEAD
 extern void usb_notify_config_device(struct usb_device *udev);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern void usb_notify_add_bus(struct usb_bus *ubus);
 extern void usb_notify_remove_bus(struct usb_bus *ubus);
 

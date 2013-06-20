@@ -1792,13 +1792,8 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
 				btrfs_read_buffer(next, ptr_gen);
 
 				btrfs_tree_lock(next);
-<<<<<<< HEAD
 				btrfs_set_lock_blocking(next);
 				clean_tree_block(trans, root, next);
-=======
-				clean_tree_block(trans, root, next);
-				btrfs_set_lock_blocking(next);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				btrfs_wait_tree_block_writeback(next);
 				btrfs_tree_unlock(next);
 
@@ -1863,13 +1858,8 @@ static noinline int walk_up_log_tree(struct btrfs_trans_handle *trans,
 				next = path->nodes[*level];
 
 				btrfs_tree_lock(next);
-<<<<<<< HEAD
 				btrfs_set_lock_blocking(next);
 				clean_tree_block(trans, root, next);
-=======
-				clean_tree_block(trans, root, next);
-				btrfs_set_lock_blocking(next);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				btrfs_wait_tree_block_writeback(next);
 				btrfs_tree_unlock(next);
 
@@ -1936,13 +1926,8 @@ static int walk_log_tree(struct btrfs_trans_handle *trans,
 			next = path->nodes[orig_level];
 
 			btrfs_tree_lock(next);
-<<<<<<< HEAD
 			btrfs_set_lock_blocking(next);
 			clean_tree_block(trans, log, next);
-=======
-			clean_tree_block(trans, log, next);
-			btrfs_set_lock_blocking(next);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			btrfs_wait_tree_block_writeback(next);
 			btrfs_tree_unlock(next);
 

@@ -71,21 +71,12 @@ out:
 	return ret;
 }
 
-<<<<<<< HEAD
 void btrfs_set_root_node(struct btrfs_root_item *item,
 			 struct extent_buffer *node)
-=======
-int btrfs_set_root_node(struct btrfs_root_item *item,
-			struct extent_buffer *node)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	btrfs_set_root_bytenr(item, node->start);
 	btrfs_set_root_level(item, btrfs_header_level(node));
 	btrfs_set_root_generation(item, btrfs_header_generation(node));
-<<<<<<< HEAD
-=======
-	return 0;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /*

@@ -275,10 +275,7 @@ static int pfkey_broadcast(struct sk_buff *skb, gfp_t allocation,
 
 	kfree_skb(skb2);
 	kfree_skb(skb);
-<<<<<<< HEAD
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return err;
 }
 
@@ -3574,10 +3571,7 @@ static int pfkey_sendmsg(struct kiocb *kiocb,
 out:
 	if (err && hdr && pfkey_error(hdr, err, sk) == 0)
 		err = 0;
-<<<<<<< HEAD
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	kfree_skb(skb);
 
 	return err ? : len;

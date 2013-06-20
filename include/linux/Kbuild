@@ -366,10 +366,7 @@ header-y += tty.h
 header-y += types.h
 header-y += udf_fs_i.h
 header-y += udp.h
-<<<<<<< HEAD
 header-y += uhid.h
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 header-y += uinput.h
 header-y += uio.h
 header-y += ultrasound.h
@@ -403,7 +400,6 @@ header-y += wireless.h
 header-y += x25.h
 header-y += xattr.h
 header-y += xfrm.h
-<<<<<<< HEAD
 header-y += android_pmem.h
 header-y += ashmem.h
 header-y += genlock.h
@@ -420,5 +416,3 @@ header-y += msm_vidc_dec.h
 header-y += msm_vidc_enc.h
 header-y += spi_aic3254.h
 header-y += tpa2051d3.h
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

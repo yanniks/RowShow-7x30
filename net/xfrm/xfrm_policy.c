@@ -1349,7 +1349,6 @@ static inline struct xfrm_dst *xfrm_alloc_dst(struct net *net, int family)
 		BUG();
 	}
 	xdst = dst_alloc(dst_ops, NULL, 0, 0, 0);
-<<<<<<< HEAD
 
 	if (likely(xdst)) {
 		memset(&xdst->u.rt6.rt6i_table, 0,
@@ -1360,16 +1359,6 @@ static inline struct xfrm_dst *xfrm_alloc_dst(struct net *net, int family)
 
 	xfrm_policy_put_afinfo(afinfo);
 
-=======
-	memset(&xdst->u.rt6.rt6i_table, 0, sizeof(*xdst) - sizeof(struct dst_entry));
-	xfrm_policy_put_afinfo(afinfo);
-
-	if (likely(xdst))
-		xdst->flo.ops = &xfrm_bundle_fc_ops;
-	else
-		xdst = ERR_PTR(-ENOBUFS);
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return xdst;
 }
 

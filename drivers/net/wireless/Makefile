@@ -52,20 +52,14 @@ obj-$(CONFIG_ATH_COMMON)	+= ath/
 obj-$(CONFIG_MAC80211_HWSIM)	+= mac80211_hwsim.o
 
 obj-$(CONFIG_WL1251)	+= wl1251/
-<<<<<<< HEAD
 # HTC_WIFI_START
 obj-$(CONFIG_WL12XX_PLATFORM_DATA)    += wl12xx/
 #obj-$(CONFIG_WL12XX_PLATFORM_DATA)     += wl12xx/wl12xx_platform_data.o
 # HTC_WIFI_END
-=======
-obj-$(CONFIG_WL12XX)	+= wl12xx/
-obj-$(CONFIG_WL12XX_PLATFORM_DATA)	+= wl12xx/
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 obj-$(CONFIG_IWM)	+= iwmc3200wifi/
 
 obj-$(CONFIG_MWIFIEX)	+= mwifiex/
-<<<<<<< HEAD
 
 obj-$(CONFIG_BCM4329)	+= bcm4329/
 ifeq ($(CONFIG_BCMDHD_GOOGLE),y)
@@ -81,5 +75,3 @@ obj-$(CONFIG_QUALCOMM_WLAN)        += qualcomm_wlan/prima/CORE/HDD/src/
 
 obj-$(CONFIG_BCM4329_248)	+= bcm4329_248/
 obj-$(CONFIG_BCM4330B2)   += bcm4330b2/
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

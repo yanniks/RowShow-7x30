@@ -116,11 +116,8 @@ xfs_get_acl(struct inode *inode, int type)
 	if (acl != ACL_NOT_CACHED)
 		return acl;
 
-<<<<<<< HEAD
 	trace_xfs_get_acl(ip);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	switch (type) {
 	case ACL_TYPE_ACCESS:
 		ea_name = SGI_ACL_FILE;
@@ -225,47 +222,8 @@ xfs_set_acl(struct inode *inode, int type, struct posix_acl *acl)
 	return error;
 }
 
-<<<<<<< HEAD
 static int
 xfs_set_mode(struct inode *inode, umode_t mode)
-=======
-int
-xfs_check_acl(struct inode *inode, int mask, unsigned int flags)
-{
-	struct xfs_inode *ip;
-	struct posix_acl *acl;
-	int error = -EAGAIN;
-
-	ip = XFS_I(inode);
-	trace_xfs_check_acl(ip);
-
-	/*
-	 * If there is no attribute fork no ACL exists on this inode and
-	 * we can skip the whole exercise.
-	 */
-	if (!XFS_IFORK_Q(ip))
-		return -EAGAIN;
-
-	if (flags & IPERM_FLAG_RCU) {
-		if (!negative_cached_acl(inode, ACL_TYPE_ACCESS))
-			return -ECHILD;
-		return -EAGAIN;
-	}
-
-	acl = xfs_get_acl(inode, ACL_TYPE_ACCESS);
-	if (IS_ERR(acl))
-		return PTR_ERR(acl);
-	if (acl) {
-		error = posix_acl_permission(inode, acl, mask);
-		posix_acl_release(acl);
-	}
-
-	return error;
-}
-
-static int
-xfs_set_mode(struct inode *inode, mode_t mode)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	int error = 0;
 
@@ -309,7 +267,6 @@ posix_acl_default_exists(struct inode *inode)
  * No need for i_mutex because the inode is not yet exposed to the VFS.
  */
 int
-<<<<<<< HEAD
 xfs_inherit_acl(struct inode *inode, struct posix_acl *acl)
 {
 	umode_t mode = inode->i_mode;
@@ -327,31 +284,6 @@ xfs_inherit_acl(struct inode *inode, struct posix_acl *acl)
 
 	/*
 	 * If posix_acl_create returns a positive value we need to
-=======
-xfs_inherit_acl(struct inode *inode, struct posix_acl *default_acl)
-{
-	struct posix_acl *clone;
-	mode_t mode;
-	int error = 0, inherit = 0;
-
-	if (S_ISDIR(inode->i_mode)) {
-		error = xfs_set_acl(inode, ACL_TYPE_DEFAULT, default_acl);
-		if (error)
-			return error;
-	}
-
-	clone = posix_acl_clone(default_acl, GFP_KERNEL);
-	if (!clone)
-		return -ENOMEM;
-
-	mode = inode->i_mode;
-	error = posix_acl_create_masq(clone, &mode);
-	if (error < 0)
-		goto out_release_clone;
-
-	/*
-	 * If posix_acl_create_masq returns a positive value we need to
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	 * inherit a permission that can't be represented using the Unix
 	 * mode bits and we actually need to set an ACL.
 	 */
@@ -360,7 +292,6 @@ xfs_inherit_acl(struct inode *inode, struct posix_acl *default_acl)
 
 	error = xfs_set_mode(inode, mode);
 	if (error)
-<<<<<<< HEAD
 		goto out;
 
 	if (inherit)
@@ -368,26 +299,13 @@ xfs_inherit_acl(struct inode *inode, struct posix_acl *default_acl)
 
 out:
 	posix_acl_release(acl);
-=======
-		goto out_release_clone;
-
-	if (inherit)
-		error = xfs_set_acl(inode, ACL_TYPE_ACCESS, clone);
-
- out_release_clone:
-	posix_acl_release(clone);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return error;
 }
 
 int
 xfs_acl_chmod(struct inode *inode)
 {
-<<<<<<< HEAD
 	struct posix_acl *acl;
-=======
-	struct posix_acl *acl, *clone;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int error;
 
 	if (S_ISLNK(inode->i_mode))
@@ -397,25 +315,12 @@ xfs_acl_chmod(struct inode *inode)
 	if (IS_ERR(acl) || !acl)
 		return PTR_ERR(acl);
 
-<<<<<<< HEAD
 	error = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
 	if (error)
 		return error;
 
 	error = xfs_set_acl(inode, ACL_TYPE_ACCESS, acl);
 	posix_acl_release(acl);
-=======
-	clone = posix_acl_clone(acl, GFP_KERNEL);
-	posix_acl_release(acl);
-	if (!clone)
-		return -ENOMEM;
-
-	error = posix_acl_chmod_masq(clone, inode->i_mode);
-	if (!error)
-		error = xfs_set_acl(inode, ACL_TYPE_ACCESS, clone);
-
-	posix_acl_release(clone);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return error;
 }
 
@@ -478,11 +383,7 @@ xfs_xattr_acl_set(struct dentry *dentry, const char *name,
 		goto out_release;
 
 	if (type == ACL_TYPE_ACCESS) {
-<<<<<<< HEAD
 		umode_t mode = inode->i_mode;
-=======
-		mode_t mode = inode->i_mode;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		error = posix_acl_equiv_mode(acl, &mode);
 
 		if (error <= 0) {

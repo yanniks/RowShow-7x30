@@ -57,7 +57,6 @@ config MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER
 
 	  This is the case for the Freescale eSDHC and Nintendo Wii SDHCI.
 
-<<<<<<< HEAD
 config MMC_SDHCI_NATIVE_BLOCKSIZE
 	bool "Use Host Controller's actual blocksize"
 	depends on MMC_SDHCI && EXPERIMENTAL
@@ -69,8 +68,6 @@ config MMC_SDHCI_NATIVE_BLOCKSIZE
 
 	  I have seen no corruption on a Tegra2, but if unsure, say N.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config MMC_SDHCI_PCI
 	tristate "SDHCI support on PCI bus"
 	depends on MMC_SDHCI && PCI
@@ -456,7 +453,6 @@ config MMC_SDRICOH_CS
 config MMC_TMIO_CORE
 	tristate
 
-<<<<<<< HEAD
 config MMC_MSM
 	tristate "Qualcomm SDCC Controller Support"
 	depends on MMC && ARCH_MSM
@@ -561,8 +557,6 @@ config MMC_MSM_SPS_SUPPORT
 	help
 	  Select Y to use SPS BAM as data mover
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config MMC_TMIO
 	tristate "Toshiba Mobile IO Controller (TMIO) MMC/SD function support"
 	depends on MFD_TMIO || MFD_ASIC3
@@ -700,11 +694,8 @@ config MMC_USHC
 
 	  Note: These controllers only support SDIO cards and do not
 	  support MMC or SD memory cards.
-<<<<<<< HEAD
 
 config MMC_ATHEROS_SDIO
         bool "Use Atheros Wi-FI chip and SDIO IRQ"
         help
 	  Use Atheros Wi-FI chip and SDIO IRQ
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

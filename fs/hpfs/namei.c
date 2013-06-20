@@ -115,11 +115,7 @@ bail:
 	return err;
 }
 
-<<<<<<< HEAD
 static int hpfs_create(struct inode *dir, struct dentry *dentry, umode_t mode, struct nameidata *nd)
-=======
-static int hpfs_create(struct inode *dir, struct dentry *dentry, int mode, struct nameidata *nd)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	const unsigned char *name = dentry->d_name.name;
 	unsigned len = dentry->d_name.len;
@@ -205,11 +201,7 @@ bail:
 	return err;
 }
 
-<<<<<<< HEAD
 static int hpfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t rdev)
-=======
-static int hpfs_mknod(struct inode *dir, struct dentry *dentry, int mode, dev_t rdev)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	const unsigned char *name = dentry->d_name.name;
 	unsigned len = dentry->d_name.len;
@@ -406,11 +398,7 @@ again:
 			hpfs_unlock(dir->i_sb);
 			return -ENOSPC;
 		}
-<<<<<<< HEAD
 		if (generic_permission(inode, MAY_WRITE) ||
-=======
-		if (generic_permission(inode, MAY_WRITE, 0, NULL) ||
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		    !S_ISREG(inode->i_mode) ||
 		    get_write_access(inode)) {
 			d_rehash(dentry);

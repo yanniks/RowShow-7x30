@@ -27,7 +27,6 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 			struct page **pagep, void **fsdata);
 static int jffs2_readpage (struct file *filp, struct page *pg);
 
-<<<<<<< HEAD
 int jffs2_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
 {
 	struct inode *inode = filp->f_mapping->host;
@@ -42,15 +41,6 @@ int jffs2_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
 	/* Trigger GC to flush any pending writes for this inode */
 	jffs2_flush_wbuf_gc(c, inode->i_ino);
 	mutex_unlock(&inode->i_mutex);
-=======
-int jffs2_fsync(struct file *filp, int datasync)
-{
-	struct inode *inode = filp->f_mapping->host;
-	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
-
-	/* Trigger GC to flush any pending writes for this inode */
-	jffs2_flush_wbuf_gc(c, inode->i_ino);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return 0;
 }
@@ -73,11 +63,7 @@ const struct file_operations jffs2_file_operations =
 
 const struct inode_operations jffs2_file_inode_operations =
 {
-<<<<<<< HEAD
 	.get_acl =	jffs2_get_acl,
-=======
-	.check_acl =	jffs2_check_acl,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	.setattr =	jffs2_setattr,
 	.setxattr =	jffs2_setxattr,
 	.getxattr =	jffs2_getxattr,

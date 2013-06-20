@@ -122,11 +122,7 @@ static void blk_flush_restore_request(struct request *rq)
 
 	/* make @rq a normal request */
 	rq->cmd_flags &= ~REQ_FLUSH_SEQ;
-<<<<<<< HEAD
 	rq->end_io = rq->flush.saved_end_io;
-=======
-	rq->end_io = NULL;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /**
@@ -304,12 +300,6 @@ void blk_insert_flush(struct request *rq)
 	unsigned int fflags = q->flush_flags;	/* may change, cache */
 	unsigned int policy = blk_flush_policy(fflags, rq);
 
-<<<<<<< HEAD
-=======
-	BUG_ON(rq->end_io);
-	BUG_ON(!rq->bio || rq->bio != rq->biotail);
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/*
 	 * @policy now records what operations need to be done.  Adjust
 	 * REQ_FLUSH and FUA for the driver.
@@ -319,7 +309,6 @@ void blk_insert_flush(struct request *rq)
 		rq->cmd_flags &= ~REQ_FUA;
 
 	/*
-<<<<<<< HEAD
 	 * An empty flush handed down from a stacking driver may
 	 * translate into nothing if the underlying device does not
 	 * advertise a write-back cache.  In this case, simply
@@ -333,8 +322,6 @@ void blk_insert_flush(struct request *rq)
 	BUG_ON(rq->bio != rq->biotail); /*assumes zero or single bio rq */
 
 	/*
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	 * If there's data but flush is not necessary, the request can be
 	 * processed directly without going through flush machinery.  Queue
 	 * for normal execution.
@@ -352,10 +339,7 @@ void blk_insert_flush(struct request *rq)
 	memset(&rq->flush, 0, sizeof(rq->flush));
 	INIT_LIST_HEAD(&rq->flush.list);
 	rq->cmd_flags |= REQ_FLUSH_SEQ;
-<<<<<<< HEAD
 	rq->flush.saved_end_io = rq->end_io; /* Usually NULL */
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	rq->end_io = flush_data_end_io;
 
 	blk_flush_complete_seq(rq, REQ_FSEQ_ACTIONS & ~policy, 0);
@@ -463,14 +447,10 @@ int blkdev_issue_flush(struct block_device *bdev, gfp_t gfp_mask,
 
 	if (!bio_flagged(bio, BIO_UPTODATE))
 		ret = -EIO;
-<<<<<<< HEAD
 	else if (bdev != bdev->bd_contains)
 		/* invalidate parent block_device */
 		invalidate_bdev(bdev->bd_contains);
  
-=======
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	bio_put(bio);
 	return ret;
 }

@@ -59,11 +59,6 @@ struct bio {
 
 	unsigned int		bi_max_vecs;	/* max bvl_vecs we can hold */
 
-<<<<<<< HEAD
-=======
-	unsigned int		bi_comp_cpu;	/* completion CPU */
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	atomic_t		bi_cnt;		/* pin count */
 
 	struct bio_vec		*bi_io_vec;	/* the actual vec list */
@@ -96,18 +91,10 @@ struct bio {
 #define BIO_BOUNCED	5	/* bio is a bounce bio */
 #define BIO_USER_MAPPED 6	/* contains user pages */
 #define BIO_EOPNOTSUPP	7	/* not supported */
-<<<<<<< HEAD
 #define BIO_NULL_MAPPED 8	/* contains invalid user pages */
 #define BIO_FS_INTEGRITY 9	/* fs owns integrity data, not block layer */
 #define BIO_QUIET	10	/* Make BIO Quiet */
 #define BIO_MAPPED_INTEGRITY 11/* integrity metadata has been remapped */
-=======
-#define BIO_CPU_AFFINE	8	/* complete bio on same CPU as submitted */
-#define BIO_NULL_MAPPED 9	/* contains invalid user pages */
-#define BIO_FS_INTEGRITY 10	/* fs owns integrity data, not block layer */
-#define BIO_QUIET	11	/* Make BIO Quiet */
-#define BIO_MAPPED_INTEGRITY 12/* integrity metadata has been remapped */
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define bio_flagged(bio, flag)	((bio)->bi_flags & (1 << (flag)))
 
 /*
@@ -134,10 +121,7 @@ enum rq_flag_bits {
 
 	__REQ_SYNC,		/* request is sync (sync write or read) */
 	__REQ_META,		/* metadata io request */
-<<<<<<< HEAD
 	__REQ_PRIO,		/* boost priority in cfq */
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	__REQ_DISCARD,		/* request to discard sectors */
 	__REQ_NOIDLE,		/* don't anticipate more IO after this one */
 
@@ -147,11 +131,7 @@ enum rq_flag_bits {
 				 * throttling rules. Don't do it again. */
 
 	/* request only flags */
-<<<<<<< HEAD
 	__REQ_SORTED = __REQ_RAHEAD,	/* elevator knows about this request */
-=======
-	__REQ_SORTED,		/* elevator knows about this request */
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	__REQ_SOFTBARRIER,	/* may not be passed by ioscheduler */
 	__REQ_FUA,		/* forced unit access */
 	__REQ_NOMERGE,		/* don't touch this for merging */
@@ -169,14 +149,11 @@ enum rq_flag_bits {
 	__REQ_IO_STAT,		/* account I/O stat */
 	__REQ_MIXED_MERGE,	/* merge of different types, fail separately */
 	__REQ_SECURE,		/* secure discard (used with __REQ_DISCARD) */
-<<<<<<< HEAD
 /* Modified by Memory, Studio Software for Zimmer */
 #if defined(CONFIG_ZIMMER)
 	__REQ_SWAPIN_DMPG,	/* request to swap-in page from swap area or demand paging */
 #endif
 	__REQ_URGENT,		/* urgent request */
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	__REQ_NR_BITS,		/* stops here */
 };
 
@@ -186,25 +163,16 @@ enum rq_flag_bits {
 #define REQ_FAILFAST_DRIVER	(1 << __REQ_FAILFAST_DRIVER)
 #define REQ_SYNC		(1 << __REQ_SYNC)
 #define REQ_META		(1 << __REQ_META)
-<<<<<<< HEAD
 #define REQ_PRIO		(1 << __REQ_PRIO)
 #define REQ_DISCARD		(1 << __REQ_DISCARD)
 #define REQ_URGENT		(1 << __REQ_URGENT)
-=======
-#define REQ_DISCARD		(1 << __REQ_DISCARD)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define REQ_NOIDLE		(1 << __REQ_NOIDLE)
 
 #define REQ_FAILFAST_MASK \
 	(REQ_FAILFAST_DEV | REQ_FAILFAST_TRANSPORT | REQ_FAILFAST_DRIVER)
 #define REQ_COMMON_MASK \
-<<<<<<< HEAD
 	(REQ_WRITE | REQ_FAILFAST_MASK | REQ_SYNC | REQ_META | REQ_PRIO | \
 	 REQ_DISCARD | REQ_NOIDLE | REQ_FLUSH | REQ_FUA | REQ_SECURE)
-=======
-	(REQ_WRITE | REQ_FAILFAST_MASK | REQ_SYNC | REQ_META | REQ_DISCARD | \
-	 REQ_NOIDLE | REQ_FLUSH | REQ_FUA | REQ_SECURE)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define REQ_CLONE_MASK		REQ_COMMON_MASK
 
 #define REQ_RAHEAD		(1 << __REQ_RAHEAD)
@@ -228,12 +196,9 @@ enum rq_flag_bits {
 #define REQ_IO_STAT		(1 << __REQ_IO_STAT)
 #define REQ_MIXED_MERGE		(1 << __REQ_MIXED_MERGE)
 #define REQ_SECURE		(1 << __REQ_SECURE)
-<<<<<<< HEAD
 /* Modified by Memory, Studio Software for Zimmer */
 #if defined(CONFIG_ZIMMER)
 	#define REQ_SWAPIN_DMPG	(1 << __REQ_SWAPIN_DMPG)
 #endif
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #endif /* __LINUX_BLK_TYPES_H */

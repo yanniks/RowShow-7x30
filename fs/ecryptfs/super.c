@@ -69,10 +69,6 @@ static void ecryptfs_i_callback(struct rcu_head *head)
 	struct ecryptfs_inode_info *inode_info;
 	inode_info = ecryptfs_inode_to_private(inode);
 
-<<<<<<< HEAD
-=======
-	INIT_LIST_HEAD(&inode->i_dentry);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	kmem_cache_free(ecryptfs_inode_info_cache, inode_info);
 }
 

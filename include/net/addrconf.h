@@ -8,11 +8,7 @@
 
 #define TEMP_VALID_LIFETIME		(7*86400)
 #define TEMP_PREFERRED_LIFETIME		(86400)
-<<<<<<< HEAD
 #define REGEN_MAX_RETRY			(3)
-=======
-#define REGEN_MAX_RETRY			(5)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define MAX_DESYNC_FACTOR		(600)
 
 #define ADDR_CHECK_FREQUENCY		(120*HZ)

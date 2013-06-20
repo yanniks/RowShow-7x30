@@ -5,7 +5,6 @@
 # error "please don't include this file directly"
 #endif
 
-<<<<<<< HEAD
 #define TICKET_SHIFT	16
 
 typedef struct {
@@ -24,13 +23,6 @@ typedef struct {
 } arch_spinlock_t;
 
 #define __ARCH_SPIN_LOCK_UNLOCKED	{ { 0 } }
-=======
-typedef struct {
-	volatile unsigned int lock;
-} arch_spinlock_t;
-
-#define __ARCH_SPIN_LOCK_UNLOCKED	{ 0 }
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 typedef struct {
 	volatile unsigned int lock;

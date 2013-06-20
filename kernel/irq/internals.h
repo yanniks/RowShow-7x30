@@ -71,11 +71,8 @@ extern int irq_startup(struct irq_desc *desc, bool resend);
 extern void irq_shutdown(struct irq_desc *desc);
 extern void irq_enable(struct irq_desc *desc);
 extern void irq_disable(struct irq_desc *desc);
-<<<<<<< HEAD
 extern void irq_percpu_enable(struct irq_desc *desc, unsigned int cpu);
 extern void irq_percpu_disable(struct irq_desc *desc, unsigned int cpu);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern void mask_irq(struct irq_desc *desc);
 extern void unmask_irq(struct irq_desc *desc);
 
@@ -119,7 +116,6 @@ static inline void chip_bus_sync_unlock(struct irq_desc *desc)
 		desc->irq_data.chip->irq_bus_sync_unlock(&desc->irq_data);
 }
 
-<<<<<<< HEAD
 #define _IRQ_DESC_CHECK		(1 << 0)
 #define _IRQ_DESC_PERCPU	(1 << 1)
 
@@ -135,16 +131,6 @@ static inline struct irq_desc *
 irq_get_desc_buslock(unsigned int irq, unsigned long *flags, unsigned int check)
 {
 	return __irq_get_desc_lock(irq, flags, true, check);
-=======
-struct irq_desc *
-__irq_get_desc_lock(unsigned int irq, unsigned long *flags, bool bus);
-void __irq_put_desc_unlock(struct irq_desc *desc, unsigned long flags, bool bus);
-
-static inline struct irq_desc *
-irq_get_desc_buslock(unsigned int irq, unsigned long *flags)
-{
-	return __irq_get_desc_lock(irq, flags, true);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static inline void
@@ -154,15 +140,9 @@ irq_put_desc_busunlock(struct irq_desc *desc, unsigned long flags)
 }
 
 static inline struct irq_desc *
-<<<<<<< HEAD
 irq_get_desc_lock(unsigned int irq, unsigned long *flags, unsigned int check)
 {
 	return __irq_get_desc_lock(irq, flags, false, check);
-=======
-irq_get_desc_lock(unsigned int irq, unsigned long *flags)
-{
-	return __irq_get_desc_lock(irq, flags, false);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static inline void

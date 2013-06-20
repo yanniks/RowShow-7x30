@@ -82,10 +82,6 @@ u32 evergreen_page_flip(struct radeon_device *rdev, int crtc_id, u64 crtc_base)
 {
 	struct radeon_crtc *radeon_crtc = rdev->mode_info.crtcs[crtc_id];
 	u32 tmp = RREG32(EVERGREEN_GRPH_UPDATE + radeon_crtc->crtc_offset);
-<<<<<<< HEAD
-=======
-	int i;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* Lock the graphics update lock */
 	tmp |= EVERGREEN_GRPH_UPDATE_LOCK;
@@ -103,15 +99,7 @@ u32 evergreen_page_flip(struct radeon_device *rdev, int crtc_id, u64 crtc_base)
 	       (u32)crtc_base);
 
 	/* Wait for update_pending to go high. */
-<<<<<<< HEAD
 	while (!(RREG32(EVERGREEN_GRPH_UPDATE + radeon_crtc->crtc_offset) & EVERGREEN_GRPH_SURFACE_UPDATE_PENDING));
-=======
-	for (i = 0; i < rdev->usec_timeout; i++) {
-		if (RREG32(EVERGREEN_GRPH_UPDATE + radeon_crtc->crtc_offset) & EVERGREEN_GRPH_SURFACE_UPDATE_PENDING)
-			break;
-		udelay(1);
-	}
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	DRM_DEBUG("Update pending now high. Unlocking vupdate_lock.\n");
 
 	/* Unlock the lock, so double-buffering can take place inside vblank */
@@ -375,10 +363,6 @@ void evergreen_hpd_init(struct radeon_device *rdev)
 		default:
 			break;
 		}
-<<<<<<< HEAD
-=======
-		radeon_hpd_set_polarity(rdev, radeon_connector->hpd.hpd);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	if (rdev->irq.installed)
 		evergreen_irq_set(rdev);
@@ -946,14 +930,6 @@ int evergreen_pcie_gart_enable(struct radeon_device *rdev)
 		WREG32(MC_VM_MD_L1_TLB0_CNTL, tmp);
 		WREG32(MC_VM_MD_L1_TLB1_CNTL, tmp);
 		WREG32(MC_VM_MD_L1_TLB2_CNTL, tmp);
-<<<<<<< HEAD
-=======
-		if ((rdev->family == CHIP_JUNIPER) ||
-		    (rdev->family == CHIP_CYPRESS) ||
-		    (rdev->family == CHIP_HEMLOCK) ||
-		    (rdev->family == CHIP_BARTS))
-			WREG32(MC_VM_MD_L1_TLB3_CNTL, tmp);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	WREG32(MC_VM_MB_L1_TLB0_CNTL, tmp);
 	WREG32(MC_VM_MB_L1_TLB1_CNTL, tmp);
@@ -2037,15 +2013,9 @@ static void evergreen_gpu_init(struct radeon_device *rdev)
 		WREG32(CC_SYS_RB_BACKEND_DISABLE, rb);
 		WREG32(GC_USER_RB_BACKEND_DISABLE, rb);
 		WREG32(CC_GC_SHADER_PIPE_CONFIG, sp);
-<<<<<<< HEAD
         }
 
 	grbm_gfx_index |= SE_BROADCAST_WRITES;
-=======
-	}
-
-	grbm_gfx_index = INSTANCE_BROADCAST_WRITES | SE_BROADCAST_WRITES;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	WREG32(GRBM_GFX_INDEX, grbm_gfx_index);
 	WREG32(RLC_GFX_INDEX, grbm_gfx_index);
 
@@ -3236,21 +3206,6 @@ int evergreen_init(struct radeon_device *rdev)
 			rdev->accel_working = false;
 		}
 	}
-<<<<<<< HEAD
-=======
-
-	/* Don't start up if the MC ucode is missing on BTC parts.
-	 * The default clocks and voltages before the MC ucode
-	 * is loaded are not suffient for advanced operations.
-	 */
-	if (ASIC_IS_DCE5(rdev)) {
-		if (!rdev->mc_fw && !(rdev->flags & RADEON_IS_IGP)) {
-			DRM_ERROR("radeon: MC ucode required for NI+.\n");
-			return -EINVAL;
-		}
-	}
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 

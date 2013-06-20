@@ -29,11 +29,7 @@
 #include <linux/skbuff.h>
 
 #include <linux/ti_wilink_st.h>
-<<<<<<< HEAD
 #define N_TI_WL 22
-=======
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* function pointer pointing to either,
  * st_kim_recv during registration to receive fw download responses
  * st_int_recv after registration to receive proto stack responses
@@ -342,7 +338,6 @@ void st_int_recv(void *disc_data,
 			/* Unknow packet? */
 		default:
 			type = *ptr;
-<<<<<<< HEAD
 			if (type < ST_MAX_CHANNELS) {
 				if (!st_gdata->list[type]) {
 					pr_err("dropping frame "
@@ -365,13 +360,6 @@ void st_int_recv(void *disc_data,
 				goto done;
 			}
 
-=======
-			st_gdata->rx_skb = alloc_skb(
-					st_gdata->list[type]->max_frame_size,
-					GFP_ATOMIC);
-			skb_reserve(st_gdata->rx_skb,
-					st_gdata->list[type]->reserve);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			/* next 2 required for BT only */
 			st_gdata->rx_skb->cb[0] = type; /*pkt_type*/
 			st_gdata->rx_skb->cb[1] = 0; /*incoming*/
@@ -383,10 +371,7 @@ void st_int_recv(void *disc_data,
 		ptr++;
 		count--;
 	}
-<<<<<<< HEAD
 done:
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	spin_unlock_irqrestore(&st_gdata->lock, flags);
 	pr_debug("done %s", __func__);
 	return;
@@ -638,11 +623,7 @@ long st_unregister(struct st_proto_s *proto)
 	pr_debug("%s: %d ", __func__, proto->chnl_id);
 
 	st_kim_ref(&st_gdata, 0);
-<<<<<<< HEAD
 	if (proto->chnl_id >= ST_MAX_CHANNELS) {
-=======
-	if (!st_gdata || proto->chnl_id >= ST_MAX_CHANNELS) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		pr_err(" chnl_id %d not supported", proto->chnl_id);
 		return -EPROTONOSUPPORT;
 	}
@@ -754,12 +735,8 @@ static void st_tty_close(struct tty_struct *tty)
 	 */
 	spin_lock_irqsave(&st_gdata->lock, flags);
 	for (i = ST_BT; i < ST_MAX_CHANNELS; i++) {
-<<<<<<< HEAD
 		/* if (st_gdata->list[i] != NULL) */
 		if (st_gdata->is_registered[i] == true)
-=======
-		if (st_gdata->list[i] != NULL)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			pr_err("%d not un-registered", i);
 		st_gdata->list[i] = NULL;
 	}

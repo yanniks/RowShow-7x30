@@ -163,11 +163,7 @@ static int __init obsolete_checksetup(char *line)
 	p = __setup_start;
 	do {
 		int n = strlen(p->str);
-<<<<<<< HEAD
 		if (parameqn(line, p->str, n)) {
-=======
-		if (!strncmp(line, p->str, n)) {
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			if (p->early) {
 				/* Already done in parse_early_param?
 				 * (Needs exact match on param part).
@@ -213,7 +209,6 @@ early_param("quiet", quiet_kernel);
 
 static int __init loglevel(char *str)
 {
-<<<<<<< HEAD
 	int newlevel;
 
 	/*
@@ -227,10 +222,6 @@ static int __init loglevel(char *str)
 	}
 
 	return -EINVAL;
-=======
-	get_option(&str, &console_loglevel);
-	return 0;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 early_param("loglevel", loglevel);
@@ -389,15 +380,9 @@ static noinline void __init_refok rest_init(void)
 	init_idle_bootup_task(current);
 	preempt_enable_no_resched();
 	schedule();
-<<<<<<< HEAD
 
 	/* Call into cpu_idle with preempt disabled */
 	preempt_disable();
-=======
-	preempt_disable();
-
-	/* Call into cpu_idle with preempt disabled */
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	cpu_idle();
 }
 
@@ -407,11 +392,7 @@ static int __init do_early_param(char *param, char *val)
 	const struct obs_kernel_param *p;
 
 	for (p = __setup_start; p < __setup_end; p++) {
-<<<<<<< HEAD
 		if ((p->early && parameq(param, p->str)) ||
-=======
-		if ((p->early && strcmp(param, p->str) == 0) ||
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		    (strcmp(param, "console") == 0 &&
 		     strcmp(p->str, "earlycon") == 0)
 		) {
@@ -531,12 +512,9 @@ asmlinkage void __init start_kernel(void)
 	parse_args("Booting kernel", static_command_line, __start___param,
 		   __stop___param - __start___param,
 		   &unknown_bootoption);
-<<<<<<< HEAD
 
 	jump_label_init();
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/*
 	 * These use large bootmem allocations and must precede
 	 * kmem_cache_init()
@@ -729,7 +707,6 @@ int __init_or_module do_one_initcall(initcall_t fn)
 
 extern initcall_t __initcall_start[], __initcall_end[], __early_initcall_end[];
 
-<<<<<<< HEAD
 
 static struct initcall_state {
 	initcall_t	*next_call;
@@ -836,14 +813,6 @@ static void __init do_initcalls(void)
 	finish_wait(&initcall.queue, &wait);
 	wait_event(initcall.queue, atomic_read(&initcall.threads) == 0);
 	initcall.master_thread = 0;
-=======
-static void __init do_initcalls(void)
-{
-	initcall_t *fn;
-
-	for (fn = __early_initcall_end; fn < __initcall_end; fn++)
-		do_one_initcall(*fn);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /*
@@ -857,18 +826,11 @@ static void __init do_basic_setup(void)
 {
 	cpuset_init_smp();
 	usermodehelper_init();
-<<<<<<< HEAD
 	shmem_init();
 	driver_init();
 	init_irq_proc();
 	do_ctors();
 	usermodehelper_enable();
-=======
-	init_tmpfs();
-	driver_init();
-	init_irq_proc();
-	do_ctors();
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	do_initcalls();
 }
 

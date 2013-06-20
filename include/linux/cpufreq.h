@@ -23,7 +23,6 @@
 #include <asm/div64.h>
 
 #define CPUFREQ_NAME_LEN 16
-<<<<<<< HEAD
 extern uint32_t acpu_check_khz_value(unsigned long khz);
 
 
@@ -32,10 +31,6 @@ extern uint32_t acpu_check_khz_value(unsigned long khz);
 extern bool gpu_busy_state;
 #endif
 
-=======
-
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*********************************************************************
  *                     CPUFREQ NOTIFIER INTERFACE                    *
  *********************************************************************/
@@ -67,13 +62,10 @@ static inline int cpufreq_unregister_notifier(struct notifier_block *nb,
 #define CPUFREQ_POLICY_POWERSAVE	(1)
 #define CPUFREQ_POLICY_PERFORMANCE	(2)
 
-<<<<<<< HEAD
 /* Minimum frequency cutoff to notify the userspace about cpu utilization
  * changes */
 #define MIN_CPU_UTIL_NOTIFY   40
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* Frequency values here are CPU kHz so that hardware which doesn't run
  * with some frequencies can complain without having to guess what per
  * cent / per mille means.
@@ -114,10 +106,7 @@ struct cpufreq_policy {
 	unsigned int		max;    /* in kHz */
 	unsigned int		cur;    /* in kHz, only needed if cpufreq
 					 * governors are used */
-<<<<<<< HEAD
 	unsigned int            util;  /* CPU utilization at max frequency */
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	unsigned int		policy; /* see above */
 	struct cpufreq_governor	*governor; /* see below */
 
@@ -221,11 +210,8 @@ extern int __cpufreq_driver_getavg(struct cpufreq_policy *policy,
 int cpufreq_register_governor(struct cpufreq_governor *governor);
 void cpufreq_unregister_governor(struct cpufreq_governor *governor);
 
-<<<<<<< HEAD
 int lock_policy_rwsem_write(int cpu);
 void unlock_policy_rwsem_write(int cpu);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /*********************************************************************
  *                      CPUFREQ DRIVER INTERFACE                     *
@@ -280,12 +266,8 @@ int cpufreq_unregister_driver(struct cpufreq_driver *driver_data);
 
 
 void cpufreq_notify_transition(struct cpufreq_freqs *freqs, unsigned int state);
-<<<<<<< HEAD
 void cpufreq_notify_utilization(struct cpufreq_policy *policy,
 		unsigned int load);
-=======
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static inline void cpufreq_verify_within_limits(struct cpufreq_policy *policy, unsigned int min, unsigned int max)
 {
@@ -364,7 +346,6 @@ static inline unsigned int cpufreq_quick_get(unsigned int cpu)
 #endif
 
 
-<<<<<<< HEAD
 #ifdef CONFIG_SEC_DVFS
 #define TOUCH_BOOSTER_FIRST_FREQ_LIMIT 1134000
 #define TOUCH_BOOSTER_SECOND_FREQ_LIMIT 810000
@@ -447,8 +428,6 @@ void set_min_lock(int freq);
 void set_max_lock(int freq);
 
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*********************************************************************
  *                       CPUFREQ DEFAULT GOVERNOR                    *
  *********************************************************************/
@@ -475,7 +454,6 @@ extern struct cpufreq_governor cpufreq_gov_ondemand;
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_CONSERVATIVE)
 extern struct cpufreq_governor cpufreq_gov_conservative;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_conservative)
-<<<<<<< HEAD
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_INTERACTIVE)
 extern struct cpufreq_governor cpufreq_gov_interactive;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_interactive)
@@ -509,8 +487,6 @@ extern struct cpufreq_governor cpufreq_gov_lagfree;
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_SCARY)
 extern struct cpufreq_governor cpufreq_gov_scary;
 #define CPUFREQ_DEFAULT_GOVERNOR  (&cpufreq_gov_scary)
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 
 

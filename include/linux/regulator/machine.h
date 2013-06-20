@@ -191,18 +191,13 @@ int regulator_suspend_finish(void);
 
 #ifdef CONFIG_REGULATOR
 void regulator_has_full_constraints(void);
-<<<<<<< HEAD
 void regulator_has_full_constraints_listed(struct regulator_init_data **);
 void regulator_use_dummy_regulator(void);
 void regulator_suppress_info_printing(void);
-=======
-void regulator_use_dummy_regulator(void);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #else
 static inline void regulator_has_full_constraints(void)
 {
 }
-<<<<<<< HEAD
 static inline void regulator_has_full_constraints_listed(
 	struct regulator_init_data *)
 {
@@ -212,10 +207,6 @@ static inline void regulator_use_dummy_regulator(void)
 }
 
 static inline void regulator_suppress_info_printing(void)
-=======
-
-static inline void regulator_use_dummy_regulator(void)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 }
 #endif

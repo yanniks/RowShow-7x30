@@ -34,7 +34,6 @@
 
 #include "internal.h"
 
-<<<<<<< HEAD
 /*
  * online_page_callback contains pointer to current page onlining function.
  * Initially it is generic_online_page(). If it is required it could be
@@ -46,8 +45,6 @@ static void generic_online_page(struct page *page);
 
 static online_page_callback_t online_page_callback = generic_online_page;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 DEFINE_MUTEX(mem_hotplug_mutex);
 
 void lock_memory_hotplug(void)
@@ -379,7 +376,6 @@ int __remove_pages(struct zone *zone, unsigned long phys_start_pfn,
 }
 EXPORT_SYMBOL_GPL(__remove_pages);
 
-<<<<<<< HEAD
 int set_online_page_callback(online_page_callback_t callback)
 {
 	int rc = -EINVAL;
@@ -426,34 +422,20 @@ EXPORT_SYMBOL_GPL(__online_page_set_limits);
 void __online_page_increment_counters(struct page *page)
 {
 	totalram_pages++;
-=======
-void online_page(struct page *page)
-{
-	unsigned long pfn = page_to_pfn(page);
-
-	totalram_pages++;
-	if (pfn >= num_physpages)
-		num_physpages = pfn + 1;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #ifdef CONFIG_HIGHMEM
 	if (PageHighMem(page))
 		totalhigh_pages++;
 #endif
-<<<<<<< HEAD
 }
 EXPORT_SYMBOL_GPL(__online_page_increment_counters);
 
 void __online_page_free(struct page *page)
 {
-=======
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	ClearPageReserved(page);
 	init_page_count(page);
 	__free_page(page);
 }
-<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(__online_page_free);
 
 static void generic_online_page(struct page *page)
@@ -462,8 +444,6 @@ static void generic_online_page(struct page *page)
 	__online_page_increment_counters(page);
 	__online_page_free(page);
 }
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static int online_pages_range(unsigned long start_pfn, unsigned long nr_pages,
 			void *arg)
@@ -474,11 +454,7 @@ static int online_pages_range(unsigned long start_pfn, unsigned long nr_pages,
 	if (PageReserved(pfn_to_page(start_pfn)))
 		for (i = 0; i < nr_pages; i++) {
 			page = pfn_to_page(start_pfn + i);
-<<<<<<< HEAD
 			(*online_page_callback)(page);
-=======
-			online_page(page);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			onlined_pages++;
 		}
 	*(unsigned long *)arg = onlined_pages;
@@ -783,12 +759,8 @@ static struct page *
 hotremove_migrate_alloc(struct page *page, unsigned long private, int **x)
 {
 	/* This should be improooooved!! */
-<<<<<<< HEAD
 	return alloc_page(GFP_HIGHUSER_MOVABLE | __GFP_NORETRY | __GFP_NOWARN |
 				__GFP_NOMEMALLOC);
-=======
-	return alloc_page(GFP_HIGHUSER_MOVABLE);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 #define NR_OFFLINE_AT_ONCE_PAGES	(256)
@@ -992,14 +964,10 @@ repeat:
 	/* reset pagetype flags and makes migrate type to be MOVABLE */
 	undo_isolate_page_range(start_pfn, end_pfn);
 	/* removal success */
-<<<<<<< HEAD
 	if (offlined_pages > zone->present_pages)
 		zone->present_pages = 0;
 	else
 		zone->present_pages -= offlined_pages;
-=======
-	zone->present_pages -= offlined_pages;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	zone->zone_pgdat->node_present_pages -= offlined_pages;
 	totalram_pages -= offlined_pages;
 

@@ -10,10 +10,7 @@
 
 extern u32  crc32_le(u32 crc, unsigned char const *p, size_t len);
 extern u32  crc32_be(u32 crc, unsigned char const *p, size_t len);
-<<<<<<< HEAD
 extern u32  __crc32c_le(u32 crc, unsigned char const *p, size_t len);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #define crc32(seed, data, length)  crc32_le(seed, (unsigned char const *)(data), length)
 

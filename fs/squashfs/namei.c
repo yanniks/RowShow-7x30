@@ -220,14 +220,6 @@ static struct dentry *squashfs_lookup(struct inode *dir, struct dentry *dentry,
 					blk, off, ino_num);
 
 				inode = squashfs_iget(dir->i_sb, ino, ino_num);
-<<<<<<< HEAD
-=======
-				if (IS_ERR(inode)) {
-					err = PTR_ERR(inode);
-					goto failed;
-				}
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				goto exit_lookup;
 			}
 		}

@@ -11,7 +11,6 @@ menuconfig INPUT_TOUCHSCREEN
 
 if INPUT_TOUCHSCREEN
 
-<<<<<<< HEAD
 config TOUCHSCREEN_ATMEL_DETECT_CABLE
 	bool "Touchscreen ATMEL_DETECT_CABLE support"
 	default n
@@ -59,8 +58,6 @@ config TOUCHSCREEN_ATMEL_224E
 	help
 	  This enables support for Atmel over I2C based touchscreens.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config TOUCHSCREEN_88PM860X
 	tristate "Marvell 88PM860x touchscreen"
 	depends on MFD_88PM860X
@@ -106,7 +103,6 @@ config TOUCHSCREEN_AD7877
 	  module will be called ad7877.
 
 config TOUCHSCREEN_AD7879
-<<<<<<< HEAD
 	tristate
 	default n
 
@@ -134,8 +130,6 @@ config TOUCHSCREEN_COMPATIBLE_REPORT
 		This enables support for old report style in touchscreen driver
 
 config TOUCHSCREEN_AD7879
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	tristate "Analog Devices AD7879-1/AD7889-1 touchscreen interface"
 	help
 	  Say Y here if you want to support a touchscreen interface using
@@ -224,7 +218,6 @@ config TOUCHSCREEN_DA9034
 	  Say Y here to enable the support for the touchscreen found
 	  on Dialog Semiconductor DA9034 PMIC.
 
-<<<<<<< HEAD
 config TOUCHSCREEN_CYPRESS_CS
         tristate "Cypress CY8C20x34 based touchKey"
         depends on I2C
@@ -233,8 +226,6 @@ config TOUCHSCREEN_CYPRESS_CS
 	  Say Y here if you have cap sensor on your device
 	  If unsure, say N.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config TOUCHSCREEN_DYNAPRO
 	tristate "Dynapro serial touchscreen"
 	select SERIO
@@ -305,15 +296,12 @@ config TOUCHSCREEN_GUNZE
 	  To compile this driver as a module, choose M here: the
 	  module will be called gunze.
 
-<<<<<<< HEAD
 config TOUCHSCREEN_ELAN_KTF2K
 	tristate "Elan KTF2000 I2C touchscreen"
 	depends on I2C
 	help
 	  This enables support for Elan KTF2000 over I2C based touchscreens.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config TOUCHSCREEN_ELO
 	tristate "Elo serial touchscreens"
 	select SERIO
@@ -463,7 +451,6 @@ config TOUCHSCREEN_PENMOUNT
 	  To compile this driver as a module, choose M here: the
 	  module will be called penmount.
 
-<<<<<<< HEAD
 config TOUCHSCREEN_MSM
 	bool "Qualcomm MSM touchscreen controller"
 	depends on ARCH_MSM7X30 && MARIMBA_TSADC
@@ -473,8 +460,6 @@ config TOUCHSCREEN_MSM
 	  connected to the TSSC touchscreen controller on a
 	  Qualcomm MSM/QSD based SoC.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config TOUCHSCREEN_MIGOR
 	tristate "Renesas MIGO-R touchscreen"
 	depends on SH_MIGOR && I2C
@@ -495,7 +480,6 @@ config TOUCHSCREEN_TNETV107X
 	  To compile this driver as a module, choose M here: the
 	  module will be called tnetv107x-ts.
 
-<<<<<<< HEAD
 config TOUCHSCREEN_SYNAPTICS_I2C_RMI
 	tristate "Synaptics i2c touchscreen"
 	depends on I2C
@@ -513,8 +497,6 @@ config TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 	depends on TOUCHSCREEN_SYNAPTICS_3K
 	default n
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config TOUCHSCREEN_TOUCHRIGHT
 	tristate "Touchright serial touchscreen"
 	select SERIO
@@ -805,7 +787,6 @@ config TOUCHSCREEN_TSC2007
 	  To compile this driver as a module, choose M here: the
 	  module will be called tsc2007.
 
-<<<<<<< HEAD
 config TOUCHSCREEN_MSM_LEGACY
 	default n
 	tristate "MSM Touchscreen"
@@ -827,8 +808,6 @@ config ANDROID_TOUCHSCREEN_MSM_HACKS
 	  to Android framework to receive adjusted x, y co-ordinates
 	  until proper calibration framework is in place.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config TOUCHSCREEN_W90X900
 	tristate "W90P910 touchscreen driver"
 	depends on HAVE_CLK
@@ -882,7 +861,6 @@ config TOUCHSCREEN_TPS6507X
 	  To compile this driver as a module, choose M here: the
 	  module will be called tps6507x_ts.
 
-<<<<<<< HEAD
 config TOUCHSCREEN_CY8C_TS
 	tristate "Cypress TMA300-TMG200 based touchscreens"
 	depends on I2C
@@ -934,6 +912,4 @@ config TOUCHSCREEN_HIMAX_SH2
 	    Haiping Qin <haiping_qin@htc.com>
 	    Allen Xu <allen_xu@htc.com>
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 endif

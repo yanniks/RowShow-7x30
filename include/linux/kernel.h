@@ -37,11 +37,8 @@
 
 #define STACK_MAGIC	0xdeadbeef
 
-<<<<<<< HEAD
 #define REPEAT_BYTE(x)	((~0ul / 0xff) * (x))
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define ALIGN(x, a)		__ALIGN_KERNEL((x), (a))
 #define __ALIGN_MASK(x, mask)	__ALIGN_KERNEL_MASK((x), (mask))
 #define PTR_ALIGN(p, a)		((typeof(p))ALIGN((unsigned long)(p), (a)))
@@ -132,7 +129,6 @@ struct completion;
 struct pt_regs;
 struct user;
 
-<<<<<<< HEAD
 /* cannot bring in linux/rcupdate.h at this point */
 #ifdef CONFIG_JRCU
 extern void rcu_note_might_resched(void);
@@ -145,13 +141,6 @@ extern int _cond_resched(void);
 # define might_resched() do { _cond_resched(); rcu_note_might_resched(); } while (0)
 #else
 # define might_resched() do { rcu_note_might_resched(); } while (0)
-=======
-#ifdef CONFIG_PREEMPT_VOLUNTARY
-extern int _cond_resched(void);
-# define might_resched() _cond_resched()
-#else
-# define might_resched() do { } while (0)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 
 #ifdef CONFIG_DEBUG_SPINLOCK_SLEEP
@@ -321,11 +310,8 @@ extern long long simple_strtoll(const char *,char **,unsigned int);
 #define strict_strtoull	kstrtoull
 #define strict_strtoll	kstrtoll
 
-<<<<<<< HEAD
 extern int num_to_str(char *buf, int size, unsigned long long num);
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern int sprintf(char * buf, const char * fmt, ...)
 	__attribute__ ((format (printf, 2, 3)));
 extern int vsprintf(char *buf, const char *, va_list)
@@ -404,18 +390,13 @@ extern const char hex_asc[];
 #define hex_asc_lo(x)	hex_asc[((x) & 0x0f)]
 #define hex_asc_hi(x)	hex_asc[((x) & 0xf0) >> 4]
 
-<<<<<<< HEAD
 static inline char *hex_byte_pack(char *buf, u8 byte)
-=======
-static inline char *pack_hex_byte(char *buf, u8 byte)
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	*buf++ = hex_asc_hi(byte);
 	*buf++ = hex_asc_lo(byte);
 	return buf;
 }
 
-<<<<<<< HEAD
 static inline char * __deprecated pack_hex_byte(char *buf, u8 byte)
 {
 	return hex_byte_pack(buf, byte);
@@ -440,11 +421,6 @@ extern void hex2bin(u8 *dst, const char *src, size_t count);
 #define pr_aud_info1(fmt, ...) do { } while (0)
 #endif
 
-=======
-extern int hex_to_bin(char ch);
-extern void hex2bin(u8 *dst, const char *src, size_t count);
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * General tracing related utility functions - trace_printk(),
  * tracing_on/tracing_off and tracing_start()/tracing_stop
@@ -805,10 +781,7 @@ extern int __build_bug_on_failed;
 # define REBUILD_DUE_TO_FTRACE_MCOUNT_RECORD
 #endif
 
-<<<<<<< HEAD
 /* To identify board information in panic logs, set this */
 extern char *mach_panic_string;
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif

@@ -44,11 +44,8 @@ enum {
 	IOCB_CMD_NOOP = 6,
 	IOCB_CMD_PREADV = 7,
 	IOCB_CMD_PWRITEV = 8,
-<<<<<<< HEAD
 	IOCB_CMD_READ_ITER = 9,
 	IOCB_CMD_WRITE_ITER = 10,
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 /*

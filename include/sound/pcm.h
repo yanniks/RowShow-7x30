@@ -5,20 +5,12 @@
  *  Digital Audio (PCM) abstract layer
  *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
  *                   Abramo Bagnara <abramo@alsa-project.org>
-<<<<<<< HEAD
  *  Copyright (c) 2011, Code Aurora Forum. All rights reserved.
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
-<<<<<<< HEAD
  *   the Free Software Foundation; only version 2 of the License.
-=======
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,11 +29,7 @@
 #include <linux/poll.h>
 #include <linux/mm.h>
 #include <linux/bitops.h>
-<<<<<<< HEAD
 #include <linux/pm_qos.h>
-=======
-#include <linux/pm_qos_params.h>
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #define snd_pcm_substream_chip(substream) ((substream)->private_data)
 #define snd_pcm_chip(pcm) ((pcm)->private_data)
@@ -425,10 +413,7 @@ struct snd_pcm_substream {
 #endif
 	/* misc flags */
 	unsigned int hw_opened: 1;
-<<<<<<< HEAD
 	unsigned int hw_no_buffer: 1; /* substream may not have a buffer */
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 #define SUBSTREAM_BUSY(substream) ((substream)->ref_count > 0)

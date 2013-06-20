@@ -286,29 +286,17 @@ static DEFINE_SPINLOCK(all_mddevs_lock);
  * call has finished, the bio has been linked into some internal structure
  * and so is visible to ->quiesce(), so we don't need the refcount any more.
  */
-<<<<<<< HEAD
 static void md_make_request(struct request_queue *q, struct bio *bio)
 {
 	const int rw = bio_data_dir(bio);
 	mddev_t *mddev = q->queuedata;
-=======
-static int md_make_request(struct request_queue *q, struct bio *bio)
-{
-	const int rw = bio_data_dir(bio);
-	mddev_t *mddev = q->queuedata;
-	int rv;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int cpu;
 	unsigned int sectors;
 
 	if (mddev == NULL || mddev->pers == NULL
 	    || !mddev->ready) {
 		bio_io_error(bio);
-<<<<<<< HEAD
 		return;
-=======
-		return 0;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	if (mddev->ro == 1 && unlikely(rw == WRITE)) {
 		bio_endio(bio, bio_sectors(bio) == 0 ? 0 : -EROFS);
@@ -337,11 +325,7 @@ static int md_make_request(struct request_queue *q, struct bio *bio)
 	 * go away inside make_request
 	 */
 	sectors = bio_sectors(bio);
-<<<<<<< HEAD
 	mddev->pers->make_request(mddev, bio);
-=======
-	rv = mddev->pers->make_request(mddev, bio);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	cpu = part_stat_lock();
 	part_stat_inc(cpu, &mddev->gendisk->part0, ios[rw]);
@@ -350,11 +334,6 @@ static int md_make_request(struct request_queue *q, struct bio *bio)
 
 	if (atomic_dec_and_test(&mddev->active_io) && mddev->suspended)
 		wake_up(&mddev->sb_wait);
-<<<<<<< HEAD
-=======
-
-	return rv;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /* mddev_suspend makes sure no new requests are submitted
@@ -455,12 +434,7 @@ static void md_submit_flush_data(struct work_struct *ws)
 		bio_endio(bio, 0);
 	else {
 		bio->bi_rw &= ~REQ_FLUSH;
-<<<<<<< HEAD
 		mddev->pers->make_request(mddev, bio);
-=======
-		if (mddev->pers->make_request(mddev, bio))
-			generic_make_request(bio);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	mddev->flush_bio = NULL;
@@ -4392,10 +4366,7 @@ static int md_alloc(dev_t dev, char *name)
 	mddev->queue->queuedata = mddev;
 
 	blk_queue_make_request(mddev->queue, md_make_request);
-<<<<<<< HEAD
 	blk_set_stacking_limits(&mddev->queue->limits);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	disk = alloc_disk(1 << shift);
 	if (!disk) {
@@ -6454,22 +6425,11 @@ static void md_seq_stop(struct seq_file *seq, void *v)
 		mddev_put(mddev);
 }
 
-<<<<<<< HEAD
-=======
-struct mdstat_info {
-	int event;
-};
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static int md_seq_show(struct seq_file *seq, void *v)
 {
 	mddev_t *mddev = v;
 	sector_t sectors;
 	mdk_rdev_t *rdev;
-<<<<<<< HEAD
-=======
-	struct mdstat_info *mi = seq->private;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct bitmap *bitmap;
 
 	if (v == (void*)1) {
@@ -6481,11 +6441,7 @@ static int md_seq_show(struct seq_file *seq, void *v)
 
 		spin_unlock(&pers_lock);
 		seq_printf(seq, "\n");
-<<<<<<< HEAD
 		seq->poll_event = atomic_read(&md_event_count);
-=======
-		mi->event = atomic_read(&md_event_count);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return 0;
 	}
 	if (v == (void*)2) {
@@ -6597,7 +6553,6 @@ static const struct seq_operations md_seq_ops = {
 
 static int md_seq_open(struct inode *inode, struct file *file)
 {
-<<<<<<< HEAD
 	struct seq_file *seq;
 	int error;
 
@@ -6607,32 +6562,12 @@ static int md_seq_open(struct inode *inode, struct file *file)
 
 	seq = file->private_data;
 	seq->poll_event = atomic_read(&md_event_count);
-=======
-	int error;
-	struct mdstat_info *mi = kmalloc(sizeof(*mi), GFP_KERNEL);
-	if (mi == NULL)
-		return -ENOMEM;
-
-	error = seq_open(file, &md_seq_ops);
-	if (error)
-		kfree(mi);
-	else {
-		struct seq_file *p = file->private_data;
-		p->private = mi;
-		mi->event = atomic_read(&md_event_count);
-	}
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return error;
 }
 
 static unsigned int mdstat_poll(struct file *filp, poll_table *wait)
 {
-<<<<<<< HEAD
 	struct seq_file *seq = filp->private_data;
-=======
-	struct seq_file *m = filp->private_data;
-	struct mdstat_info *mi = m->private;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int mask;
 
 	poll_wait(filp, &md_event_waiters, wait);
@@ -6640,11 +6575,7 @@ static unsigned int mdstat_poll(struct file *filp, poll_table *wait)
 	/* always allow read */
 	mask = POLLIN | POLLRDNORM;
 
-<<<<<<< HEAD
 	if (seq->poll_event != atomic_read(&md_event_count))
-=======
-	if (mi->event != atomic_read(&md_event_count))
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		mask |= POLLERR | POLLPRI;
 	return mask;
 }

@@ -454,7 +454,6 @@ config GPIO_TPS65910
 	help
 	  Select this option to enable GPIO driver for the TPS65910
 	  chip family.
-<<<<<<< HEAD
 
 config MPP_PMIC8901
         tristate "Qualcomm PMIC8901 MPP"
@@ -489,6 +488,4 @@ config GPIO_PM8XXX_RPC
 	  This option enables support for on-chip GPIO found on Qualcomm PM8xxx
 	  PMICs through RPC.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 endif

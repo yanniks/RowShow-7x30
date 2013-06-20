@@ -164,11 +164,7 @@ extern struct task_group root_task_group;
 	},								\
 	.rt		= {						\
 		.run_list	= LIST_HEAD_INIT(tsk.rt.run_list),	\
-<<<<<<< HEAD
 		.time_slice	= DEF_TIMESLICE,			\
-=======
-		.time_slice	= HZ, 					\
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		.nr_cpus_allowed = NR_CPUS,				\
 	},								\
 	.tasks		= LIST_HEAD_INIT(tsk.tasks),			\
@@ -197,10 +193,6 @@ extern struct task_group root_task_group;
 	.alloc_lock	= __SPIN_LOCK_UNLOCKED(tsk.alloc_lock),		\
 	.journal_info	= NULL,						\
 	.cpu_timers	= INIT_CPU_TIMERS(tsk.cpu_timers),		\
-<<<<<<< HEAD
-=======
-	.fs_excl	= ATOMIC_INIT(0),				\
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	.pi_lock	= __RAW_SPIN_LOCK_UNLOCKED(tsk.pi_lock),	\
 	.timer_slack_ns = 50000, /* 50 usec default slack */		\
 	.pids = {							\
@@ -209,10 +201,6 @@ extern struct task_group root_task_group;
 		[PIDTYPE_SID]  = INIT_PID_LINK(PIDTYPE_SID),		\
 	},								\
 	.thread_group	= LIST_HEAD_INIT(tsk.thread_group),		\
-<<<<<<< HEAD
-=======
-	.dirties = INIT_PROP_LOCAL_SINGLE(dirties),			\
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	INIT_IDS							\
 	INIT_PERF_EVENTS(tsk)						\
 	INIT_TRACE_IRQFLAGS						\

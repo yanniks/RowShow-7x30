@@ -2,11 +2,7 @@
  *
  * Copyright (C) 2008 Google, Inc.
  * Author: Brian Swetland <swetland@google.com>
-<<<<<<< HEAD
  * Copyright (c) 2009-2012, Code Aurora Forum. All rights reserved.
-=======
- * Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -24,13 +20,10 @@
 
 #include <linux/types.h>
 #include <linux/usb/otg.h>
-<<<<<<< HEAD
 #include <linux/wakelock.h>
 #include <mach/board.h>
 #include <mach/msm_xo.h>
 #include <linux/pm_qos.h>
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /**
  * Supported USB modes
@@ -79,17 +72,12 @@ enum msm_usb_phy_type {
 };
 
 #define IDEV_CHG_MAX	1500
-<<<<<<< HEAD
 #define IDEV_CHG_MIN	500
 #define IUNIT		100
 
 #define IDEV_ACA_CHG_MAX	1500
 #define IDEV_ACA_CHG_LIMIT	500
 
-=======
-#define IUNIT		100
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /**
  * Different states involved in USB charger detection.
  *
@@ -122,7 +110,6 @@ enum usb_chg_state {
  * USB_DCP_CHARGER	Dedicated charger port (AC charger/ Wall charger).
  * USB_CDP_CHARGER	Charging downstream port. Enumeration can happen and
  *                      IDEV_CHG_MAX can be drawn irrespective of USB state.
-<<<<<<< HEAD
  * USB_ACA_A_CHARGER	B-device is connected on accessory port with charger
  *                      connected on charging port. This configuration allows
  *                      charging in host mode.
@@ -134,22 +121,16 @@ enum usb_chg_state {
  *			or more downstream ports. Capable of supplying
  *			IDEV_CHG_MAX irrespective of devices connected on
  *			accessory ports.
-=======
- *
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  */
 enum usb_chg_type {
 	USB_INVALID_CHARGER = 0,
 	USB_SDP_CHARGER,
 	USB_DCP_CHARGER,
 	USB_CDP_CHARGER,
-<<<<<<< HEAD
 	USB_ACA_A_CHARGER,
 	USB_ACA_B_CHARGER,
 	USB_ACA_C_CHARGER,
 	USB_ACA_DOCK_CHARGER,
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 /**
@@ -163,7 +144,6 @@ enum usb_chg_type {
  * @otg_control: OTG switch controlled by user/Id pin
  * @default_mode: Default operational mode. Applicable only if
  *              OTG switch is controller by user.
-<<<<<<< HEAD
  * @pmic_id_irq: IRQ number assigned for PMIC USB ID line.
  * @mhl_enable: indicates MHL connector or not.
  * @ido_3v3_name: the regulator provide 3.075(3.3)V to PHY
@@ -173,10 +153,6 @@ enum usb_chg_type {
  * @phy_notify_enabled: even in OTG_PMIC_CONTROL, still force enabled phy
  *		interrupt and deliver the notification
  * @swfi_latency: miminum latency to allow swfi.
-=======
- * @pclk_src_name: pclk is derived from ebi1_usb_clk in case of 7x27 and 8k
- *              dfab_usb_hs_clk in case of 8660 and 8960.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  */
 struct msm_otg_platform_data {
 	int *phy_init_seq;
@@ -187,7 +163,6 @@ struct msm_otg_platform_data {
 	enum usb_mode_type default_mode;
 	enum msm_usb_phy_type phy_type;
 	void (*setup_gpio)(enum usb_otg_state state);
-<<<<<<< HEAD
 	int pmic_id_irq;
 	bool mhl_enable;
 	char *ldo_3v3_name;
@@ -200,9 +175,6 @@ struct msm_otg_platform_data {
 	void (*usb_uart_switch)(int uart);
 	int (*rpc_connect)(int connect);
 	int (*phy_reset)(void);
-=======
-	char *pclk_src_name;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 /**
@@ -210,20 +182,11 @@ struct msm_otg_platform_data {
  * @otg: USB OTG Transceiver structure.
  * @pdata: otg device platform data.
  * @irq: IRQ number assigned for HSUSB controller.
-<<<<<<< HEAD
  * @clk: clock struct of alt_core_clk.
  * @pclk: clock struct of iface_clk.
  * @phy_reset_clk: clock struct of phy_clk.
  * @core_clk: clock struct of core_bus_clk.
 * @regs: ioremapped register base address.
-=======
- * @clk: clock struct of usb_hs_clk.
- * @pclk: clock struct of usb_hs_pclk.
- * @pclk_src: pclk source for voting.
- * @phy_reset_clk: clock struct of usb_phy_clk.
- * @core_clk: clock struct of usb_hs_core_clk.
- * @regs: ioremapped register base address.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * @inputs: OTG state machine inputs(Id, SessValid etc).
  * @sm_work: OTG state machine work.
  * @in_lpm: indicates low power mode (LPM) state.
@@ -234,7 +197,6 @@ struct msm_otg_platform_data {
  * @chg_type: The type of charger attached.
  * @dcd_retires: The retry count used to track Data contact
  *               detection process.
-<<<<<<< HEAD
  * @wlock: Wake lock struct to prevent system suspend when
  *               USB is active.
  * @usbdev_nb: The notifier block used to know about the B-device
@@ -244,8 +206,6 @@ struct msm_otg_platform_data {
  * @pm_qos_req_dma: miminum DMA latency to vote against idle power
 	collapse when cable is connected.
  * @id_timer: The timer used for polling ID line to detect ACA states.
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  */
 struct msm_otg {
 	struct otg_transceiver otg;
@@ -253,21 +213,14 @@ struct msm_otg {
 	int irq;
 	struct clk *clk;
 	struct clk *pclk;
-<<<<<<< HEAD
-=======
-	struct clk *pclk_src;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct clk *phy_reset_clk;
 	struct clk *core_clk;
 	void __iomem *regs;
 #define ID		0
 #define B_SESS_VLD	1
-<<<<<<< HEAD
 #define ID_A		2
 #define ID_B		3
 #define ID_C		4
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	unsigned long inputs;
 	struct work_struct sm_work;
 	atomic_t in_lpm;
@@ -277,7 +230,6 @@ struct msm_otg {
 	enum usb_chg_state chg_state;
 	enum usb_chg_type chg_type;
 	u8 dcd_retries;
-<<<<<<< HEAD
 	struct wake_lock usb_otg_wlock;
 	struct wake_lock cable_detect_wlock;
 	struct notifier_block usbdev_nb;
@@ -324,8 +276,6 @@ struct msm_hsic_host_platform_data {
 	unsigned strobe;
 	unsigned data;
 	unsigned hub_reset;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 #endif

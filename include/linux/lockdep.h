@@ -157,7 +157,6 @@ struct lockdep_map {
 #endif
 };
 
-<<<<<<< HEAD
 static inline void lockdep_copy_map(struct lockdep_map *to,
 				    struct lockdep_map *from)
 {
@@ -176,8 +175,6 @@ static inline void lockdep_copy_map(struct lockdep_map *to,
 		to->class_cache[i] = NULL;
 }
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * Every lock has a list of other locks that were taken after it.
  * We only grow the list, never remove from it:
@@ -569,11 +566,7 @@ do {									\
 #endif
 
 #ifdef CONFIG_PROVE_RCU
-<<<<<<< HEAD
 void lockdep_rcu_suspicious(const char *file, const int line, const char *s);
-=======
-extern void lockdep_rcu_dereference(const char *file, const int line);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 
 #endif /* __LINUX_LOCKDEP_H */

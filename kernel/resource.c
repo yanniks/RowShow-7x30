@@ -262,7 +262,6 @@ int request_resource(struct resource *root, struct resource *new)
 EXPORT_SYMBOL(request_resource);
 
 /**
-<<<<<<< HEAD
  * locate_resource - locate an already reserved I/O or memory resource
  * @root: root resource descriptor
  * @search: resource descriptor to be located
@@ -281,8 +280,6 @@ struct resource *locate_resource(struct resource *root, struct resource *search)
 EXPORT_SYMBOL(locate_resource);
 
 /**
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * release_resource - release a previously reserved resource
  * @old: resource pointer
  */

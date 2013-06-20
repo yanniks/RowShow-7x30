@@ -746,13 +746,8 @@ static int vfp_set(struct task_struct *target,
 	if (ret)
 		return ret;
 
-<<<<<<< HEAD
 	thread->vfpstate.hard = new_vfp;
 	vfp_flush_hwstate(thread);
-=======
-	vfp_flush_hwstate(thread);
-	thread->vfpstate.hard = new_vfp;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return 0;
 }

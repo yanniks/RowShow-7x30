@@ -210,11 +210,7 @@ parisc_walk_tree(struct device *dev)
 	return dev->platform_data;
 }
 		
-<<<<<<< HEAD
 #define GET_IOC(dev) (HBA_DATA(parisc_walk_tree(dev))->iommu)
-=======
-#define GET_IOC(dev) (HBA_DATA(parisc_walk_tree(dev))->iommu);	
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	
 
 #ifdef CONFIG_IOMMU_CCIO

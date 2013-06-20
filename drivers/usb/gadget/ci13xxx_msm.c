@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 /* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
-=======
-/* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -13,20 +9,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
-<<<<<<< HEAD
-=======
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  */
 
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/pm_runtime.h>
-<<<<<<< HEAD
 #include <linux/usb/msm_hsusb.h>
 #include <linux/usb/msm_hsusb_hw.h>
 #include <linux/usb/ulpi.h>
@@ -34,10 +21,6 @@
 
 #include <linux/usb/htc_info.h>
 static struct usb_info *the_usb_info;
-=======
-#include <linux/usb/msm_hsusb_hw.h>
-#include <linux/usb/ulpi.h>
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #include "ci13xxx_udc.c"
 
@@ -50,12 +33,7 @@ static irqreturn_t msm_udc_irq(int irq, void *data)
 
 static void ci13xxx_msm_notify_event(struct ci13xxx *udc, unsigned event)
 {
-<<<<<<< HEAD
 	/* struct device *dev = udc->gadget.dev.parent; */
-=======
-	struct device *dev = udc->gadget.dev.parent;
-	int val;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	switch (event) {
 	case CI13XXX_CONTROLLER_RESET_EVENT:
@@ -63,20 +41,6 @@ static void ci13xxx_msm_notify_event(struct ci13xxx *udc, unsigned event)
 		writel(0, USB_AHBBURST);
 		writel(0, USB_AHBMODE);
 		break;
-<<<<<<< HEAD
-=======
-	case CI13XXX_CONTROLLER_STOPPED_EVENT:
-		dev_dbg(dev, "CI13XXX_CONTROLLER_STOPPED_EVENT received\n");
-		/*
-		 * Put the transceiver in non-driving mode. Otherwise host
-		 * may not detect soft-disconnection.
-		 */
-		val = otg_io_read(udc->transceiver, ULPI_FUNC_CTRL);
-		val &= ~ULPI_FUNC_CTRL_OPMODE_MASK;
-		val |= ULPI_FUNC_CTRL_OPMODE_NONDRIVING;
-		otg_io_write(udc->transceiver, val, ULPI_FUNC_CTRL);
-		break;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	default:
 		dev_dbg(dev, "unknown ci13xxx_udc event\n");
 		break;
@@ -88,12 +52,8 @@ static struct ci13xxx_udc_driver ci13xxx_msm_udc_driver = {
 	.flags			= CI13XXX_REGS_SHARED |
 				  CI13XXX_REQUIRE_TRANSCEIVER |
 				  CI13XXX_PULLUP_ON_VBUS |
-<<<<<<< HEAD
 				  CI13XXX_DISABLE_STREAMING |
 				  CI13XXX_ZERO_ITC,
-=======
-				  CI13XXX_DISABLE_STREAMING,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	.notify_event		= ci13xxx_msm_notify_event,
 };
@@ -101,22 +61,16 @@ static struct ci13xxx_udc_driver ci13xxx_msm_udc_driver = {
 static int ci13xxx_msm_probe(struct platform_device *pdev)
 {
 	struct resource *res;
-<<<<<<< HEAD
 	struct usb_info *ui;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	void __iomem *regs;
 	int irq;
 	int ret;
 
 	dev_dbg(&pdev->dev, "ci13xxx_msm_probe\n");
-<<<<<<< HEAD
 	ui = kzalloc(sizeof(struct usb_info), GFP_KERNEL);
 	if (!ui)
 		return -ENOMEM;
 	the_usb_info = ui;
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res) {
@@ -148,10 +102,7 @@ static int ci13xxx_msm_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "request_irq failed\n");
 		goto udc_remove;
 	}
-<<<<<<< HEAD
 	INIT_DELAYED_WORK(&ui->chg_stop, usb_chg_stop);
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	pm_runtime_no_callbacks(&pdev->dev);
 	pm_runtime_enable(&pdev->dev);
@@ -166,7 +117,6 @@ iounmap:
 	return ret;
 }
 
-<<<<<<< HEAD
 static void ci13xxx_msm_shutdown(struct platform_device *pdev)
 {
 	struct msm_otg *motg;
@@ -185,10 +135,6 @@ static void ci13xxx_msm_shutdown(struct platform_device *pdev)
 static struct platform_driver ci13xxx_msm_driver = {
 	.probe = ci13xxx_msm_probe,
 	.shutdown = ci13xxx_msm_shutdown,
-=======
-static struct platform_driver ci13xxx_msm_driver = {
-	.probe = ci13xxx_msm_probe,
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	.driver = { .name = "msm_hsusb", },
 };
 

@@ -90,7 +90,6 @@ long srcu_batches_completed(struct srcu_struct *sp);
  * read-side critical section.  In absence of CONFIG_DEBUG_LOCK_ALLOC,
  * this assumes we are in an SRCU read-side critical section unless it can
  * prove otherwise.
-<<<<<<< HEAD
  *
  * Similarly, we avoid claiming an SRCU read lock held if the current
  * CPU is offline.
@@ -104,14 +103,6 @@ static inline int srcu_read_lock_held(struct srcu_struct *sp)
 	if (!rcu_lockdep_current_cpu_online())
 		return 0;
 	return lock_is_held(&sp->dep_map);
-=======
- */
-static inline int srcu_read_lock_held(struct srcu_struct *sp)
-{
-	if (debug_locks)
-		return lock_is_held(&sp->dep_map);
-	return 1;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */

@@ -128,11 +128,7 @@ fail:
 /*
  * inode->i_mutex: don't care
  */
-<<<<<<< HEAD
 struct posix_acl *
-=======
-static struct posix_acl *
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 ext2_get_acl(struct inode *inode, int type)
 {
 	int name_index;
@@ -198,19 +194,10 @@ ext2_set_acl(struct inode *inode, int type, struct posix_acl *acl)
 		case ACL_TYPE_ACCESS:
 			name_index = EXT2_XATTR_INDEX_POSIX_ACL_ACCESS;
 			if (acl) {
-<<<<<<< HEAD
 				error = posix_acl_equiv_mode(acl, &inode->i_mode);
 				if (error < 0)
 					return error;
 				else {
-=======
-				mode_t mode = inode->i_mode;
-				error = posix_acl_equiv_mode(acl, &mode);
-				if (error < 0)
-					return error;
-				else {
-					inode->i_mode = mode;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 					inode->i_ctime = CURRENT_TIME_SEC;
 					mark_inode_dirty(inode);
 					if (error == 0)
@@ -242,32 +229,6 @@ ext2_set_acl(struct inode *inode, int type, struct posix_acl *acl)
 	return error;
 }
 
-<<<<<<< HEAD
-=======
-int
-ext2_check_acl(struct inode *inode, int mask, unsigned int flags)
-{
-	struct posix_acl *acl;
-
-	if (flags & IPERM_FLAG_RCU) {
-		if (!negative_cached_acl(inode, ACL_TYPE_ACCESS))
-			return -ECHILD;
-		return -EAGAIN;
-	}
-
-	acl = ext2_get_acl(inode, ACL_TYPE_ACCESS);
-	if (IS_ERR(acl))
-		return PTR_ERR(acl);
-	if (acl) {
-		int error = posix_acl_permission(inode, acl, mask);
-		posix_acl_release(acl);
-		return error;
-	}
-
-	return -EAGAIN;
-}
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * Initialize the ACLs of a new inode. Called from ext2_new_inode.
  *
@@ -290,18 +251,11 @@ ext2_init_acl(struct inode *inode, struct inode *dir)
 			inode->i_mode &= ~current_umask();
 	}
 	if (test_opt(inode->i_sb, POSIX_ACL) && acl) {
-<<<<<<< HEAD
-=======
-               struct posix_acl *clone;
-	       mode_t mode;
-
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (S_ISDIR(inode->i_mode)) {
 			error = ext2_set_acl(inode, ACL_TYPE_DEFAULT, acl);
 			if (error)
 				goto cleanup;
 		}
-<<<<<<< HEAD
 		error = posix_acl_create(&acl, GFP_KERNEL, &inode->i_mode);
 		if (error < 0)
 			return error;
@@ -309,23 +263,6 @@ ext2_init_acl(struct inode *inode, struct inode *dir)
 			/* This is an extended ACL */
 			error = ext2_set_acl(inode, ACL_TYPE_ACCESS, acl);
 		}
-=======
-		clone = posix_acl_clone(acl, GFP_KERNEL);
-		error = -ENOMEM;
-		if (!clone)
-			goto cleanup;
-		mode = inode->i_mode;
-		error = posix_acl_create_masq(clone, &mode);
-		if (error >= 0) {
-			inode->i_mode = mode;
-			if (error > 0) {
-				/* This is an extended ACL */
-				error = ext2_set_acl(inode,
-						     ACL_TYPE_ACCESS, clone);
-			}
-		}
-		posix_acl_release(clone);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 cleanup:
        posix_acl_release(acl);
@@ -349,11 +286,7 @@ cleanup:
 int
 ext2_acl_chmod(struct inode *inode)
 {
-<<<<<<< HEAD
 	struct posix_acl *acl;
-=======
-	struct posix_acl *acl, *clone;
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
         int error;
 
 	if (!test_opt(inode->i_sb, POSIX_ACL))
@@ -363,22 +296,11 @@ ext2_acl_chmod(struct inode *inode)
 	acl = ext2_get_acl(inode, ACL_TYPE_ACCESS);
 	if (IS_ERR(acl) || !acl)
 		return PTR_ERR(acl);
-<<<<<<< HEAD
 	error = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
 	if (error)
 		return error;
 	error = ext2_set_acl(inode, ACL_TYPE_ACCESS, acl);
 	posix_acl_release(acl);
-=======
-	clone = posix_acl_clone(acl, GFP_KERNEL);
-	posix_acl_release(acl);
-	if (!clone)
-		return -ENOMEM;
-	error = posix_acl_chmod_masq(clone, inode->i_mode);
-	if (!error)
-		error = ext2_set_acl(inode, ACL_TYPE_ACCESS, clone);
-	posix_acl_release(clone);
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return error;
 }
 

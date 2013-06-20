@@ -11,15 +11,11 @@ if WIMAX
 menu "WiMAX Wireless Broadband devices"
 
 source "drivers/net/wimax/i2400m/Kconfig"
-<<<<<<< HEAD
 source "drivers/net/wimax/SQN/Kconfig"
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 endmenu
 
 endif
-<<<<<<< HEAD
 config WIMAX_SERIAL_MSM
 	tristate "WIMAX uart debug console support"
 	depends on WIMAX && SERIAL_MSM
@@ -30,5 +26,3 @@ config WIMAX_SERIAL_MSM
 
 	  Need define CONFIG_SERIAL_MSM as pre-condition to enable BSP UART.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

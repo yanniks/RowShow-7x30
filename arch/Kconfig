@@ -148,7 +148,6 @@ config HAVE_HW_BREAKPOINT
 	bool
 	depends on PERF_EVENTS
 
-<<<<<<< HEAD
 config HAVE_HW_BRKPT_RESERVED_RW_ACCESS
 	bool
 	depends on HAVE_HW_BREAKPOINT
@@ -156,8 +155,6 @@ config HAVE_HW_BRKPT_RESERVED_RW_ACCESS
 	  Some of the hardware might not have r/w access beyond a certain number
 	  of breakpoint register access.
 
-=======
->>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config HAVE_MIXED_BREAKPOINTS_REGS
 	bool
 	depends on HAVE_HW_BREAKPOINT
