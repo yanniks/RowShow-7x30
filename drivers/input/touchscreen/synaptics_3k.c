@@ -26,7 +26,6 @@
 #include <linux/synaptics_i2c_rmi.h>
 #include <linux/slab.h>
 
-#define DEBUG 1
 #define SYN_I2C_RETRY_TIMES 10
 
 struct synaptics_ts_data {
@@ -57,8 +56,6 @@ static void synaptics_ts_early_suspend(struct early_suspend *h);
 static void synaptics_ts_late_resume(struct early_suspend *h);
 #endif
 
-static DEFINE_MUTEX(syn_mutex);
-
 static struct synaptics_ts_data *gl_ts;
 static const char SYNAPTICSNAME[]	= "Synaptics_3K";
 static uint32_t syn_panel_version;
@@ -68,15 +65,15 @@ static bool proximity_status = true; // psensor; true = far, false = near
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 /* S2W starts */
 static int s2w_register_threshold = 9; /* beyond this threshold the panel will not register to apps */
-static int s2w_min_distance = 500; /* power will toggle at this distance from start point */
-static bool s2w_allow_stroke = true; /* use either direction for on/off */
-static bool s2w_switch = true;
+static int s2w_min_distance = 600; /* power will toggle at this distance from start point */
+static bool s2w_allow_stroke = false; /* use either direction for on/off */
+static bool s2w_switch = false;
 /* S2W ends */
 
 /* DT2W starts */
-static bool dt2w_switch = true;
-static unsigned int dt2w_duration = 100; /* msecs */
-static unsigned int dt2w_threshold = 500;  /* msecs */
+static bool dt2w_switch = false;
+static unsigned int dt2w_min_duration = 100; /* msecs */
+static unsigned int dt2w_max_duration = 500;  /* msecs */
 static cputime64_t dt2w_start = 0;
 static bool dt2w_screen = false; /* true if last touch was on display area */
 /* DT2W ends */
@@ -120,8 +117,7 @@ void sweep2wake_syn_pwrtrigger(void) {
 
 extern void synaptics_proximity_status(bool val) {
 	proximity_status = val;
-	if (DEBUG)
-		printk(KERN_INFO "[TP] proximity: %d", proximity_status ? 1 : 0);
+	printk(KERN_INFO "[TP] proximity: %d", proximity_status ? 1 : 0);
 }
 
 static int i2c_syn_read(struct i2c_client *client, uint16_t addr, uint8_t *data, uint16_t length)
@@ -144,13 +140,11 @@ static int i2c_syn_read(struct i2c_client *client, uint16_t addr, uint8_t *data,
 	};
 	buf = addr & 0xFF;
 
-	mutex_lock(&syn_mutex);
 	for (retry = 0; retry < SYN_I2C_RETRY_TIMES; retry++) {
 		if (i2c_transfer(client->adapter, msg, 2) == 2)
 			break;
 		msleep(10);
 	}
-	mutex_unlock(&syn_mutex);
 
 	if (retry == SYN_I2C_RETRY_TIMES) {
 		printk(KERN_ERR "[TP]: i2c_read retry over %d\n",
@@ -399,15 +393,15 @@ static ssize_t synaptics_dt2w_switch_store(struct device *dev,
 static DEVICE_ATTR(doubletap2wake, (S_IWUSR|S_IRUGO),
 		synaptics_dt2w_switch_show, synaptics_dt2w_switch_store);
 
-static ssize_t synaptics_dt2w_duration_show(struct device *dev,
+static ssize_t synaptics_dt2w_min_duration_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
 	size_t count = 0;
-	count += sprintf(buf, "%d\n", dt2w_duration);
+	count += sprintf(buf, "%d\n", dt2w_min_duration);
 	return count;
 }
 
-static ssize_t synaptics_dt2w_duration_store(struct device *dev,
+static ssize_t synaptics_dt2w_min_duration_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
 	unsigned long value;
@@ -415,30 +409,30 @@ static ssize_t synaptics_dt2w_duration_store(struct device *dev,
 	ret = strict_strtoul(buf, 10, &value);
 
 	if (ret < 0) {
-		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_duration failed - %s\n", buf);
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_min_duration failed - %s\n", buf);
 		return count;
 	}
 	if (value > 0) {
-		dt2w_duration = (int)value;
-		printk(KERN_INFO "[TP] [sweep2wake]: dt2w_duration=%d\n", dt2w_duration);
+		dt2w_min_duration = (int)value;
+		printk(KERN_INFO "[TP] [sweep2wake]: dt2w_min_duration=%d\n", dt2w_min_duration);
 	} else {
-		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_duration failed - valid values are positive integers - %s\n", buf);
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_min_duration failed - valid values are positive integers - %s\n", buf);
 	}
 	return count;
 }
 
-static DEVICE_ATTR(dt2w_duration, (S_IWUSR|S_IRUGO),
-		synaptics_dt2w_duration_show, synaptics_dt2w_duration_store);
+static DEVICE_ATTR(dt2w_min_duration, (S_IWUSR|S_IRUGO),
+		synaptics_dt2w_min_duration_show, synaptics_dt2w_min_duration_store);
 
-static ssize_t synaptics_dt2w_threshold_show(struct device *dev,
+static ssize_t synaptics_dt2w_max_duration_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
 	size_t count = 0;
-	count += sprintf(buf, "%d\n", dt2w_threshold);
+	count += sprintf(buf, "%d\n", dt2w_max_duration);
 	return count;
 }
 
-static ssize_t synaptics_dt2w_threshold_store(struct device *dev,
+static ssize_t synaptics_dt2w_max_duration_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
 	unsigned long value;
@@ -446,20 +440,20 @@ static ssize_t synaptics_dt2w_threshold_store(struct device *dev,
 	ret = strict_strtoul(buf, 10, &value);
 
 	if (ret < 0) {
-		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_threshold failed - %s\n", buf);
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_max_duration failed - %s\n", buf);
 		return count;
 	}
 	if (value > 0) {
-		dt2w_threshold = (int)value;
-		printk(KERN_INFO "[TP] [sweep2wake]: dt2w_threshold=%d\n", dt2w_threshold);
+		dt2w_max_duration = (int)value;
+		printk(KERN_INFO "[TP] [sweep2wake]: dt2w_max_duration=%d\n", dt2w_max_duration);
 	} else {
-		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_threshold failed - valid values are positive integers - %s\n", buf);
+		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_max_duration failed - valid values are positive integers - %s\n", buf);
 	}
 	return count;
 }
 
-static DEVICE_ATTR(dt2w_threshold, (S_IWUSR|S_IRUGO),
-		synaptics_dt2w_threshold_show, synaptics_dt2w_threshold_store);
+static DEVICE_ATTR(dt2w_max_duration, (S_IWUSR|S_IRUGO),
+		synaptics_dt2w_max_duration_show, synaptics_dt2w_max_duration_store);
 /* DT2W sysfs ends */
 #endif
 
@@ -480,8 +474,8 @@ static int synaptics_touch_sysfs_init(void)
 			sysfs_create_file(android_touch_kobj, &dev_attr_s2w_register_threshold.attr) ||
 			sysfs_create_file(android_touch_kobj, &dev_attr_s2w_min_distance.attr) ||
 			sysfs_create_file(android_touch_kobj, &dev_attr_doubletap2wake.attr) ||
-			sysfs_create_file(android_touch_kobj, &dev_attr_dt2w_duration.attr) ||
-			sysfs_create_file(android_touch_kobj, &dev_attr_dt2w_threshold.attr))
+			sysfs_create_file(android_touch_kobj, &dev_attr_dt2w_min_duration.attr) ||
+			sysfs_create_file(android_touch_kobj, &dev_attr_dt2w_max_duration.attr))
 		return -ENOMEM;
 #endif
 	ret = sysfs_create_file(android_touch_kobj, &dev_attr_vendor.attr);
@@ -512,8 +506,8 @@ static void synaptics_touch_sysfs_remove(void)
 	sysfs_remove_file(android_touch_kobj, &dev_attr_s2w_register_threshold.attr);
 	sysfs_remove_file(android_touch_kobj, &dev_attr_s2w_min_distance.attr);
 	sysfs_remove_file(android_touch_kobj, &dev_attr_doubletap2wake.attr);
-	sysfs_remove_file(android_touch_kobj, &dev_attr_dt2w_duration.attr);
-	sysfs_remove_file(android_touch_kobj, &dev_attr_dt2w_threshold.attr);
+	sysfs_remove_file(android_touch_kobj, &dev_attr_dt2w_min_duration.attr);
+	sysfs_remove_file(android_touch_kobj, &dev_attr_dt2w_max_duration.attr);
 #endif
 	sysfs_remove_file(android_touch_kobj, &dev_attr_debug_level.attr);
 	kobject_del(android_touch_kobj);
@@ -631,24 +625,26 @@ static void synaptics_ts_work_func(struct work_struct *work)
 				if (scr_suspended && dt2w_switch) {
 					cputime64_t now = ktime_to_ns(ktime_get());
 					cputime64_t diff = cputime64_sub(now, dt2w_start);
-					cputime64_t tap_time = dt2w_duration * 1000 * 1000;
-					cputime64_t too_long_time = dt2w_threshold * 1000 * 1000;
+					cputime64_t min = dt2w_min_duration * 1000 * 1000;
+					cputime64_t max = dt2w_max_duration * 1000 * 1000;
 
-					//if (DEBUG)
-					//	printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap diff=%lld\n", diff);
+					if (ts->debug_log_level > 0)
+						printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap diff=%lld\n", diff);
 
 					dt2w_start = now;
 
 					if (dt2w_screen && finger_data[loop_i][1] < 1900) {
-						if (diff > tap_time && diff < too_long_time) {
+						if (diff > min && diff < max) {
 							printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap ON\n");
 							mode = true;
 							sweep2wake_syn_pwrtrigger();
 						} else {
-							printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap took too long, %lld\n", diff);
+							if (ts->debug_log_level > 0)
+								printk(KERN_INFO "[TP] [dt2w]: s2w_double_tap took too long, %lld\n", diff);
 						}
 					} else {
-						printk(KERN_INFO "[TP] [dt2w]: previous tap was outside of the screen");
+						if (ts->debug_log_level > 0)
+							printk(KERN_INFO "[TP] [dt2w]: previous tap was outside of the screen");
 					}
 				}
 			}
@@ -1125,13 +1121,14 @@ static int synaptics_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 {
 	int ret;
 	struct synaptics_ts_data *ts = i2c_get_clientdata(client);
-	if (DEBUG)
+	if (ts->debug_log_level > 0)
 		printk(KERN_INFO "[TP] %s: enter\n", __func__);
 
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 	if (s2w_active()) {
 		//screen off, enable_irq_wake
-		printk(KERN_INFO "[TP] [sweep2wake]: enable_irq_wake\n");
+		if (ts->debug_log_level > 0)
+			printk(KERN_INFO "[TP] [sweep2wake]: enable_irq_wake\n");
 		enable_irq_wake(client->irq);
 	}
 #endif
@@ -1166,7 +1163,7 @@ static int synaptics_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 	}
 #endif
 
-	if (DEBUG)
+	if (ts->debug_log_level > 0)
 		printk(KERN_INFO "[TP] %s: leave\n", __func__);
 	return 0;
 }
@@ -1175,7 +1172,7 @@ static int synaptics_ts_resume(struct i2c_client *client)
 {
 	int ret;
 	struct synaptics_ts_data *ts = i2c_get_clientdata(client);
-	if (DEBUG)
+	if (ts->debug_log_level > 0)
 		printk(KERN_INFO "[TP] %s: enter\n", __func__);
 
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
@@ -1186,7 +1183,8 @@ static int synaptics_ts_resume(struct i2c_client *client)
 		msleep(150);
 		ret = 0;
 		//screen on, disable_irq_wake
-		printk(KERN_INFO "[TP] [sweep2wake]: disable_irq_wake\n");
+		if (ts->debug_log_level > 0)
+			printk(KERN_INFO "[TP] [sweep2wake]: disable_irq_wake\n");
 		disable_irq_wake(client->irq);
 	}
 #endif
@@ -1225,7 +1223,7 @@ static int synaptics_ts_resume(struct i2c_client *client)
 	}
 #endif
 
-	if (DEBUG)
+	if (ts->debug_log_level > 0)
 		printk(KERN_INFO "[TP] %s: leave\n", __func__);
 	return 0;
 }
