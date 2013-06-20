@@ -1363,10 +1363,17 @@ static int fmeter_getrate(struct fmeter *fmp)
 }
 
 /* Called by cgroups to determine if a cpuset is usable; cgroup_mutex held */
+<<<<<<< HEAD
 static int cpuset_can_attach(struct cgroup_subsys *ss, struct cgroup *cgrp,
 			     struct cgroup_taskset *tset)
 {
 	struct cpuset *cs = cgroup_cs(cgrp);
+=======
+static int cpuset_can_attach(struct cgroup_subsys *ss, struct cgroup *cont,
+			     struct task_struct *tsk)
+{
+	struct cpuset *cs = cgroup_cs(cont);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (cpumask_empty(cs->cpus_allowed) || nodes_empty(cs->mems_allowed))
 		return -ENOSPC;
@@ -1379,7 +1386,11 @@ static int cpuset_can_attach(struct cgroup_subsys *ss, struct cgroup *cgrp,
 	 * set_cpus_allowed_ptr() on all attached tasks before cpus_allowed may
 	 * be changed.
 	 */
+<<<<<<< HEAD
 	if (cgroup_taskset_first(tset)->flags & PF_THREAD_BOUND)
+=======
+	if (tsk->flags & PF_THREAD_BOUND)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return -EINVAL;
 
 	return 0;
@@ -1429,6 +1440,7 @@ static void cpuset_attach_task(struct cgroup *cont, struct task_struct *tsk)
 	cpuset_update_task_spread_flag(cs, tsk);
 }
 
+<<<<<<< HEAD
 static void cpuset_attach(struct cgroup_subsys *ss, struct cgroup *cgrp,
 			  struct cgroup_taskset *tset)
 {
@@ -1437,6 +1449,14 @@ static void cpuset_attach(struct cgroup_subsys *ss, struct cgroup *cgrp,
 	struct cgroup *oldcgrp = cgroup_taskset_cur_cgroup(tset);
 	struct cpuset *cs = cgroup_cs(cgrp);
 	struct cpuset *oldcs = cgroup_cs(oldcgrp);
+=======
+static void cpuset_attach(struct cgroup_subsys *ss, struct cgroup *cont,
+			  struct cgroup *oldcont, struct task_struct *tsk)
+{
+	struct mm_struct *mm;
+	struct cpuset *cs = cgroup_cs(cont);
+	struct cpuset *oldcs = cgroup_cs(oldcont);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/*
 	 * Change mm, possibly for multiple threads in a threadgroup. This is
@@ -2182,7 +2202,11 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
 	mutex_unlock(&callback_mutex);
 }
 
+<<<<<<< HEAD
 void cpuset_cpus_allowed_fallback(struct task_struct *tsk)
+=======
+int cpuset_cpus_allowed_fallback(struct task_struct *tsk)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	const struct cpuset *cs;
 	int cpu;
@@ -2206,10 +2230,29 @@ void cpuset_cpus_allowed_fallback(struct task_struct *tsk)
 	 * changes in tsk_cs()->cpus_allowed. Otherwise we can temporary
 	 * set any mask even if it is not right from task_cs() pov,
 	 * the pending set_cpus_allowed_ptr() will fix things.
+<<<<<<< HEAD
 	 *
 	 * select_fallback_rq() will fix things ups and set cpu_possible_mask
 	 * if required.
 	 */
+=======
+	 */
+
+	cpu = cpumask_any_and(&tsk->cpus_allowed, cpu_active_mask);
+	if (cpu >= nr_cpu_ids) {
+		/*
+		 * Either tsk->cpus_allowed is wrong (see above) or it
+		 * is actually empty. The latter case is only possible
+		 * if we are racing with remove_tasks_in_empty_cpuset().
+		 * Like above we can temporary set any mask and rely on
+		 * set_cpus_allowed_ptr() as synchronization point.
+		 */
+		do_set_cpus_allowed(tsk, cpu_possible_mask);
+		cpu = cpumask_any(cpu_active_mask);
+	}
+
+	return cpu;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 void cpuset_init_current_mems_allowed(void)

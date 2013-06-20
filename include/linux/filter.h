@@ -7,11 +7,17 @@
 
 #include <linux/compiler.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <linux/rcupdate.h>
 
 #ifdef __KERNEL__
 #include <asm/atomic.h>
 #include <linux/rcu_types.h>
+=======
+
+#ifdef __KERNEL__
+#include <asm/atomic.h>
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 
 /*

@@ -20,6 +20,7 @@
 #include <linux/platform_device.h>
 
 /**
+<<<<<<< HEAD
  * struct of_dev_auxdata - lookup table entry for device names & platform_data
  * @compatible: compatible value of node to match against node
  * @phys_addr: Start address of registers to match against node
@@ -54,6 +55,8 @@ struct of_dev_auxdata {
 	  .platform_data = _pdata }
 
 /**
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * of_platform_driver - Legacy of-aware driver for platform devices.
  *
  * An of_platform_driver driver is attached to a basic platform_device on
@@ -74,8 +77,11 @@ struct of_platform_driver
 #define	to_of_platform_driver(drv) \
 	container_of(drv,struct of_platform_driver, driver)
 
+<<<<<<< HEAD
 extern const struct of_device_id of_default_bus_match_table[];
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* Platform drivers register/unregister */
 extern struct platform_device *of_device_alloc(struct device_node *np,
 					 const char *bus_id,
@@ -91,10 +97,13 @@ extern struct platform_device *of_platform_device_create(struct device_node *np,
 extern int of_platform_bus_probe(struct device_node *root,
 				 const struct of_device_id *matches,
 				 struct device *parent);
+<<<<<<< HEAD
 extern int of_platform_populate(struct device_node *root,
 				const struct of_device_id *matches,
 				const struct of_dev_auxdata *lookup,
 				struct device *parent);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif /* !CONFIG_SPARC */
 
 #endif /* CONFIG_OF_DEVICE */

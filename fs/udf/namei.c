@@ -552,7 +552,11 @@ static int udf_delete_entry(struct inode *inode, struct fileIdentDesc *fi,
 	return udf_write_fi(inode, cfi, fi, fibh, NULL, NULL);
 }
 
+<<<<<<< HEAD
 static int udf_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+=======
+static int udf_create(struct inode *dir, struct dentry *dentry, int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		      struct nameidata *nd)
 {
 	struct udf_fileident_bh fibh;
@@ -577,7 +581,12 @@ static int udf_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 
 	fi = udf_add_entry(dir, dentry, &fibh, &cfi, &err);
 	if (!fi) {
+<<<<<<< HEAD
 		inode_dec_link_count(inode);
+=======
+		inode->i_nlink--;
+		mark_inode_dirty(inode);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		iput(inode);
 		return err;
 	}
@@ -596,7 +605,11 @@ static int udf_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int udf_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
+=======
+static int udf_mknod(struct inode *dir, struct dentry *dentry, int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		     dev_t rdev)
 {
 	struct inode *inode;
@@ -617,7 +630,12 @@ static int udf_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
 	init_special_inode(inode, mode, rdev);
 	fi = udf_add_entry(dir, dentry, &fibh, &cfi, &err);
 	if (!fi) {
+<<<<<<< HEAD
 		inode_dec_link_count(inode);
+=======
+		inode->i_nlink--;
+		mark_inode_dirty(inode);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		iput(inode);
 		return err;
 	}
@@ -663,7 +681,12 @@ static int udf_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 	inode->i_fop = &udf_dir_operations;
 	fi = udf_add_entry(inode, NULL, &fibh, &cfi, &err);
 	if (!fi) {
+<<<<<<< HEAD
 		inode_dec_link_count(inode);
+=======
+		inode->i_nlink--;
+		mark_inode_dirty(inode);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		iput(inode);
 		goto out;
 	}
@@ -680,7 +703,11 @@ static int udf_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 
 	fi = udf_add_entry(dir, dentry, &fibh, &cfi, &err);
 	if (!fi) {
+<<<<<<< HEAD
 		clear_nlink(inode);
+=======
+		inode->i_nlink = 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		mark_inode_dirty(inode);
 		iput(inode);
 		goto out;

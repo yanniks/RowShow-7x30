@@ -61,6 +61,7 @@ extern void synchronize_rcu_bh(void);
 extern void synchronize_sched_expedited(void);
 extern void synchronize_rcu_expedited(void);
 
+<<<<<<< HEAD
 void kfree_call_rcu(struct rcu_head *head, void (*func)(struct rcu_head *rcu));
 
 /**
@@ -79,14 +80,19 @@ void kfree_call_rcu(struct rcu_head *head, void (*func)(struct rcu_head *rcu));
  * to call this function from a CPU-hotplug notifier.  Failing to observe
  * these restriction will result in deadlock.
  */
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static inline void synchronize_rcu_bh_expedited(void)
 {
 	synchronize_sched_expedited();
 }
 
 extern void rcu_barrier(void);
+<<<<<<< HEAD
 extern void rcu_barrier_bh(void);
 extern void rcu_barrier_sched(void);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 extern unsigned long rcutorture_testseq;
 extern unsigned long rcutorture_vernum;

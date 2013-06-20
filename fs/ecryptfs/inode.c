@@ -290,7 +290,11 @@ out:
  */
 static int
 ecryptfs_create(struct inode *directory_inode, struct dentry *ecryptfs_dentry,
+<<<<<<< HEAD
 		umode_t mode, struct nameidata *nd)
+=======
+		int mode, struct nameidata *nd)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	int rc;
 
@@ -620,7 +624,11 @@ static int ecryptfs_rmdir(struct inode *dir, struct dentry *dentry)
 }
 
 static int
+<<<<<<< HEAD
 ecryptfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t dev)
+=======
+ecryptfs_mknod(struct inode *dir, struct dentry *dentry, int mode, dev_t dev)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	int rc;
 	struct dentry *lower_dentry;
@@ -962,9 +970,15 @@ int ecryptfs_truncate(struct dentry *dentry, loff_t new_length)
 }
 
 static int
+<<<<<<< HEAD
 ecryptfs_permission(struct inode *inode, int mask)
 {
 	if (mask & MAY_NOT_BLOCK)
+=======
+ecryptfs_permission(struct inode *inode, int mask, unsigned int flags)
+{
+	if (flags & IPERM_FLAG_RCU)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return -ECHILD;
 	return inode_permission(ecryptfs_inode_to_lower(inode), mask);
 }

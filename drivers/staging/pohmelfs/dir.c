@@ -661,7 +661,11 @@ static int pohmelfs_create_entry(struct inode *dir, struct dentry *dentry, u64 s
 /*
  * VFS create and mkdir callbacks.
  */
+<<<<<<< HEAD
 static int pohmelfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+=======
+static int pohmelfs_create(struct inode *dir, struct dentry *dentry, int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		struct nameidata *nd)
 {
 	return pohmelfs_create_entry(dir, dentry, 0, mode);

@@ -18,8 +18,11 @@
 #include <linux/security.h>
 #include <linux/ima.h>
 
+<<<<<<< HEAD
 #define MAX_LSM_XATTR	1
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* Boot-time LSM user choice */
 static __initdata char chosen_lsm[SECURITY_NAME_MAX + 1] =
 	CONFIG_DEFAULT_SECURITY;
@@ -129,6 +132,7 @@ int __init register_security(struct security_operations *ops)
 
 /* Security operations */
 
+<<<<<<< HEAD
 int security_binder_set_context_mgr(struct task_struct *mgr)
 {
 	return security_ops->binder_set_context_mgr(mgr);
@@ -149,6 +153,8 @@ int security_binder_transfer_file(struct task_struct *from, struct task_struct *
 	return security_ops->binder_transfer_file(from, to, file);
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 int security_ptrace_access_check(struct task_struct *child, unsigned int mode)
 {
 	return security_ops->ptrace_access_check(child, mode);
@@ -361,6 +367,7 @@ void security_inode_free(struct inode *inode)
 }
 
 int security_inode_init_security(struct inode *inode, struct inode *dir,
+<<<<<<< HEAD
 				 const struct qstr *qstr,
 				 const initxattrs initxattrs, void *fs_data)
 {
@@ -394,13 +401,21 @@ EXPORT_SYMBOL(security_inode_init_security);
 int security_old_inode_init_security(struct inode *inode, struct inode *dir,
 				     const struct qstr *qstr, char **name,
 				     void **value, size_t *len)
+=======
+				 const struct qstr *qstr, char **name,
+				 void **value, size_t *len)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	if (unlikely(IS_PRIVATE(inode)))
 		return -EOPNOTSUPP;
 	return security_ops->inode_init_security(inode, dir, qstr, name, value,
 						 len);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(security_old_inode_init_security);
+=======
+EXPORT_SYMBOL(security_inode_init_security);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #ifdef CONFIG_SECURITY_PATH
 int security_path_mknod(struct path *dir, struct dentry *dentry, int mode,
@@ -490,7 +505,11 @@ int security_path_chroot(struct path *path)
 }
 #endif
 
+<<<<<<< HEAD
 int security_inode_create(struct inode *dir, struct dentry *dentry, umode_t mode)
+=======
+int security_inode_create(struct inode *dir, struct dentry *dentry, int mode)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	if (unlikely(IS_PRIVATE(dir)))
 		return 0;
@@ -536,7 +555,11 @@ int security_inode_rmdir(struct inode *dir, struct dentry *dentry)
 	return security_ops->inode_rmdir(dir, dentry);
 }
 
+<<<<<<< HEAD
 int security_inode_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t dev)
+=======
+int security_inode_mknod(struct inode *dir, struct dentry *dentry, int mode, dev_t dev)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	if (unlikely(IS_PRIVATE(dir)))
 		return 0;
@@ -574,6 +597,16 @@ int security_inode_permission(struct inode *inode, int mask)
 	return security_ops->inode_permission(inode, mask, 0);
 }
 
+<<<<<<< HEAD
+=======
+int security_inode_exec_permission(struct inode *inode, unsigned int flags)
+{
+	if (unlikely(IS_PRIVATE(inode)))
+		return 0;
+	return security_ops->inode_permission(inode, MAY_EXEC, flags);
+}
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 int security_inode_setattr(struct dentry *dentry, struct iattr *attr)
 {
 	if (unlikely(IS_PRIVATE(dentry->d_inode)))

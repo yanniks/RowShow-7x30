@@ -266,15 +266,21 @@
 #include <linux/crypto.h>
 #include <linux/time.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/uid_stat.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #include <net/icmp.h>
 #include <net/tcp.h>
 #include <net/xfrm.h>
 #include <net/ip.h>
+<<<<<<< HEAD
 #include <net/ip6_route.h>
 #include <net/ipv6.h>
 #include <net/transp_v6.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <net/netdma.h>
 #include <net/sock.h>
 
@@ -1115,9 +1121,12 @@ out:
 	if (copied)
 		tcp_push(sk, flags, mss_now, tp->nonagle);
 	release_sock(sk);
+<<<<<<< HEAD
 
 	if (copied > 0)
 		uid_stat_tcp_snd(current_uid(), copied);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return copied;
 
 do_fault:
@@ -1394,11 +1403,16 @@ int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
 	tcp_rcv_space_adjust(sk);
 
 	/* Clean up data we have read: This will do ACK frames. */
+<<<<<<< HEAD
 	if (copied > 0) {
 		tcp_cleanup_rbuf(sk, copied);
 		uid_stat_tcp_rcv(current_uid(), copied);
 	}
 
+=======
+	if (copied > 0)
+		tcp_cleanup_rbuf(sk, copied);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return copied;
 }
 EXPORT_SYMBOL(tcp_read_sock);
@@ -1786,9 +1800,12 @@ skip_copy:
 	tcp_cleanup_rbuf(sk, copied);
 
 	release_sock(sk);
+<<<<<<< HEAD
 
 	if (copied > 0)
 		uid_stat_tcp_rcv(current_uid(), copied);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return copied;
 
 out:
@@ -1797,8 +1814,11 @@ out:
 
 recv_urg:
 	err = tcp_recv_urg(sk, msg, len, flags);
+<<<<<<< HEAD
 	if (err > 0)
 		uid_stat_tcp_rcv(current_uid(), err);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	goto out;
 }
 EXPORT_SYMBOL(tcp_recvmsg);
@@ -3334,6 +3354,7 @@ void __init tcp_init(void)
 	tcp_secret_retiring = &tcp_secret_two;
 	tcp_secret_secondary = &tcp_secret_two;
 }
+<<<<<<< HEAD
 
 static int tcp_is_local(struct net *net, __be32 addr) {
 	struct rtable *rt;
@@ -3438,3 +3459,5 @@ restart:
 
 	return 0;
 }
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

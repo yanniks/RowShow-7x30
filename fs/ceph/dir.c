@@ -446,19 +446,27 @@ static loff_t ceph_dir_llseek(struct file *file, loff_t offset, int origin)
 	loff_t retval;
 
 	mutex_lock(&inode->i_mutex);
+<<<<<<< HEAD
 	retval = -EINVAL;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	switch (origin) {
 	case SEEK_END:
 		offset += inode->i_size + 2;   /* FIXME */
 		break;
 	case SEEK_CUR:
 		offset += file->f_pos;
+<<<<<<< HEAD
 	case SEEK_SET:
 		break;
 	default:
 		goto out;
 	}
 
+=======
+	}
+	retval = -EINVAL;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (offset >= 0 && offset <= inode->i_sb->s_maxbytes) {
 		if (offset != file->f_pos) {
 			file->f_pos = offset;
@@ -482,7 +490,10 @@ static loff_t ceph_dir_llseek(struct file *file, loff_t offset, int origin)
 		if (offset > old_offset)
 			fi->dir_release_count--;
 	}
+<<<<<<< HEAD
 out:
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	mutex_unlock(&inode->i_mutex);
 	return retval;
 }
@@ -641,7 +652,11 @@ int ceph_handle_notrace_create(struct inode *dir, struct dentry *dentry)
 }
 
 static int ceph_mknod(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 		      umode_t mode, dev_t rdev)
+=======
+		      int mode, dev_t rdev)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct ceph_fs_client *fsc = ceph_sb_to_client(dir->i_sb);
 	struct ceph_mds_client *mdsc = fsc->mdsc;
@@ -651,7 +666,11 @@ static int ceph_mknod(struct inode *dir, struct dentry *dentry,
 	if (ceph_snap(dir) != CEPH_NOSNAP)
 		return -EROFS;
 
+<<<<<<< HEAD
 	dout("mknod in dir %p dentry %p mode 0%ho rdev %d\n",
+=======
+	dout("mknod in dir %p dentry %p mode 0%o rdev %d\n",
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	     dir, dentry, mode, rdev);
 	req = ceph_mdsc_create_request(mdsc, CEPH_MDS_OP_MKNOD, USE_AUTH_MDS);
 	if (IS_ERR(req)) {
@@ -674,7 +693,11 @@ static int ceph_mknod(struct inode *dir, struct dentry *dentry,
 	return err;
 }
 
+<<<<<<< HEAD
 static int ceph_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+=======
+static int ceph_create(struct inode *dir, struct dentry *dentry, int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		       struct nameidata *nd)
 {
 	dout("create in dir %p dentry %p name '%.*s'\n",
@@ -1119,8 +1142,12 @@ static ssize_t ceph_read_dir(struct file *file, char __user *buf, size_t size,
  * an fsync() on a dir will wait for any uncommitted directory
  * operations to commit.
  */
+<<<<<<< HEAD
 static int ceph_dir_fsync(struct file *file, loff_t start, loff_t end,
 			  int datasync)
+=======
+static int ceph_dir_fsync(struct file *file, int datasync)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inode *inode = file->f_path.dentry->d_inode;
 	struct ceph_inode_info *ci = ceph_inode(inode);
@@ -1130,11 +1157,14 @@ static int ceph_dir_fsync(struct file *file, loff_t start, loff_t end,
 	int ret = 0;
 
 	dout("dir_fsync %p\n", inode);
+<<<<<<< HEAD
 	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
 	if (ret)
 		return ret;
 	mutex_lock(&inode->i_mutex);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	spin_lock(&ci->i_unsafe_lock);
 	if (list_empty(head))
 		goto out;
@@ -1168,8 +1198,11 @@ static int ceph_dir_fsync(struct file *file, loff_t start, loff_t end,
 	} while (req->r_tid < last_tid);
 out:
 	spin_unlock(&ci->i_unsafe_lock);
+<<<<<<< HEAD
 	mutex_unlock(&inode->i_mutex);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return ret;
 }
 

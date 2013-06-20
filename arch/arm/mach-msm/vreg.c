@@ -1,7 +1,11 @@
 /* arch/arm/mach-msm/vreg.c
  *
  * Copyright (C) 2008 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2009-2011 Code Aurora Forum. All rights reserved.
+=======
+ * Copyright (c) 2009, Code Aurora Forum. All rights reserved.
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -24,6 +28,7 @@
 
 #include "proc_comm.h"
 
+<<<<<<< HEAD
 #if defined(CONFIG_MSM_VREG_SWITCH_INVERTED)
 #define VREG_SWITCH_ENABLE 0
 #define VREG_SWITCH_DISABLE 1
@@ -32,6 +37,8 @@
 #define VREG_SWITCH_DISABLE 0
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 struct vreg {
 	const char *name;
 	unsigned id;
@@ -91,6 +98,7 @@ static struct vreg vregs[] = {
 	VREG("xo_out",	46, 0, 0),
 	VREG("lvsw0",	47, 0, 0),
 	VREG("lvsw1",	48, 0, 0),
+<<<<<<< HEAD
 	VREG("mddi",	49, 0, 0),
 	VREG("pllx",	50, 0, 0),
 	VREG("wlan3",	51, 0, 0),
@@ -100,6 +108,8 @@ static struct vreg vregs[] = {
 	VREG("usim",	55, 0, 0),
 	VREG("bt",	56, 0, 0),
 	VREG("wlan4",	57, 0, 0),
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 struct vreg *vreg_get(struct device *dev, const char *id)
@@ -111,7 +121,10 @@ struct vreg *vreg_get(struct device *dev, const char *id)
 	}
 	return ERR_PTR(-ENOENT);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(vreg_get);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 void vreg_put(struct vreg *vreg)
 {
@@ -120,6 +133,7 @@ void vreg_put(struct vreg *vreg)
 int vreg_enable(struct vreg *vreg)
 {
 	unsigned id = vreg->id;
+<<<<<<< HEAD
 	int enable = VREG_SWITCH_ENABLE;
 
 #if 1
@@ -129,20 +143,31 @@ int vreg_enable(struct vreg *vreg)
 	if (!vreg->status)
 		vreg->refcnt = 1;
 #else
+=======
+	unsigned enable = 1;
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (vreg->refcnt == 0)
 		vreg->status = msm_proc_comm(PCOM_VREG_SWITCH, &id, &enable);
 
 	if ((vreg->refcnt < UINT_MAX) && (!vreg->status))
 		vreg->refcnt++;
+<<<<<<< HEAD
 #endif
 
 	return vreg->status;
 }
 EXPORT_SYMBOL(vreg_enable);
+=======
+
+	return vreg->status;
+}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 int vreg_disable(struct vreg *vreg)
 {
 	unsigned id = vreg->id;
+<<<<<<< HEAD
 	int disable = VREG_SWITCH_DISABLE;
 
 #if 1
@@ -152,10 +177,15 @@ int vreg_disable(struct vreg *vreg)
 	if (!vreg->status)
 		vreg->refcnt = 0;
 #else
+=======
+	unsigned enable = 0;
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!vreg->refcnt)
 		return 0;
 
 	if (vreg->refcnt == 1)
+<<<<<<< HEAD
 		vreg->status = msm_proc_comm(PCOM_VREG_SWITCH, &id, &disable);
 
 	if (!vreg->status)
@@ -165,6 +195,15 @@ int vreg_disable(struct vreg *vreg)
 	return vreg->status;
 }
 EXPORT_SYMBOL(vreg_disable);
+=======
+		vreg->status = msm_proc_comm(PCOM_VREG_SWITCH, &id, &enable);
+
+	if (!vreg->status)
+		vreg->refcnt--;
+
+	return vreg->status;
+}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 int vreg_set_level(struct vreg *vreg, unsigned mv)
 {
@@ -173,7 +212,10 @@ int vreg_set_level(struct vreg *vreg, unsigned mv)
 	vreg->status = msm_proc_comm(PCOM_VREG_SET_LEVEL, &id, &mv);
 	return vreg->status;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(vreg_set_level);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #if defined(CONFIG_DEBUG_FS)
 

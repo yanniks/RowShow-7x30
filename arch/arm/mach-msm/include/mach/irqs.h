@@ -1,6 +1,10 @@
 /*
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+=======
+ * Copyright (c) 2008-2010, Code Aurora Forum. All rights reserved.
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -19,6 +23,7 @@
 
 #define MSM_IRQ_BIT(irq)     (1 << ((irq) & 31))
 
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_MSM8960) || defined(CONFIG_ARCH_APQ8064) || \
 	defined(CONFIG_ARCH_MSM8930)
 
@@ -54,22 +59,34 @@
 #elif defined(CONFIG_ARCH_MSM9615)
 #include "irqs-9615.h"
 #elif defined(CONFIG_ARCH_MSM7X30)
+=======
+#if defined(CONFIG_ARCH_MSM7X30)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include "irqs-7x30.h"
 #elif defined(CONFIG_ARCH_QSD8X50)
 #include "irqs-8x50.h"
 #include "sirc.h"
 #elif defined(CONFIG_ARCH_MSM8X60)
 #include "irqs-8x60.h"
+<<<<<<< HEAD
 #elif defined(CONFIG_ARCH_MSM7X01A) || defined(CONFIG_ARCH_MSM7X25) \
 	|| defined(CONFIG_ARCH_MSM7X27)
 #include "irqs-7xxx.h"
 #elif defined(CONFIG_ARCH_FSM9XXX)
 #include "irqs-fsm9xxx.h"
 #include "sirc.h"
+=======
+#elif defined(CONFIG_ARCH_MSM8960)
+/* TODO: Make these not generic. */
+#include "irqs-8960.h"
+#elif defined(CONFIG_ARCH_MSM_ARM11)
+#include "irqs-7x00.h"
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #else
 #error "Unknown architecture specification"
 #endif
 
+<<<<<<< HEAD
 #endif
 
 #define NR_IRQS (NR_MSM_IRQS + NR_GPIO_IRQS + NR_BOARD_IRQS)
@@ -81,5 +98,10 @@
 //FIRST_MICROP_IRQ=((128 + 0 + 182) + 64)
 #define MSM_uP_TO_INT(n) (((NR_MSM_IRQS + NR_SIRC_IRQS + NR_GPIO_IRQS) + 64/*NR_BOARD_IRQS*/) + (n))
 #define FIRST_MICROP_IRQ MSM_uP_TO_INT(0)
+=======
+#define NR_IRQS (NR_MSM_IRQS + NR_GPIO_IRQS + NR_BOARD_IRQS)
+#define MSM_GPIO_TO_INT(n) (NR_MSM_IRQS + (n))
+#define MSM_INT_TO_REG(base, irq) (base + irq / 32)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #endif

@@ -339,6 +339,7 @@ static int rx_submit (struct usbnet *dev, struct urb *urb, gfp_t flags)
 	int			retval = 0;
 	unsigned long		lockflags;
 	size_t			size = dev->rx_urb_size;
+<<<<<<< HEAD
 	size_t			net_ip_align = NET_IP_ALIGN;
 
 	if (dev->udev && dev->udev->bus && dev->udev->bus->uses_dma &&
@@ -346,13 +347,21 @@ static int rx_submit (struct usbnet *dev, struct urb *urb, gfp_t flags)
 		net_ip_align = 0;
 
 	if ((skb = alloc_skb (size + net_ip_align, flags)) == NULL) {
+=======
+
+	if ((skb = alloc_skb (size + NET_IP_ALIGN, flags)) == NULL) {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		netif_dbg(dev, rx_err, dev->net, "no rx skb\n");
 		usbnet_defer_kevent (dev, EVENT_RX_MEMORY);
 		usb_free_urb (urb);
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 	if (net_ip_align)
 		skb_reserve (skb, net_ip_align);
+=======
+	skb_reserve (skb, NET_IP_ALIGN);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	entry = (struct skb_data *) skb->cb;
 	entry->urb = urb;

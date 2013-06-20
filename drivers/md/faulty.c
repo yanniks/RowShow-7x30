@@ -169,7 +169,11 @@ static void add_sector(conf_t *conf, sector_t start, int mode)
 		conf->nfaults = n+1;
 }
 
+<<<<<<< HEAD
 static void make_request(mddev_t *mddev, struct bio *bio)
+=======
+static int make_request(mddev_t *mddev, struct bio *bio)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	conf_t *conf = mddev->private;
 	int failit = 0;
@@ -181,7 +185,11 @@ static void make_request(mddev_t *mddev, struct bio *bio)
 			 * just fail immediately
 			 */
 			bio_endio(bio, -EIO);
+<<<<<<< HEAD
 			return;
+=======
+			return 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		}
 
 		if (check_sector(conf, bio->bi_sector, bio->bi_sector+(bio->bi_size>>9),
@@ -211,6 +219,7 @@ static void make_request(mddev_t *mddev, struct bio *bio)
 	}
 	if (failit) {
 		struct bio *b = bio_clone_mddev(bio, GFP_NOIO, mddev);
+<<<<<<< HEAD
 
 		b->bi_bdev = conf->rdev->bdev;
 		b->bi_private = bio;
@@ -220,6 +229,17 @@ static void make_request(mddev_t *mddev, struct bio *bio)
 		bio->bi_bdev = conf->rdev->bdev;
 
 	generic_make_request(bio);
+=======
+		b->bi_bdev = conf->rdev->bdev;
+		b->bi_private = bio;
+		b->bi_end_io = faulty_fail;
+		generic_make_request(b);
+		return 0;
+	} else {
+		bio->bi_bdev = conf->rdev->bdev;
+		return 1;
+	}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static void status(struct seq_file *seq, mddev_t *mddev)

@@ -207,7 +207,11 @@ static void ll_device_want_to_wakeup(struct hci_uart *hu)
 		/*
 		 * This state means that both the host and the BRF chip
 		 * have simultaneously sent a wake-up-indication packet.
+<<<<<<< HEAD
 		 * Traditionaly, in this case, receiving a wake-up-indication
+=======
+		 * Traditionally, in this case, receiving a wake-up-indication
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		 * was enough and an additional wake-up-ack wasn't needed.
 		 * This has changed with the BRF6350, which does require an
 		 * explicit wake-up-ack. Other BRF versions, which do not

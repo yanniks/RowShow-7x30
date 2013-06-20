@@ -76,6 +76,7 @@ struct extent_io_ops {
 				    struct extent_state *state);
 	int (*writepage_end_io_hook)(struct page *page, u64 start, u64 end,
 				      struct extent_state *state, int uptodate);
+<<<<<<< HEAD
 	void (*set_bit_hook)(struct inode *inode, struct extent_state *state,
 			     int *bits);
 	void (*clear_bit_hook)(struct inode *inode, struct extent_state *state,
@@ -85,6 +86,17 @@ struct extent_io_ops {
 				  struct extent_state *other);
 	void (*split_extent_hook)(struct inode *inode,
 				  struct extent_state *orig, u64 split);
+=======
+	int (*set_bit_hook)(struct inode *inode, struct extent_state *state,
+			    int *bits);
+	int (*clear_bit_hook)(struct inode *inode, struct extent_state *state,
+			      int *bits);
+	int (*merge_extent_hook)(struct inode *inode,
+				 struct extent_state *new,
+				 struct extent_state *other);
+	int (*split_extent_hook)(struct inode *inode,
+				 struct extent_state *orig, u64 split);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int (*write_cache_pages_lock_hook)(struct page *page);
 };
 
@@ -108,6 +120,11 @@ struct extent_state {
 	wait_queue_head_t wq;
 	atomic_t refs;
 	unsigned long state;
+<<<<<<< HEAD
+=======
+	u64 split_start;
+	u64 split_end;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* for use by the FS */
 	u64 private;
@@ -118,6 +135,11 @@ struct extent_state {
 struct extent_buffer {
 	u64 start;
 	unsigned long len;
+<<<<<<< HEAD
+=======
+	char *map_token;
+	char *kaddr;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	unsigned long map_start;
 	unsigned long map_len;
 	struct page *first_page;
@@ -126,6 +148,7 @@ struct extent_buffer {
 	struct rcu_head rcu_head;
 	atomic_t refs;
 
+<<<<<<< HEAD
 	/* count of read lock holders on the extent buffer */
 	atomic_t write_locks;
 	atomic_t read_locks;
@@ -146,6 +169,16 @@ struct extent_buffer {
 	 * to unlock
 	 */
 	wait_queue_head_t read_lock_wq;
+=======
+	/* the spinlock is used to protect most operations */
+	spinlock_t lock;
+
+	/*
+	 * when we keep the lock held while blocking, waiters go onto
+	 * the wq
+	 */
+	wait_queue_head_t lock_wq;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 static inline void extent_set_compress_type(unsigned long *bio_flags,
@@ -287,10 +320,22 @@ int clear_extent_buffer_uptodate(struct extent_io_tree *tree,
 int extent_buffer_uptodate(struct extent_io_tree *tree,
 			   struct extent_buffer *eb,
 			   struct extent_state *cached_state);
+<<<<<<< HEAD
 int map_private_extent_buffer(struct extent_buffer *eb, unsigned long offset,
 		      unsigned long min_len, char **map,
 		      unsigned long *map_start,
 		      unsigned long *map_len);
+=======
+int map_extent_buffer(struct extent_buffer *eb, unsigned long offset,
+		      unsigned long min_len, char **token, char **map,
+		      unsigned long *map_start,
+		      unsigned long *map_len, int km);
+int map_private_extent_buffer(struct extent_buffer *eb, unsigned long offset,
+		      unsigned long min_len, char **token, char **map,
+		      unsigned long *map_start,
+		      unsigned long *map_len, int km);
+void unmap_extent_buffer(struct extent_buffer *eb, char *token, int km);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 int extent_range_uptodate(struct extent_io_tree *tree,
 			  u64 start, u64 end);
 int extent_clear_unlock_delalloc(struct inode *inode,

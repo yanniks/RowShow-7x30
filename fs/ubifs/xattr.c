@@ -558,7 +558,11 @@ int ubifs_removexattr(struct dentry *dentry, const char *name)
 	}
 
 	ubifs_assert(inode->i_nlink == 1);
+<<<<<<< HEAD
 	clear_nlink(inode);
+=======
+	inode->i_nlink = 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	err = remove_xattr(c, host, inode, &nm);
 	if (err)
 		inode->i_nlink = 1;

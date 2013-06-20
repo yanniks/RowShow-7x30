@@ -71,7 +71,10 @@
 #include <linux/ctype.h>
 #include <linux/ftrace.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/cpuacct.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #include <asm/tlb.h>
 #include <asm/irq_regs.h>
@@ -112,7 +115,15 @@
 
 /*
  * These are the 'tuning knobs' of the scheduler:
+<<<<<<< HEAD
  */
+=======
+ *
+ * default timeslice is 100 msecs (used only for SCHED_RR tasks).
+ * Timeslices get refilled after they expire.
+ */
+#define DEF_TIMESLICE		(100 * HZ / 1000)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /*
  * single value that denotes runtime == period, ie unlimited time.
@@ -121,7 +132,11 @@
 
 static inline int rt_policy(int policy)
 {
+<<<<<<< HEAD
 	if (policy == SCHED_FIFO || policy == SCHED_RR)
+=======
+	if (unlikely(policy == SCHED_FIFO || policy == SCHED_RR))
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return 1;
 	return 0;
 }
@@ -190,6 +205,7 @@ static inline int rt_bandwidth_enabled(void)
 	return sysctl_sched_rt_runtime >= 0;
 }
 
+<<<<<<< HEAD
 static void start_bandwidth_timer(struct hrtimer *period_timer, ktime_t period)
 {
 	unsigned long delta;
@@ -212,6 +228,12 @@ static void start_bandwidth_timer(struct hrtimer *period_timer, ktime_t period)
 
 static void start_rt_bandwidth(struct rt_bandwidth *rt_b)
 {
+=======
+static void start_rt_bandwidth(struct rt_bandwidth *rt_b)
+{
+	ktime_t now;
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!rt_bandwidth_enabled() || rt_b->rt_runtime == RUNTIME_INF)
 		return;
 
@@ -219,7 +241,26 @@ static void start_rt_bandwidth(struct rt_bandwidth *rt_b)
 		return;
 
 	raw_spin_lock(&rt_b->rt_runtime_lock);
+<<<<<<< HEAD
 	start_bandwidth_timer(&rt_b->rt_period_timer, rt_b->rt_period);
+=======
+	for (;;) {
+		unsigned long delta;
+		ktime_t soft, hard;
+
+		if (hrtimer_active(&rt_b->rt_period_timer))
+			break;
+
+		now = hrtimer_cb_get_time(&rt_b->rt_period_timer);
+		hrtimer_forward(&rt_b->rt_period_timer, now, rt_b->rt_period);
+
+		soft = hrtimer_get_softexpires(&rt_b->rt_period_timer);
+		hard = hrtimer_get_expires(&rt_b->rt_period_timer);
+		delta = ktime_to_ns(ktime_sub(hard, soft));
+		__hrtimer_start_range_ns(&rt_b->rt_period_timer, soft, delta,
+				HRTIMER_MODE_ABS_PINNED, 0);
+	}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	raw_spin_unlock(&rt_b->rt_runtime_lock);
 }
 
@@ -244,6 +285,7 @@ struct cfs_rq;
 
 static LIST_HEAD(task_groups);
 
+<<<<<<< HEAD
 struct cfs_bandwidth {
 #ifdef CONFIG_CFS_BANDWIDTH
 	raw_spinlock_t lock;
@@ -259,6 +301,8 @@ struct cfs_bandwidth {
 #endif
 };
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* task group related information */
 struct task_group {
 	struct cgroup_subsys_state css;
@@ -271,8 +315,11 @@ struct task_group {
 	unsigned long shares;
 
 	atomic_t load_weight;
+<<<<<<< HEAD
 	atomic64_t load_avg;
 	atomic_t runnable_avg, usage_avg;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 
 #ifdef CONFIG_RT_GROUP_SCHED
@@ -292,8 +339,11 @@ struct task_group {
 #ifdef CONFIG_SCHED_AUTOGROUP
 	struct autogroup *autogroup;
 #endif
+<<<<<<< HEAD
 
 	struct cfs_bandwidth cfs_bandwidth;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 /* task_group_lock serializes the addition/removal of task groups */
@@ -327,7 +377,11 @@ struct task_group root_task_group;
 /* CFS-related fields in a runqueue */
 struct cfs_rq {
 	struct load_weight load;
+<<<<<<< HEAD
 	unsigned long nr_running, h_nr_running;
+=======
+	unsigned long nr_running;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	u64 exec_clock;
 	u64 min_vruntime;
@@ -351,6 +405,7 @@ struct cfs_rq {
 	unsigned int nr_spread_over;
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 	/*
 	 * CFS Load tracking
@@ -374,6 +429,8 @@ struct cfs_rq {
 	 */
 	unsigned long h_load;
 #endif /* CONFIG_SMP */
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_FAIR_GROUP_SCHED
 	struct rq *rq;	/* cpu runqueue to which this cfs_rq is attached */
 
@@ -395,6 +452,7 @@ struct cfs_rq {
 	 */
 	unsigned long task_weight;
 
+<<<<<<< HEAD
 #endif
 #ifdef CONFIG_CFS_BANDWIDTH
 	int runtime_enabled;
@@ -497,6 +555,31 @@ static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
 }
 #endif /* CONFIG_CFS_BANDWIDTH */
 #endif /* CONFIG_FAIR_GROUP_SCHED */
+=======
+	/*
+	 *   h_load = weight * f(tg)
+	 *
+	 * Where f(tg) is the recursive weight fraction assigned to
+	 * this group.
+	 */
+	unsigned long h_load;
+
+	/*
+	 * Maintaining per-cpu shares distribution for group scheduling
+	 *
+	 * load_stamp is the last time we updated the load average
+	 * load_last is the last time we updated the load average and saw load
+	 * load_unacc_exec_time is currently unaccounted execution time
+	 */
+	u64 load_avg;
+	u64 load_period;
+	u64 load_stamp, load_last, load_unacc_exec_time;
+
+	unsigned long load_contribution;
+#endif
+#endif
+};
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* Real-Time classes' related field in a runqueue: */
 struct rt_rq {
@@ -543,7 +626,10 @@ struct rt_rq {
  */
 struct root_domain {
 	atomic_t refcount;
+<<<<<<< HEAD
 	atomic_t rto_count;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct rcu_head rcu;
 	cpumask_var_t span;
 	cpumask_var_t online;
@@ -553,6 +639,10 @@ struct root_domain {
 	 * one runnable RT task.
 	 */
 	cpumask_var_t rto_mask;
+<<<<<<< HEAD
+=======
+	atomic_t rto_count;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct cpupri cpupri;
 };
 
@@ -589,11 +679,14 @@ struct rq {
 #endif
 	int skip_clock_update;
 
+<<<<<<< HEAD
 	/* time-based average load */
 	u64 nr_last_stamp;
 	unsigned int ave_nr_running;
 	seqcount_t ave_seqcnt;
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* capture load from *all* tasks on this cpu: */
 	struct load_weight load;
 	unsigned long nr_load_updates;
@@ -633,7 +726,11 @@ struct rq {
 
 	unsigned long cpu_power;
 
+<<<<<<< HEAD
 	unsigned char idle_balance;
+=======
+	unsigned char idle_at_tick;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* For active balancing */
 	int post_schedule;
 	int active_balance;
@@ -643,6 +740,11 @@ struct rq {
 	int cpu;
 	int online;
 
+<<<<<<< HEAD
+=======
+	unsigned long avg_load_per_task;
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	u64 rt_avg;
 	u64 age_stamp;
 	u64 idle_stamp;
@@ -685,10 +787,15 @@ struct rq {
 #endif
 
 #ifdef CONFIG_SMP
+<<<<<<< HEAD
 	struct llist_head wake_list;
 #endif
 
 	struct sched_avg avg;
+=======
+	struct task_struct *wake_list;
+#endif
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 static DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
@@ -707,6 +814,10 @@ static inline int cpu_of(struct rq *rq)
 
 #define rcu_dereference_check_sched_domain(p) \
 	rcu_dereference_check((p), \
+<<<<<<< HEAD
+=======
+			      rcu_read_lock_held() || \
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			      lockdep_is_held(&sched_domains_mutex))
 
 /*
@@ -719,8 +830,11 @@ static inline int cpu_of(struct rq *rq)
 #define for_each_domain(cpu, __sd) \
 	for (__sd = rcu_dereference_check_sched_domain(cpu_rq(cpu)->sd); __sd; __sd = __sd->parent)
 
+<<<<<<< HEAD
 #define for_each_lower_domain(sd) for (; sd; sd = sd->child)
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define cpu_rq(cpu)		(&per_cpu(runqueues, (cpu)))
 #define this_rq()		(&__get_cpu_var(runqueues))
 #define task_rq(p)		cpu_rq(task_cpu(p))
@@ -1320,6 +1434,7 @@ static void resched_cpu(int cpu)
 	raw_spin_unlock_irqrestore(&rq->lock, flags);
 }
 
+<<<<<<< HEAD
 void force_cpu_resched(int cpu)
 {
        struct rq *rq = cpu_rq(cpu);
@@ -1330,6 +1445,8 @@ void force_cpu_resched(int cpu)
        raw_spin_unlock_irqrestore(&rq->lock, flags);
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_NO_HZ
 /*
  * In the semi idle case, use the nearest busy cpu for migrating timers
@@ -1398,6 +1515,7 @@ void wake_up_idle_cpu(int cpu)
 		smp_send_reschedule(cpu);
 }
 
+<<<<<<< HEAD
 static inline bool got_nohz_idle_kick(void)
 {
 	return idle_cpu(smp_processor_id()) && this_rq()->nohz_balance_kick;
@@ -1410,6 +1528,8 @@ static inline bool got_nohz_idle_kick(void)
 	return false;
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif /* CONFIG_NO_HZ */
 
 static u64 sched_avg_period(void)
@@ -1453,11 +1573,14 @@ static void sched_rt_avg_update(struct rq *rq, u64 rt_delta)
 static void sched_avg_update(struct rq *rq)
 {
 }
+<<<<<<< HEAD
 
 void force_cpu_resched(int cpu)
 {
        set_need_resched();
 }
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif /* CONFIG_SMP */
 
 #if BITS_PER_LONG == 32
@@ -1527,6 +1650,7 @@ static inline void update_load_sub(struct load_weight *lw, unsigned long dec)
 	lw->inv_weight = 0;
 }
 
+<<<<<<< HEAD
 static inline void update_load_sub_add(struct load_weight *lw, unsigned long dec,
 					unsigned long inc)
 {
@@ -1535,6 +1659,8 @@ static inline void update_load_sub_add(struct load_weight *lw, unsigned long dec
 	lw->inv_weight = 0;
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static inline void update_load_set(struct load_weight *lw, unsigned long w)
 {
 	lw->weight = w;
@@ -1622,8 +1748,12 @@ static inline void dec_cpu_load(struct rq *rq, unsigned long load)
 	update_load_sub(&rq->load, load);
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_RT_GROUP_SCHED) || (defined(CONFIG_FAIR_GROUP_SCHED) && \
 			(defined(CONFIG_SMP) || defined(CONFIG_CFS_BANDWIDTH)))
+=======
+#if (defined(CONFIG_SMP) && defined(CONFIG_FAIR_GROUP_SCHED)) || defined(CONFIG_RT_GROUP_SCHED)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 typedef int (*tg_visitor)(struct task_group *, void *);
 
 /*
@@ -1721,11 +1851,52 @@ static unsigned long cpu_avg_load_per_task(int cpu)
 	unsigned long nr_running = ACCESS_ONCE(rq->nr_running);
 
 	if (nr_running)
+<<<<<<< HEAD
 		return rq->load.weight / nr_running;
+=======
+		rq->avg_load_per_task = rq->load.weight / nr_running;
+	else
+		rq->avg_load_per_task = 0;
+
+	return rq->avg_load_per_task;
+}
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+
+/*
+ * Compute the cpu's hierarchical load factor for each task group.
+ * This needs to be done in a top-down fashion because the load of a child
+ * group is a fraction of its parents load.
+ */
+static int tg_load_down(struct task_group *tg, void *data)
+{
+	unsigned long load;
+	long cpu = (long)data;
+
+	if (!tg->parent) {
+		load = cpu_rq(cpu)->load.weight;
+	} else {
+		load = tg->parent->cfs_rq[cpu]->h_load;
+		load *= tg->se[cpu]->load.weight;
+		load /= tg->parent->cfs_rq[cpu]->load.weight + 1;
+	}
+
+	tg->cfs_rq[cpu]->h_load = load;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void update_h_load(long cpu)
+{
+	walk_tg_tree(tg_load_down, tg_nop, (void *)cpu);
+}
+
+#endif
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_PREEMPT
 
 static void double_rq_lock(struct rq *rq1, struct rq *rq2);
@@ -1881,6 +2052,10 @@ static void double_rq_unlock(struct rq *rq1, struct rq *rq2)
 static void calc_load_account_idle(struct rq *this_rq);
 static void update_sysctl(void);
 static int get_update_sysctl_factor(void);
+<<<<<<< HEAD
+=======
+static void update_cpu_load(struct rq *this_rq);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static inline void __set_task_cpu(struct task_struct *p, unsigned int cpu)
 {
@@ -1904,6 +2079,7 @@ static const struct sched_class rt_sched_class;
 
 #include "sched_stats.h"
 
+<<<<<<< HEAD
 /* 27 ~= 134217728ns = 134.2ms
  * 26 ~=  67108864ns =  67.1ms
  * 25 ~=  33554432ns =  33.5ms
@@ -1938,15 +2114,24 @@ static void inc_nr_running(struct rq *rq)
 	rq->nr_last_stamp = rq->clock_task;
 	rq->nr_running++;
 	write_seqcount_end(&rq->ave_seqcnt);
+=======
+static void inc_nr_running(struct rq *rq)
+{
+	rq->nr_running++;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static void dec_nr_running(struct rq *rq)
 {
+<<<<<<< HEAD
 	write_seqcount_begin(&rq->ave_seqcnt);
 	rq->ave_nr_running = do_avg_nr_running(rq);
 	rq->nr_last_stamp = rq->clock_task;
 	rq->nr_running--;
 	write_seqcount_end(&rq->ave_seqcnt);
+=======
+	rq->nr_running--;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static void set_load_weight(struct task_struct *p)
@@ -1990,6 +2175,10 @@ static void activate_task(struct rq *rq, struct task_struct *p, int flags)
 		rq->nr_uninterruptible--;
 
 	enqueue_task(rq, p, flags);
+<<<<<<< HEAD
+=======
+	inc_nr_running(rq);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /*
@@ -2001,6 +2190,10 @@ static void deactivate_task(struct rq *rq, struct task_struct *p, int flags)
 		rq->nr_uninterruptible++;
 
 	dequeue_task(rq, p, flags);
+<<<<<<< HEAD
+=======
+	dec_nr_running(rq);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 #ifdef CONFIG_IRQ_TIME_ACCOUNTING
@@ -2377,8 +2570,11 @@ void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
 	trace_sched_migrate_task(p, new_cpu);
 
 	if (task_cpu(p) != new_cpu) {
+<<<<<<< HEAD
 		if (p->sched_class->migrate_task_rq)
 			p->sched_class->migrate_task_rq(p, new_cpu);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		p->se.nr_migrations++;
 		perf_sw_event(PERF_COUNT_SW_CPU_MIGRATIONS, 1, 1, NULL, 0);
 	}
@@ -2533,6 +2729,7 @@ EXPORT_SYMBOL_GPL(kick_process);
  */
 static int select_fallback_rq(int cpu, struct task_struct *p)
 {
+<<<<<<< HEAD
 	const struct cpumask *nodemask = cpumask_of_node(cpu_to_node(cpu));
 	enum { cpuset, possible, fail } state = cpuset;
 	int dest_cpu;
@@ -2586,6 +2783,31 @@ out:
 			printk(KERN_INFO "process %d (%s) no longer affine to cpu%d\n",
 					task_pid_nr(p), p->comm, cpu);
 		}
+=======
+	int dest_cpu;
+	const struct cpumask *nodemask = cpumask_of_node(cpu_to_node(cpu));
+
+	/* Look for allowed, online CPU in same node. */
+	for_each_cpu_and(dest_cpu, nodemask, cpu_active_mask)
+		if (cpumask_test_cpu(dest_cpu, &p->cpus_allowed))
+			return dest_cpu;
+
+	/* Any allowed, online CPU? */
+	dest_cpu = cpumask_any_and(&p->cpus_allowed, cpu_active_mask);
+	if (dest_cpu < nr_cpu_ids)
+		return dest_cpu;
+
+	/* No more Mr. Nice Guy. */
+	dest_cpu = cpuset_cpus_allowed_fallback(p);
+	/*
+	 * Don't tell them about moving exiting tasks or
+	 * kernel threads (both mm NULL), since they never
+	 * leave kernel.
+	 */
+	if (p->mm && printk_ratelimit()) {
+		printk(KERN_INFO "process %d (%s) no longer affine to cpu%d\n",
+				task_pid_nr(p), p->comm, cpu);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	return dest_cpu;
@@ -2687,7 +2909,11 @@ ttwu_do_wakeup(struct rq *rq, struct task_struct *p, int wake_flags)
 	if (p->sched_class->task_woken)
 		p->sched_class->task_woken(rq, p);
 
+<<<<<<< HEAD
 	if (rq->idle_stamp) {
+=======
+	if (unlikely(rq->idle_stamp)) {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		u64 delta = rq->clock - rq->idle_stamp;
 		u64 max = 2*sysctl_sched_migration_cost;
 
@@ -2734,6 +2960,7 @@ static int ttwu_remote(struct task_struct *p, int wake_flags)
 }
 
 #ifdef CONFIG_SMP
+<<<<<<< HEAD
 static void sched_ttwu_pending(void)
 {
 	struct rq *rq = this_rq();
@@ -2745,15 +2972,50 @@ static void sched_ttwu_pending(void)
 	while (llist) {
 		p = llist_entry(llist, struct task_struct, wake_entry);
 		llist = llist_next(llist);
+=======
+static void sched_ttwu_do_pending(struct task_struct *list)
+{
+	struct rq *rq = this_rq();
+
+	raw_spin_lock(&rq->lock);
+
+	while (list) {
+		struct task_struct *p = list;
+		list = list->wake_entry;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		ttwu_do_activate(rq, p, 0);
 	}
 
 	raw_spin_unlock(&rq->lock);
 }
 
+<<<<<<< HEAD
 void scheduler_ipi(void)
 {
 	if (llist_empty(&this_rq()->wake_list) && !got_nohz_idle_kick())
+=======
+#ifdef CONFIG_HOTPLUG_CPU
+
+static void sched_ttwu_pending(void)
+{
+	struct rq *rq = this_rq();
+	struct task_struct *list = xchg(&rq->wake_list, NULL);
+
+	if (!list)
+		return;
+
+	sched_ttwu_do_pending(list);
+}
+
+#endif /* CONFIG_HOTPLUG_CPU */
+
+void scheduler_ipi(void)
+{
+	struct rq *rq = this_rq();
+	struct task_struct *list = xchg(&rq->wake_list, NULL);
+
+	if (!list)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return;
 
 	/*
@@ -2770,6 +3032,7 @@ void scheduler_ipi(void)
 	 * somewhat pessimize the simple resched case.
 	 */
 	irq_enter();
+<<<<<<< HEAD
 	sched_ttwu_pending();
 
 	/*
@@ -2779,12 +3042,31 @@ void scheduler_ipi(void)
 		this_rq()->idle_balance = 1;
 		raise_softirq_irqoff(SCHED_SOFTIRQ);
 	}
+=======
+	sched_ttwu_do_pending(list);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	irq_exit();
 }
 
 static void ttwu_queue_remote(struct task_struct *p, int cpu)
 {
+<<<<<<< HEAD
 	if (llist_add(&p->wake_entry, &cpu_rq(cpu)->wake_list))
+=======
+	struct rq *rq = cpu_rq(cpu);
+	struct task_struct *next = rq->wake_list;
+
+	for (;;) {
+		struct task_struct *old = next;
+
+		p->wake_entry = next;
+		next = cmpxchg(&rq->wake_list, old, p);
+		if (next == old)
+			break;
+	}
+
+	if (!next)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		smp_send_reschedule(cpu);
 }
 
@@ -2981,11 +3263,14 @@ static void __sched_fork(struct task_struct *p)
 	p->se.vruntime			= 0;
 	INIT_LIST_HEAD(&p->se.group_node);
 
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 	p->se.avg.runnable_avg_period = 0;
 	p->se.avg.runnable_avg_sum = 0;
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_SCHEDSTATS
 	memset(&p->se.statistics, 0, sizeof(p->se.statistics));
 #endif
@@ -3014,6 +3299,7 @@ void sched_fork(struct task_struct *p)
 	p->state = TASK_RUNNING;
 
 	/*
+<<<<<<< HEAD
 	 * Make sure we do not leak PI boosting priority to the child.
 	 */
 	p->prio = current->normal_prio;
@@ -3031,6 +3317,21 @@ void sched_fork(struct task_struct *p)
 
 		p->prio = p->normal_prio = __normal_prio(p);
 		set_load_weight(p);
+=======
+	 * Revert to default priority/policy on fork if requested.
+	 */
+	if (unlikely(p->sched_reset_on_fork)) {
+		if (p->policy == SCHED_FIFO || p->policy == SCHED_RR) {
+			p->policy = SCHED_NORMAL;
+			p->normal_prio = p->static_prio;
+		}
+
+		if (PRIO_TO_NICE(p->static_prio) < 0) {
+			p->static_prio = NICE_TO_PRIO(0);
+			p->normal_prio = p->static_prio;
+			set_load_weight(p);
+		}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		/*
 		 * We don't need the reset flag anymore after the fork. It has
@@ -3039,6 +3340,14 @@ void sched_fork(struct task_struct *p)
 		p->sched_reset_on_fork = 0;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure we do not leak PI boosting priority to the child.
+	 */
+	p->prio = current->normal_prio;
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!rt_prio(p->prio))
 		p->sched_class = &fair_sched_class;
 
@@ -3074,6 +3383,7 @@ void sched_fork(struct task_struct *p)
 	put_cpu();
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT_COUNT_CPU
 
 /*
@@ -3092,6 +3402,8 @@ int preempt_count_cpu(int cpu)
 }
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * wake_up_new_task - wake up a newly created task for the first time.
  *
@@ -3437,6 +3749,7 @@ unsigned long nr_iowait(void)
 	return sum;
 }
 
+<<<<<<< HEAD
 unsigned long avg_nr_running(void)
 {
 	unsigned long i, sum = 0;
@@ -3464,6 +3777,8 @@ unsigned long avg_nr_running(void)
 	return sum;
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 unsigned long nr_iowait_cpu(int cpu)
 {
 	struct rq *this = cpu_rq(cpu);
@@ -3480,7 +3795,10 @@ unsigned long this_cpu_load(void)
 /* Variables and functions for calc_load */
 static atomic_long_t calc_load_tasks;
 static unsigned long calc_load_update;
+<<<<<<< HEAD
 static unsigned long idle_mask_update;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 unsigned long avenrun[3];
 EXPORT_SYMBOL(avenrun);
 
@@ -3516,6 +3834,7 @@ calc_load(unsigned long load, unsigned long exp, unsigned long active)
  */
 static atomic_long_t calc_load_tasks_idle;
 
+<<<<<<< HEAD
 /*
  * Those cpus whose load alread has been calculated in this LOAD_FREQ
  * period will be masked.
@@ -3547,6 +3866,15 @@ static void calc_load_account_idle(struct rq *this_rq)
 			atomic_long_add(delta, &calc_unmask_cpu_load_idle);
 		}
 	}
+=======
+static void calc_load_account_idle(struct rq *this_rq)
+{
+	long delta;
+
+	delta = calc_load_fold_active(this_rq);
+	if (delta)
+		atomic_long_add(delta, &calc_load_tasks_idle);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static long calc_load_fold_idle(void)
@@ -3562,6 +3890,7 @@ static long calc_load_fold_idle(void)
 	return delta;
 }
 
+<<<<<<< HEAD
 static long calc_load_fold_unmask_idle(void)
 {
 	long delta = 0;
@@ -3574,6 +3903,8 @@ static long calc_load_fold_unmask_idle(void)
 	return delta;
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /**
  * fixed_power_int - compute: x^n, in O(log n) time
  *
@@ -3665,9 +3996,12 @@ static void calc_global_nohz(void)
 	if (delta)
 		atomic_long_add(delta, &calc_load_tasks);
 
+<<<<<<< HEAD
 	cpumask_clear(&cpu_load_update_mask);
 	atomic_long_xchg(&calc_unmask_cpu_load_idle, 0);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/*
 	 * It could be the one fold was all it took, we done!
 	 */
@@ -3720,6 +4054,7 @@ void get_avenrun(unsigned long *loads, unsigned long offset, int shift)
 }
 
 /*
+<<<<<<< HEAD
 + * Prepare cpu_load_update_mask for the comming per-cpu load calculating
 + */
 void prepare_idle_mask(unsigned long ticks)
@@ -3740,6 +4075,8 @@ void prepare_idle_mask(unsigned long ticks)
 }
 
 /*
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * calc_load - update the avenrun load estimates 10 ticks after the
  * CPUs have updated calc_load_tasks.
  */
@@ -3777,11 +4114,15 @@ void calc_global_load(unsigned long ticks)
 static void calc_load_account_active(struct rq *this_rq)
 {
 	long delta;
+<<<<<<< HEAD
 	int cpu = smp_processor_id();
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (time_before(jiffies, this_rq->calc_load_update))
 		return;
 
+<<<<<<< HEAD
 	/*
 	 * cpu_load_update_mask empty means the first cpu
 	 * doing load calculating. Global idle should be
@@ -3801,6 +4142,10 @@ static void calc_load_account_active(struct rq *this_rq)
 	delta  = calc_load_fold_active(this_rq);
 	/* Fold unmask cpus' load into calc_load_tasks */
 	delta += calc_load_fold_unmask_idle();
+=======
+	delta  = calc_load_fold_active(this_rq);
+	delta += calc_load_fold_idle();
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (delta)
 		atomic_long_add(delta, &calc_load_tasks);
 
@@ -3879,13 +4224,31 @@ decay_load_missed(unsigned long load, unsigned long missed_updates, int idx)
  * scheduler tick (TICK_NSEC). With tickless idle this will not be called
  * every tick. We fix it up based on jiffies.
  */
+<<<<<<< HEAD
 static void __update_cpu_load(struct rq *this_rq, unsigned long this_load,
 			      unsigned long pending_updates)
 {
+=======
+static void update_cpu_load(struct rq *this_rq)
+{
+	unsigned long this_load = this_rq->load.weight;
+	unsigned long curr_jiffies = jiffies;
+	unsigned long pending_updates;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int i, scale;
 
 	this_rq->nr_load_updates++;
 
+<<<<<<< HEAD
+=======
+	/* Avoid repeated calls on same jiffy, when moving in and out of idle */
+	if (curr_jiffies == this_rq->last_load_update_tick)
+		return;
+
+	pending_updates = curr_jiffies - this_rq->last_load_update_tick;
+	this_rq->last_load_update_tick = curr_jiffies;
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* Update our load: */
 	this_rq->cpu_load[0] = this_load; /* Fasttrack for idx 0 */
 	for (i = 1, scale = 2; i < CPU_LOAD_IDX_MAX; i++, scale += scale) {
@@ -3910,6 +4273,7 @@ static void __update_cpu_load(struct rq *this_rq, unsigned long this_load,
 	sched_avg_update(this_rq);
 }
 
+<<<<<<< HEAD
 /*
  * Called from nohz_idle_balance() to update the load ratings before doing the
  * idle balance.
@@ -3949,6 +4313,11 @@ static void update_cpu_load_active(struct rq *this_rq)
 	 */
 	this_rq->last_load_update_tick = jiffies;
 	__update_cpu_load(this_rq, this_rq->load.weight, 1);
+=======
+static void update_cpu_load_active(struct rq *this_rq)
+{
+	update_cpu_load(this_rq);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	calc_load_account_active(this_rq);
 }
@@ -4333,7 +4702,11 @@ void task_times(struct task_struct *p, cputime_t *ut, cputime_t *st)
 	 */
 	rtime = nsecs_to_cputime(p->se.sum_exec_runtime);
 
+<<<<<<< HEAD
 	if (total && total == (__force u32) total) {
+=======
+	if (total) {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		u64 temp = rtime;
 
 		temp *= utime;
@@ -4366,7 +4739,11 @@ void thread_group_times(struct task_struct *p, cputime_t *ut, cputime_t *st)
 	total = cputime_add(cputime.utime, cputime.stime);
 	rtime = nsecs_to_cputime(cputime.sum_exec_runtime);
 
+<<<<<<< HEAD
 	if (total && total == (__force u32) total) {
+=======
+	if (total) {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		u64 temp = rtime;
 
 		temp *= cputime.utime;
@@ -4405,7 +4782,11 @@ void scheduler_tick(void)
 	perf_event_task_tick();
 
 #ifdef CONFIG_SMP
+<<<<<<< HEAD
 	rq->idle_balance = idle_cpu(cpu);
+=======
+	rq->idle_at_tick = idle_cpu(cpu);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	trigger_load_balance(rq, cpu);
 #endif
 }
@@ -4432,7 +4813,11 @@ void __kprobes add_preempt_count(int val)
 	if (DEBUG_LOCKS_WARN_ON((preempt_count() < 0)))
 		return;
 #endif
+<<<<<<< HEAD
 	__add_preempt_count(val);
+=======
+	preempt_count() += val;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_DEBUG_PREEMPT
 	/*
 	 * Spinlock count overflowing soon?
@@ -4463,7 +4848,11 @@ void __kprobes sub_preempt_count(int val)
 
 	if (preempt_count() == val)
 		trace_preempt_on(CALLER_ADDR0, get_parent_ip(CALLER_ADDR1));
+<<<<<<< HEAD
 	__sub_preempt_count(val);
+=======
+	preempt_count() -= val;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL(sub_preempt_count);
 
@@ -4500,10 +4889,15 @@ static inline void schedule_debug(struct task_struct *prev)
 	 * schedule() atomically, we ignore that path for now.
 	 * Otherwise, whine if we are scheduling when we should not be.
 	 */
+<<<<<<< HEAD
 	if (unlikely(in_atomic_preempt_off() && !prev->exit_state
 					&& system_state == SYSTEM_RUNNING))
 		__schedule_bug(prev);
 	rcu_sleep_check();
+=======
+	if (unlikely(in_atomic_preempt_off() && !prev->exit_state))
+		__schedule_bug(prev);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	profile_hit(SCHED_PROFILING, __builtin_return_address(0));
 
@@ -4530,7 +4924,11 @@ pick_next_task(struct rq *rq)
 	 * Optimization: we know that if all tasks are in
 	 * the fair class we can call that function directly:
 	 */
+<<<<<<< HEAD
 	if (likely(rq->nr_running == rq->cfs.h_nr_running)) {
+=======
+	if (likely(rq->nr_running == rq->cfs.nr_running)) {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		p = fair_sched_class.pick_next_task(rq);
 		if (likely(p))
 			return p;
@@ -4606,9 +5004,12 @@ need_resched:
 	if (likely(prev != next)) {
 		rq->nr_switches++;
 		rq->curr = next;
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT_COUNT_CPU
 		smp_wmb();
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		++*switch_count;
 
 		context_switch(rq, prev, next); /* unlocks the rq */
@@ -4682,6 +5083,7 @@ fail:
  */
 int mutex_spin_on_owner(struct mutex *lock, struct task_struct *owner)
 {
+<<<<<<< HEAD
 	unsigned int nrun;
 
 	if (!sched_feat(OWNER_SPIN))
@@ -4707,6 +5109,11 @@ int mutex_spin_on_owner(struct mutex *lock, struct task_struct *owner)
 			return 0;
 	}
 
+=======
+	if (!sched_feat(OWNER_SPIN))
+		return 0;
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	while (owner_running(lock, owner)) {
 		if (need_resched())
 			return 0;
@@ -4831,6 +5238,7 @@ void __wake_up(wait_queue_head_t *q, unsigned int mode,
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	/*
 	 * We can check for list emptiness outside the lock by using the
 	 * "careful" check that verifies both the next and prev pointers, so
@@ -4844,6 +5252,11 @@ void __wake_up(wait_queue_head_t *q, unsigned int mode,
 		__wake_up_common(q, mode, nr_exclusive, 0, key);
 		spin_unlock_irqrestore(&q->lock, flags);
 	}
+=======
+	spin_lock_irqsave(&q->lock, flags);
+	__wake_up_common(q, mode, nr_exclusive, 0, key);
+	spin_unlock_irqrestore(&q->lock, flags);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL(__wake_up);
 
@@ -4950,7 +5363,11 @@ void complete_all(struct completion *x)
 EXPORT_SYMBOL(complete_all);
 
 static inline long __sched
+<<<<<<< HEAD
 do_wait_for_common(struct completion *x, long timeout, int state, int iowait)
+=======
+do_wait_for_common(struct completion *x, long timeout, int state)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	if (!x->done) {
 		DECLARE_WAITQUEUE(wait, current);
@@ -4963,10 +5380,14 @@ do_wait_for_common(struct completion *x, long timeout, int state, int iowait)
 			}
 			__set_current_state(state);
 			spin_unlock_irq(&x->wait.lock);
+<<<<<<< HEAD
 			if (iowait)
 				timeout = io_schedule_timeout(timeout);
 			else
 				timeout = schedule_timeout(timeout);
+=======
+			timeout = schedule_timeout(timeout);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			spin_lock_irq(&x->wait.lock);
 		} while (!x->done && timeout);
 		__remove_wait_queue(&x->wait, &wait);
@@ -4978,12 +5399,20 @@ do_wait_for_common(struct completion *x, long timeout, int state, int iowait)
 }
 
 static long __sched
+<<<<<<< HEAD
 wait_for_common(struct completion *x, long timeout, int state, int iowait)
+=======
+wait_for_common(struct completion *x, long timeout, int state)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	might_sleep();
 
 	spin_lock_irq(&x->wait.lock);
+<<<<<<< HEAD
 	timeout = do_wait_for_common(x, timeout, state, iowait);
+=======
+	timeout = do_wait_for_common(x, timeout, state);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	spin_unlock_irq(&x->wait.lock);
 	return timeout;
 }
@@ -5000,11 +5429,16 @@ wait_for_common(struct completion *x, long timeout, int state, int iowait)
  */
 void __sched wait_for_completion(struct completion *x)
 {
+<<<<<<< HEAD
 	wait_for_common(x, MAX_SCHEDULE_TIMEOUT, TASK_UNINTERRUPTIBLE, 0);
+=======
+	wait_for_common(x, MAX_SCHEDULE_TIMEOUT, TASK_UNINTERRUPTIBLE);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL(wait_for_completion);
 
 /**
+<<<<<<< HEAD
  * wait_for_completion_io: - waits for completion of a task
  * @x:  holds the state of this particular completion
  *
@@ -5018,6 +5452,8 @@ void __sched wait_for_completion_io(struct completion *x)
 EXPORT_SYMBOL(wait_for_completion_io);
 
 /**
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * wait_for_completion_timeout: - waits for completion of a task (w/timeout)
  * @x:  holds the state of this particular completion
  * @timeout:  timeout value in jiffies
@@ -5029,7 +5465,11 @@ EXPORT_SYMBOL(wait_for_completion_io);
 unsigned long __sched
 wait_for_completion_timeout(struct completion *x, unsigned long timeout)
 {
+<<<<<<< HEAD
 	return wait_for_common(x, timeout, TASK_UNINTERRUPTIBLE, 0);
+=======
+	return wait_for_common(x, timeout, TASK_UNINTERRUPTIBLE);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL(wait_for_completion_timeout);
 
@@ -5042,8 +5482,12 @@ EXPORT_SYMBOL(wait_for_completion_timeout);
  */
 int __sched wait_for_completion_interruptible(struct completion *x)
 {
+<<<<<<< HEAD
 	long t =
 	  wait_for_common(x, MAX_SCHEDULE_TIMEOUT, TASK_INTERRUPTIBLE, 0);
+=======
+	long t = wait_for_common(x, MAX_SCHEDULE_TIMEOUT, TASK_INTERRUPTIBLE);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (t == -ERESTARTSYS)
 		return t;
 	return 0;
@@ -5062,7 +5506,11 @@ long __sched
 wait_for_completion_interruptible_timeout(struct completion *x,
 					  unsigned long timeout)
 {
+<<<<<<< HEAD
 	return wait_for_common(x, timeout, TASK_INTERRUPTIBLE, 0);
+=======
+	return wait_for_common(x, timeout, TASK_INTERRUPTIBLE);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL(wait_for_completion_interruptible_timeout);
 
@@ -5075,7 +5523,11 @@ EXPORT_SYMBOL(wait_for_completion_interruptible_timeout);
  */
 int __sched wait_for_completion_killable(struct completion *x)
 {
+<<<<<<< HEAD
 	long t = wait_for_common(x, MAX_SCHEDULE_TIMEOUT, TASK_KILLABLE, 0);
+=======
+	long t = wait_for_common(x, MAX_SCHEDULE_TIMEOUT, TASK_KILLABLE);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (t == -ERESTARTSYS)
 		return t;
 	return 0;
@@ -5095,7 +5547,11 @@ long __sched
 wait_for_completion_killable_timeout(struct completion *x,
 				     unsigned long timeout)
 {
+<<<<<<< HEAD
 	return wait_for_common(x, timeout, TASK_KILLABLE, 0);
+=======
+	return wait_for_common(x, timeout, TASK_KILLABLE);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL(wait_for_completion_killable_timeout);
 
@@ -5375,6 +5831,7 @@ EXPORT_SYMBOL(task_nice);
  */
 int idle_cpu(int cpu)
 {
+<<<<<<< HEAD
 	struct rq *rq = cpu_rq(cpu);
 
 	if (rq->curr != rq->idle)
@@ -5389,6 +5846,9 @@ int idle_cpu(int cpu)
 #endif
 
 	return 1;
+=======
+	return cpu_curr(cpu) == cpu_rq(cpu)->idle;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /**
@@ -6101,7 +6561,10 @@ long __sched io_schedule_timeout(long timeout)
 	delayacct_blkio_end();
 	return ret;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(io_schedule_timeout);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /**
  * sys_sched_get_priority_max - return maximum RT priority.
@@ -6319,6 +6782,18 @@ void __cpuinit init_idle(struct task_struct *idle, int cpu)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * In a system that switches off the HZ timer nohz_cpu_mask
+ * indicates which cpus entered this state. This is used
+ * in the rcu update to wait only for active cpus. For system
+ * which do not switch off the HZ timer nohz_cpu_mask should
+ * always be CPU_BITS_NONE.
+ */
+cpumask_var_t nohz_cpu_mask;
+
+/*
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * Increase the granularity value when there are more CPUs,
  * because with more CPUs the 'effective latency' as visible
  * to users decreases. But the relationship is not linear,
@@ -6865,7 +7340,11 @@ static int __cpuinit sched_cpu_active(struct notifier_block *nfb,
 				      unsigned long action, void *hcpu)
 {
 	switch (action & ~CPU_TASKS_FROZEN) {
+<<<<<<< HEAD
 	case CPU_STARTING:
+=======
+	case CPU_ONLINE:
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	case CPU_DOWN_FAILED:
 		set_cpu_active((long)hcpu, true);
 		return NOTIFY_OK;
@@ -7263,8 +7742,11 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
 	tmp = rq->sd;
 	rcu_assign_pointer(rq->sd, sd);
 	destroy_sched_domains(tmp, cpu);
+<<<<<<< HEAD
 
 	update_packing_domain(cpu);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /* cpus with isolated domains */
@@ -7566,11 +8048,14 @@ static void init_sched_groups_power(int cpu, struct sched_domain *sd)
 	update_group_power(sd, cpu);
 }
 
+<<<<<<< HEAD
 int __weak arch_sd_share_power_line(void)
 {
 	return 1*SD_SHARE_POWERLINE;
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * Initializers for schedule domains
  * Non-inlined to reduce accumulated stack pressure in build_sched_domains()
@@ -7785,6 +8270,7 @@ static void __sdt_free(const struct cpumask *cpu_map)
 		struct sd_data *sdd = &tl->data;
 
 		for_each_cpu(j, cpu_map) {
+<<<<<<< HEAD
 			struct sched_domain *sd;
 
 			if (sdd->sd) {
@@ -7805,6 +8291,18 @@ static void __sdt_free(const struct cpumask *cpu_map)
 		sdd->sg = NULL;
 		free_percpu(sdd->sgp);
 		sdd->sgp = NULL;
+=======
+			struct sched_domain *sd = *per_cpu_ptr(sdd->sd, j);
+			if (sd && (sd->flags & SD_OVERLAP))
+				free_sched_groups(sd->groups, 0);
+			kfree(*per_cpu_ptr(sdd->sd, j));
+			kfree(*per_cpu_ptr(sdd->sg, j));
+			kfree(*per_cpu_ptr(sdd->sgp, j));
+		}
+		free_percpu(sdd->sd);
+		free_percpu(sdd->sg);
+		free_percpu(sdd->sgp);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 }
 
@@ -8033,7 +8531,10 @@ void partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
 {
 	int i, j, n;
 	int new_topology;
+<<<<<<< HEAD
 	cpumask_var_t doms_temp;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	mutex_lock(&sched_domains_mutex);
 
@@ -8043,12 +8544,16 @@ void partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
 	/* Let architecture update cpu core mappings. */
 	new_topology = arch_update_cpu_topology();
 
+<<<<<<< HEAD
 	cpumask_andnot(doms_temp, cpu_active_mask, cpu_isolated_map);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	n = doms_new ? ndoms_new : 0;
 
 	/* Destroy deleted domains */
 	for (i = 0; i < ndoms_cur; i++) {
+<<<<<<< HEAD
 		if (!new_topology) {
 			if ((n == 0) && cpumask_subset(doms_cur[i], doms_temp))
 				goto match1;
@@ -8057,6 +8562,12 @@ void partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
 				    && dattrs_equal(dattr_cur, i, dattr_new, j))
 					goto match1;
 			}
+=======
+		for (j = 0; j < n && !new_topology; j++) {
+			if (cpumask_equal(doms_cur[i], doms_new[j])
+			    && dattrs_equal(dattr_cur, i, dattr_new, j))
+				goto match1;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		}
 		/* no match - a current sched domain not in new doms_new[] */
 		detach_destroy_domains(doms_cur[i]);
@@ -8323,10 +8834,24 @@ int in_sched_functions(unsigned long addr)
 		&& addr < (unsigned long)__sched_text_end);
 }
 
+<<<<<<< HEAD
 static void init_cfs_rq(struct cfs_rq *cfs_rq)
 {
 	cfs_rq->tasks_timeline = RB_ROOT;
 	INIT_LIST_HEAD(&cfs_rq->tasks);
+=======
+static void init_cfs_rq(struct cfs_rq *cfs_rq, struct rq *rq)
+{
+	cfs_rq->tasks_timeline = RB_ROOT;
+	INIT_LIST_HEAD(&cfs_rq->tasks);
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	cfs_rq->rq = rq;
+	/* allow initial update_cfs_load() to truncate */
+#ifdef CONFIG_SMP
+	cfs_rq->load_stamp = 1;
+#endif
+#endif
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	cfs_rq->min_vruntime = (u64)(-(1LL << 20));
 #ifndef CONFIG_64BIT
 	cfs_rq->min_vruntime_copy = cfs_rq->min_vruntime;
@@ -8346,18 +8871,39 @@ static void init_rt_rq(struct rt_rq *rt_rq, struct rq *rq)
 	/* delimiter for bitsearch: */
 	__set_bit(MAX_RT_PRIO, array->bitmap);
 
+<<<<<<< HEAD
 #if defined CONFIG_SMP
 	rt_rq->highest_prio.curr = MAX_RT_PRIO;
 	rt_rq->highest_prio.next = MAX_RT_PRIO;
 	rt_rq->rt_nr_migratory = 0;
 	rt_rq->overloaded = 0;
 	plist_head_init(&rt_rq->pushable_tasks);
+=======
+#if defined CONFIG_SMP || defined CONFIG_RT_GROUP_SCHED
+	rt_rq->highest_prio.curr = MAX_RT_PRIO;
+#ifdef CONFIG_SMP
+	rt_rq->highest_prio.next = MAX_RT_PRIO;
+#endif
+#endif
+#ifdef CONFIG_SMP
+	rt_rq->rt_nr_migratory = 0;
+	rt_rq->overloaded = 0;
+	plist_head_init_raw(&rt_rq->pushable_tasks, &rq->lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 
 	rt_rq->rt_time = 0;
 	rt_rq->rt_throttled = 0;
 	rt_rq->rt_runtime = 0;
 	raw_spin_lock_init(&rt_rq->rt_runtime_lock);
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_RT_GROUP_SCHED
+	rt_rq->rt_nr_boosted = 0;
+	rt_rq->rq = rq;
+#endif
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 #ifdef CONFIG_FAIR_GROUP_SCHED
@@ -8366,6 +8912,7 @@ static void init_tg_cfs_entry(struct task_group *tg, struct cfs_rq *cfs_rq,
 				struct sched_entity *parent)
 {
 	struct rq *rq = cpu_rq(cpu);
+<<<<<<< HEAD
 
 	cfs_rq->tg = tg;
 	init_cfs_rq_runtime(cfs_rq);
@@ -8375,6 +8922,13 @@ static void init_tg_cfs_entry(struct task_group *tg, struct cfs_rq *cfs_rq,
 	tg->cfs_rq[cpu] = cfs_rq;
 	tg->se[cpu] = se;
 
+=======
+	tg->cfs_rq[cpu] = cfs_rq;
+	init_cfs_rq(cfs_rq, rq);
+	cfs_rq->tg = tg;
+
+	tg->se[cpu] = se;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* se could be NULL for root_task_group */
 	if (!se)
 		return;
@@ -8397,6 +8951,7 @@ static void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
 {
 	struct rq *rq = cpu_rq(cpu);
 
+<<<<<<< HEAD
 	rt_rq->highest_prio.curr = MAX_RT_PRIO;
 	rt_rq->rt_nr_boosted = 0;
 	rt_rq->rq = rq;
@@ -8405,6 +8960,14 @@ static void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
 	tg->rt_rq[cpu] = rt_rq;
 	tg->rt_se[cpu] = rt_se;
 
+=======
+	tg->rt_rq[cpu] = rt_rq;
+	init_rt_rq(rt_rq, rq);
+	rt_rq->tg = tg;
+	rt_rq->rt_runtime = tg->rt_bandwidth.rt_runtime;
+
+	tg->rt_se[cpu] = rt_se;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!rt_se)
 		return;
 
@@ -8486,7 +9049,11 @@ void __init sched_init(void)
 		rq->nr_running = 0;
 		rq->calc_load_active = 0;
 		rq->calc_load_update = jiffies + LOAD_FREQ;
+<<<<<<< HEAD
 		init_cfs_rq(&rq->cfs);
+=======
+		init_cfs_rq(&rq->cfs, rq);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		init_rt_rq(&rq->rt, rq);
 #ifdef CONFIG_FAIR_GROUP_SCHED
 		root_task_group.shares = root_task_group_load;
@@ -8510,7 +9077,10 @@ void __init sched_init(void)
 		 * We achieve this by letting root_task_group's tasks sit
 		 * directly in rq->cfs (i.e root_task_group->se[] = NULL).
 		 */
+<<<<<<< HEAD
 		init_cfs_bandwidth(&root_task_group.cfs_bandwidth);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		init_tg_cfs_entry(&root_task_group, &rq->cfs, NULL, i, NULL);
 #endif /* CONFIG_FAIR_GROUP_SCHED */
 
@@ -8540,6 +9110,10 @@ void __init sched_init(void)
 		rq_attach_root(rq, &def_root_domain);
 #ifdef CONFIG_NO_HZ
 		rq->nohz_balance_kick = 0;
+<<<<<<< HEAD
+=======
+		init_sched_softirq_csd(&per_cpu(remote_sched_softirq_cb, i));
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 #endif
 		init_rq_hrtick(rq);
@@ -8557,7 +9131,11 @@ void __init sched_init(void)
 #endif
 
 #ifdef CONFIG_RT_MUTEXES
+<<<<<<< HEAD
 	plist_head_init(&init_task.pi_waiters);
+=======
+	plist_head_init_raw(&init_task.pi_waiters, &init_task.pi_lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 
 	/*
@@ -8576,17 +9154,28 @@ void __init sched_init(void)
 
 	calc_load_update = jiffies + LOAD_FREQ;
 
+<<<<<<< HEAD
 	idle_mask_update = jiffies + LOAD_FREQ;
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/*
 	 * During early bootup we pretend to be a normal task:
 	 */
 	current->sched_class = &fair_sched_class;
 
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 	zalloc_cpumask_var(&sched_domains_tmpmask, GFP_NOWAIT);
 #ifdef CONFIG_NO_HZ
 	nohz.next_balance = jiffies;
+=======
+	/* Allocate the nohz_cpu_mask if CONFIG_CPUMASK_OFFSTACK */
+	zalloc_cpumask_var(&nohz_cpu_mask, GFP_NOWAIT);
+#ifdef CONFIG_SMP
+	zalloc_cpumask_var(&sched_domains_tmpmask, GFP_NOWAIT);
+#ifdef CONFIG_NO_HZ
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	zalloc_cpumask_var(&nohz.idle_cpus_mask, GFP_NOWAIT);
 	alloc_cpumask_var(&nohz.grp_idle_mask, GFP_NOWAIT);
 	atomic_set(&nohz.load_balancer, nr_cpu_ids);
@@ -8609,6 +9198,7 @@ static inline int preempt_count_equals(int preempt_offset)
 	return (nested == preempt_offset);
 }
 
+<<<<<<< HEAD
 static int __might_sleep_init_called;
 int __init __might_sleep_init(void)
 {
@@ -8617,17 +9207,24 @@ int __init __might_sleep_init(void)
 }
 early_initcall(__might_sleep_init);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 void __might_sleep(const char *file, int line, int preempt_offset)
 {
 #ifdef in_atomic
 	static unsigned long prev_jiffy;	/* ratelimiting */
 
+<<<<<<< HEAD
 	rcu_sleep_check(); /* WARN_ON_ONCE() by default, no rate limit reqd. */
 	if ((preempt_count_equals(preempt_offset) && !irqs_disabled()) ||
 	    oops_in_progress)
 		return;
 	if (system_state != SYSTEM_RUNNING &&
 	    (!__might_sleep_init_called || system_state != SYSTEM_BOOTING))
+=======
+	if ((preempt_count_equals(preempt_offset) && !irqs_disabled()) ||
+	    system_state != SYSTEM_RUNNING || oops_in_progress)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return;
 	if (time_before(jiffies, prev_jiffy + HZ) && prev_jiffy)
 		return;
@@ -8757,9 +9354,12 @@ struct task_struct *curr_task(int cpu)
 void set_curr_task(int cpu, struct task_struct *p)
 {
 	cpu_curr(cpu) = p;
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT_COUNT_CPU
 	smp_wmb();
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 #endif
@@ -8769,8 +9369,11 @@ static void free_fair_sched_group(struct task_group *tg)
 {
 	int i;
 
+<<<<<<< HEAD
 	destroy_cfs_bandwidth(tg_cfs_bandwidth(tg));
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	for_each_possible_cpu(i) {
 		if (tg->cfs_rq)
 			kfree(tg->cfs_rq[i]);
@@ -8798,8 +9401,11 @@ int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
 
 	tg->shares = NICE_0_LOAD;
 
+<<<<<<< HEAD
 	init_cfs_bandwidth(tg_cfs_bandwidth(tg));
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	for_each_possible_cpu(i) {
 		cfs_rq = kzalloc_node(sizeof(struct cfs_rq),
 				      GFP_KERNEL, cpu_to_node(i));
@@ -8811,7 +9417,10 @@ int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
 		if (!se)
 			goto err_free_rq;
 
+<<<<<<< HEAD
 		init_cfs_rq(cfs_rq);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		init_tg_cfs_entry(tg, cfs_rq, se, i, parent->se[i]);
 	}
 
@@ -8839,7 +9448,11 @@ static inline void unregister_fair_sched_group(struct task_group *tg, int cpu)
 	list_del_leaf_cfs_rq(tg->cfs_rq[cpu]);
 	raw_spin_unlock_irqrestore(&rq->lock, flags);
 }
+<<<<<<< HEAD
 #else /* !CONFIG_FAIR_GROUP_SCHED */
+=======
+#else /* !CONFG_FAIR_GROUP_SCHED */
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static inline void free_fair_sched_group(struct task_group *tg)
 {
 }
@@ -8860,8 +9473,12 @@ static void free_rt_sched_group(struct task_group *tg)
 {
 	int i;
 
+<<<<<<< HEAD
 	if (tg->rt_se)
 		destroy_rt_bandwidth(&tg->rt_bandwidth);
+=======
+	destroy_rt_bandwidth(&tg->rt_bandwidth);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	for_each_possible_cpu(i) {
 		if (tg->rt_rq)
@@ -8902,8 +9519,11 @@ int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent)
 		if (!rt_se)
 			goto err_free_rq;
 
+<<<<<<< HEAD
 		init_rt_rq(rt_rq, cpu_rq(i));
 		rt_rq->rt_runtime = tg->rt_bandwidth.rt_runtime;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		init_tg_rt_entry(tg, rt_rq, rt_se, i, parent->rt_se[i]);
 	}
 
@@ -9066,11 +9686,16 @@ int sched_group_set_shares(struct task_group *tg, unsigned long shares)
 		se = tg->se[i];
 		/* Propagate contribution to hierarchy */
 		raw_spin_lock_irqsave(&rq->lock, flags);
+<<<<<<< HEAD
 		for_each_sched_entity(se) {
 			update_cfs_shares(group_cfs_rq(se));
 			/* update contribution to parent */
 			update_entity_load_avg(se, 1);
 		}
+=======
+		for_each_sched_entity(se)
+			update_cfs_shares(group_cfs_rq(se));
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		raw_spin_unlock_irqrestore(&rq->lock, flags);
 	}
 
@@ -9085,7 +9710,16 @@ unsigned long sched_group_shares(struct task_group *tg)
 }
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_RT_GROUP_SCHED) || defined(CONFIG_CFS_BANDWIDTH)
+=======
+#ifdef CONFIG_RT_GROUP_SCHED
+/*
+ * Ensure that the real time constraints are schedulable.
+ */
+static DEFINE_MUTEX(rt_constraints_mutex);
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static unsigned long to_ratio(u64 period, u64 runtime)
 {
 	if (runtime == RUNTIME_INF)
@@ -9093,6 +9727,7 @@ static unsigned long to_ratio(u64 period, u64 runtime)
 
 	return div64_u64(runtime << 20, period);
 }
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_RT_GROUP_SCHED
@@ -9100,6 +9735,8 @@ static unsigned long to_ratio(u64 period, u64 runtime)
  * Ensure that the real time constraints are schedulable.
  */
 static DEFINE_MUTEX(rt_constraints_mutex);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* Must be called with tasklist_lock held */
 static inline int tg_has_rt_tasks(struct task_group *tg)
@@ -9120,7 +9757,11 @@ struct rt_schedulable_data {
 	u64 rt_runtime;
 };
 
+<<<<<<< HEAD
 static int tg_rt_schedulable(struct task_group *tg, void *data)
+=======
+static int tg_schedulable(struct task_group *tg, void *data)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct rt_schedulable_data *d = data;
 	struct task_group *child;
@@ -9184,10 +9825,17 @@ static int __rt_schedulable(struct task_group *tg, u64 period, u64 runtime)
 		.rt_runtime = runtime,
 	};
 
+<<<<<<< HEAD
 	return walk_tg_tree(tg_rt_schedulable, tg_nop, &data);
 }
 
 static int tg_set_rt_bandwidth(struct task_group *tg,
+=======
+	return walk_tg_tree(tg_schedulable, tg_nop, &data);
+}
+
+static int tg_set_bandwidth(struct task_group *tg,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		u64 rt_period, u64 rt_runtime)
 {
 	int i, err = 0;
@@ -9226,7 +9874,11 @@ int sched_group_set_rt_runtime(struct task_group *tg, long rt_runtime_us)
 	if (rt_runtime_us < 0)
 		rt_runtime = RUNTIME_INF;
 
+<<<<<<< HEAD
 	return tg_set_rt_bandwidth(tg, rt_period, rt_runtime);
+=======
+	return tg_set_bandwidth(tg, rt_period, rt_runtime);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 long sched_group_rt_runtime(struct task_group *tg)
@@ -9251,7 +9903,11 @@ int sched_group_set_rt_period(struct task_group *tg, long rt_period_us)
 	if (rt_period == 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	return tg_set_rt_bandwidth(tg, rt_period, rt_runtime);
+=======
+	return tg_set_bandwidth(tg, rt_period, rt_runtime);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 long sched_group_rt_period(struct task_group *tg)
@@ -9394,6 +10050,7 @@ cpu_cgroup_destroy(struct cgroup_subsys *ss, struct cgroup *cgrp)
 }
 
 static int
+<<<<<<< HEAD
 cpu_cgroup_allow_attach(struct cgroup *cgrp, struct task_struct *tsk)
 {
 	const struct cred *cred = current_cred(), *tcred;
@@ -9419,6 +10076,10 @@ cpu_cgroup_can_attach_task(struct cgroup *cgrp, struct task_struct *tsk)
 			return -EPERM;
 	}
 
+=======
+cpu_cgroup_can_attach_task(struct cgroup *cgrp, struct task_struct *tsk)
+{
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_RT_GROUP_SCHED
 	if (!sched_rt_can_attach(cgroup_tg(cgrp), tsk))
 		return -EINVAL;
@@ -9464,6 +10125,7 @@ static u64 cpu_shares_read_u64(struct cgroup *cgrp, struct cftype *cft)
 
 	return (u64) scale_load_down(tg->shares);
 }
+<<<<<<< HEAD
 
 #ifdef CONFIG_CFS_BANDWIDTH
 static DEFINE_MUTEX(cfs_constraints_mutex);
@@ -9678,6 +10340,8 @@ static int __cfs_schedulable(struct task_group *tg, u64 period, u64 quota)
 	return walk_tg_tree(tg_cfs_schedulable_down, tg_nop, &data);
 }
 #endif /* CONFIG_CFS_BANDWIDTH */
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif /* CONFIG_FAIR_GROUP_SCHED */
 
 #ifdef CONFIG_RT_GROUP_SCHED
@@ -9712,6 +10376,7 @@ static struct cftype cpu_files[] = {
 		.write_u64 = cpu_shares_write_u64,
 	},
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_CFS_BANDWIDTH
 	{
 		.name = "cfs_quota_us",
@@ -9724,6 +10389,8 @@ static struct cftype cpu_files[] = {
 		.write_u64 = cpu_cfs_period_write_u64,
 	},
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_RT_GROUP_SCHED
 	{
 		.name = "rt_runtime_us",
@@ -9747,7 +10414,10 @@ struct cgroup_subsys cpu_cgroup_subsys = {
 	.name		= "cpu",
 	.create		= cpu_cgroup_create,
 	.destroy	= cpu_cgroup_destroy,
+<<<<<<< HEAD
 	.allow_attach	= cpu_cgroup_allow_attach,
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	.can_attach_task = cpu_cgroup_can_attach_task,
 	.attach_task	= cpu_cgroup_attach_task,
 	.exit		= cpu_cgroup_exit,
@@ -9774,6 +10444,7 @@ struct cpuacct {
 	u64 __percpu *cpuusage;
 	struct percpu_counter cpustat[CPUACCT_STAT_NSTATS];
 	struct cpuacct *parent;
+<<<<<<< HEAD
 	struct cpuacct_charge_calls *cpufreq_fn;
 	void *cpuacct_data;
 };
@@ -9798,6 +10469,10 @@ int cpuacct_register_cpufreq(struct cpuacct_charge_calls *fn)
 	return 0;
 }
 
+=======
+};
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 struct cgroup_subsys cpuacct_subsys;
 
 /* return cpu accounting group corresponding to this container */
@@ -9832,6 +10507,7 @@ static struct cgroup_subsys_state *cpuacct_create(
 		if (percpu_counter_init(&ca->cpustat[i], 0))
 			goto out_free_counters;
 
+<<<<<<< HEAD
 	ca->cpufreq_fn = cpuacct_cpufreq;
 
 	/* If available, have platform code initalize cpu frequency table */
@@ -9842,6 +10518,10 @@ static struct cgroup_subsys_state *cpuacct_create(
 		ca->parent = cgroup_ca(cgrp->parent);
 	else
 		cpuacct_root = ca;
+=======
+	if (cgrp->parent)
+		ca->parent = cgroup_ca(cgrp->parent);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return &ca->css;
 
@@ -9969,6 +10649,7 @@ static int cpuacct_stats_show(struct cgroup *cgrp, struct cftype *cft,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int cpuacct_cpufreq_show(struct cgroup *cgrp, struct cftype *cft,
 		struct cgroup_map_cb *cb)
 {
@@ -9995,6 +10676,8 @@ static u64 cpuacct_powerusage_read(struct cgroup *cgrp, struct cftype *cft)
 	return totalpower;
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static struct cftype files[] = {
 	{
 		.name = "usage",
@@ -10009,6 +10692,7 @@ static struct cftype files[] = {
 		.name = "stat",
 		.read_map = cpuacct_stats_show,
 	},
+<<<<<<< HEAD
 	{
 		.name =  "cpufreq",
 		.read_map = cpuacct_cpufreq_show,
@@ -10017,6 +10701,8 @@ static struct cftype files[] = {
 		.name = "power",
 		.read_u64 = cpuacct_powerusage_read
 	},
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 static int cpuacct_populate(struct cgroup_subsys *ss, struct cgroup *cgrp)
@@ -10046,10 +10732,13 @@ static void cpuacct_charge(struct task_struct *tsk, u64 cputime)
 	for (; ca; ca = ca->parent) {
 		u64 *cpuusage = per_cpu_ptr(ca->cpuusage, cpu);
 		*cpuusage += cputime;
+<<<<<<< HEAD
 
 		/* Call back into platform code to account for CPU speeds */
 		if (ca->cpufreq_fn && ca->cpufreq_fn->charge)
 			ca->cpufreq_fn->charge(ca->cpuacct_data, cputime, cpu);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	rcu_read_unlock();
@@ -10102,3 +10791,7 @@ struct cgroup_subsys cpuacct_subsys = {
 	.subsys_id = cpuacct_subsys_id,
 };
 #endif	/* CONFIG_CGROUP_CPUACCT */
+<<<<<<< HEAD
+=======
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

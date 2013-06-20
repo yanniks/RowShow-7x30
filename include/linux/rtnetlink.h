@@ -761,7 +761,12 @@ extern int lockdep_rtnl_is_held(void);
  * or RTNL. Note : Please prefer rtnl_dereference() or rcu_dereference()
  */
 #define rcu_dereference_rtnl(p)					\
+<<<<<<< HEAD
 	rcu_dereference_check(p, lockdep_rtnl_is_held())
+=======
+	rcu_dereference_check(p, rcu_read_lock_held() ||	\
+				 lockdep_rtnl_is_held())
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /**
  * rtnl_dereference - fetch RCU pointer when updates are prevented by RTNL

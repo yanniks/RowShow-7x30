@@ -1157,7 +1157,11 @@ static void mtdchar_notify_remove(struct mtd_info *mtd)
 
 	if (mtd_ino) {
 		/* Destroy the inode if it exists */
+<<<<<<< HEAD
 		clear_nlink(mtd_ino);
+=======
+		mtd_ino->i_nlink = 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		iput(mtd_ino);
 	}
 }
@@ -1205,7 +1209,11 @@ err_unregister_chdev:
 static void __exit cleanup_mtdchar(void)
 {
 	unregister_mtd_user(&mtdchar_notifier);
+<<<<<<< HEAD
 	kern_unmount(mtd_inode_mnt);
+=======
+	mntput(mtd_inode_mnt);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	unregister_filesystem(&mtd_inodefs_type);
 	__unregister_chrdev(MTD_CHAR_MAJOR, 0, 1 << MINORBITS, "mtd");
 }

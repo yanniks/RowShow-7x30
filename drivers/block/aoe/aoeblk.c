@@ -159,7 +159,11 @@ aoeblk_release(struct gendisk *disk, fmode_t mode)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void
+=======
+static int
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 aoeblk_make_request(struct request_queue *q, struct bio *bio)
 {
 	struct sk_buff_head queue;
@@ -172,25 +176,41 @@ aoeblk_make_request(struct request_queue *q, struct bio *bio)
 	if (bio == NULL) {
 		printk(KERN_ERR "aoe: bio is NULL\n");
 		BUG();
+<<<<<<< HEAD
 		return;
+=======
+		return 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	d = bio->bi_bdev->bd_disk->private_data;
 	if (d == NULL) {
 		printk(KERN_ERR "aoe: bd_disk->private_data is NULL\n");
 		BUG();
 		bio_endio(bio, -ENXIO);
+<<<<<<< HEAD
 		return;
+=======
+		return 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	} else if (bio->bi_io_vec == NULL) {
 		printk(KERN_ERR "aoe: bi_io_vec is NULL\n");
 		BUG();
 		bio_endio(bio, -ENXIO);
+<<<<<<< HEAD
 		return;
+=======
+		return 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	buf = mempool_alloc(d->bufpool, GFP_NOIO);
 	if (buf == NULL) {
 		printk(KERN_INFO "aoe: buf allocation failure\n");
 		bio_endio(bio, -ENOMEM);
+<<<<<<< HEAD
 		return;
+=======
+		return 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	memset(buf, 0, sizeof(*buf));
 	INIT_LIST_HEAD(&buf->bufs);
@@ -211,7 +231,11 @@ aoeblk_make_request(struct request_queue *q, struct bio *bio)
 		spin_unlock_irqrestore(&d->lock, flags);
 		mempool_free(buf, d->bufpool);
 		bio_endio(bio, -ENXIO);
+<<<<<<< HEAD
 		return;
+=======
+		return 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	list_add_tail(&buf->bufs, &d->bufq);
@@ -222,6 +246,11 @@ aoeblk_make_request(struct request_queue *q, struct bio *bio)
 
 	spin_unlock_irqrestore(&d->lock, flags);
 	aoenet_xmit(&queue);
+<<<<<<< HEAD
+=======
+
+	return 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static int

@@ -161,6 +161,7 @@ config INPUT_APMPOWER
 	  To compile this driver as a module, choose M here: the
 	  module will be called apm-power.
 
+<<<<<<< HEAD
 config INPUT_KEYRESET
 	tristate "Reset key"
 	depends on INPUT
@@ -170,6 +171,8 @@ config INPUT_KEYRESET
 	  To compile this driver as a module, choose M here: the
 	  module will be called keyreset.
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 comment "Input Device Drivers"
 
 source "drivers/input/keyboard/Kconfig"
@@ -184,8 +187,11 @@ source "drivers/input/touchscreen/Kconfig"
 
 source "drivers/input/misc/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/input/opticaljoystick/Kconfig"
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 endif
 
 menu "Hardware I/O ports"

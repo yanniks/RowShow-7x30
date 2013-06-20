@@ -761,7 +761,11 @@ static void bt3c_release(struct pcmcia_device *link)
 }
 
 
+<<<<<<< HEAD
 static struct pcmcia_device_id bt3c_ids[] = {
+=======
+static const struct pcmcia_device_id bt3c_ids[] = {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	PCMCIA_DEVICE_PROD_ID13("3COM", "Bluetooth PC Card", 0xefce0a31, 0xd4ce9b02),
 	PCMCIA_DEVICE_NULL
 };

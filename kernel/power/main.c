@@ -37,9 +37,14 @@ EXPORT_SYMBOL_GPL(unregister_pm_notifier);
 
 int pm_notifier_call_chain(unsigned long val)
 {
+<<<<<<< HEAD
 	int ret = blocking_notifier_call_chain(&pm_chain_head, val, NULL);
 
 	return notifier_to_errno(ret);
+=======
+	return (blocking_notifier_call_chain(&pm_chain_head, val, NULL)
+			== NOTIFY_BAD) ? -EINVAL : 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /* If set, devices may be suspended and resumed asynchronously. */
@@ -171,11 +176,15 @@ static ssize_t state_store(struct kobject *kobj, struct kobj_attribute *attr,
 			   const char *buf, size_t n)
 {
 #ifdef CONFIG_SUSPEND
+<<<<<<< HEAD
 #ifdef CONFIG_EARLYSUSPEND
 	suspend_state_t state = PM_SUSPEND_ON;
 #else
 	suspend_state_t state = PM_SUSPEND_STANDBY;
 #endif
+=======
+	suspend_state_t state = PM_SUSPEND_STANDBY;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	const char * const *s;
 #endif
 	char *p;
@@ -197,6 +206,7 @@ static ssize_t state_store(struct kobject *kobj, struct kobj_attribute *attr,
 			break;
 	}
 	if (state < PM_SUSPEND_MAX && *s)
+<<<<<<< HEAD
 #ifdef CONFIG_EARLYSUSPEND
 		if (state == PM_SUSPEND_ON || valid_state(state)) {
 			error = 0;
@@ -206,6 +216,10 @@ static ssize_t state_store(struct kobject *kobj, struct kobj_attribute *attr,
 		error = enter_state(state);
 #endif
 #endif
+=======
+		error = enter_state(state);
+#endif
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
  Exit:
 	return error ? error : n;
@@ -309,11 +323,14 @@ power_attr(pm_trace_dev_match);
 
 #endif /* CONFIG_PM_TRACE */
 
+<<<<<<< HEAD
 #ifdef CONFIG_USER_WAKELOCK
 power_attr(wake_lock);
 power_attr(wake_unlock);
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static struct attribute * g[] = {
 	&state_attr.attr,
 #ifdef CONFIG_PM_TRACE
@@ -326,10 +343,13 @@ static struct attribute * g[] = {
 #ifdef CONFIG_PM_DEBUG
 	&pm_test_attr.attr,
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_USER_WAKELOCK
 	&wake_lock_attr.attr,
 	&wake_unlock_attr.attr,
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 	NULL,
 };

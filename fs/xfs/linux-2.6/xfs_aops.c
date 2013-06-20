@@ -1339,9 +1339,12 @@ xfs_end_io_direct_write(
 	} else {
 		xfs_finish_ioend_sync(ioend);
 	}
+<<<<<<< HEAD
 
 	/* XXX: probably should move into the real I/O completion handler */
 	inode_dio_done(ioend->io_inode);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 STATIC ssize_t

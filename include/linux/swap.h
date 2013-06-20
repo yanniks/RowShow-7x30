@@ -194,10 +194,13 @@ struct swap_info_struct {
 	struct block_device *bdev;	/* swap device or bdev of swap file */
 	struct file *swap_file;		/* seldom referenced */
 	unsigned int old_block_size;	/* seldom referenced */
+<<<<<<< HEAD
 #ifdef CONFIG_FRONTSWAP
 	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
 	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 struct swap_list_t {
@@ -205,13 +208,20 @@ struct swap_list_t {
 	int next;	/* swapfile to be used next */
 };
 
+<<<<<<< HEAD
 /* Swap 50% full? */
+=======
+/* Swap 50% full? Release swapcache more aggressively.. */
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define vm_swap_full() (nr_swap_pages*2 < total_swap_pages)
 
 /* linux/mm/page_alloc.c */
 extern unsigned long totalram_pages;
 extern unsigned long totalreserve_pages;
+<<<<<<< HEAD
 extern unsigned long dirty_balance_reserve;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern unsigned int nr_free_buffer_pages(void);
 extern unsigned int nr_free_pagecache_pages(void);
 
@@ -252,9 +262,17 @@ static inline void lru_cache_add_file(struct page *page)
 extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
 					gfp_t gfp_mask, nodemask_t *mask);
 extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *mem,
+<<<<<<< HEAD
 						  gfp_t gfp_mask, bool noswap);
 extern unsigned long mem_cgroup_shrink_node_zone(struct mem_cgroup *mem,
 						gfp_t gfp_mask, bool noswap,
+=======
+						  gfp_t gfp_mask, bool noswap,
+						  unsigned int swappiness);
+extern unsigned long mem_cgroup_shrink_node_zone(struct mem_cgroup *mem,
+						gfp_t gfp_mask, bool noswap,
+						unsigned int swappiness,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 						struct zone *zone,
 						unsigned long *nr_scanned);
 extern int __isolate_lru_page(struct page *page, isolate_mode_t mode, int file);
@@ -277,7 +295,11 @@ static inline int zone_reclaim(struct zone *z, gfp_t mask, unsigned int order)
 #endif
 
 extern int page_evictable(struct page *page, struct vm_area_struct *vma);
+<<<<<<< HEAD
 extern void check_move_unevictable_pages(struct page **, int nr_pages);
+=======
+extern void scan_mapping_unevictable_pages(struct address_space *);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 extern unsigned long scan_unevictable_pages;
 extern int scan_unevictable_handler(struct ctl_table *, int,
@@ -297,6 +319,7 @@ static inline void scan_unevictable_unregister_node(struct node *node)
 
 extern int kswapd_run(int nid);
 extern void kswapd_stop(int nid);
+<<<<<<< HEAD
 #ifdef CONFIG_CGROUP_MEM_RES_CTLR
 extern int mem_cgroup_swappiness(struct mem_cgroup *mem);
 #else
@@ -305,6 +328,9 @@ static inline int mem_cgroup_swappiness(struct mem_cgroup *mem)
 	return vm_swappiness;
 }
 #endif
+=======
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_SWAP
 /* linux/mm/page_io.c */
 extern int swap_readpage(struct page *);
@@ -333,7 +359,11 @@ extern long total_swap_pages;
 extern void si_swapinfo(struct sysinfo *);
 extern swp_entry_t get_swap_page(void);
 extern swp_entry_t get_swap_page_of_type(int);
+<<<<<<< HEAD
 extern void get_swap_cluster(swp_entry_t, unsigned long *, unsigned long *);
+=======
+extern int valid_swaphandles(swp_entry_t, unsigned long *);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern int add_swap_count_continuation(swp_entry_t, gfp_t);
 extern void swap_shmem_alloc(swp_entry_t);
 extern int swap_duplicate(swp_entry_t);
@@ -355,10 +385,16 @@ extern void grab_swap_token(struct mm_struct *);
 extern void __put_swap_token(struct mm_struct *);
 extern void disable_swap_token(struct mem_cgroup *memcg);
 
+<<<<<<< HEAD
 /* Only allow swap token to have effect if swap is full */
 static inline int has_swap_token(struct mm_struct *mm)
 {
 	return (mm == swap_token_mm && vm_swap_full());
+=======
+static inline int has_swap_token(struct mm_struct *mm)
+{
+	return (mm == swap_token_mm);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static inline void put_swap_token(struct mm_struct *mm)

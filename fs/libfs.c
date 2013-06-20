@@ -16,8 +16,11 @@
 
 #include <asm/uaccess.h>
 
+<<<<<<< HEAD
 #include "internal.h"
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static inline int simple_positive(struct dentry *dentry)
 {
 	return dentry->d_inode && !d_unhashed(dentry);
@@ -248,11 +251,20 @@ struct dentry *mount_pseudo(struct file_system_type *fs_type, char *name,
 	root->i_ino = 1;
 	root->i_mode = S_IFDIR | S_IRUSR | S_IWUSR;
 	root->i_atime = root->i_mtime = root->i_ctime = CURRENT_TIME;
+<<<<<<< HEAD
 	dentry = __d_alloc(s, &d_name);
+=======
+	dentry = d_alloc(NULL, &d_name);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!dentry) {
 		iput(root);
 		goto Enomem;
 	}
+<<<<<<< HEAD
+=======
+	dentry->d_sb = s;
+	dentry->d_parent = dentry;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	d_instantiate(dentry, root);
 	s->s_root = dentry;
 	s->s_d_op = dops;
@@ -905,13 +917,18 @@ EXPORT_SYMBOL_GPL(generic_fh_to_parent);
  * filesystems which track all non-inode metadata in the buffers list
  * hanging off the address_space structure.
  */
+<<<<<<< HEAD
 int generic_file_fsync(struct file *file, loff_t start, loff_t end,
 		       int datasync)
+=======
+int generic_file_fsync(struct file *file, int datasync)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inode *inode = file->f_mapping->host;
 	int err;
 	int ret;
 
+<<<<<<< HEAD
 	err = filemap_write_and_wait_range(inode->i_mapping, start, end);
 	if (err)
 		return err;
@@ -922,12 +939,22 @@ int generic_file_fsync(struct file *file, loff_t start, loff_t end,
 		goto out;
 	if (datasync && !(inode->i_state & I_DIRTY_DATASYNC))
 		goto out;
+=======
+	ret = sync_mapping_buffers(inode->i_mapping);
+	if (!(inode->i_state & I_DIRTY))
+		return ret;
+	if (datasync && !(inode->i_state & I_DIRTY_DATASYNC))
+		return ret;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	err = sync_inode_metadata(inode, 1);
 	if (ret == 0)
 		ret = err;
+<<<<<<< HEAD
 out:
 	mutex_unlock(&inode->i_mutex);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return ret;
 }
 EXPORT_SYMBOL(generic_file_fsync);
@@ -964,7 +991,11 @@ EXPORT_SYMBOL(generic_check_addressable);
 /*
  * No-op implementation of ->fsync for in-memory filesystems.
  */
+<<<<<<< HEAD
 int noop_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+=======
+int noop_fsync(struct file *file, int datasync)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	return 0;
 }

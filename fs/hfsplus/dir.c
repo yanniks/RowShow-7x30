@@ -422,7 +422,11 @@ static int hfsplus_symlink(struct inode *dir, struct dentry *dentry,
 	goto out;
 
 out_err:
+<<<<<<< HEAD
 	clear_nlink(inode);
+=======
+	inode->i_nlink = 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	hfsplus_delete_inode(inode);
 	iput(inode);
 out:
@@ -431,7 +435,11 @@ out:
 }
 
 static int hfsplus_mknod(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 			 umode_t mode, dev_t rdev)
+=======
+			 int mode, dev_t rdev)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct hfsplus_sb_info *sbi = HFSPLUS_SB(dir->i_sb);
 	struct inode *inode;
@@ -447,7 +455,11 @@ static int hfsplus_mknod(struct inode *dir, struct dentry *dentry,
 
 	res = hfsplus_create_cat(inode->i_ino, dir, &dentry->d_name, inode);
 	if (res) {
+<<<<<<< HEAD
 		clear_nlink(inode);
+=======
+		inode->i_nlink = 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		hfsplus_delete_inode(inode);
 		iput(inode);
 		goto out;
@@ -460,7 +472,11 @@ out:
 	return res;
 }
 
+<<<<<<< HEAD
 static int hfsplus_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+=======
+static int hfsplus_create(struct inode *dir, struct dentry *dentry, int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			  struct nameidata *nd)
 {
 	return hfsplus_mknod(dir, dentry, mode, 0);

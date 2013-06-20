@@ -323,7 +323,11 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static void brd_make_request(struct request_queue *q, struct bio *bio)
+=======
+static int brd_make_request(struct request_queue *q, struct bio *bio)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct block_device *bdev = bio->bi_bdev;
 	struct brd_device *brd = bdev->bd_disk->private_data;
@@ -359,6 +363,11 @@ static void brd_make_request(struct request_queue *q, struct bio *bio)
 
 out:
 	bio_endio(bio, err);
+<<<<<<< HEAD
+=======
+
+	return 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 #ifdef CONFIG_BLK_DEV_XIP

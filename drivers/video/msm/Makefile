@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 obj-y := msm_fb.o
 
 obj-$(CONFIG_FB_MSM_LOGO) += logo.o
@@ -177,3 +178,24 @@ obj-$(CONFIG_FB_MSM_VISION_PANEL) += lcdc_sony_wvga.o lcdc_samsung_s6e63m0_wvga.
 
 clean:
 	rm *.o .*cmd
+=======
+
+# core framebuffer
+#
+obj-y := msm_fb.o
+
+# MDP DMA/PPP engine
+#
+obj-y += mdp.o mdp_scale_tables.o mdp_ppp.o
+
+# MDDI interface
+#
+obj-y += mddi.o
+
+# MDDI client/panel drivers
+#
+obj-y += mddi_client_dummy.o
+obj-y += mddi_client_toshiba.o
+obj-y += mddi_client_nt35399.o
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

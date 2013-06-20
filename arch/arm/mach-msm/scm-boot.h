@@ -17,6 +17,10 @@
 #define SCM_FLAG_WARMBOOT_CPU1		0x2
 #define SCM_FLAG_WARMBOOT_CPU0		0x4
 
+<<<<<<< HEAD
 int scm_set_boot_addr(void *addr, int flags);
+=======
+int scm_set_boot_addr(phys_addr_t addr, int flags);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #endif

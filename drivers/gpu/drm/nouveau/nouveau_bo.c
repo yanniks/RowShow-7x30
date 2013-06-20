@@ -1075,7 +1075,11 @@ nouveau_ttm_fault_reserve_notify(struct ttm_buffer_object *bo)
 
 	nvbo->placement.fpfn = 0;
 	nvbo->placement.lpfn = dev_priv->fb_mappable_pages;
+<<<<<<< HEAD
 	nouveau_bo_placement_set(nvbo, TTM_PL_VRAM, 0);
+=======
+	nouveau_bo_placement_set(nvbo, TTM_PL_FLAG_VRAM, 0);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return nouveau_bo_validate(nvbo, false, true, false);
 }
 

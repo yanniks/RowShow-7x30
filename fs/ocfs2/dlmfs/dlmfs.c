@@ -354,6 +354,10 @@ static struct inode *dlmfs_alloc_inode(struct super_block *sb)
 static void dlmfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&inode->i_dentry);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	kmem_cache_free(dlmfs_inode_cache, DLMFS_I(inode));
 }
 
@@ -536,7 +540,11 @@ bail:
 
 static int dlmfs_create(struct inode *dir,
 			struct dentry *dentry,
+<<<<<<< HEAD
 			umode_t mode,
+=======
+			int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			struct nameidata *nd)
 {
 	int status = 0;

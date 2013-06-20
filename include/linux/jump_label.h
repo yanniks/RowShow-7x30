@@ -16,7 +16,11 @@ struct jump_label_key {
 
 # include <asm/jump_label.h>
 # define HAVE_JUMP_LABEL
+<<<<<<< HEAD
 #endif	/* CC_HAVE_ASM_GOTO && CONFIG_JUMP_LABEL */
+=======
+#endif
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 enum jump_label_type {
 	JUMP_LABEL_DISABLE = 0,
@@ -41,6 +45,7 @@ static __always_inline bool static_branch(struct jump_label_key *key)
 extern struct jump_entry __start___jump_table[];
 extern struct jump_entry __stop___jump_table[];
 
+<<<<<<< HEAD
 extern void jump_label_init(void);
 extern void jump_label_lock(void);
 extern void jump_label_unlock(void);
@@ -48,13 +53,24 @@ extern void arch_jump_label_transform(struct jump_entry *entry,
 				      enum jump_label_type type);
 extern void arch_jump_label_transform_static(struct jump_entry *entry,
 					     enum jump_label_type type);
+=======
+extern void jump_label_lock(void);
+extern void jump_label_unlock(void);
+extern void arch_jump_label_transform(struct jump_entry *entry,
+				 enum jump_label_type type);
+extern void arch_jump_label_text_poke_early(jump_label_t addr);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern int jump_label_text_reserved(void *start, void *end);
 extern void jump_label_inc(struct jump_label_key *key);
 extern void jump_label_dec(struct jump_label_key *key);
 extern bool jump_label_enabled(struct jump_label_key *key);
 extern void jump_label_apply_nops(struct module *mod);
 
+<<<<<<< HEAD
 #else  /* !HAVE_JUMP_LABEL */
+=======
+#else
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #include <asm/atomic.h>
 
@@ -64,10 +80,13 @@ struct jump_label_key {
 	atomic_t enabled;
 };
 
+<<<<<<< HEAD
 static __always_inline void jump_label_init(void)
 {
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static __always_inline bool static_branch(struct jump_label_key *key)
 {
 	if (unlikely(atomic_read(&key->enabled)))
@@ -102,6 +121,13 @@ static inline int jump_label_apply_nops(struct module *mod)
 {
 	return 0;
 }
+<<<<<<< HEAD
 #endif	/* HAVE_JUMP_LABEL */
 
 #endif	/* _LINUX_JUMP_LABEL_H */
+=======
+
+#endif
+
+#endif
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

@@ -385,12 +385,15 @@ int unhandled_signal(struct task_struct *tsk, int sig);
 
 void signals_init(void);
 
+<<<<<<< HEAD
 #define MAX_DYING_PROC_COUNT	10
 struct dying_pid {
 	pid_t pid;
 	unsigned long jiffy;
 };
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif /* __KERNEL__ */
 
 #endif /* _LINUX_SIGNAL_H */

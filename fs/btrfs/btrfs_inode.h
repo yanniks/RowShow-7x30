@@ -34,9 +34,12 @@ struct btrfs_inode {
 	 */
 	struct btrfs_key location;
 
+<<<<<<< HEAD
 	/* Lock for counters */
 	spinlock_t lock;
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* the extent_tree has caches of all the extent mappings to disk */
 	struct extent_map_tree extent_tree;
 
@@ -137,8 +140,13 @@ struct btrfs_inode {
 	 * items we think we'll end up using, and reserved_extents is the number
 	 * of extent items we've reserved metadata for.
 	 */
+<<<<<<< HEAD
 	unsigned outstanding_extents;
 	unsigned reserved_extents;
+=======
+	atomic_t outstanding_extents;
+	atomic_t reserved_extents;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/*
 	 * ordered_data_close is set by truncate when a file that used
@@ -176,11 +184,15 @@ static inline u64 btrfs_ino(struct inode *inode)
 {
 	u64 ino = BTRFS_I(inode)->location.objectid;
 
+<<<<<<< HEAD
 	/*
 	 * !ino: btree_inode
 	 * type == BTRFS_ROOT_ITEM_KEY: subvol dir
 	 */
 	if (!ino || BTRFS_I(inode)->location.type == BTRFS_ROOT_ITEM_KEY)
+=======
+	if (ino <= BTRFS_FIRST_FREE_OBJECTID)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		ino = inode->i_ino;
 	return ino;
 }
@@ -191,6 +203,7 @@ static inline void btrfs_i_size_write(struct inode *inode, u64 size)
 	BTRFS_I(inode)->disk_i_size = size;
 }
 
+<<<<<<< HEAD
 static inline bool btrfs_is_free_space_inode(struct btrfs_root *root,
 				       struct inode *inode)
 {
@@ -200,4 +213,6 @@ static inline bool btrfs_is_free_space_inode(struct btrfs_root *root,
 	return false;
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif

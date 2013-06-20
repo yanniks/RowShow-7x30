@@ -606,7 +606,11 @@ static ssize_t write_unlock_fs(struct file *file, char *buf, size_t size)
 	 * 2.  Is that directory a mount point, or
 	 * 3.  Is that directory the root of an exported file system?
 	 */
+<<<<<<< HEAD
 	error = nlmsvc_unlock_all_by_sb(path.dentry->d_sb);
+=======
+	error = nlmsvc_unlock_all_by_sb(path.mnt->mnt_sb);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	path_put(&path);
 	return error;

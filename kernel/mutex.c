@@ -157,12 +157,16 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
 	 *
 	 * We can't do this for DEBUG_MUTEXES because that relies on wait_lock
 	 * to serialize everything.
+<<<<<<< HEAD
 	 *
 	 * Only first task is allowed to spin on a given mutex and that
 	 * task will put its task_struct pointer into the spinner field.
 	 */
 	if (lock->spinner || (cmpxchg(&lock->spinner, NULL, current) != NULL))
 		goto slowpath;
+=======
+	 */
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	for (;;) {
 		struct task_struct *owner;
@@ -175,11 +179,17 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
 		if (owner && !mutex_spin_on_owner(lock, owner))
 			break;
 
+<<<<<<< HEAD
 		if ((atomic_read(&lock->count) == 1) &&
 		    (atomic_cmpxchg(&lock->count, 1, 0) == 1)) {
 			lock_acquired(&lock->dep_map, ip);
 			mutex_set_owner(lock);
 			lock->spinner = NULL;
+=======
+		if (atomic_cmpxchg(&lock->count, 1, 0) == 1) {
+			lock_acquired(&lock->dep_map, ip);
+			mutex_set_owner(lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			preempt_enable();
 			return 0;
 		}
@@ -201,12 +211,15 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
 		 */
 		arch_mutex_cpu_relax();
 	}
+<<<<<<< HEAD
 
 	/*
 	 * Done with spinning
 	 */
 	lock->spinner = NULL;
 slowpath:
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 	spin_lock_mutex(&lock->wait_lock, flags);
 
@@ -217,8 +230,12 @@ slowpath:
 	list_add_tail(&waiter.list, &lock->wait_list);
 	waiter.task = task;
 
+<<<<<<< HEAD
 	if (MUTEX_SHOULD_XCHG_COUNT(lock) &&
 	   (atomic_xchg(&lock->count, -1) == 1))
+=======
+	if (atomic_xchg(&lock->count, -1) == 1)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		goto done;
 
 	lock_contended(&lock->dep_map, ip);
@@ -233,8 +250,12 @@ slowpath:
 		 * that when we release the lock, we properly wake up the
 		 * other waiters:
 		 */
+<<<<<<< HEAD
 		if (MUTEX_SHOULD_XCHG_COUNT(lock) &&
 		   (atomic_xchg(&lock->count, -1) == 1))
+=======
+		if (atomic_xchg(&lock->count, -1) == 1)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			break;
 
 		/*

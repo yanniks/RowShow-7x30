@@ -55,7 +55,12 @@ struct netlbl_domhsh_tbl {
  * should be okay */
 static DEFINE_SPINLOCK(netlbl_domhsh_lock);
 #define netlbl_domhsh_rcu_deref(p) \
+<<<<<<< HEAD
 	rcu_dereference_check(p, lockdep_is_held(&netlbl_domhsh_lock))
+=======
+	rcu_dereference_check(p, rcu_read_lock_held() || \
+				 lockdep_is_held(&netlbl_domhsh_lock))
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static struct netlbl_domhsh_tbl *netlbl_domhsh = NULL;
 static struct netlbl_dom_map *netlbl_domhsh_def = NULL;
 

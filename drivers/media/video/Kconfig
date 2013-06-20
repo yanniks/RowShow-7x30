@@ -1033,6 +1033,7 @@ config USB_S2255
 endif # V4L_USB_DRIVERS
 endif # VIDEO_CAPTURE_DRIVERS
 
+<<<<<<< HEAD
 #
 # MSM camera configuration
 #
@@ -1057,6 +1058,8 @@ config MSM_CAMERA_DEBUG
 
 source "drivers/media/video/msm/Kconfig"
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 menuconfig V4L_MEM2MEM_DRIVERS
 	bool "Memory-to-memory multimedia devices"
 	depends on VIDEO_V4L2

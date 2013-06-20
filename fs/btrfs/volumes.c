@@ -142,7 +142,10 @@ static noinline int run_scheduled_bios(struct btrfs_device *device)
 	unsigned long limit;
 	unsigned long last_waited = 0;
 	int force_reg = 0;
+<<<<<<< HEAD
 	int sync_pending = 0;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct blk_plug plug;
 
 	/*
@@ -230,6 +233,7 @@ loop_lock:
 
 		BUG_ON(atomic_read(&cur->bi_cnt) == 0);
 
+<<<<<<< HEAD
 		/*
 		 * if we're doing the sync list, record that our
 		 * plug has some sync requests on it
@@ -246,6 +250,8 @@ loop_lock:
 			sync_pending = 0;
 		}
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		submit_bio(cur->bi_rw, cur);
 		num_run++;
 		batch_run++;
@@ -870,7 +876,10 @@ int find_free_dev_extent(struct btrfs_trans_handle *trans,
 
 	max_hole_start = search_start;
 	max_hole_size = 0;
+<<<<<<< HEAD
 	hole_size = 0;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (search_start >= search_end) {
 		ret = -ENOSPC;
@@ -953,6 +962,7 @@ next:
 		cond_resched();
 	}
 
+<<<<<<< HEAD
 	/*
 	 * At this point, search_start should be the end of
 	 * allocated dev extents, and when shrinking the device,
@@ -961,6 +971,9 @@ next:
 	if (search_end > search_start)
 		hole_size = search_end - search_start;
 
+=======
+	hole_size = search_end- search_start;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (hole_size > max_hole_size) {
 		max_hole_start = search_start;
 		max_hole_size = hole_size;
@@ -2459,10 +2472,16 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
 			total_avail = device->total_bytes - device->bytes_used;
 		else
 			total_avail = 0;
+<<<<<<< HEAD
 
 		/* If there is no space on this device, skip it. */
 		if (total_avail == 0)
 			continue;
+=======
+		/* avail is off by max(alloc_start, 1MB), but that is the same
+		 * for all devices, so it doesn't hurt the sorting later on
+		 */
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		ret = find_free_dev_extent(trans, device,
 					   max_stripe_size * dev_stripes,
@@ -3645,7 +3664,11 @@ int btrfs_read_sys_array(struct btrfs_root *root)
 	if (!sb)
 		return -ENOMEM;
 	btrfs_set_buffer_uptodate(sb);
+<<<<<<< HEAD
 	btrfs_set_buffer_lockdep_class(root->root_key.objectid, sb, 0);
+=======
+	btrfs_set_buffer_lockdep_class(sb, 0);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	write_extent_buffer(sb, super_copy, 0, BTRFS_SUPER_INFO_SIZE);
 	array_size = btrfs_super_sys_array_size(super_copy);

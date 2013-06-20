@@ -94,7 +94,13 @@ static struct elevator_type elevator_noop = {
 
 static int __init noop_init(void)
 {
+<<<<<<< HEAD
 	return elv_register(&elevator_noop);
+=======
+	elv_register(&elevator_noop);
+
+	return 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static void __exit noop_exit(void)

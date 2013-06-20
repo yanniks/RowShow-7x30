@@ -471,6 +471,7 @@ int blk_attempt_req_merge(struct request_queue *q, struct request *rq,
 {
 	return attempt_merge(q, rq, next);
 }
+<<<<<<< HEAD
 
 bool blk_rq_merge_ok(struct request *rq, struct bio *bio)
 {
@@ -508,3 +509,5 @@ int blk_try_merge(struct request *rq, struct bio *bio)
 		return ELEVATOR_FRONT_MERGE;
 	return ELEVATOR_NO_MERGE;
 }
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

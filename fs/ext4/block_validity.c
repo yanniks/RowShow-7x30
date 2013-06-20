@@ -246,6 +246,7 @@ int ext4_data_block_valid(struct ext4_sb_info *sbi, ext4_fsblk_t start_blk,
 	return 1;
 }
 
+<<<<<<< HEAD
 int ext4_check_blockref(const char *function, unsigned int line,
 			struct inode *inode, __le32 *p, unsigned int max)
 {
@@ -267,3 +268,5 @@ int ext4_check_blockref(const char *function, unsigned int line,
 	return 0;
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

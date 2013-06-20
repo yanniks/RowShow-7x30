@@ -68,6 +68,7 @@
 #define ULPI_FUNC_CTRL				0x04
 #define ULPI_IFC_CTRL				0x07
 #define ULPI_OTG_CTRL				0x0a
+<<<<<<< HEAD
 #define ULPI_OTG_CTRL_W				0x0a
 #define ULPI_OTG_CTRL_S				0x0b
 #define ULPI_OTG_CTRL_C				0x0c
@@ -79,6 +80,10 @@
 #define ULPI_USB_INT_EN_FALL_W			0x10
 #define ULPI_USB_INT_EN_FALL_S			0x11
 #define ULPI_USB_INT_EN_FALL_C			0x12
+=======
+#define ULPI_USB_INT_EN_RISE			0x0d
+#define ULPI_USB_INT_EN_FALL			0x10
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define ULPI_USB_INT_STS			0x13
 #define ULPI_USB_INT_LATCH			0x14
 #define ULPI_DEBUG				0x15
@@ -100,6 +105,7 @@
 #define ULPI_VENDOR_SPECIFIC			0x30
 /* Extended Registers */
 #define ULPI_EXT_VENDOR_SPECIFIC		0x80
+<<<<<<< HEAD
 /* SNPS_28NM_INTEGRATED_PHY */
 #define ULPI_PARM_OVERRIDE_A			0x80
 #define ULPI_PARM_OVERRIDE_B			0x81
@@ -120,6 +126,9 @@
 #define ULPI_ALT_INT_EN_S		0x94
 #define ULPI_ALT_INT_EN_C		0x95
 #define ULPI_MISC_A			0x96
+=======
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*-------------------------------------------------------------------------*/
 
 /*
@@ -207,6 +216,7 @@
 #define ULPI_CARKIT_PLS_CTRL_SPKRLEFT_BIASEN	(1 << 2)
 #define ULPI_CARKIT_PLS_CTRL_SPKRRIGHT_BIASEN	(1 << 3)
 
+<<<<<<< HEAD
 /* Extend ULPI register */
 
 /* ULPI_PARM_OVERRIDE_A */
@@ -248,6 +258,8 @@
 #define ULPI_VBUSVLDEXTSEL		BIT(1)
 #define ULPI_VBUSVLDEXT			BIT(0)
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*-------------------------------------------------------------------------*/
 
 struct otg_transceiver *otg_ulpi_create(struct otg_io_access_ops *ops,

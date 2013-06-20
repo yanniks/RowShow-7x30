@@ -251,7 +251,11 @@ out:
 	return ERR_PTR(err);
 }
 
+<<<<<<< HEAD
 static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+=======
+static int ubifs_create(struct inode *dir, struct dentry *dentry, int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			struct nameidata *nd)
 {
 	struct inode *inode;
@@ -266,7 +270,11 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 	 * parent directory inode.
 	 */
 
+<<<<<<< HEAD
 	dbg_gen("dent '%.*s', mode %#hx in dir ino %lu",
+=======
+	dbg_gen("dent '%.*s', mode %#x in dir ino %lu",
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		dentry->d_name.len, dentry->d_name.name, mode, dir->i_ino);
 
 	err = ubifs_budget_space(c, &req);
@@ -767,7 +775,11 @@ out_budg:
 }
 
 static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 		       umode_t mode, dev_t rdev)
+=======
+		       int mode, dev_t rdev)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inode *inode;
 	struct ubifs_inode *ui;

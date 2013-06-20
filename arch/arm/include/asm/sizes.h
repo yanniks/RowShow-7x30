@@ -18,5 +18,8 @@
  */
 #include <asm-generic/sizes.h>
 
+<<<<<<< HEAD
 #define SZ_24K	0x00006000
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define SZ_48M	(SZ_32M + SZ_16M)

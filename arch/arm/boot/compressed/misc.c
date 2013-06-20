@@ -26,11 +26,14 @@ unsigned int __machine_arch_type;
 #include <linux/linkage.h>
 #include <asm/string.h>
 
+<<<<<<< HEAD
 #include <asm/unaligned.h>
 
 #ifdef STANDALONE_DEBUG
 #define putstr printf
 #else
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static void putstr(const char *ptr);
 extern void error(char *x);
@@ -39,7 +42,11 @@ extern void error(char *x);
 
 #ifdef CONFIG_DEBUG_ICEDCC
 
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_V6) || defined(CONFIG_CPU_V7)
+=======
+#if defined(CONFIG_CPU_V6) || defined(CONFIG_CPU_V6K) || defined(CONFIG_CPU_V7)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static void icedcc_putc(int ch)
 {
@@ -55,6 +62,7 @@ static void icedcc_putc(int ch)
 	asm("mcr p14, 0, %0, c0, c5, 0" : : "r" (ch));
 }
 
+<<<<<<< HEAD
 #elif defined(CONFIG_CPU_V7)
 
 static void icedcc_putc(int ch)
@@ -65,6 +73,8 @@ static void icedcc_putc(int ch)
 		mcr     p14, 0, %0, c0, c5, 0			"
 	: : "r" (ch));
 }
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #elif defined(CONFIG_CPU_XSCALE)
 
@@ -116,7 +126,10 @@ static void putstr(const char *ptr)
 	flush();
 }
 
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 void *memcpy(void *__dest, __const void *__src, size_t __n)
 {
@@ -153,13 +166,20 @@ void *memcpy(void *__dest, __const void *__src, size_t __n)
 }
 
 /*
+<<<<<<< HEAD
  * gzip delarations
+=======
+ * gzip declarations
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  */
 extern char input_data[];
 extern char input_data_end[];
 
 unsigned char *output_data;
+<<<<<<< HEAD
 unsigned long output_ptr;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 unsigned long free_mem_ptr;
 unsigned long free_mem_end_ptr;
@@ -184,16 +204,27 @@ asmlinkage void __div0(void)
 	error("Attempting division by 0!");
 }
 
+<<<<<<< HEAD
 extern void do_decompress(u8 *input, int len, u8 *output, void (*error)(char *x));
 
 #ifndef STANDALONE_DEBUG
 
 unsigned long
+=======
+extern int do_decompress(u8 *input, int len, u8 *output, void (*error)(char *x));
+
+
+void
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 decompress_kernel(unsigned long output_start, unsigned long free_mem_ptr_p,
 		unsigned long free_mem_ptr_end_p,
 		int arch_id)
 {
+<<<<<<< HEAD
 	unsigned char *tmp;
+=======
+	int ret;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	output_data		= (unsigned char *)output_start;
 	free_mem_ptr		= free_mem_ptr_p;
@@ -202,6 +233,7 @@ decompress_kernel(unsigned long output_start, unsigned long free_mem_ptr_p,
 
 	arch_decomp_setup();
 
+<<<<<<< HEAD
 	tmp = (unsigned char *) (((unsigned long)input_data_end) - 4);
 	output_ptr = get_unaligned_le32(tmp);
 
@@ -226,3 +258,13 @@ int main()
 	return 0;
 }
 #endif
+=======
+	putstr("Uncompressing Linux...");
+	ret = do_decompress(input_data, input_data_end - input_data,
+			    output_data, error);
+	if (ret)
+		error("decompressor returned an error");
+	else
+		putstr(" done, booting the kernel.\n");
+}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

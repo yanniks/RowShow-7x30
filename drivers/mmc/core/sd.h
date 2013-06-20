@@ -4,9 +4,12 @@
 #include <linux/mmc/card.h>
 
 extern struct device_type sd_type;
+<<<<<<< HEAD
 extern int mmc_schedule_card_removal_work(struct delayed_work *work,
 				     unsigned long delay);
 extern void remove_card(struct mmc_host *host);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, u32 *cid, u32 *rocr);
 int mmc_sd_get_csd(struct mmc_host *host, struct mmc_card *card);

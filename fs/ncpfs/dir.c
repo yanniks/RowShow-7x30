@@ -30,7 +30,11 @@ static void ncp_do_readdir(struct file *, void *, filldir_t,
 
 static int ncp_readdir(struct file *, void *, filldir_t);
 
+<<<<<<< HEAD
 static int ncp_create(struct inode *, struct dentry *, umode_t, struct nameidata *);
+=======
+static int ncp_create(struct inode *, struct dentry *, int, struct nameidata *);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static struct dentry *ncp_lookup(struct inode *, struct dentry *, struct nameidata *);
 static int ncp_unlink(struct inode *, struct dentry *);
 static int ncp_mkdir(struct inode *, struct dentry *, int);
@@ -38,7 +42,11 @@ static int ncp_rmdir(struct inode *, struct dentry *);
 static int ncp_rename(struct inode *, struct dentry *,
 	  	      struct inode *, struct dentry *);
 static int ncp_mknod(struct inode * dir, struct dentry *dentry,
+<<<<<<< HEAD
 		     umode_t mode, dev_t rdev);
+=======
+		     int mode, dev_t rdev);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #if defined(CONFIG_NCPFS_EXTRAS) || defined(CONFIG_NCPFS_NFS_NS)
 extern int ncp_symlink(struct inode *, struct dentry *, const char *);
 #else
@@ -979,7 +987,11 @@ out:
 	return error;
 }
 
+<<<<<<< HEAD
 static int ncp_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+=======
+static int ncp_create(struct inode *dir, struct dentry *dentry, int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		struct nameidata *nd)
 {
 	return ncp_create_new(dir, dentry, mode, 0, 0);
@@ -1201,12 +1213,20 @@ out:
 }
 
 static int ncp_mknod(struct inode * dir, struct dentry *dentry,
+<<<<<<< HEAD
 		     umode_t mode, dev_t rdev)
+=======
+		     int mode, dev_t rdev)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	if (!new_valid_dev(rdev))
 		return -EINVAL;
 	if (ncp_is_nfs_extras(NCP_SERVER(dir), NCP_FINFO(dir)->volNumber)) {
+<<<<<<< HEAD
 		DPRINTK(KERN_DEBUG "ncp_mknod: mode = 0%ho\n", mode);
+=======
+		DPRINTK(KERN_DEBUG "ncp_mknod: mode = 0%o\n", mode);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return ncp_create_new(dir, dentry, mode, rdev, 0);
 	}
 	return -EPERM; /* Strange, but true */

@@ -250,7 +250,11 @@ void *kmap_high_get(struct page *page)
 #endif
 
 /**
+<<<<<<< HEAD
  * kunmap_high - unmap a highmem page into memory
+=======
+ * kunmap_high - map a highmem page into memory
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * @page: &struct page to unmap
  *
  * If ARCH_NEEDS_KMAP_HIGH_GET is not defined then this may be called
@@ -326,7 +330,11 @@ static struct page_address_slot {
 	spinlock_t lock;			/* Protect this bucket's list */
 } ____cacheline_aligned_in_smp page_address_htable[1<<PA_HASH_ORDER];
 
+<<<<<<< HEAD
 static struct page_address_slot *page_slot(const struct page *page)
+=======
+static struct page_address_slot *page_slot(struct page *page)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	return &page_address_htable[hash_ptr(page, PA_HASH_ORDER)];
 }
@@ -337,7 +345,11 @@ static struct page_address_slot *page_slot(const struct page *page)
  *
  * Returns the page's virtual address.
  */
+<<<<<<< HEAD
 void *page_address(const struct page *page)
+=======
+void *page_address(struct page *page)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	unsigned long flags;
 	void *ret;

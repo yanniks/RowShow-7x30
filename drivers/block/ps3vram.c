@@ -596,7 +596,11 @@ out:
 	return next;
 }
 
+<<<<<<< HEAD
 static void ps3vram_make_request(struct request_queue *q, struct bio *bio)
+=======
+static int ps3vram_make_request(struct request_queue *q, struct bio *bio)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct ps3_system_bus_device *dev = q->queuedata;
 	struct ps3vram_priv *priv = ps3_system_bus_get_drvdata(dev);
@@ -610,11 +614,20 @@ static void ps3vram_make_request(struct request_queue *q, struct bio *bio)
 	spin_unlock_irq(&priv->lock);
 
 	if (busy)
+<<<<<<< HEAD
 		return;
+=======
+		return 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	do {
 		bio = ps3vram_do_bio(dev, bio);
 	} while (bio);
+<<<<<<< HEAD
+=======
+
+	return 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static int __devinit ps3vram_probe(struct ps3_system_bus_device *dev)

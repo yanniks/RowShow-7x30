@@ -315,13 +315,18 @@ void bitmap_clear(unsigned long *map, int start, int nr)
 }
 EXPORT_SYMBOL(bitmap_clear);
 
+<<<<<<< HEAD
 /**
+=======
+/*
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * bitmap_find_next_zero_area - find a contiguous aligned zero area
  * @map: The address to base the search on
  * @size: The bitmap size in bits
  * @start: The bitnumber to start searching at
  * @nr: The number of zeroed bits we're looking for
  * @align_mask: Alignment mask for zero area
+<<<<<<< HEAD
  * @align_offset: Alignment offset for zero area.
  *
  * The @align_mask should be one less than a power of 2; the effect is that
@@ -334,13 +339,29 @@ unsigned long bitmap_find_next_zero_area_off(unsigned long *map,
 					     unsigned int nr,
 					     unsigned long align_mask,
 					     unsigned long align_offset)
+=======
+ *
+ * The @align_mask should be one less than a power of 2; the effect is that
+ * the bit offset of all zero areas this function finds is multiples of that
+ * power of 2. A @align_mask of 0 means no alignment is required.
+ */
+unsigned long bitmap_find_next_zero_area(unsigned long *map,
+					 unsigned long size,
+					 unsigned long start,
+					 unsigned int nr,
+					 unsigned long align_mask)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	unsigned long index, end, i;
 again:
 	index = find_next_zero_bit(map, size, start);
 
 	/* Align allocation */
+<<<<<<< HEAD
 	index = __ALIGN_MASK(index + align_offset, align_mask) - align_offset;
+=======
+	index = __ALIGN_MASK(index, align_mask);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	end = index + nr;
 	if (end > size)
@@ -352,7 +373,11 @@ again:
 	}
 	return index;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(bitmap_find_next_zero_area_off);
+=======
+EXPORT_SYMBOL(bitmap_find_next_zero_area);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /*
  * Bitmap printing & parsing functions: first version by Bill Irwin,
@@ -423,7 +448,11 @@ int __bitmap_parse(const char *buf, unsigned int buflen,
 {
 	int c, old_c, totaldigits, ndigits, nchunks, nbits;
 	u32 chunk;
+<<<<<<< HEAD
 	const char __user __force *ubuf = (const char __user __force *)buf;
+=======
+	const char __user *ubuf = buf;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	bitmap_zero(maskp, nmaskbits);
 
@@ -508,9 +537,13 @@ int bitmap_parse_user(const char __user *ubuf,
 {
 	if (!access_ok(VERIFY_READ, ubuf, ulen))
 		return -EFAULT;
+<<<<<<< HEAD
 	return __bitmap_parse((const char __force *)ubuf,
 				ulen, 1, maskp, nmaskbits);
 
+=======
+	return __bitmap_parse((const char *)ubuf, ulen, 1, maskp, nmaskbits);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL(bitmap_parse_user);
 
@@ -600,7 +633,11 @@ static int __bitmap_parselist(const char *buf, unsigned int buflen,
 {
 	unsigned a, b;
 	int c, old_c, totaldigits;
+<<<<<<< HEAD
 	const char __user __force *ubuf = (const char __user __force *)buf;
+=======
+	const char __user *ubuf = buf;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int exp_digit, in_range;
 
 	totaldigits = c = 0;
@@ -700,7 +737,11 @@ int bitmap_parselist_user(const char __user *ubuf,
 {
 	if (!access_ok(VERIFY_READ, ubuf, ulen))
 		return -EFAULT;
+<<<<<<< HEAD
 	return __bitmap_parselist((const char __force *)ubuf,
+=======
+	return __bitmap_parselist((const char *)ubuf,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 					ulen, 1, maskp, nmaskbits);
 }
 EXPORT_SYMBOL(bitmap_parselist_user);

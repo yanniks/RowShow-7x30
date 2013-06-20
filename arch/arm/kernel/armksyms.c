@@ -52,6 +52,13 @@ extern void fpundefinstr(void);
 
 EXPORT_SYMBOL(__backtrace);
 
+<<<<<<< HEAD
+=======
+	/* platform dependent support */
+EXPORT_SYMBOL(__udelay);
+EXPORT_SYMBOL(__const_udelay);
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* networking */
 EXPORT_SYMBOL(csum_partial);
 EXPORT_SYMBOL(csum_partial_copy_from_user);
@@ -87,6 +94,13 @@ EXPORT_SYMBOL(memmove);
 EXPORT_SYMBOL(memchr);
 EXPORT_SYMBOL(__memzero);
 
+<<<<<<< HEAD
+=======
+	/* user mem (segment) */
+EXPORT_SYMBOL(__strnlen_user);
+EXPORT_SYMBOL(__strncpy_from_user);
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_MMU
 EXPORT_SYMBOL(copy_page);
 
@@ -104,6 +118,12 @@ EXPORT_SYMBOL(__put_user_4);
 EXPORT_SYMBOL(__put_user_8);
 #endif
 
+<<<<<<< HEAD
+=======
+	/* crypto hash */
+EXPORT_SYMBOL(sha_transform);
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* gcc lib functions */
 EXPORT_SYMBOL(__ashldi3);
 EXPORT_SYMBOL(__ashrdi3);

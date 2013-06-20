@@ -1974,7 +1974,10 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 			otg_set_vbus(musb->xceiv, 1);
 
 		hcd->self.uses_pio_for_control = 1;
+<<<<<<< HEAD
 		hcd->self.dma_align = 1;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	if (musb->xceiv->last_event == USB_EVENT_NONE)
 		pm_runtime_put(musb->controller);

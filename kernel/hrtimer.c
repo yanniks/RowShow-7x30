@@ -1503,12 +1503,15 @@ static enum hrtimer_restart hrtimer_wakeup(struct hrtimer *timer)
 	struct hrtimer_sleeper *t =
 		container_of(timer, struct hrtimer_sleeper, timer);
 	struct task_struct *task = t->task;
+<<<<<<< HEAD
 	struct hrtimer_clock_base *base;
 	unsigned long flags;
 
 	base = lock_hrtimer_base(timer, &flags);
 	t->elapsed = ktime_sub(base->get_time(), t->elapsed);
 	unlock_hrtimer_base(timer, &flags);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	t->task = NULL;
 	if (task)
@@ -1519,6 +1522,7 @@ static enum hrtimer_restart hrtimer_wakeup(struct hrtimer *timer)
 
 void hrtimer_init_sleeper(struct hrtimer_sleeper *sl, struct task_struct *task)
 {
+<<<<<<< HEAD
 	struct hrtimer_clock_base *base;
 	unsigned long flags;
 
@@ -1526,6 +1530,8 @@ void hrtimer_init_sleeper(struct hrtimer_sleeper *sl, struct task_struct *task)
 	sl->elapsed = base->get_time();
 	unlock_hrtimer_base(&sl->timer, &flags);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	sl->timer.function = hrtimer_wakeup;
 	sl->task = task;
 }
@@ -1789,6 +1795,7 @@ void __init hrtimers_init(void)
  * @delta:	slack in expires timeout (ktime_t)
  * @mode:	timer mode, HRTIMER_MODE_ABS or HRTIMER_MODE_REL
  * @clock:	timer clock, CLOCK_MONOTONIC or CLOCK_REALTIME
+<<<<<<< HEAD
  * @elapsed:	pointer to unsigned long variable where to store
  * 		the time actually slept in timeout (usecs)
  */
@@ -1796,6 +1803,12 @@ int __sched
 schedule_hrtimeout_range_clock(ktime_t *expires, unsigned long delta,
 			       const enum hrtimer_mode mode, int clock,
 			       unsigned long *elapsed)
+=======
+ */
+int __sched
+schedule_hrtimeout_range_clock(ktime_t *expires, unsigned long delta,
+			       const enum hrtimer_mode mode, int clock)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct hrtimer_sleeper t;
 
@@ -1829,8 +1842,11 @@ schedule_hrtimeout_range_clock(ktime_t *expires, unsigned long delta,
 	if (likely(t.task))
 		schedule();
 
+<<<<<<< HEAD
 	if (elapsed)
 		*elapsed = ktime_to_us(t.elapsed);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	hrtimer_cancel(&t.timer);
 	destroy_hrtimer_on_stack(&t.timer);
 
@@ -1844,8 +1860,11 @@ schedule_hrtimeout_range_clock(ktime_t *expires, unsigned long delta,
  * @expires:	timeout value (ktime_t)
  * @delta:	slack in expires timeout (ktime_t)
  * @mode:	timer mode, HRTIMER_MODE_ABS or HRTIMER_MODE_REL
+<<<<<<< HEAD
  * @elapsed:	pointer to unsigned long variable where to store
  *		the time actually slept in timeout (usecs)
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *
  * Make the current task sleep until the given expiry time has
  * elapsed. The routine will return immediately unless
@@ -1870,10 +1889,17 @@ schedule_hrtimeout_range_clock(ktime_t *expires, unsigned long delta,
  * Returns 0 when the timer has expired otherwise -EINTR
  */
 int __sched schedule_hrtimeout_range(ktime_t *expires, unsigned long delta,
+<<<<<<< HEAD
 				     const enum hrtimer_mode mode, unsigned long *elapsed)
 {
 	return schedule_hrtimeout_range_clock(expires, delta, mode,
 					      CLOCK_MONOTONIC, elapsed);
+=======
+				     const enum hrtimer_mode mode)
+{
+	return schedule_hrtimeout_range_clock(expires, delta, mode,
+					      CLOCK_MONOTONIC);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL_GPL(schedule_hrtimeout_range);
 
@@ -1902,6 +1928,10 @@ EXPORT_SYMBOL_GPL(schedule_hrtimeout_range);
 int __sched schedule_hrtimeout(ktime_t *expires,
 			       const enum hrtimer_mode mode)
 {
+<<<<<<< HEAD
 	return schedule_hrtimeout_range(expires, 0, mode, NULL);
+=======
+	return schedule_hrtimeout_range(expires, 0, mode);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL_GPL(schedule_hrtimeout);

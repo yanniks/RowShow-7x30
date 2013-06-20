@@ -542,8 +542,11 @@ nouveau_fence_channel_init(struct nouveau_channel *chan)
 			return ret;
 	}
 
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&chan->fence.pending);
 	spin_lock_init(&chan->fence.lock);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	atomic_set(&chan->fence.last_sequence_irq, 0);
 	return 0;
 }

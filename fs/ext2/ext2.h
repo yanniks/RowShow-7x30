@@ -150,8 +150,12 @@ extern void ext2_write_super (struct super_block *);
 extern const struct file_operations ext2_dir_operations;
 
 /* file.c */
+<<<<<<< HEAD
 extern int ext2_fsync(struct file *file, loff_t start, loff_t end,
 		      int datasync);
+=======
+extern int ext2_fsync(struct file *file, int datasync);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern const struct inode_operations ext2_file_inode_operations;
 extern const struct file_operations ext2_file_operations;
 extern const struct file_operations ext2_xip_file_operations;

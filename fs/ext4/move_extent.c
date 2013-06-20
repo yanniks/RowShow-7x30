@@ -17,6 +17,10 @@
 #include <linux/quotaops.h>
 #include <linux/slab.h>
 #include "ext4_jbd2.h"
+<<<<<<< HEAD
+=======
+#include "ext4_extents.h"
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include "ext4.h"
 
 /**

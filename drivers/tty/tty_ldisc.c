@@ -666,12 +666,15 @@ int tty_set_ldisc(struct tty_struct *tty, int ldisc)
 
 	mutex_unlock(&tty->ldisc_mutex);
 
+<<<<<<< HEAD
 #if defined(CONFIG_MSM_SMD0_WQ)
 	if (!strcmp(tty->name, "smd0"))
 		flush_workqueue(tty_wq);
 	else
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	tty_ldisc_flush_works(tty);
 
 	retval = tty_ldisc_wait_idle(tty, 5 * HZ);
@@ -729,6 +732,7 @@ enable:
 
 	/* Restart the work queue in case no characters kick it off. Safe if
 	   already running */
+<<<<<<< HEAD
 	if (work) {
 /*+++ SSD_RIL*/
 /* Due to "work" type changed as below, change "queue function" to schedule_work.
@@ -791,6 +795,12 @@ int queue_work(struct workqueue_struct *wq, struct work_struct *work)
 #endif
 		schedule_work(&o_tty->buf.work);
 	}
+=======
+	if (work)
+		schedule_work(&tty->buf.work);
+	if (o_work)
+		schedule_work(&o_tty->buf.work);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	mutex_unlock(&tty->ldisc_mutex);
 	tty_unlock();
 	return retval;
@@ -998,11 +1008,14 @@ void tty_ldisc_release(struct tty_struct *tty, struct tty_struct *o_tty)
 
 	tty_unlock();
 	tty_ldisc_halt(tty);
+<<<<<<< HEAD
 #if defined(CONFIG_MSM_SMD0_WQ)
 	if (!strcmp(tty->name, "smd0"))
 		flush_workqueue(tty_wq);
 	else
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	tty_ldisc_flush_works(tty);
 	tty_lock();
 

@@ -33,18 +33,30 @@
 #define DMA_MODE_CASCADE 0xc0
 #define DMA_AUTOINIT	 0x10
 
+<<<<<<< HEAD
 extern raw_spinlock_t  dma_spin_lock;
+=======
+extern spinlock_t  dma_spin_lock;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static inline unsigned long claim_dma_lock(void)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&dma_spin_lock, flags);
+=======
+	spin_lock_irqsave(&dma_spin_lock, flags);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return flags;
 }
 
 static inline void release_dma_lock(unsigned long flags)
 {
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&dma_spin_lock, flags);
+=======
+	spin_unlock_irqrestore(&dma_spin_lock, flags);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /* Clear the 'DMA Pointer Flip Flop'.

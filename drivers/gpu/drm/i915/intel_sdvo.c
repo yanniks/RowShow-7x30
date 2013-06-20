@@ -724,6 +724,10 @@ static void intel_sdvo_get_dtd_from_mode(struct intel_sdvo_dtd *dtd,
 	uint16_t width, height;
 	uint16_t h_blank_len, h_sync_len, v_blank_len, v_sync_len;
 	uint16_t h_sync_offset, v_sync_offset;
+<<<<<<< HEAD
+=======
+	int mode_clock;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	width = mode->crtc_hdisplay;
 	height = mode->crtc_vdisplay;
@@ -738,7 +742,15 @@ static void intel_sdvo_get_dtd_from_mode(struct intel_sdvo_dtd *dtd,
 	h_sync_offset = mode->crtc_hsync_start - mode->crtc_hblank_start;
 	v_sync_offset = mode->crtc_vsync_start - mode->crtc_vblank_start;
 
+<<<<<<< HEAD
 	dtd->part1.clock = mode->clock / 10;
+=======
+	mode_clock = mode->clock;
+	mode_clock /= intel_mode_get_pixel_multiplier(mode) ?: 1;
+	mode_clock /= 10;
+	dtd->part1.clock = mode_clock;
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	dtd->part1.h_active = width & 0xff;
 	dtd->part1.h_blank = h_blank_len & 0xff;
 	dtd->part1.h_high = (((width >> 8) & 0xf) << 4) |
@@ -757,10 +769,19 @@ static void intel_sdvo_get_dtd_from_mode(struct intel_sdvo_dtd *dtd,
 		((v_sync_len & 0x30) >> 4);
 
 	dtd->part2.dtd_flags = 0x18;
+<<<<<<< HEAD
 	if (mode->flags & DRM_MODE_FLAG_PHSYNC)
 		dtd->part2.dtd_flags |= 0x2;
 	if (mode->flags & DRM_MODE_FLAG_PVSYNC)
 		dtd->part2.dtd_flags |= 0x4;
+=======
+	if (mode->flags & DRM_MODE_FLAG_INTERLACE)
+		dtd->part2.dtd_flags |= DTD_FLAG_INTERLACE;
+	if (mode->flags & DRM_MODE_FLAG_PHSYNC)
+		dtd->part2.dtd_flags |= DTD_FLAG_HSYNC_POSITIVE;
+	if (mode->flags & DRM_MODE_FLAG_PVSYNC)
+		dtd->part2.dtd_flags |= DTD_FLAG_VSYNC_POSITIVE;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	dtd->part2.sdvo_flags = 0;
 	dtd->part2.v_sync_off_high = v_sync_offset & 0xc0;
@@ -794,9 +815,17 @@ static void intel_sdvo_get_mode_from_dtd(struct drm_display_mode * mode,
 	mode->clock = dtd->part1.clock * 10;
 
 	mode->flags &= ~(DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
+<<<<<<< HEAD
 	if (dtd->part2.dtd_flags & 0x2)
 		mode->flags |= DRM_MODE_FLAG_PHSYNC;
 	if (dtd->part2.dtd_flags & 0x4)
+=======
+	if (dtd->part2.dtd_flags & DTD_FLAG_INTERLACE)
+		mode->flags |= DRM_MODE_FLAG_INTERLACE;
+	if (dtd->part2.dtd_flags & DTD_FLAG_HSYNC_POSITIVE)
+		mode->flags |= DRM_MODE_FLAG_PHSYNC;
+	if (dtd->part2.dtd_flags & DTD_FLAG_VSYNC_POSITIVE)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		mode->flags |= DRM_MODE_FLAG_PVSYNC;
 }
 
@@ -1019,7 +1048,11 @@ static void intel_sdvo_mode_set(struct drm_encoder *encoder,
 	struct intel_sdvo *intel_sdvo = to_intel_sdvo(encoder);
 	u32 sdvox;
 	struct intel_sdvo_in_out_map in_out;
+<<<<<<< HEAD
 	struct intel_sdvo_dtd input_dtd;
+=======
+	struct intel_sdvo_dtd input_dtd, output_dtd;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int pixel_multiplier = intel_mode_get_pixel_multiplier(adjusted_mode);
 	int rate;
 
@@ -1044,6 +1077,7 @@ static void intel_sdvo_mode_set(struct drm_encoder *encoder,
 					  intel_sdvo->attached_output))
 		return;
 
+<<<<<<< HEAD
 	/* We have tried to get input timing in mode_fixup, and filled into
 	 * adjusted_mode.
 	 */
@@ -1058,6 +1092,15 @@ static void intel_sdvo_mode_set(struct drm_encoder *encoder,
 		intel_sdvo_get_dtd_from_mode(&input_dtd, adjusted_mode);
 		(void) intel_sdvo_set_output_timing(intel_sdvo, &input_dtd);
 	}
+=======
+	/* lvds has a special fixed output timing. */
+	if (intel_sdvo->is_lvds)
+		intel_sdvo_get_dtd_from_mode(&output_dtd,
+					     intel_sdvo->sdvo_lvds_fixed_mode);
+	else
+		intel_sdvo_get_dtd_from_mode(&output_dtd, mode);
+	(void) intel_sdvo_set_output_timing(intel_sdvo, &output_dtd);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* Set the input timing to the screen. Assume always input 0. */
 	if (!intel_sdvo_set_target_input(intel_sdvo))
@@ -1075,6 +1118,13 @@ static void intel_sdvo_mode_set(struct drm_encoder *encoder,
 	    !intel_sdvo_set_tv_format(intel_sdvo))
 		return;
 
+<<<<<<< HEAD
+=======
+	/* We have tried to get input timing in mode_fixup, and filled into
+	 * adjusted_mode.
+	 */
+	intel_sdvo_get_dtd_from_mode(&input_dtd, adjusted_mode);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	(void) intel_sdvo_set_input_timing(intel_sdvo, &input_dtd);
 
 	switch (pixel_multiplier) {
@@ -1088,15 +1138,24 @@ static void intel_sdvo_mode_set(struct drm_encoder *encoder,
 
 	/* Set the SDVO control regs. */
 	if (INTEL_INFO(dev)->gen >= 4) {
+<<<<<<< HEAD
 		sdvox = 0;
+=======
+		/* The real mode polarity is set by the SDVO commands, using
+		 * struct intel_sdvo_dtd. */
+		sdvox = SDVO_VSYNC_ACTIVE_HIGH | SDVO_HSYNC_ACTIVE_HIGH;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (intel_sdvo->is_hdmi)
 			sdvox |= intel_sdvo->color_range;
 		if (INTEL_INFO(dev)->gen < 5)
 			sdvox |= SDVO_BORDER_ENABLE;
+<<<<<<< HEAD
 		if (adjusted_mode->flags & DRM_MODE_FLAG_PVSYNC)
 			sdvox |= SDVO_VSYNC_ACTIVE_HIGH;
 		if (adjusted_mode->flags & DRM_MODE_FLAG_PHSYNC)
 			sdvox |= SDVO_HSYNC_ACTIVE_HIGH;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	} else {
 		sdvox = I915_READ(intel_sdvo->sdvo_reg);
 		switch (intel_sdvo->sdvo_reg) {
@@ -1609,6 +1668,10 @@ static void intel_sdvo_get_lvds_modes(struct drm_connector *connector)
 	if (list_empty(&connector->probed_modes) == false)
 		goto end;
 
+<<<<<<< HEAD
+=======
+	/* Fetch modes from VBT */
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (dev_priv->sdvo_lvds_vbt_mode != NULL) {
 		newmode = drm_mode_duplicate(connector->dev,
 					     dev_priv->sdvo_lvds_vbt_mode);
@@ -1620,6 +1683,10 @@ static void intel_sdvo_get_lvds_modes(struct drm_connector *connector)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+end:
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	list_for_each_entry(newmode, &connector->probed_modes, head) {
 		if (newmode->type & DRM_MODE_TYPE_PREFERRED) {
 			intel_sdvo->sdvo_lvds_fixed_mode =

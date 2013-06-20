@@ -17,7 +17,10 @@
 
 #include "mm.h"
 
+<<<<<<< HEAD
 static DEFINE_PER_CPU(pgd_t *, percpu_init_pgd);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * need to get a 16k page for level 1
  */
@@ -114,6 +117,7 @@ no_pud:
 no_pgd:
 	free_pages((unsigned long) pgd_base, 2);
 }
+<<<<<<< HEAD
 
 pgd_t *get_percpu_init_pgd(struct mm_struct *mm, unsigned int cpu)
 {
@@ -179,3 +183,5 @@ no_pgd:
 	per_cpu(percpu_init_pgd, cpu) = new_pgd;
 	return NULL;
 }
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

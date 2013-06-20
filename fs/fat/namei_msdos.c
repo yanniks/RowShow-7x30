@@ -209,6 +209,7 @@ static struct dentry *msdos_lookup(struct inode *dir, struct dentry *dentry,
 	int err;
 
 	lock_super(sb);
+<<<<<<< HEAD
 	err = msdos_find(dir, dentry->d_name.name, dentry->d_name.len, &sinfo);
 	switch (err) {
 	case -ENOENT:
@@ -223,6 +224,31 @@ static struct dentry *msdos_lookup(struct inode *dir, struct dentry *dentry,
 	}
 	unlock_super(sb);
 	return d_splice_alias(inode, dentry);
+=======
+
+	err = msdos_find(dir, dentry->d_name.name, dentry->d_name.len, &sinfo);
+	if (err) {
+		if (err == -ENOENT) {
+			inode = NULL;
+			goto out;
+		}
+		goto error;
+	}
+
+	inode = fat_build_inode(sb, sinfo.de, sinfo.i_pos);
+	brelse(sinfo.bh);
+	if (IS_ERR(inode)) {
+		err = PTR_ERR(inode);
+		goto error;
+	}
+out:
+	unlock_super(sb);
+	return d_splice_alias(inode, dentry);
+
+error:
+	unlock_super(sb);
+	return ERR_PTR(err);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /***** Creates a directory entry (name is already formatted). */
@@ -264,7 +290,11 @@ static int msdos_add_entry(struct inode *dir, const unsigned char *name,
 }
 
 /***** Create a file */
+<<<<<<< HEAD
 static int msdos_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+=======
+static int msdos_create(struct inode *dir, struct dentry *dentry, int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			struct nameidata *nd)
 {
 	struct super_block *sb = dir->i_sb;

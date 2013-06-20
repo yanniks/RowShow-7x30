@@ -75,8 +75,11 @@ static unsigned char mincore_page(struct address_space *mapping, pgoff_t pgoff)
 	 * No big deal, but make a note of it.
 	 */
 	page = find_get_page(mapping, pgoff);
+<<<<<<< HEAD
 	/* shmem/tmpfs may return swap: account for swapcache page too. */
 	/* shmem/tmpfs may return swap: account for swapcache page too. */
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (page) {
 		present = PageUptodate(page);
 		page_cache_release(page);

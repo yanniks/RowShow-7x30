@@ -40,6 +40,7 @@
 
 #include <net/bluetooth/bluetooth.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_ANDROID_PARANOID_NETWORK
 #include <linux/android_aid.h>
 #endif
@@ -49,6 +50,8 @@
 #define BT_DBG(D...)
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define VERSION "2.16"
 
 /* Bluetooth sockets */
@@ -134,6 +137,7 @@ int bt_sock_unregister(int proto)
 }
 EXPORT_SYMBOL(bt_sock_unregister);
 
+<<<<<<< HEAD
 #ifdef CONFIG_ANDROID_PARANOID_NETWORK
 static inline int current_has_bt_admin(void)
 {
@@ -156,11 +160,14 @@ static inline int current_has_bt(void)
 }
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static int bt_sock_create(struct net *net, struct socket *sock, int proto,
 			  int kern)
 {
 	int err;
 
+<<<<<<< HEAD
 	if (proto == BTPROTO_RFCOMM || proto == BTPROTO_SCO ||
 			proto == BTPROTO_L2CAP) {
 		if (!current_has_bt())
@@ -168,6 +175,8 @@ static int bt_sock_create(struct net *net, struct socket *sock, int proto,
 	} else if (!current_has_bt_admin())
 		return -EPERM;
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (net != &init_net)
 		return -EAFNOSUPPORT;
 
@@ -387,7 +396,11 @@ int bt_sock_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 		}
 
 		chunk = min_t(unsigned int, skb->len, size);
+<<<<<<< HEAD
 		if (skb_copy_datagram_iovec(skb, 0, msg->msg_iov, chunk)) {
+=======
+		if (memcpy_toiovec(msg->msg_iov, skb->data, chunk)) {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			skb_queue_head(&sk->sk_receive_queue, skb);
 			if (!copied)
 				copied = -EFAULT;
@@ -399,6 +412,7 @@ int bt_sock_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 		sock_recv_ts_and_drops(msg, sk, skb);
 
 		if (!(flags & MSG_PEEK)) {
+<<<<<<< HEAD
 			int skb_len = skb_headlen(skb);
 
 			if (chunk <= skb_len) {
@@ -426,6 +440,9 @@ int bt_sock_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 				}
 			}
 
+=======
+			skb_pull(skb, chunk);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			if (skb->len) {
 				skb_queue_head(&sk->sk_receive_queue, skb);
 				break;

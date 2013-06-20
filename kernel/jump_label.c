@@ -105,6 +105,7 @@ static int __jump_label_text_reserved(struct jump_entry *iter_start,
 	return 0;
 }
 
+<<<<<<< HEAD
 /* 
  * Update code which is definitely not currently executing.
  * Architectures which need heavyweight synchronization to modify
@@ -117,6 +118,8 @@ void __weak arch_jump_label_transform_static(struct jump_entry *entry,
 	arch_jump_label_transform(entry, type);	
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static void __jump_label_update(struct jump_label_key *key,
 				struct jump_entry *entry,
 				struct jump_entry *stop, int enable)
@@ -134,7 +137,18 @@ static void __jump_label_update(struct jump_label_key *key,
 	}
 }
 
+<<<<<<< HEAD
 void __init jump_label_init(void)
+=======
+/*
+ * Not all archs need this.
+ */
+void __weak arch_jump_label_text_poke_early(jump_label_t addr)
+{
+}
+
+static __init int jump_label_init(void)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct jump_entry *iter_start = __start___jump_table;
 	struct jump_entry *iter_stop = __stop___jump_table;
@@ -145,6 +159,7 @@ void __init jump_label_init(void)
 	jump_label_sort_entries(iter_start, iter_stop);
 
 	for (iter = iter_start; iter < iter_stop; iter++) {
+<<<<<<< HEAD
 		struct jump_label_key *iterk;
 
 		iterk = (struct jump_label_key *)(unsigned long)iter->key;
@@ -154,13 +169,28 @@ void __init jump_label_init(void)
 			continue;
 
 		key = iterk;
+=======
+		arch_jump_label_text_poke_early(iter->code);
+		if (iter->key == (jump_label_t)(unsigned long)key)
+			continue;
+
+		key = (struct jump_label_key *)(unsigned long)iter->key;
+		atomic_set(&key->enabled, 0);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		key->entries = iter;
 #ifdef CONFIG_MODULES
 		key->next = NULL;
 #endif
 	}
 	jump_label_unlock();
+<<<<<<< HEAD
 }
+=======
+
+	return 0;
+}
+early_initcall(jump_label_init);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #ifdef CONFIG_MODULES
 
@@ -218,7 +248,11 @@ void jump_label_apply_nops(struct module *mod)
 		return;
 
 	for (iter = iter_start; iter < iter_stop; iter++)
+<<<<<<< HEAD
 		arch_jump_label_transform_static(iter, JUMP_LABEL_DISABLE);
+=======
+		arch_jump_label_text_poke_early(iter->code);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static int jump_label_add_module(struct module *mod)

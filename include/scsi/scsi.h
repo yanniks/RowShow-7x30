@@ -133,7 +133,10 @@ struct scsi_cmnd;
 #define SECURITY_PROTOCOL_OUT 0xb5
 #define READ_ELEMENT_STATUS   0xb8
 #define SEND_VOLUME_TAG       0xb6
+<<<<<<< HEAD
 #define READ_CD               0xbe
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define WRITE_LONG_2          0xea
 #define EXTENDED_COPY         0x83
 #define RECEIVE_COPY_RESULTS  0x84
@@ -496,7 +499,11 @@ static inline int scsi_is_wlun(unsigned int lun)
 
 #define sense_class(sense)  (((sense) >> 4) & 0x7)
 #define sense_error(sense)  ((sense) & 0xf)
+<<<<<<< HEAD
 #define sense_valid(sense)  ((sense) & 0x80)
+=======
+#define sense_valid(sense)  ((sense) & 0x80);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /*
  * default timeouts

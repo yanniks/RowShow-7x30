@@ -22,7 +22,10 @@ menuconfig BT
 	     BNEP Module (Bluetooth Network Encapsulation Protocol)
 	     CMTP Module (CAPI Message Transport Protocol)
 	     HIDP Module (Human Interface Device Protocol)
+<<<<<<< HEAD
 	     SMP Module (Security Manager Protocol)
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	  Say Y here to compile Bluetooth support into the kernel or say M to
 	  compile it as module (bluetooth).
@@ -36,6 +39,7 @@ if BT != n
 
 config BT_L2CAP
 	bool "L2CAP protocol support"
+<<<<<<< HEAD
 	depends on CRYPTO_HMAC
 	depends on CRYPTO_SHA256
 	select CRC16
@@ -43,14 +47,20 @@ config BT_L2CAP
 	select CRYPTO_AES
 	select CRYPTO_ECB
 	select CRYPTO_MANAGER
+=======
+	select CRC16
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	help
 	  L2CAP (Logical Link Control and Adaptation Protocol) provides
 	  connection oriented and connection-less data transport.  L2CAP
 	  support is required for most Bluetooth applications.
 
+<<<<<<< HEAD
 	  Also included is support for SMP (Security Manager Protocol) which
 	  is the security layer on top of LE (Low Energy) links.
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config BT_SCO
 	bool "SCO links support"
 	help
@@ -69,4 +79,7 @@ source "net/bluetooth/hidp/Kconfig"
 
 source "drivers/bluetooth/Kconfig"
 
+<<<<<<< HEAD
 source "net/bluetooth/hidbrcm/Kconfig"
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

@@ -808,7 +808,10 @@ static int __ip_append_data(struct sock *sk,
 	int mtu;
 	int copy;
 	int err;
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int offset = 0;
 	unsigned int maxfraglen, fragheaderlen;
 	int csummode = CHECKSUM_NONE;

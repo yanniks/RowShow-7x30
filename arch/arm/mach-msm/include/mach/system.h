@@ -17,19 +17,28 @@
 
 void arch_idle(void);
 
+<<<<<<< HEAD
 #if defined(CONFIG_MSM_NATIVE_RESTART) || defined(CONFIG_ARCH_FSM9XXX)
 void arch_reset(char mode, const char *cmd);
 #else
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static inline void arch_reset(char mode, const char *cmd)
 {
 	for (;;) ;  /* depends on IPC w/ other core */
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* low level hardware reset hook -- for example, hitting the
  * PSHOLD line on the PMIC to hard reset the system
  */
 extern void (*msm_hw_reset_hook)(void);
+<<<<<<< HEAD
 
 void msm_set_i2c_mux(bool gpio, int *gpio_clk, int *gpio_dat);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

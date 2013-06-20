@@ -160,7 +160,11 @@ identity_mapped:
 	xorq    %rbp, %rbp
 	xorq	%r8,  %r8
 	xorq	%r9,  %r9
+<<<<<<< HEAD
 	xorq	%r10, %r10
+=======
+	xorq	%r10, %r9
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	xorq	%r11, %r11
 	xorq	%r12, %r12
 	xorq	%r13, %r13

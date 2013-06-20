@@ -161,6 +161,7 @@ look_for_VFP_exceptions:
 	tst	r5, #FPSCR_IXE
 	bne	process_exception
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM_KRAIT
 	@ Krait does not set FPEXC.DEX for unsupported short vector instructions
 	mrc     p15, 0, r2, c0, c0, 0
@@ -177,6 +178,8 @@ look_for_VFP_exceptions:
 skip:
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	@ Fall into hand on to next handler - appropriate coproc instr
 	@ not recognised by VFP
 

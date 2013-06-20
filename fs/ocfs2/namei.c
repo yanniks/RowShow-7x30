@@ -209,7 +209,11 @@ static struct inode *ocfs2_get_init_inode(struct inode *dir, int mode)
 
 static int ocfs2_mknod(struct inode *dir,
 		       struct dentry *dentry,
+<<<<<<< HEAD
 		       umode_t mode,
+=======
+		       int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		       dev_t dev)
 {
 	int status = 0;
@@ -619,7 +623,11 @@ static int ocfs2_mkdir(struct inode *dir,
 
 static int ocfs2_create(struct inode *dir,
 			struct dentry *dentry,
+<<<<<<< HEAD
 			umode_t mode,
+=======
+			int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			struct nameidata *nd)
 {
 	int ret;
@@ -1379,7 +1387,11 @@ static int ocfs2_rename(struct inode *old_dir,
 	}
 
 	if (new_inode) {
+<<<<<<< HEAD
 		drop_nlink(new_inode);
+=======
+		new_inode->i_nlink--;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		new_inode->i_ctime = CURRENT_TIME;
 	}
 	old_dir->i_ctime = old_dir->i_mtime = CURRENT_TIME;
@@ -1387,9 +1399,15 @@ static int ocfs2_rename(struct inode *old_dir,
 	if (update_dot_dot) {
 		status = ocfs2_update_entry(old_inode, handle,
 					    &old_inode_dot_dot_res, new_dir);
+<<<<<<< HEAD
 		drop_nlink(old_dir);
 		if (new_inode) {
 			drop_nlink(new_inode);
+=======
+		old_dir->i_nlink--;
+		if (new_inode) {
+			new_inode->i_nlink--;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		} else {
 			inc_nlink(new_dir);
 			mark_inode_dirty(new_dir);
@@ -2282,7 +2300,11 @@ int ocfs2_create_inode_in_orphan(struct inode *dir,
 		goto leave;
 	}
 
+<<<<<<< HEAD
 	clear_nlink(inode);
+=======
+	inode->i_nlink = 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* do the real work now. */
 	status = __ocfs2_mknod_locked(dir, inode,
 				      0, &new_di_bh, parent_di_bh, handle,
@@ -2498,5 +2520,8 @@ const struct inode_operations ocfs2_dir_iops = {
 	.listxattr	= ocfs2_listxattr,
 	.removexattr	= generic_removexattr,
 	.fiemap         = ocfs2_fiemap,
+<<<<<<< HEAD
 	.get_acl	= ocfs2_iop_get_acl,
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };

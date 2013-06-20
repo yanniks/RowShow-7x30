@@ -334,7 +334,11 @@ void acct_auto_close(struct super_block *sb)
 	spin_lock(&acct_lock);
 restart:
 	list_for_each_entry(acct, &acct_list, list)
+<<<<<<< HEAD
 		if (acct->file && acct->file->f_path.dentry->d_sb == sb) {
+=======
+		if (acct->file && acct->file->f_path.mnt->mnt_sb == sb) {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			acct_file_reopen(acct, NULL, NULL);
 			goto restart;
 		}

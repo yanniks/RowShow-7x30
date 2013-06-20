@@ -39,6 +39,11 @@
 
 #include "internal.h"
 
+<<<<<<< HEAD
+=======
+#define lru_to_page(_head) (list_entry((_head)->prev, struct page, lru))
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * migrate_prep() needs to be called before we start compiling a list of pages
  * to be migrated using isolate_lru_page(). If scheduling work on other CPUs is
@@ -179,6 +184,7 @@ static void remove_migration_ptes(struct page *old, struct page *new)
  * Something used the pte of a page under migration. We need to
  * get to the page and wait until migration is finished.
  * When we return from this function the fault will be retried.
+<<<<<<< HEAD
  */
 static void __migration_entry_wait(struct mm_struct *mm, pte_t *ptep,
 				spinlock_t *ptl)
@@ -188,6 +194,20 @@ static void __migration_entry_wait(struct mm_struct *mm, pte_t *ptep,
 	struct page *page;
 
 	spin_lock(ptl);
+=======
+ *
+ * This function is called from do_swap_page().
+ */
+void migration_entry_wait(struct mm_struct *mm, pmd_t *pmd,
+				unsigned long address)
+{
+	pte_t *ptep, pte;
+	spinlock_t *ptl;
+	swp_entry_t entry;
+	struct page *page;
+
+	ptep = pte_offset_map_lock(mm, pmd, address, &ptl);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	pte = *ptep;
 	if (!is_swap_pte(pte))
 		goto out;
@@ -215,6 +235,7 @@ out:
 	pte_unmap_unlock(ptep, ptl);
 }
 
+<<<<<<< HEAD
 void migration_entry_wait(struct mm_struct *mm, pmd_t *pmd,
 				unsigned long address)
 {
@@ -229,6 +250,8 @@ void migration_entry_wait_huge(struct mm_struct *mm, pte_t *pte)
 	__migration_entry_wait(mm, pte, ptl);
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_BLOCK
 /* Returns true if all buffers are successfully locked */
 static bool buffer_migrate_lock_buffers(struct buffer_head *head,
@@ -306,8 +329,11 @@ static int migrate_page_move_mapping(struct address_space *mapping,
 	pslot = radix_tree_lookup_slot(&mapping->page_tree,
  					page_index(page));
 
+<<<<<<< HEAD
 	if (!pslot)
 		return -EAGAIN;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	expected_count = 2 + page_has_private(page);
 	if (page_count(page) != expected_count ||
 		radix_tree_deref_slot_protected(pslot, &mapping->tree_lock) != page) {
@@ -345,12 +371,21 @@ static int migrate_page_move_mapping(struct address_space *mapping,
 
 	radix_tree_replace_slot(pslot, newpage);
 
+<<<<<<< HEAD
 	/*
 	 * Drop cache reference from old page by unfreezing
 	 * to one less reference.
 	 * We know this isn't the last reference.
 	 */
 	page_unfreeze_refs(page, expected_count - 1);
+=======
+	page_unfreeze_refs(page, expected_count);
+	/*
+	 * Drop cache reference from old page.
+	 * We know this isn't the last reference.
+	 */
+	__put_page(page);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/*
 	 * If moved to a different zone then also account
@@ -395,8 +430,11 @@ int migrate_huge_page_move_mapping(struct address_space *mapping,
 					page_index(page));
 
 	expected_count = 2 + page_has_private(page);
+<<<<<<< HEAD
 	if (!pslot)
 		return -EAGAIN;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (page_count(page) != expected_count ||
 		radix_tree_deref_slot_protected(pslot, &mapping->tree_lock) != page) {
 		spin_unlock_irq(&mapping->tree_lock);
@@ -412,7 +450,13 @@ int migrate_huge_page_move_mapping(struct address_space *mapping,
 
 	radix_tree_replace_slot(pslot, newpage);
 
+<<<<<<< HEAD
 	page_unfreeze_refs(page, expected_count - 1);
+=======
+	page_unfreeze_refs(page, expected_count);
+
+	__put_page(page);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	spin_unlock_irq(&mapping->tree_lock);
 	return 0;
@@ -462,6 +506,10 @@ void migrate_page_copy(struct page *newpage, struct page *page)
 	ClearPageSwapCache(page);
 	ClearPagePrivate(page);
 	set_page_private(page, 0);
+<<<<<<< HEAD
+=======
+	page->mapping = NULL;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/*
 	 * If any waiters have accumulated on the new page then
@@ -683,7 +731,10 @@ static int move_to_new_page(struct page *newpage, struct page *page,
 	} else {
 		if (remap_swapcache)
 			remove_migration_ptes(page, newpage);
+<<<<<<< HEAD
 		page->mapping = NULL;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	unlock_page(newpage);
@@ -945,9 +996,15 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
 
 	if (anon_vma)
 		put_anon_vma(anon_vma);
+<<<<<<< HEAD
 	unlock_page(hpage);
 
 out:
+=======
+out:
+	unlock_page(hpage);
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (rc != -EAGAIN) {
 		list_del(&hpage->lru);
 		put_page(hpage);

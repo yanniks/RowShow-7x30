@@ -109,11 +109,17 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
 
 	if (ext4_handle_valid(handle)) {
 		err = jbd2_journal_dirty_metadata(handle, bh);
+<<<<<<< HEAD
 		if (err) {
 			/* Errors can only happen if there is a bug */
 			handle->h_err = err;
 			__ext4_journal_stop(where, line, handle);
 		}
+=======
+		if (err)
+			ext4_journal_abort_handle(where, line, __func__,
+						  bh, handle, err);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	} else {
 		if (inode)
 			mark_buffer_dirty_inode(bh, inode);

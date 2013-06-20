@@ -216,11 +216,25 @@ static void wait_current_trans(struct btrfs_root *root)
 	spin_lock(&root->fs_info->trans_lock);
 	cur_trans = root->fs_info->running_transaction;
 	if (cur_trans && cur_trans->blocked) {
+<<<<<<< HEAD
 		atomic_inc(&cur_trans->use_count);
 		spin_unlock(&root->fs_info->trans_lock);
 
 		wait_event(root->fs_info->transaction_wait,
 			   !cur_trans->blocked);
+=======
+		DEFINE_WAIT(wait);
+		atomic_inc(&cur_trans->use_count);
+		spin_unlock(&root->fs_info->trans_lock);
+		while (1) {
+			prepare_to_wait(&root->fs_info->transaction_wait, &wait,
+					TASK_UNINTERRUPTIBLE);
+			if (!cur_trans->blocked)
+				break;
+			schedule();
+		}
+		finish_wait(&root->fs_info->transaction_wait, &wait);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		put_transaction(cur_trans);
 	} else {
 		spin_unlock(&root->fs_info->trans_lock);
@@ -254,7 +268,11 @@ static struct btrfs_trans_handle *start_transaction(struct btrfs_root *root,
 {
 	struct btrfs_trans_handle *h;
 	struct btrfs_transaction *cur_trans;
+<<<<<<< HEAD
 	u64 num_bytes = 0;
+=======
+	int retries = 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int ret;
 
 	if (root->fs_info->fs_state & BTRFS_SUPER_FLAG_ERROR)
@@ -268,6 +286,7 @@ static struct btrfs_trans_handle *start_transaction(struct btrfs_root *root,
 		h->block_rsv = NULL;
 		goto got_it;
 	}
+<<<<<<< HEAD
 
 	/*
 	 * Do the reservation before we join the transaction so we can do all
@@ -281,6 +300,8 @@ static struct btrfs_trans_handle *start_transaction(struct btrfs_root *root,
 		if (ret)
 			return ERR_PTR(ret);
 	}
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 again:
 	h = kmem_cache_alloc(btrfs_trans_handle_cachep, GFP_NOFS);
 	if (!h)
@@ -317,9 +338,30 @@ again:
 		goto again;
 	}
 
+<<<<<<< HEAD
 	if (num_bytes) {
 		h->block_rsv = &root->fs_info->trans_block_rsv;
 		h->bytes_reserved = num_bytes;
+=======
+	if (num_items > 0) {
+		ret = btrfs_trans_reserve_metadata(h, root, num_items);
+		if (ret == -EAGAIN && !retries) {
+			retries++;
+			btrfs_commit_transaction(h, root);
+			goto again;
+		} else if (ret == -EAGAIN) {
+			/*
+			 * We have already retried and got EAGAIN, so really we
+			 * don't have space, so set ret to -ENOSPC.
+			 */
+			ret = -ENOSPC;
+		}
+
+		if (ret < 0) {
+			btrfs_end_transaction(h, root);
+			return ERR_PTR(ret);
+		}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 got_it:
@@ -351,10 +393,26 @@ struct btrfs_trans_handle *btrfs_start_ioctl_transaction(struct btrfs_root *root
 }
 
 /* wait for a transaction commit to be fully complete */
+<<<<<<< HEAD
 static noinline void wait_for_commit(struct btrfs_root *root,
 				    struct btrfs_transaction *commit)
 {
 	wait_event(commit->commit_wait, commit->commit_done);
+=======
+static noinline int wait_for_commit(struct btrfs_root *root,
+				    struct btrfs_transaction *commit)
+{
+	DEFINE_WAIT(wait);
+	while (!commit->commit_done) {
+		prepare_to_wait(&commit->commit_wait, &wait,
+				TASK_UNINTERRUPTIBLE);
+		if (commit->commit_done)
+			break;
+		schedule();
+	}
+	finish_wait(&commit->commit_wait, &wait);
+	return 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 int btrfs_wait_for_commit(struct btrfs_root *root, u64 transid)
@@ -482,6 +540,7 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
 	}
 
 	if (lock && cur_trans->blocked && !cur_trans->in_commit) {
+<<<<<<< HEAD
 		if (throttle) {
 			/*
 			 * We may race with somebody else here so end up having
@@ -493,6 +552,12 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
 		} else {
 			wake_up_process(info->transaction_kthread);
 		}
+=======
+		if (throttle)
+			return btrfs_commit_transaction(trans, root);
+		else
+			wake_up_process(info->transaction_kthread);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	WARN_ON(cur_trans != info->running_transaction);
@@ -884,7 +949,10 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
 	struct btrfs_root *tree_root = fs_info->tree_root;
 	struct btrfs_root *root = pending->root;
 	struct btrfs_root *parent_root;
+<<<<<<< HEAD
 	struct btrfs_block_rsv *rsv;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct inode *parent_inode;
 	struct dentry *parent;
 	struct dentry *dentry;
@@ -896,8 +964,11 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
 	u64 objectid;
 	u64 root_flags;
 
+<<<<<<< HEAD
 	rsv = trans->block_rsv;
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	new_root_item = kmalloc(sizeof(*new_root_item), GFP_NOFS);
 	if (!new_root_item) {
 		pending->error = -ENOMEM;
@@ -1005,7 +1076,10 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
 	btrfs_orphan_post_snapshot(trans, pending);
 fail:
 	kfree(new_root_item);
+<<<<<<< HEAD
 	trans->block_rsv = rsv;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	btrfs_block_rsv_release(root, &pending->block_rsv, (u64)-1);
 	return 0;
 }
@@ -1074,7 +1148,26 @@ int btrfs_transaction_blocked(struct btrfs_fs_info *info)
 static void wait_current_trans_commit_start(struct btrfs_root *root,
 					    struct btrfs_transaction *trans)
 {
+<<<<<<< HEAD
 	wait_event(root->fs_info->transaction_blocked_wait, trans->in_commit);
+=======
+	DEFINE_WAIT(wait);
+
+	if (trans->in_commit)
+		return;
+
+	while (1) {
+		prepare_to_wait(&root->fs_info->transaction_blocked_wait, &wait,
+				TASK_UNINTERRUPTIBLE);
+		if (trans->in_commit) {
+			finish_wait(&root->fs_info->transaction_blocked_wait,
+				    &wait);
+			break;
+		}
+		schedule();
+		finish_wait(&root->fs_info->transaction_blocked_wait, &wait);
+	}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /*
@@ -1084,8 +1177,29 @@ static void wait_current_trans_commit_start(struct btrfs_root *root,
 static void wait_current_trans_commit_start_and_unblock(struct btrfs_root *root,
 					 struct btrfs_transaction *trans)
 {
+<<<<<<< HEAD
 	wait_event(root->fs_info->transaction_wait,
 		   trans->commit_done || (trans->in_commit && !trans->blocked));
+=======
+	DEFINE_WAIT(wait);
+
+	if (trans->commit_done || (trans->in_commit && !trans->blocked))
+		return;
+
+	while (1) {
+		prepare_to_wait(&root->fs_info->transaction_wait, &wait,
+				TASK_UNINTERRUPTIBLE);
+		if (trans->commit_done ||
+		    (trans->in_commit && !trans->blocked)) {
+			finish_wait(&root->fs_info->transaction_wait,
+				    &wait);
+			break;
+		}
+		schedule();
+		finish_wait(&root->fs_info->transaction_wait,
+			    &wait);
+	}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /*
@@ -1192,7 +1306,12 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans,
 		atomic_inc(&cur_trans->use_count);
 		btrfs_end_transaction(trans, root);
 
+<<<<<<< HEAD
 		wait_for_commit(root, cur_trans);
+=======
+		ret = wait_for_commit(root, cur_trans);
+		BUG_ON(ret);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		put_transaction(cur_trans);
 

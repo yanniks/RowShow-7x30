@@ -12,7 +12,10 @@
 #include <linux/init.h>
 #include <linux/linkage.h>
 #include <asm/assembler.h>
+<<<<<<< HEAD
 #include <asm/domain.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <asm/asm-offsets.h>
 #include <asm/hwcap.h>
 #include <asm/pgtable-hwdef.h>
@@ -62,6 +65,7 @@ ENDPROC(cpu_v7_proc_fin)
  */
 	.align	5
 ENTRY(cpu_v7_reset)
+<<<<<<< HEAD
 	mrc     p15, 0, r1, c1, c0, 0           @ ctrl register
 	bic     r1, r1, #0x0001                 @ ...............m
         mcr     p15, 0, r1, c1, c0, 0           @ Turn off MMU
@@ -70,6 +74,9 @@ ENTRY(cpu_v7_reset)
         dsb
         isb
 	mov     pc,r0
+=======
+	mov	pc, r0
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 ENDPROC(cpu_v7_reset)
 
 /*
@@ -109,11 +116,14 @@ ENDPROC(cpu_v7_dcache_clean_area)
  */
 ENTRY(cpu_v7_switch_mm)
 #ifdef CONFIG_MMU
+<<<<<<< HEAD
 #ifdef CONFIG_EMULATE_DOMAIN_MANAGER_V7
 	ldr	r2, =cpu_v7_switch_mm_private
 	b	emulate_domain_manager_switch_mm
 cpu_v7_switch_mm_private:
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	mov	r2, #0
 	ldr	r1, [r1, #MM_CONTEXT_ID]	@ get mm->context.id
 	ALT_SMP(orr	r0, r0, #TTB_FLAGS_SMP)
@@ -151,10 +161,13 @@ ENTRY(cpu_v7_set_pte_ext)
 #ifdef CONFIG_MMU
 	str	r1, [r0]			@ linux version
 
+<<<<<<< HEAD
 	tst	r1, #L_PTE_YOUNG
 	tstne	r1, #L_PTE_PRESENT
 	moveq	r3, #0
 	beq		1f
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	bic	r3, r1, #0x000003f0
 	bic	r3, r3, #PTE_TYPE_MASK
 	orr	r3, r3, r2
@@ -177,7 +190,15 @@ ENTRY(cpu_v7_set_pte_ext)
 
 	tst	r1, #L_PTE_XN
 	orrne	r3, r3, #PTE_EXT_XN
+<<<<<<< HEAD
 1:
+=======
+
+	tst	r1, #L_PTE_YOUNG
+	tstne	r1, #L_PTE_PRESENT
+	moveq	r3, #0
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  ARM(	str	r3, [r0, #2048]! )
  THUMB(	add	r0, r0, #2048 )
  THUMB(	str	r3, [r0] )
@@ -219,11 +240,15 @@ cpu_v7_name:
 	 *   NOS = PRRR[24+n] = 1	- not outer shareable
 	 */
 .equ	PRRR,	0xff0a81a8
+<<<<<<< HEAD
 #if defined (CONFIG_ARCH_MSM_SCORPIONMP)
 .equ	NMRR,	0x40e080e0
 #else
 .equ	NMRR,	0x40e040e0
 #endif
+=======
+.equ	NMRR,	0x40e040e0
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* Suspend/resume support: derived from arch/arm/mach-s5pv210/sleep.S */
 .globl	cpu_v7_suspend_size
@@ -292,6 +317,7 @@ cpu_resume_l1_flags:
  *	It is assumed that:
  *	- cache type register is implemented
  */
+<<<<<<< HEAD
 __v7_ca5mp_setup:
 __v7_ca9mp_setup:
 	mov     r10, #(1 << 0)                  @ TLB ops broadcasting
@@ -306,6 +332,15 @@ __v7_ca15mp_setup:
 	orreq   r0, r0, #(1 << 6)               @ Enable SMP/nAMP mode
 	orreq   r0, r0, r10                     @ Enable CPU-specific SMP bits
 	mcreq   p15, 0, r0, c1, c0, 1
+=======
+__v7_ca9mp_setup:
+#ifdef CONFIG_SMP
+	ALT_SMP(mrc	p15, 0, r0, c1, c0, 1)
+	ALT_UP(mov	r0, #(1 << 6))		@ fake it for UP
+	tst	r0, #(1 << 6)			@ SMP/nAMP mode enabled?
+	orreq	r0, r0, #(1 << 6) | (1 << 0)	@ Enable SMP/nAMP mode and
+	mcreq	p15, 0, r0, c1, c0, 1		@ TLB ops broadcasting
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 __v7_setup:
 	adr	r12, __v7_setup_stack		@ the local stack
@@ -391,6 +426,7 @@ __v7_setup:
 	ALT_SMP(orr	r8, r8, #TTB_FLAGS_SMP)
 	ALT_UP(orr	r8, r8, #TTB_FLAGS_UP)
 	mcr	p15, 0, r8, c2, c0, 1		@ load TTB1
+<<<<<<< HEAD
 #ifndef CONFIG_EMULATE_DOMAIN_MANAGER_V7
 	mov     r10, #0x1f                      @ domains 0, 1 = manager
 	mcr     p15, 0, r10, c3, c0, 0          @ load domain access register
@@ -420,6 +456,8 @@ __v7_setup:
 	mcr     p15, 3, r0, c15, c0, 2
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	ldr	r5, =PRRR			@ PRRR
 	ldr	r6, =NMRR			@ NMRR
 	mcr	p15, 0, r5, c10, c2, 0		@ write PRRR
@@ -499,6 +537,7 @@ cpu_elf_name:
 
 	.section ".proc.info.init", #alloc, #execinstr
 
+<<<<<<< HEAD
 	/*
 	 * Standard v7 proc info content
 	 */
@@ -514,11 +553,36 @@ cpu_elf_name:
 	.long	cpu_elf_name
 	.long	HWCAP_SWP | HWCAP_HALF | HWCAP_THUMB | HWCAP_FAST_MULT | \
 		HWCAP_EDSP | HWCAP_TLS | \hwcaps
+=======
+	.type   __v7_ca9mp_proc_info, #object
+__v7_ca9mp_proc_info:
+	.long	0x410fc090		@ Required ID value
+	.long	0xff0ffff0		@ Mask for ID
+	ALT_SMP(.long \
+		PMD_TYPE_SECT | \
+		PMD_SECT_AP_WRITE | \
+		PMD_SECT_AP_READ | \
+		PMD_FLAGS_SMP)
+	ALT_UP(.long \
+		PMD_TYPE_SECT | \
+		PMD_SECT_AP_WRITE | \
+		PMD_SECT_AP_READ | \
+		PMD_FLAGS_UP)
+	.long   PMD_TYPE_SECT | \
+		PMD_SECT_XN | \
+		PMD_SECT_AP_WRITE | \
+		PMD_SECT_AP_READ
+	W(b)	__v7_ca9mp_setup
+	.long	cpu_arch_name
+	.long	cpu_elf_name
+	.long	HWCAP_SWP|HWCAP_HALF|HWCAP_THUMB|HWCAP_FAST_MULT|HWCAP_EDSP|HWCAP_TLS
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	.long	cpu_v7_name
 	.long	v7_processor_functions
 	.long	v7wbi_tlb_fns
 	.long	v6_user_fns
 	.long	v7_cache_fns
+<<<<<<< HEAD
 .endm
 
 	/*
@@ -551,6 +615,10 @@ __v7_ca15mp_proc_info:
 	__v7_proc __v7_ca15mp_setup, hwcaps = HWCAP_IDIV
 	.size   __v7_ca15mp_proc_info, . - __v7_ca15mp_proc_info
 
+=======
+	.size	__v7_ca9mp_proc_info, . - __v7_ca9mp_proc_info
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/*
 	 * Match any ARMv7 processor core.
 	 */
@@ -558,5 +626,31 @@ __v7_ca15mp_proc_info:
 __v7_proc_info:
 	.long	0x000f0000		@ Required ID value
 	.long	0x000f0000		@ Mask for ID
+<<<<<<< HEAD
 	__v7_proc __v7_setup
+=======
+	ALT_SMP(.long \
+		PMD_TYPE_SECT | \
+		PMD_SECT_AP_WRITE | \
+		PMD_SECT_AP_READ | \
+		PMD_FLAGS_SMP)
+	ALT_UP(.long \
+		PMD_TYPE_SECT | \
+		PMD_SECT_AP_WRITE | \
+		PMD_SECT_AP_READ | \
+		PMD_FLAGS_UP)
+	.long   PMD_TYPE_SECT | \
+		PMD_SECT_XN | \
+		PMD_SECT_AP_WRITE | \
+		PMD_SECT_AP_READ
+	W(b)	__v7_setup
+	.long	cpu_arch_name
+	.long	cpu_elf_name
+	.long	HWCAP_SWP|HWCAP_HALF|HWCAP_THUMB|HWCAP_FAST_MULT|HWCAP_EDSP|HWCAP_TLS
+	.long	cpu_v7_name
+	.long	v7_processor_functions
+	.long	v7wbi_tlb_fns
+	.long	v6_user_fns
+	.long	v7_cache_fns
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	.size	__v7_proc_info, . - __v7_proc_info

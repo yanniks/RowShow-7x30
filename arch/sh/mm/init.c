@@ -323,6 +323,10 @@ void __init paging_init(void)
 	unsigned long vaddr, end;
 	int nid;
 
+<<<<<<< HEAD
+=======
+	memblock_init();
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	sh_mv.mv_mem_init();
 
 	early_reserve_mem();
@@ -335,7 +339,11 @@ void __init paging_init(void)
 		sh_mv.mv_mem_reserve();
 
 	memblock_enforce_memory_limit(memory_limit);
+<<<<<<< HEAD
 	memblock_allow_resize();
+=======
+	memblock_analyze();
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	memblock_dump_all();
 

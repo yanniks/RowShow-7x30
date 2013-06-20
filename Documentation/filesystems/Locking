@@ -29,7 +29,10 @@ d_hash		no		no		no		maybe
 d_compare:	yes		no		no		maybe
 d_delete:	no		yes		no		no
 d_release:	no		no		yes		no
+<<<<<<< HEAD
 d_prune:        no              yes             no              no
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 d_iput:		no		no		yes		no
 d_dname:	no		no		no		no
 d_automount:	no		no		yes		no
@@ -37,7 +40,11 @@ d_manage:	no		no		yes (ref-walk)	maybe
 
 --------------------------- inode_operations --------------------------- 
 prototypes:
+<<<<<<< HEAD
 	int (*create) (struct inode *,struct dentry *,umode_t, struct nameidata *);
+=======
+	int (*create) (struct inode *,struct dentry *,int, struct nameidata *);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct dentry * (*lookup) (struct inode *,struct dentry *, struct nameid
 ata *);
 	int (*link) (struct dentry *,struct inode *,struct dentry *);
@@ -45,7 +52,11 @@ ata *);
 	int (*symlink) (struct inode *,struct dentry *,const char *);
 	int (*mkdir) (struct inode *,struct dentry *,int);
 	int (*rmdir) (struct inode *,struct dentry *);
+<<<<<<< HEAD
 	int (*mknod) (struct inode *,struct dentry *,umode_t,dev_t);
+=======
+	int (*mknod) (struct inode *,struct dentry *,int,dev_t);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int (*rename) (struct inode *, struct dentry *,
 			struct inode *, struct dentry *);
 	int (*readlink) (struct dentry *, char __user *,int);
@@ -53,7 +64,11 @@ ata *);
 	void (*put_link) (struct dentry *, struct nameidata *, void *);
 	void (*truncate) (struct inode *);
 	int (*permission) (struct inode *, int, unsigned int);
+<<<<<<< HEAD
 	int (*get_acl)(struct inode *, int);
+=======
+	int (*check_acl)(struct inode *, int, unsigned int);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int (*setattr) (struct dentry *, struct iattr *);
 	int (*getattr) (struct vfsmount *, struct dentry *, struct kstat *);
 	int (*setxattr) (struct dentry *, const char *,const void *,size_t,int);
@@ -81,7 +96,11 @@ put_link:	no
 truncate:	yes		(see below)
 setattr:	yes
 permission:	no (may not block if called in rcu-walk mode)
+<<<<<<< HEAD
 get_acl:	no
+=======
+check_acl:	no
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 getattr:	no
 setxattr:	yes
 getxattr:	no
@@ -413,7 +432,11 @@ prototypes:
 	int (*open) (struct inode *, struct file *);
 	int (*flush) (struct file *);
 	int (*release) (struct inode *, struct file *);
+<<<<<<< HEAD
 	int (*fsync) (struct file *, loff_t start, loff_t end, int datasync);
+=======
+	int (*fsync) (struct file *, int datasync);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int (*aio_fsync) (struct kiocb *, int datasync);
 	int (*fasync) (int, struct file *, int);
 	int (*lock) (struct file *, int, struct file_lock *);
@@ -439,7 +462,13 @@ prototypes:
 
 locking rules:
 	All may block except for ->setlease.
+<<<<<<< HEAD
 	No VFS locks held on entry except for ->setlease.
+=======
+	No VFS locks held on entry except for ->fsync and ->setlease.
+
+->fsync() has i_mutex on inode.
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 ->setlease has the file_list_lock held and must not sleep.
 

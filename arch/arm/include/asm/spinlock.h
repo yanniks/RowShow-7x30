@@ -59,6 +59,7 @@ static inline void dsb_sev(void)
 }
 
 /*
+<<<<<<< HEAD
  * ARMv6 ticket-based spin-locking.
  *
  * A memory barrier is required after we get a lock, and before we
@@ -66,6 +67,20 @@ static inline void dsb_sev(void)
  * memory.
  */
 
+=======
+ * ARMv6 Spin-locking.
+ *
+ * We exclusively read the old value.  If it is zero, we may have
+ * won the lock, so we try exclusively storing it.  A memory barrier
+ * is required after we get a lock, and before we release it, because
+ * V6 CPUs are assumed to have weakly ordered memory.
+ *
+ * Unlocked value: 0
+ * Locked value: 1
+ */
+
+#define arch_spin_is_locked(x)		((x)->lock != 0)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define arch_spin_unlock_wait(lock) \
 	do { while (arch_spin_is_locked(lock)) cpu_relax(); } while (0)
 
@@ -74,6 +89,7 @@ static inline void dsb_sev(void)
 static inline void arch_spin_lock(arch_spinlock_t *lock)
 {
 	unsigned long tmp;
+<<<<<<< HEAD
 	u32 newval;
 	arch_spinlock_t lockval;
 
@@ -92,12 +108,27 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
 		lockval.tickets.owner = ACCESS_ONCE(lock->tickets.owner);
 	}
 
+=======
+
+	__asm__ __volatile__(
+"1:	ldrex	%0, [%1]\n"
+"	teq	%0, #0\n"
+	WFE("ne")
+"	strexeq	%0, %2, [%1]\n"
+"	teqeq	%0, #0\n"
+"	bne	1b"
+	: "=&r" (tmp)
+	: "r" (&lock->lock), "r" (1)
+	: "cc");
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	smp_mb();
 }
 
 static inline int arch_spin_trylock(arch_spinlock_t *lock)
 {
 	unsigned long tmp;
+<<<<<<< HEAD
 	u32 slock;
 
 	__asm__ __volatile__(
@@ -108,6 +139,15 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
 "	strexeq	%1, %0, [%2]"
 	: "=&r" (slock), "=&r" (tmp)
 	: "r" (&lock->slock), "I" (1 << TICKET_SHIFT)
+=======
+
+	__asm__ __volatile__(
+"	ldrex	%0, [%1]\n"
+"	teq	%0, #0\n"
+"	strexeq	%0, %2, [%1]"
+	: "=&r" (tmp)
+	: "r" (&lock->lock), "r" (1)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	: "cc");
 
 	if (tmp == 0) {
@@ -120,6 +160,7 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
 
 static inline void arch_spin_unlock(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 	unsigned long tmp;
 	u32 slock;
 
@@ -134,11 +175,20 @@ static inline void arch_spin_unlock(arch_spinlock_t *lock)
 "	bne	1b"
 	: "=&r" (slock), "=&r" (tmp)
 	: "r" (&lock->slock)
+=======
+	smp_mb();
+
+	__asm__ __volatile__(
+"	str	%1, [%0]\n"
+	:
+	: "r" (&lock->lock), "r" (0)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	: "cc");
 
 	dsb_sev();
 }
 
+<<<<<<< HEAD
 static inline int arch_spin_is_locked(arch_spinlock_t *lock)
 {
 	struct __raw_tickets tickets = ACCESS_ONCE(lock->tickets);
@@ -152,6 +202,8 @@ static inline int arch_spin_is_contended(arch_spinlock_t *lock)
 }
 #define arch_spin_is_contended	arch_spin_is_contended
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * RWLOCKS
  *
@@ -183,7 +235,11 @@ static inline int arch_write_trylock(arch_rwlock_t *rw)
 	unsigned long tmp;
 
 	__asm__ __volatile__(
+<<<<<<< HEAD
 "	ldrex	%0, [%1]\n"
+=======
+"1:	ldrex	%0, [%1]\n"
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 "	teq	%0, #0\n"
 "	strexeq	%0, %2, [%1]"
 	: "=&r" (tmp)
@@ -269,7 +325,11 @@ static inline int arch_read_trylock(arch_rwlock_t *rw)
 	unsigned long tmp, tmp2 = 1;
 
 	__asm__ __volatile__(
+<<<<<<< HEAD
 "	ldrex	%0, [%2]\n"
+=======
+"1:	ldrex	%0, [%2]\n"
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 "	adds	%0, %0, #1\n"
 "	strexpl	%1, %0, [%2]\n"
 	: "=&r" (tmp), "+r" (tmp2)

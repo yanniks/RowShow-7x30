@@ -49,7 +49,11 @@ static
 void hold_module_trace_bprintk_format(const char **start, const char **end)
 {
 	const char **iter;
+<<<<<<< HEAD
 	char *fmt = NULL;
+=======
+	char *fmt;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	mutex_lock(&btrace_mutex);
 	for (iter = start; iter < end; iter++) {

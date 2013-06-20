@@ -42,7 +42,12 @@ static ssize_t power_supply_show_property(struct device *dev,
 					  struct device_attribute *attr,
 					  char *buf) {
 	static char *type_text[] = {
+<<<<<<< HEAD
 		"Battery", "UPS", "Mains", "USB", "Wireless"
+=======
+		"Battery", "UPS", "Mains", "USB",
+		"USB_DCP", "USB_CDP", "USB_ACA"
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	};
 	static char *status_text[] = {
 		"Unknown", "Charging", "Discharging", "Not charging", "Full"

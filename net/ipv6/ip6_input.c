@@ -150,7 +150,10 @@ err:
 drop:
 	rcu_read_unlock();
 	kfree_skb(skb);
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return NET_RX_DROP;
 }
 

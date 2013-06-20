@@ -159,6 +159,7 @@ config LIB80211_DEBUG
 	  from lib80211.
 
 	  If unsure, say N.
+<<<<<<< HEAD
 
 config CFG80211_ALLOW_RECONNECT
 	bool "Allow reconnect while already connected"
@@ -170,3 +171,5 @@ config CFG80211_ALLOW_RECONNECT
 
 	  Select this option ONLY for wlan drivers that are specifically
 	  built for such purposes.
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

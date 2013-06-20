@@ -2,6 +2,10 @@ config ARM
 	bool
 	default y
 	select HAVE_AOUT
+<<<<<<< HEAD
+=======
+	select HAVE_DMA_API_DEBUG
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	select HAVE_IDE
 	select HAVE_MEMBLOCK
 	select RTC_LIB
@@ -12,10 +16,17 @@ config ARM
 	select HAVE_KPROBES if (!XIP_KERNEL && !THUMB2_KERNEL)
 	select HAVE_KRETPROBES if (HAVE_KPROBES)
 	select HAVE_FUNCTION_TRACER if (!XIP_KERNEL)
+<<<<<<< HEAD
+=======
+	select HAVE_FTRACE_MCOUNT_RECORD if (!XIP_KERNEL)
+	select HAVE_DYNAMIC_FTRACE if (!XIP_KERNEL)
+	select HAVE_FUNCTION_GRAPH_TRACER if (!THUMB2_KERNEL)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	select HAVE_GENERIC_DMA_COHERENT
 	select HAVE_KERNEL_GZIP
 	select HAVE_KERNEL_LZO
 	select HAVE_KERNEL_LZMA
+<<<<<<< HEAD
 	select HAVE_KERNEL_XZ
 	select HAVE_IRQ_WORK
 	select HAVE_PERF_EVENTS
@@ -27,6 +38,17 @@ config ARM
 	select DCACHE_WORD_ACCESS if (CPU_V6 || CPU_V6K || CPU_V7) && !CPU_BIG_ENDIAN && MMU
 	select GENERIC_STRNCPY_FROM_USER
 	select GENERIC_STRNLEN_USER
+=======
+	select HAVE_IRQ_WORK
+	select HAVE_PERF_EVENTS
+	select PERF_USE_VMALLOC
+	select HAVE_REGS_AND_STACK_ACCESS_API
+	select HAVE_HW_BREAKPOINT if (PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7))
+	select HAVE_C_RECORDMCOUNT
+	select HAVE_GENERIC_HARDIRQS
+	select HAVE_SPARSE_IRQ
+	select GENERIC_IRQ_SHOW
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	help
 	  The ARM series is a line of low-power-consumption RISC chip designs
 	  licensed by ARM Ltd and targeted at embedded applications and
@@ -35,9 +57,12 @@ config ARM
 	  Europe.  There is an ARM Linux project with a web page at
 	  <http://www.arm.linux.org.uk/>.
 
+<<<<<<< HEAD
 config ARM_HAS_SG_CHAIN
 	bool
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config HAVE_PWM
 	bool
 
@@ -63,7 +88,11 @@ config GENERIC_CLOCKEVENTS
 config GENERIC_CLOCKEVENTS_BROADCAST
 	bool
 	depends on GENERIC_CLOCKEVENTS
+<<<<<<< HEAD
 	default y if SMP && !LOCAL_TIMERS
+=======
+	default y if SMP
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 config KTIME_SCALAR
 	bool
@@ -135,6 +164,7 @@ config GENERIC_LOCKBREAK
 	default y
 	depends on SMP && PREEMPT
 
+<<<<<<< HEAD
 config ARM_TICKET_LOCKS
 	bool
 	help
@@ -149,6 +179,14 @@ config RWSEM_GENERIC_SPINLOCK
 
 config RWSEM_XCHGADD_ALGORITHM
 	def_bool y
+=======
+config RWSEM_GENERIC_SPINLOCK
+	bool
+	default y
+
+config RWSEM_XCHGADD_ALGORITHM
+	bool
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 config ARCH_HAS_ILOG2_U32
 	bool
@@ -222,10 +260,13 @@ config ARM_PATCH_PHYS_VIRT_16BIT
 	  to allow physical memory down to a theoretical minimum of 64K
 	  boundaries.
 
+<<<<<<< HEAD
 config GENERIC_BUG
 	def_bool y
 	depends on BUG
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 source "init/Kconfig"
 
 source "kernel/Kconfig.freezer"
@@ -640,11 +681,14 @@ config ARCH_MSM
 	select GENERIC_CLOCKEVENTS
 	select ARCH_REQUIRE_GPIOLIB
 	select CLKDEV_LOOKUP
+<<<<<<< HEAD
 	select ARCH_HAS_CPUFREQ
 	select GENERIC_GPIO
 	select GENERIC_TIME
 	select GENERIC_ALLOCATOR
 	select HAVE_SCHED_CLOCK
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	help
 	  Support for Qualcomm MSM/QSD based systems.  This runs on the
 	  apps processor of the MSM/QSD and depends on a shared memory
@@ -755,6 +799,10 @@ config ARCH_S5PC100
 	select GENERIC_GPIO
 	select HAVE_CLK
 	select CPU_V7
+<<<<<<< HEAD
+=======
+	select ARM_L1_CACHE_SHIFT_6
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	select ARCH_USES_GETTIMEOFFSET
 	select HAVE_S3C2410_I2C if I2C
 	select HAVE_S3C_RTC if RTC_CLASS
@@ -768,6 +816,10 @@ config ARCH_S5PV210
 	select ARCH_SPARSEMEM_ENABLE
 	select GENERIC_GPIO
 	select HAVE_CLK
+<<<<<<< HEAD
+=======
+	select ARM_L1_CACHE_SHIFT_6
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	select ARCH_HAS_CPUFREQ
 	select GENERIC_CLOCKEVENTS
 	select HAVE_SCHED_CLOCK
@@ -1049,6 +1101,7 @@ config ARM_TIMER_SP804
 
 source arch/arm/mm/Kconfig
 
+<<<<<<< HEAD
 config RESERVE_FIRST_PAGE
 	bool
 	default n
@@ -1058,6 +1111,8 @@ config RESERVE_FIRST_PAGE
 	  boot operations. Reserve this page so that it is
 	  not allocated by the kernel.
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config IWMMXT
 	bool "Enable iWMMXt support"
 	depends on CPU_XSCALE || CPU_XSC3 || CPU_MOHAWK || CPU_PJ4
@@ -1259,6 +1314,7 @@ config ARM_ERRATA_754327
 	  This workaround defines cpu_relax() as smp_mb(), preventing correctly
 	  written polling loops from denying visibility of updates to memory.
 
+<<<<<<< HEAD
 config PL310_ERRATA_727915
 	bool "Background Clean & Invalidate by Way operation can cause data corruption"
 	depends on CACHE_L2X0
@@ -1282,6 +1338,8 @@ config KSAPI
           Scorpion processor supported hardware performance counters on a per
           thread basis or AXI counters on an overall system basis.
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config ARM_ERRATA_764369
 	bool "ARM errata: Data cache line maintenance operation by MVA may not succeed"
 	depends on CPU_V7 && SMP
@@ -1395,9 +1453,15 @@ config SMP
 	depends on REALVIEW_EB_ARM11MP || REALVIEW_EB_A9MP || \
 		 MACH_REALVIEW_PB11MP || MACH_REALVIEW_PBX || ARCH_OMAP4 || \
 		 ARCH_EXYNOS4 || ARCH_TEGRA || ARCH_U8500 || ARCH_VEXPRESS_CA9X4 || \
+<<<<<<< HEAD
 		 MSM_SMP || ARCH_SHMOBILE
 	select USE_GENERIC_SMP_HELPERS
 	select HAVE_ARM_SCU
+=======
+		 ARCH_MSM_SCORPIONMP || ARCH_SHMOBILE
+	select USE_GENERIC_SMP_HELPERS
+	select HAVE_ARM_SCU if !ARCH_MSM_SCORPIONMP
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	help
 	  This enables support for systems with more than one CPU. If you have
 	  a system with only one CPU, like most personal computers, say N. If
@@ -1428,6 +1492,7 @@ config SMP_ON_UP
 
 	  If you don't know what to do here, say Y.
 
+<<<<<<< HEAD
 config ARM_CPU_TOPOLOGY
 	bool "Support cpu topology definition"
 	depends on SMP && CPU_V7
@@ -1453,18 +1518,23 @@ config SCHED_SMT
 	  MultiThreading at a cost of slightly increased overhead in some
 	  places. If unsure say N here.
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config HAVE_ARM_SCU
 	bool
 	depends on SMP
 	help
 	  This option enables support for the ARM system coherency unit
 
+<<<<<<< HEAD
 config ARM_ARCH_TIMER
 	bool "Architected timer support"
 	select TICK_ONESHOT
 	help
 	  This option enables support for the ARM architected timer
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config HAVE_ARM_TWD
 	bool
 	depends on SMP
@@ -1510,11 +1580,17 @@ config HOTPLUG_CPU
 
 config LOCAL_TIMERS
 	bool "Use local timer interrupts"
+<<<<<<< HEAD
 	depends on SMP && (REALVIEW_EB_ARM11MP || MACH_REALVIEW_PB11MP || \
 		REALVIEW_EB_A9MP || MACH_REALVIEW_PBX || ARCH_OMAP4 || ARCH_U8500 || \
 		MSM_SMP)
 	default y
 	select HAVE_ARM_TWD if (!MSM_SMP && !EXYNOS4_MCT)
+=======
+	depends on SMP
+	default y
+	select HAVE_ARM_TWD if (!ARCH_MSM_SCORPIONMP && !EXYNOS4_MCT)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	help
 	  Enable support for local timers on SMP platforms, rather then the
 	  legacy IPI broadcast method.  Local timers allows the system
@@ -1654,6 +1730,7 @@ config HW_PERF_EVENTS
 	  Enable hardware performance counter support for perf events. If
 	  disabled, perf events will use software events only.
 
+<<<<<<< HEAD
 config VMALLOC_RESERVE
 	hex "Reserved vmalloc space"
 	default 0x08000000
@@ -1689,6 +1766,10 @@ config ARCH_ENABLE_MEMORY_HOTPLUG
 config ARCH_ENABLE_MEMORY_HOTREMOVE
 	def_bool n
 
+=======
+source "mm/Kconfig"
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config FORCE_MAX_ZONEORDER
 	int "Maximum zone order" if ARCH_SHMOBILE
 	range 11 64 if ARCH_SHMOBILE
@@ -1772,6 +1853,7 @@ config ALIGNMENT_TRAP
 	  correct operation of some network protocols. With an IP-only
 	  configuration it is safe to say N, otherwise say Y.
 
+<<<<<<< HEAD
 config ALLOW_CPU_ALIGNMENT
 	bool "Allow CPU-based alignment handling"
 	default y if ARCH_MSM_SCORPION || ARCH_MSM_SCORPIONMP
@@ -1782,6 +1864,8 @@ config ALLOW_CPU_ALIGNMENT
 	  faster than doing such a fixup in software.  For best performance
 	  on advanced CPUs, say Y here.
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config UACCESS_WITH_MEMCPY
 	bool "Use kernel mem{cpy,set}() for {copy_to,clear}_user() (EXPERIMENTAL)"
 	depends on MMU && EXPERIMENTAL
@@ -1831,6 +1915,7 @@ config DEPRECATED_PARAM_STRUCT
 	  This was deprecated in 2001 and announced to live on for 5 years.
 	  Some old boot loaders still use this way.
 
+<<<<<<< HEAD
 config ARM_FLUSH_CONSOLE_ON_RESTART
 	bool "Force flush the console on restart"
 	help
@@ -1851,6 +1936,8 @@ config CP_ACCESS
 
 	  If unsure, say N.
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 endmenu
 
 menu "Boot options"
@@ -1859,7 +1946,10 @@ config USE_OF
 	bool "Flattened Device Tree support"
 	select OF
 	select OF_EARLY_FLATTREE
+<<<<<<< HEAD
 	select IRQ_DOMAIN
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	help
 	  Include support for flattened device tree machine descriptions.
 
@@ -1908,6 +1998,7 @@ config ZBOOT_ROM_MMCIF
 	  which in turn loads the rest the kernel image to RAM using the
 	  MMCIF hardware block.
 
+<<<<<<< HEAD
 config ARM_APPENDED_DTB
 	bool "Use appended device tree blob to zImage (EXPERIMENTAL)"
 	depends on OF && !ZBOOT_ROM && EXPERIMENTAL
@@ -1940,6 +2031,8 @@ config ARM_ATAG_DTB_COMPAT
 	  bootloaders, this option allows zImage to extract the information
 	  from the ATAG list and store it at run time into the appended DTB.
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config CMDLINE
 	string "Default kernel command string"
 	default ""
@@ -2145,6 +2238,7 @@ source "drivers/cpuidle/Kconfig"
 
 endmenu
 
+<<<<<<< HEAD
 config CPU_FREQ_MSM
         bool
         depends on CPU_FREQ && ARCH_MSM
@@ -2153,6 +2247,8 @@ config CPU_FREQ_MSM
           This enables the CPUFreq driver for Qualcomm CPUs.
           If in doubt, say Y.
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 menu "Floating point emulation"
 
 comment "At least one emulation must be selected"
@@ -2242,7 +2338,11 @@ menu "Power management options"
 source "kernel/power/Kconfig"
 
 config ARCH_SUSPEND_POSSIBLE
+<<<<<<< HEAD
 	depends on !ARCH_S5P64X0 && !ARCH_S5PC100 && !ARCH_FSM9XXX
+=======
+	depends on !ARCH_S5P64X0 && !ARCH_S5PC100
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	depends on CPU_ARM920T || CPU_ARM926T || CPU_SA1100 || \
 		CPU_V6 || CPU_V6K || CPU_V7 || CPU_XSC3 || CPU_XSCALE
 	def_bool y

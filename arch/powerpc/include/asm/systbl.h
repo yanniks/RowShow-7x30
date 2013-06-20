@@ -354,5 +354,8 @@ COMPAT_SYS_SPU(clock_adjtime)
 SYSCALL_SPU(syncfs)
 COMPAT_SYS_SPU(sendmmsg)
 SYSCALL_SPU(setns)
+<<<<<<< HEAD
 COMPAT_SYS(process_vm_readv)
 COMPAT_SYS(process_vm_writev)
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

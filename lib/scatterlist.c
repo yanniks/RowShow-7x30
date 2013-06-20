@@ -279,6 +279,17 @@ int __sg_alloc_table(struct sg_table *table, unsigned int nents,
 		if (!left)
 			sg_mark_end(&sg[sg_size - 1]);
 
+<<<<<<< HEAD
+=======
+		/*
+		 * only really needed for mempool backed sg allocations (like
+		 * SCSI), a possible improvement here would be to pass the
+		 * table pointer into the allocator and let that clear these
+		 * flags
+		 */
+		gfp_mask &= ~__GFP_WAIT;
+		gfp_mask |= __GFP_HIGH;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		prv = sg;
 	} while (left);
 
@@ -311,6 +322,7 @@ int sg_alloc_table(struct sg_table *table, unsigned int nents, gfp_t gfp_mask)
 EXPORT_SYMBOL(sg_alloc_table);
 
 /**
+<<<<<<< HEAD
  * sg_alloc_table_from_pages - Allocate and initialize an sg table from
  *			       an array of pages
  * @sgt:	The sg table header to use
@@ -375,6 +387,8 @@ int sg_alloc_table_from_pages(struct sg_table *sgt,
 EXPORT_SYMBOL(sg_alloc_table_from_pages);
 
 /**
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * sg_miter_start - start mapping iteration over a sg list
  * @miter: sg mapping iter to be started
  * @sgl: sg list to iterate over
@@ -404,6 +418,7 @@ EXPORT_SYMBOL(sg_miter_start);
  * @miter: sg mapping iter to proceed
  *
  * Description:
+<<<<<<< HEAD
  *   Proceeds @miter to the next mapping.  @miter should have been started
  *   using sg_miter_start().  On successful return, @miter->page,
  *   @miter->addr and @miter->length point to the current mapping.
@@ -411,6 +426,16 @@ EXPORT_SYMBOL(sg_miter_start);
  * Context:
  *   Preemption disabled if SG_MITER_ATOMIC.  Preemption must stay disabled
  *   till @miter is stopped.  May sleep if !SG_MITER_ATOMIC.
+=======
+ *   Proceeds @miter@ to the next mapping.  @miter@ should have been
+ *   started using sg_miter_start().  On successful return,
+ *   @miter@->page, @miter@->addr and @miter@->length point to the
+ *   current mapping.
+ *
+ * Context:
+ *   IRQ disabled if SG_MITER_ATOMIC.  IRQ must stay disabled till
+ *   @miter@ is stopped.  May sleep if !SG_MITER_ATOMIC.
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *
  * Returns:
  *   true if @miter contains the next mapping.  false if end of sg
@@ -464,8 +489,12 @@ EXPORT_SYMBOL(sg_miter_next);
  *   resources (kmap) need to be released during iteration.
  *
  * Context:
+<<<<<<< HEAD
  *   Preemption disabled if the SG_MITER_ATOMIC is set.  Don't care
  *   otherwise.
+=======
+ *   IRQ disabled if the SG_MITER_ATOMIC is set.  Don't care otherwise.
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  */
 void sg_miter_stop(struct sg_mapping_iter *miter)
 {
@@ -479,8 +508,13 @@ void sg_miter_stop(struct sg_mapping_iter *miter)
 			flush_kernel_dcache_page(miter->page);
 
 		if (miter->__flags & SG_MITER_ATOMIC) {
+<<<<<<< HEAD
 			WARN_ON_ONCE(preemptible());
 			kunmap_atomic(miter->addr);
+=======
+			WARN_ON(!irqs_disabled());
+			kunmap_atomic(miter->addr, KM_BIO_SRC_IRQ);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		} else
 			kunmap(miter->page);
 

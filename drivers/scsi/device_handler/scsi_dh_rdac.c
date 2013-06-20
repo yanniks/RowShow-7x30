@@ -35,7 +35,11 @@
  * mode page were taken from the LSI RDAC 2.4 GPL'd
  * driver, and then converted to Linux conventions.
  */
+<<<<<<< HEAD
 #define RDAC_QUIESCENCE_TIME 20
+=======
+#define RDAC_QUIESCENCE_TIME 20;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * Page Codes
  */

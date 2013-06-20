@@ -100,7 +100,10 @@
 
 #include <linux/kmemcheck.h>
 #include <linux/kmemleak.h>
+<<<<<<< HEAD
 #include <linux/memory_hotplug.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /*
  * Kmemleak configuration and common defines.
@@ -964,7 +967,11 @@ void __ref kmemleak_scan_area(const void *ptr, size_t size, gfp_t gfp)
 {
 	pr_debug("%s(0x%p)\n", __func__, ptr);
 
+<<<<<<< HEAD
 	if (atomic_read(&kmemleak_enabled) && ptr && size && !IS_ERR(ptr))
+=======
+	if (atomic_read(&kmemleak_enabled) && ptr && !IS_ERR(ptr))
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		add_scan_area((unsigned long)ptr, size, gfp);
 	else if (atomic_read(&kmemleak_early_log))
 		log_early(KMEMLEAK_SCAN_AREA, ptr, size, 0);
@@ -1221,9 +1228,15 @@ static void kmemleak_scan(void)
 #endif
 
 	/*
+<<<<<<< HEAD
 	 * Struct page scanning for each node.
 	 */
 	lock_memory_hotplug();
+=======
+	 * Struct page scanning for each node. The code below is not yet safe
+	 * with MEMORY_HOTPLUG.
+	 */
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	for_each_online_node(i) {
 		pg_data_t *pgdat = NODE_DATA(i);
 		unsigned long start_pfn = pgdat->node_start_pfn;
@@ -1242,7 +1255,10 @@ static void kmemleak_scan(void)
 			scan_block(page, page + 1, NULL, 1);
 		}
 	}
+<<<<<<< HEAD
 	unlock_memory_hotplug();
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/*
 	 * Scanning the task stacks (may introduce false negatives).
@@ -1671,7 +1687,10 @@ void __init kmemleak_init(void)
 
 #ifdef CONFIG_DEBUG_KMEMLEAK_DEFAULT_OFF
 	if (!kmemleak_skip_disable) {
+<<<<<<< HEAD
 		atomic_set(&kmemleak_early_log, 0);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		kmemleak_disable();
 		return;
 	}

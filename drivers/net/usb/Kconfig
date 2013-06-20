@@ -458,6 +458,7 @@ config USB_VL600
 
 	  http://ubuntuforums.org/showpost.php?p=10589647&postcount=17
 
+<<<<<<< HEAD
 config USB_NET_RAW_IP
 	tristate "RAW-IP Driver for XMM6260 modems"
 	help
@@ -466,4 +467,6 @@ config USB_NET_RAW_IP
 	  To compile this driver as a module, choose M here: the
 	  module will be called rmnet.
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 endmenu

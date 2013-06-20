@@ -236,7 +236,11 @@ int poll_schedule_timeout(struct poll_wqueues *pwq, int state,
 
 	set_current_state(state);
 	if (!pwq->triggered)
+<<<<<<< HEAD
 		rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS, NULL);
+=======
+		rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	__set_current_state(TASK_RUNNING);
 
 	/*

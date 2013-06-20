@@ -166,8 +166,11 @@ extern void mmc_release_host(struct mmc_host *host);
 extern void mmc_do_release_host(struct mmc_host *host);
 extern int mmc_try_claim_host(struct mmc_host *host);
 
+<<<<<<< HEAD
 extern int mmc_detect_card_removed(struct mmc_host *host);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /**
  *	mmc_claim_host - exclusively claim a host
  *	@host: mmc host to claim

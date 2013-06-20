@@ -1480,7 +1480,11 @@ i915_gem_mmap_gtt(struct drm_file *file,
 
 	if (obj->base.size > dev_priv->mm.gtt_mappable_end) {
 		ret = -E2BIG;
+<<<<<<< HEAD
 		goto unlock;
+=======
+		goto out;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	if (obj->madv != I915_MADV_WILLNEED) {

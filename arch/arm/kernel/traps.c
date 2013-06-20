@@ -21,7 +21,10 @@
 #include <linux/kdebug.h>
 #include <linux/module.h>
 #include <linux/kexec.h>
+<<<<<<< HEAD
 #include <linux/bug.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <linux/delay.h>
 #include <linux/init.h>
 #include <linux/sched.h>
@@ -41,16 +44,23 @@ static const char *handler[]= { "prefetch abort", "data abort", "address excepti
 void *vectors_page;
 
 #ifdef CONFIG_DEBUG_USER
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM8X60_LTE
 unsigned int user_debug = 31;
 #else
 unsigned int user_debug;
 #endif
+=======
+unsigned int user_debug;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static int __init user_debug_setup(char *str)
 {
 	get_option(&str, &user_debug);
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 1;
 }
 __setup("user_debug=", user_debug_setup);
@@ -261,7 +271,11 @@ static int __die(const char *str, int err, struct thread_info *thread, struct pt
 	return ret;
 }
 
+<<<<<<< HEAD
 static DEFINE_RAW_SPINLOCK(die_lock);
+=======
+static DEFINE_SPINLOCK(die_lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /*
  * This function is protected against re-entrancy.
@@ -273,11 +287,17 @@ void die(const char *str, struct pt_regs *regs, int err)
 
 	oops_enter();
 
+<<<<<<< HEAD
 	raw_spin_lock_irq(&die_lock);
 	console_verbose();
 	bust_spinlocks(1);
 	if (!user_mode(regs))
 		report_bug(regs->ARM_pc, regs);
+=======
+	spin_lock_irq(&die_lock);
+	console_verbose();
+	bust_spinlocks(1);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	ret = __die(str, err, thread, regs);
 
 	if (regs && kexec_should_crash(thread->task))
@@ -285,6 +305,7 @@ void die(const char *str, struct pt_regs *regs, int err)
 
 	bust_spinlocks(0);
 	add_taint(TAINT_DIE);
+<<<<<<< HEAD
 	raw_spin_unlock_irq(&die_lock);
 	oops_exit();
 
@@ -295,6 +316,11 @@ void die(const char *str, struct pt_regs *regs, int err)
     }
 #endif
 
+=======
+	spin_unlock_irq(&die_lock);
+	oops_exit();
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (in_interrupt())
 		panic("Fatal exception in interrupt");
 	if (panic_on_oops)
@@ -316,6 +342,7 @@ void arm_notify_die(const char *str, struct pt_regs *regs,
 	}
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_GENERIC_BUG
 
 int is_valid_bugaddr(unsigned long pc)
@@ -336,23 +363,39 @@ int is_valid_bugaddr(unsigned long pc)
 
 static LIST_HEAD(undef_hook);
 static DEFINE_RAW_SPINLOCK(undef_lock);
+=======
+static LIST_HEAD(undef_hook);
+static DEFINE_SPINLOCK(undef_lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 void register_undef_hook(struct undef_hook *hook)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&undef_lock, flags);
 	list_add(&hook->node, &undef_hook);
 	raw_spin_unlock_irqrestore(&undef_lock, flags);
+=======
+	spin_lock_irqsave(&undef_lock, flags);
+	list_add(&hook->node, &undef_hook);
+	spin_unlock_irqrestore(&undef_lock, flags);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 void unregister_undef_hook(struct undef_hook *hook)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&undef_lock, flags);
 	list_del(&hook->node);
 	raw_spin_unlock_irqrestore(&undef_lock, flags);
+=======
+	spin_lock_irqsave(&undef_lock, flags);
+	list_del(&hook->node);
+	spin_unlock_irqrestore(&undef_lock, flags);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static int call_undef_hook(struct pt_regs *regs, unsigned int instr)
@@ -361,12 +404,20 @@ static int call_undef_hook(struct pt_regs *regs, unsigned int instr)
 	unsigned long flags;
 	int (*fn)(struct pt_regs *regs, unsigned int instr) = NULL;
 
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&undef_lock, flags);
+=======
+	spin_lock_irqsave(&undef_lock, flags);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	list_for_each_entry(hook, &undef_hook, node)
 		if ((instr & hook->instr_mask) == hook->instr_val &&
 		    (regs->ARM_cpsr & hook->cpsr_mask) == hook->cpsr_val)
 			fn = hook->fn;
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&undef_lock, flags);
+=======
+	spin_unlock_irqrestore(&undef_lock, flags);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return fn ? fn(regs, instr) : 1;
 }
@@ -486,10 +537,13 @@ do_cache_op(unsigned long start, unsigned long end, int flags)
 
 		up_read(&mm->mmap_sem);
 		flush_cache_user_range(start, end);
+<<<<<<< HEAD
 
 #ifdef CONFIG_ARCH_MSM7X27
 		mb();
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return;
 	}
 	up_read(&mm->mmap_sem);
@@ -730,6 +784,19 @@ baddataabort(int code, unsigned long instr, struct pt_regs *regs)
 	arm_notify_die("unknown data abort code", regs, &info, instr, 0);
 }
 
+<<<<<<< HEAD
+=======
+void __attribute__((noreturn)) __bug(const char *file, int line)
+{
+	printk(KERN_CRIT"kernel BUG at %s:%d!\n", file, line);
+	*(int *)0 = 0;
+
+	/* Avoid "noreturn function does return" */
+	for (;;);
+}
+EXPORT_SYMBOL(__bug);
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 void __readwrite_bug(const char *fn)
 {
 	printk("%s called, but not implemented\n", fn);

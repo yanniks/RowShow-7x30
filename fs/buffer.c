@@ -273,7 +273,11 @@ void invalidate_bdev(struct block_device *bdev)
 	/* 99% of the time, we don't need to flush the cleancache on the bdev.
 	 * But, for the strange corners, lets be cautious
 	 */
+<<<<<<< HEAD
 	cleancache_invalidate_inode(mapping);
+=======
+	cleancache_flush_inode(mapping);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL(invalidate_bdev);
 
@@ -285,7 +289,11 @@ static void free_more_memory(void)
 	struct zone *zone;
 	int nid;
 
+<<<<<<< HEAD
 	wakeup_flusher_threads(1024, WB_REASON_FREE_MORE_MEM);
+=======
+	wakeup_flusher_threads(1024);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	yield();
 
 	for_each_online_node(nid) {
@@ -1431,6 +1439,7 @@ static void invalidate_bh_lru(void *arg)
 	}
 	put_cpu_var(bh_lrus);
 }
+<<<<<<< HEAD
 
 /*
  * Invalidate all buffers in LRUs. Since we have to signal all CPUs to
@@ -1456,6 +1465,12 @@ void invalidate_bh_lrus(void)
 	on_each_cpu(invalidate_bh_lru, NULL, 1);
 out:
 	mutex_unlock(&bh_invalidate_mutex);
+=======
+	
+void invalidate_bh_lrus(void)
+{
+	on_each_cpu(invalidate_bh_lru, NULL, 1);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL_GPL(invalidate_bh_lrus);
 

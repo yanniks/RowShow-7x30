@@ -6,7 +6,11 @@
 typedef struct {
 #ifdef CONFIG_CPU_HAS_ASID
 	unsigned int id;
+<<<<<<< HEAD
 	raw_spinlock_t id_lock;
+=======
+	spinlock_t id_lock;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 	unsigned int kvm_seq;
 } mm_context_t;
@@ -16,7 +20,11 @@ typedef struct {
 
 /* init_mm.context.id_lock should be initialized. */
 #define INIT_MM_CONTEXT(name)                                                 \
+<<<<<<< HEAD
 	.context.id_lock    = __RAW_SPIN_LOCK_UNLOCKED(name.context.id_lock),
+=======
+	.context.id_lock    = __SPIN_LOCK_UNLOCKED(name.context.id_lock),
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #else
 #define ASID(mm)	(0)
 #endif

@@ -1832,8 +1832,14 @@ static ssize_t ntfs_file_buffered_write(struct kiocb *iocb,
 	 * fails again.
 	 */
 	if (unlikely(NInoTruncateFailed(ni))) {
+<<<<<<< HEAD
 		inode_dio_wait(vi);
 		err = ntfs_truncate(vi);
+=======
+		down_write(&vi->i_alloc_sem);
+		err = ntfs_truncate(vi);
+		up_write(&vi->i_alloc_sem);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (err || NInoTruncateFailed(ni)) {
 			if (!err)
 				err = -EIO;
@@ -2152,19 +2158,26 @@ static ssize_t ntfs_file_aio_write(struct kiocb *iocb, const struct iovec *iov,
  * with this inode but since we have no simple way of getting to them we ignore
  * this problem for now.
  */
+<<<<<<< HEAD
 static int ntfs_file_fsync(struct file *filp, loff_t start, loff_t end,
 			   int datasync)
+=======
+static int ntfs_file_fsync(struct file *filp, int datasync)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inode *vi = filp->f_mapping->host;
 	int err, ret = 0;
 
 	ntfs_debug("Entering for inode 0x%lx.", vi->i_ino);
+<<<<<<< HEAD
 
 	err = filemap_write_and_wait_range(vi->i_mapping, start, end);
 	if (err)
 		return err;
 	mutex_lock(&vi->i_mutex);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	BUG_ON(S_ISDIR(vi->i_mode));
 	if (!datasync || !NInoNonResident(NTFS_I(vi)))
 		ret = __ntfs_write_inode(vi, 1);
@@ -2182,7 +2195,10 @@ static int ntfs_file_fsync(struct file *filp, loff_t start, loff_t end,
 	else
 		ntfs_warning(vi->i_sb, "Failed to f%ssync inode 0x%lx.  Error "
 				"%u.", datasync ? "data" : "", vi->i_ino, -ret);
+<<<<<<< HEAD
 	mutex_unlock(&vi->i_mutex);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return ret;
 }
 

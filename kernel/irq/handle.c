@@ -119,10 +119,13 @@ handle_irq_event_percpu(struct irq_desc *desc, struct irqaction *action)
 	irqreturn_t retval = IRQ_NONE;
 	unsigned int flags = 0, irq = desc->irq_data.irq;
 
+<<<<<<< HEAD
 #ifdef CONFIG_FOOTPRINT_IRQ
 	update_handle_irqs_this_cpu(irq);
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	do {
 		irqreturn_t res;
 
@@ -164,11 +167,14 @@ handle_irq_event_percpu(struct irq_desc *desc, struct irqaction *action)
 
 	if (!noirqdebug)
 		note_interrupt(irq, desc, retval);
+<<<<<<< HEAD
 
 #ifdef CONFIG_FOOTPRINT_IRQ
 	release_handle_irqs_this_cpu(irq);
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return retval;
 }
 

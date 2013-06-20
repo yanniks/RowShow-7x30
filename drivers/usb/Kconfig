@@ -108,11 +108,14 @@ config USB
 	  To compile this driver as a module, choose M here: the
 	  module will be called usbcore.
 
+<<<<<<< HEAD
 config USB_OTG_HOST
 	boolean "USB OTG Host function"
 	depends on USB_OTG
 	default n
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 source "drivers/usb/core/Kconfig"
 
 source "drivers/usb/mon/Kconfig"

@@ -566,7 +566,10 @@ static void icmpv6_echo_reply(struct sk_buff *skb)
 		hlimit = np->mcast_hops;
 	else
 		hlimit = np->hop_limit;
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (hlimit < 0)
 		hlimit = ip6_dst_hoplimit(dst);
 

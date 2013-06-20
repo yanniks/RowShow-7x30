@@ -4,6 +4,7 @@
  */
 
 #include <asm-generic/vmlinux.lds.h>
+<<<<<<< HEAD
 #include <asm/cache.h>
 #include <asm/thread_info.h>
 #include <asm/memory.h>
@@ -11,6 +12,11 @@
 #ifdef CONFIG_STRICT_MEMORY_RWX
 #include <asm/pgtable.h>
 #endif
+=======
+#include <asm/thread_info.h>
+#include <asm/memory.h>
+#include <asm/page.h>
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	
 #define PROC_INFO							\
 	VMLINUX_SYMBOL(__proc_info_begin) = .;				\
@@ -25,8 +31,12 @@
 #define ARM_CPU_KEEP(x)
 #endif
 
+<<<<<<< HEAD
 #if (defined(CONFIG_SMP_ON_UP) && !defined(CONFIG_DEBUG_SPINLOCK)) || \
 	defined(CONFIG_GENERIC_BUG)
+=======
+#if defined(CONFIG_SMP_ON_UP) && !defined(CONFIG_DEBUG_SPINLOCK)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define ARM_EXIT_KEEP(x)	x
 #else
 #define ARM_EXIT_KEEP(x)
@@ -87,7 +97,11 @@ SECTIONS
 #endif
 	}
 
+<<<<<<< HEAD
 	PERCPU_SECTION(L1_CACHE_BYTES)
+=======
+	PERCPU_SECTION(32)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #ifndef CONFIG_XIP_KERNEL
 	. = ALIGN(PAGE_SIZE);
@@ -113,9 +127,12 @@ SECTIONS
 #endif
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_STRICT_MEMORY_RWX
 	. = ALIGN(1<<SECTION_SHIFT);
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	.text : {			/* Real text segment		*/
 		_text = .;		/* Text and read-only data	*/
 			__exception_text_start = .;
@@ -138,9 +155,12 @@ SECTIONS
 		*(.got)			/* Global offset table		*/
 			ARM_CPU_KEEP(PROC_INFO)
 	}
+<<<<<<< HEAD
 #ifdef CONFIG_STRICT_MEMORY_RWX
 	. = ALIGN(1<<SECTION_SHIFT);
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	RO_DATA(PAGE_SIZE)
 
@@ -167,11 +187,15 @@ SECTIONS
 	__data_loc = ALIGN(4);		/* location in binary */
 	. = PAGE_OFFSET + TEXT_OFFSET;
 #else
+<<<<<<< HEAD
 #ifdef CONFIG_STRICT_MEMORY_RWX
 	. = ALIGN(1<<SECTION_SHIFT);
 #else
 	. = ALIGN(THREAD_SIZE);
 #endif
+=======
+	. = ALIGN(THREAD_SIZE);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	__data_loc = .;
 #endif
 
@@ -195,13 +219,22 @@ SECTIONS
 #endif
 
 		NOSAVE_DATA
+<<<<<<< HEAD
 		CACHELINE_ALIGNED_DATA(L1_CACHE_BYTES)
 		READ_MOSTLY_DATA(L1_CACHE_BYTES)
+=======
+		CACHELINE_ALIGNED_DATA(32)
+		READ_MOSTLY_DATA(32)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		/*
 		 * The exception fixup table (might need resorting at runtime)
 		 */
+<<<<<<< HEAD
 		. = ALIGN(4);
+=======
+		. = ALIGN(32);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		__start___ex_table = .;
 #ifdef CONFIG_MMU
 		*(__ex_table)

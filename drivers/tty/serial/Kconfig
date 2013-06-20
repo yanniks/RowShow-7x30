@@ -1308,6 +1308,7 @@ config SERIAL_MSM_HS
 	  Choose M here to compile it as a module. The module will be
 	  called msm_serial_hs.
 
+<<<<<<< HEAD
 config SERIAL_MSM_HS_PURE_ANDROID
 	tristate "PURE ANDROID MSM UART High Speed: Serial Driver"
 	depends on ARM && ARCH_MSM && SERIAL_MSM_HS
@@ -1367,6 +1368,8 @@ config SERIAL_BCM_BT_LPM
 	help
 	  Select this module for Broadcom Bluetooth low power management.
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config SERIAL_VT8500
 	bool "VIA VT8500 on-chip serial port support"
 	depends on ARM && ARCH_VT8500

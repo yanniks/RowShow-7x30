@@ -98,7 +98,10 @@ typedef irqreturn_t (*irq_handler_t)(int, void *);
  * @flags:	flags (see IRQF_* above)
  * @name:	name of the device
  * @dev_id:	cookie to identify the device
+<<<<<<< HEAD
  * @percpu_dev_id:	cookie to identify the device
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * @next:	pointer to the next irqaction for shared interrupts
  * @irq:	interrupt number
  * @dir:	pointer to the proc/irq/NN/name entry
@@ -108,6 +111,7 @@ typedef irqreturn_t (*irq_handler_t)(int, void *);
  * @thread_mask:	bitmask for keeping track of @thread activity
  */
 struct irqaction {
+<<<<<<< HEAD
 	irq_handler_t		handler;
 	unsigned long		flags;
 	void			*dev_id;
@@ -120,6 +124,19 @@ struct irqaction {
 	unsigned long		thread_mask;
 	const char		*name;
 	struct proc_dir_entry	*dir;
+=======
+	irq_handler_t handler;
+	unsigned long flags;
+	void *dev_id;
+	struct irqaction *next;
+	int irq;
+	irq_handler_t thread_fn;
+	struct task_struct *thread;
+	unsigned long thread_flags;
+	unsigned long thread_mask;
+	const char *name;
+	struct proc_dir_entry *dir;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 } ____cacheline_internodealigned_in_smp;
 
 extern irqreturn_t no_action(int cpl, void *dev_id);
@@ -141,10 +158,13 @@ extern int __must_check
 request_any_context_irq(unsigned int irq, irq_handler_t handler,
 			unsigned long flags, const char *name, void *dev_id);
 
+<<<<<<< HEAD
 extern int __must_check
 request_percpu_irq(unsigned int irq, irq_handler_t handler,
 		   const char *devname, void __percpu *percpu_dev_id);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern void exit_irq_thread(void);
 #else
 
@@ -173,6 +193,7 @@ request_any_context_irq(unsigned int irq, irq_handler_t handler,
 	return request_irq(irq, handler, flags, name, dev_id);
 }
 
+<<<<<<< HEAD
 static inline int __must_check
 request_percpu_irq(unsigned int irq, irq_handler_t handler,
 		   const char *devname, void __percpu *percpu_dev_id)
@@ -180,11 +201,16 @@ request_percpu_irq(unsigned int irq, irq_handler_t handler,
 	return request_irq(irq, handler, 0, devname, percpu_dev_id);
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static inline void exit_irq_thread(void) { }
 #endif
 
 extern void free_irq(unsigned int, void *);
+<<<<<<< HEAD
 extern void free_percpu_irq(unsigned int, void __percpu *);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 struct device;
 
@@ -224,9 +250,13 @@ extern void devm_free_irq(struct device *dev, unsigned int irq, void *dev_id);
 
 extern void disable_irq_nosync(unsigned int irq);
 extern void disable_irq(unsigned int irq);
+<<<<<<< HEAD
 extern void disable_percpu_irq(unsigned int irq);
 extern void enable_irq(unsigned int irq);
 extern void enable_percpu_irq(unsigned int irq, unsigned int type);
+=======
+extern void enable_irq(unsigned int irq);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* The following three functions are for the core kernel use only. */
 #ifdef CONFIG_GENERIC_HARDIRQS
@@ -356,7 +386,10 @@ static inline void enable_irq_lockdep_irqrestore(unsigned int irq, unsigned long
 
 /* IRQ wakeup (PM) control: */
 extern int irq_set_irq_wake(unsigned int irq, unsigned int on);
+<<<<<<< HEAD
 extern int irq_read_line(unsigned int irq);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static inline int enable_irq_wake(unsigned int irq)
 {
@@ -706,5 +739,9 @@ int arch_show_interrupts(struct seq_file *p, int prec);
 extern int early_irq_init(void);
 extern int arch_probe_nr_irqs(void);
 extern int arch_early_irq_init(void);
+<<<<<<< HEAD
 extern void irq_set_pending(unsigned int irq);
+=======
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif

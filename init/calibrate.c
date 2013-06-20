@@ -9,7 +9,10 @@
 #include <linux/init.h>
 #include <linux/timex.h>
 #include <linux/smp.h>
+<<<<<<< HEAD
 #include <linux/percpu.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 unsigned long lpj_fine;
 unsigned long preset_lpj;
@@ -244,12 +247,16 @@ recalibrate:
 	return lpj;
 }
 
+<<<<<<< HEAD
 static DEFINE_PER_CPU(unsigned long, cpu_loops_per_jiffy) = { 0 };
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 void __cpuinit calibrate_delay(void)
 {
 	unsigned long lpj;
 	static bool printed;
+<<<<<<< HEAD
 	int this_cpu = smp_processor_id();
 
 	if (per_cpu(cpu_loops_per_jiffy, this_cpu)) {
@@ -257,6 +264,10 @@ void __cpuinit calibrate_delay(void)
 		pr_info("Calibrating delay loop (skipped) "
 				"already calibrated this CPU");
 	} else if (preset_lpj) {
+=======
+
+	if (preset_lpj) {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		lpj = preset_lpj;
 		if (!printed)
 			pr_info("Calibrating delay loop (skipped) "
@@ -274,7 +285,10 @@ void __cpuinit calibrate_delay(void)
 			pr_info("Calibrating delay loop... ");
 		lpj = calibrate_delay_converge();
 	}
+<<<<<<< HEAD
 	per_cpu(cpu_loops_per_jiffy, this_cpu) = lpj;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!printed)
 		pr_cont("%lu.%02lu BogoMIPS (lpj=%lu)\n",
 			lpj/(500000/HZ),

@@ -10,7 +10,11 @@
  *
  * Basic entry code, called from the kernel's undefined instruction trap.
  *  r0  = faulted instruction
+<<<<<<< HEAD
  *  r2  = faulted PC+4
+=======
+ *  r5  = faulted PC+4
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *  r9  = successful return
  *  r10 = thread_info structure
  *  lr  = failure return
@@ -26,7 +30,10 @@ ENTRY(do_vfp)
 	str	r11, [r10, #TI_PREEMPT]
 #endif
 	enable_irq
+<<<<<<< HEAD
 	str	r2, [sp, #S_PC]		@ update regs->ARM_pc for Thumb 2 case
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  	ldr	r4, .LCvfp
 	ldr	r11, [r10, #TI_CPU]	@ CPU number
 	add	r10, r10, #TI_VFPSTATE	@ r10 = workspace

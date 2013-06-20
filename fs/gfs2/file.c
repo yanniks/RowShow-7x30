@@ -63,11 +63,19 @@ static loff_t gfs2_llseek(struct file *file, loff_t offset, int origin)
 		error = gfs2_glock_nq_init(ip->i_gl, LM_ST_SHARED, LM_FLAG_ANY,
 					   &i_gh);
 		if (!error) {
+<<<<<<< HEAD
 			error = generic_file_llseek(file, offset, origin);
 			gfs2_glock_dq_uninit(&i_gh);
 		}
 	} else
 		error = generic_file_llseek(file, offset, origin);
+=======
+			error = generic_file_llseek_unlocked(file, offset, origin);
+			gfs2_glock_dq_uninit(&i_gh);
+		}
+	} else
+		error = generic_file_llseek_unlocked(file, offset, origin);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	return error;
 }
@@ -243,7 +251,11 @@ static int do_gfs2_set_flags(struct file *filp, u32 reqflags, u32 mask)
 	    !capable(CAP_LINUX_IMMUTABLE))
 		goto out;
 	if (!IS_IMMUTABLE(inode)) {
+<<<<<<< HEAD
 		error = gfs2_permission(inode, MAY_WRITE);
+=======
+		error = gfs2_permission(inode, MAY_WRITE, 0);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (error)
 			goto out;
 	}
@@ -544,9 +556,13 @@ static int gfs2_close(struct inode *inode, struct file *file)
 
 /**
  * gfs2_fsync - sync the dirty data for a file (across the cluster)
+<<<<<<< HEAD
  * @file: the file that points to the dentry
  * @start: the start position in the file to sync
  * @end: the end position in the file to sync
+=======
+ * @file: the file that points to the dentry (we ignore this)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * @datasync: set if we can ignore timestamp changes
  *
  * The VFS will flush data for us. We only need to worry
@@ -555,24 +571,32 @@ static int gfs2_close(struct inode *inode, struct file *file)
  * Returns: errno
  */
 
+<<<<<<< HEAD
 static int gfs2_fsync(struct file *file, loff_t start, loff_t end,
 		      int datasync)
+=======
+static int gfs2_fsync(struct file *file, int datasync)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inode *inode = file->f_mapping->host;
 	int sync_state = inode->i_state & (I_DIRTY_SYNC|I_DIRTY_DATASYNC);
 	struct gfs2_inode *ip = GFS2_I(inode);
 	int ret;
 
+<<<<<<< HEAD
 	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
 	if (ret)
 		return ret;
 	mutex_lock(&inode->i_mutex);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (datasync)
 		sync_state &= ~I_DIRTY_SYNC;
 
 	if (sync_state) {
 		ret = sync_inode_metadata(inode, 1);
+<<<<<<< HEAD
 		if (ret) {
 			mutex_unlock(&inode->i_mutex);
 			return ret;
@@ -581,6 +605,13 @@ static int gfs2_fsync(struct file *file, loff_t start, loff_t end,
 	}
 
 	mutex_unlock(&inode->i_mutex);
+=======
+		if (ret)
+			return ret;
+		gfs2_ail_flush(ip->i_gl);
+	}
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 

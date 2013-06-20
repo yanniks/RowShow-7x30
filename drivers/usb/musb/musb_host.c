@@ -2288,7 +2288,10 @@ static int musb_bus_suspend(struct usb_hcd *hcd)
 	if (musb->is_active) {
 		WARNING("trying to suspend as %s while active\n",
 				otg_state_string(musb->xceiv->state));
+<<<<<<< HEAD
 		BUG();
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return -EBUSY;
 	} else
 		return 0;
@@ -2300,6 +2303,7 @@ static int musb_bus_resume(struct usb_hcd *hcd)
 	return 0;
 }
 
+<<<<<<< HEAD
 
 #define MUSB_USB_DMA_ALIGN 4
 
@@ -2393,6 +2397,8 @@ static void musb_unmap_urb_for_dma(struct usb_hcd *hcd, struct urb *urb)
 }
 
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 const struct hc_driver musb_hc_driver = {
 	.description		= "musb-hcd",
 	.product_desc		= "MUSB HDRC host driver",
@@ -2412,9 +2418,12 @@ const struct hc_driver musb_hc_driver = {
 	.urb_dequeue		= musb_urb_dequeue,
 	.endpoint_disable	= musb_h_disable,
 
+<<<<<<< HEAD
 	.map_urb_for_dma	= musb_map_urb_for_dma,
 	.unmap_urb_for_dma	= musb_unmap_urb_for_dma,
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	.hub_status_data	= musb_hub_status_data,
 	.hub_control		= musb_hub_control,
 	.bus_suspend		= musb_bus_suspend,

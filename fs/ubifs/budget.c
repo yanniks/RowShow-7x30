@@ -63,7 +63,11 @@
 static void shrink_liability(struct ubifs_info *c, int nr_to_write)
 {
 	down_read(&c->vfs_sb->s_umount);
+<<<<<<< HEAD
 	writeback_inodes_sb(c->vfs_sb, WB_REASON_FS_FREE_SPACE);
+=======
+	writeback_inodes_sb(c->vfs_sb);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	up_read(&c->vfs_sb->s_umount);
 }
 

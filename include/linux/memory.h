@@ -15,6 +15,10 @@
 #ifndef _LINUX_MEMORY_H_
 #define _LINUX_MEMORY_H_
 
+<<<<<<< HEAD
+=======
+#include <linux/sysdev.h>
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <linux/node.h>
 #include <linux/compiler.h>
 #include <linux/mutex.h>
@@ -37,7 +41,11 @@ struct memory_block {
 	int phys_device;		/* to which fru does this belong? */
 	void *hw;			/* optional pointer to fw/hw data */
 	int (*phys_callback)(struct memory_block *);
+<<<<<<< HEAD
 	struct device dev;
+=======
+	struct sys_device sysdev;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 int arch_get_memory_phys_device(unsigned long start_pfn);

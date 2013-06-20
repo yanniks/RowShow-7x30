@@ -1,6 +1,10 @@
 /* arch/arm/mach-msm/proc_comm.h
  *
+<<<<<<< HEAD
  * Copyright (c) 2007-2009,2011 Code Aurora Forum. All rights reserved.
+=======
+ * Copyright (c) 2007 QUALCOMM Incorporated
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -13,8 +17,15 @@
  *
  */
 
+<<<<<<< HEAD
 #ifndef _ARCH_ARM_MACH_MSM_MSM_PROC_COMM_H_
 #define _ARCH_ARM_MACH_MSM_MSM_PROC_COMM_H_
+=======
+#ifndef _ARCH_ARM_MACH_MSM_PROC_COMM_H_
+#define _ARCH_ARM_MACH_MSM_PROC_COMM_H_
+
+#include <linux/init.h>
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 enum {
 	PCOM_CMD_IDLE = 0x0,
@@ -135,6 +146,7 @@ enum {
 	PCOM_CLKCTL_RPC_RAIL_DISABLE,
 	PCOM_CLKCTL_RPC_RAIL_CONTROL,
 	PCOM_CLKCTL_RPC_MIN_MSMC1,
+<<<<<<< HEAD
 	PCOM_CLKCTL_RPC_SRC_REQUEST,
 	PCOM_NPA_INIT,
 	PCOM_NPA_ISSUE_REQUIRED_REQUEST,
@@ -148,6 +160,9 @@ enum {
 	/* add OEM PROC COMM commands here */
 
 	PCOM_OEM_LAST = PCOM_OEM_TEST_CMD,
+=======
+	PCOM_NUM_CMDS,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 enum {
@@ -167,6 +182,10 @@ enum {
 	PCOM_CMD_FAIL_SMSM_NOT_INIT,
 	PCOM_CMD_FAIL_PROC_COMM_BUSY,
 	PCOM_CMD_FAIL_PROC_COMM_NOT_INIT,
+<<<<<<< HEAD
+=======
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 /* List of VREGs that support the Pull Down Resistor setting. */
@@ -228,8 +247,13 @@ enum vreg_pdown_id {
 };
 
 enum {
+<<<<<<< HEAD
 	PCOM_CLKRGM_APPS_RESET_USB_PHY  = 34,
 	PCOM_CLKRGM_APPS_RESET_USBH     = 37,
+=======
+	PCOM_CLKRGM_APPS_RESET_USB_PHY	= 34,
+	PCOM_CLKRGM_APPS_RESET_USBH	= 37,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 /* gpio info for PCOM_RPC_GPIO_TLMM_CONFIG_EX */
@@ -261,6 +285,7 @@ enum {
 		(((pull) & 0x3) << 15)		| \
 		(((drvstr) & 0xF) << 17))
 
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_PROC_COMM
 void msm_proc_comm_reset_modem_now(void);
 int msm_proc_comm(unsigned cmd, unsigned *data1, unsigned *data2);
@@ -269,5 +294,9 @@ static inline void msm_proc_comm_reset_modem_now(void) { }
 static inline int msm_proc_comm(unsigned cmd, unsigned *data1, unsigned *data2)
 { return 0; }
 #endif
+=======
+int msm_proc_comm(unsigned cmd, unsigned *data1, unsigned *data2);
+void __init proc_comm_boot_wait(void);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #endif

@@ -346,5 +346,8 @@ ENTRY(sys_call_table)
 	.long sys_syncfs
 	.long sys_sendmmsg		/* 345 */
 	.long sys_setns
+<<<<<<< HEAD
 	.long sys_process_vm_readv
 	.long sys_process_vm_writev
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

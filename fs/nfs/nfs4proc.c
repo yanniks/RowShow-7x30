@@ -3597,7 +3597,11 @@ static ssize_t __nfs4_get_acl_uncached(struct inode *inode, void *buf, size_t bu
 		res.acl_flags |= NFS4_ACL_LEN_REQUEST;
 	resp_buf = page_address(pages[0]);
 
+<<<<<<< HEAD
 	dprintk("%s  buf %p buflen %zu npages %d args.acl_len %zu\n",
+=======
+	dprintk("%s  buf %p buflen %ld npages %d args.acl_len %ld\n",
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		__func__, buf, buflen, npages, args.acl_len);
 	ret = nfs4_call_sync(NFS_SERVER(inode)->client, NFS_SERVER(inode),
 			     &msg, &args.seq_args, &res.seq_res, 0);

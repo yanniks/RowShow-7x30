@@ -96,11 +96,21 @@ static struct posix_acl *v9fs_get_cached_acl(struct inode *inode, int type)
 	return acl;
 }
 
+<<<<<<< HEAD
 struct posix_acl *v9fs_iop_get_acl(struct inode *inode, int type)
+=======
+int v9fs_check_acl(struct inode *inode, int mask, unsigned int flags)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct posix_acl *acl;
 	struct v9fs_session_info *v9ses;
 
+<<<<<<< HEAD
+=======
+	if (flags & IPERM_FLAG_RCU)
+		return -ECHILD;
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	v9ses = v9fs_inode2v9ses(inode);
 	if (((v9ses->flags & V9FS_ACCESS_MASK) != V9FS_ACCESS_CLIENT) ||
 			((v9ses->flags & V9FS_ACL_MASK) != V9FS_POSIX_ACL)) {
@@ -108,10 +118,25 @@ struct posix_acl *v9fs_iop_get_acl(struct inode *inode, int type)
 		 * On access = client  and acl = on mode get the acl
 		 * values from the server
 		 */
+<<<<<<< HEAD
 		return NULL;
 	}
 	return v9fs_get_cached_acl(inode, type);
 
+=======
+		return 0;
+	}
+	acl = v9fs_get_cached_acl(inode, ACL_TYPE_ACCESS);
+
+	if (IS_ERR(acl))
+		return PTR_ERR(acl);
+	if (acl) {
+		int error = posix_acl_permission(inode, acl, mask);
+		posix_acl_release(acl);
+		return error;
+	}
+	return -EAGAIN;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static int v9fs_set_acl(struct dentry *dentry, int type, struct posix_acl *acl)
@@ -154,18 +179,33 @@ err_free_out:
 int v9fs_acl_chmod(struct dentry *dentry)
 {
 	int retval = 0;
+<<<<<<< HEAD
 	struct posix_acl *acl;
+=======
+	struct posix_acl *acl, *clone;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct inode *inode = dentry->d_inode;
 
 	if (S_ISLNK(inode->i_mode))
 		return -EOPNOTSUPP;
 	acl = v9fs_get_cached_acl(inode, ACL_TYPE_ACCESS);
 	if (acl) {
+<<<<<<< HEAD
 		retval = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
 		if (retval)
 			return retval;
 		retval = v9fs_set_acl(dentry, ACL_TYPE_ACCESS, acl);
 		posix_acl_release(acl);
+=======
+		clone = posix_acl_clone(acl, GFP_KERNEL);
+		posix_acl_release(acl);
+		if (!clone)
+			return -ENOMEM;
+		retval = posix_acl_chmod_masq(clone, inode->i_mode);
+		if (!retval)
+			retval = v9fs_set_acl(dentry, ACL_TYPE_ACCESS, clone);
+		posix_acl_release(clone);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	return retval;
 }
@@ -183,11 +223,19 @@ int v9fs_set_create_acl(struct dentry *dentry,
 	return 0;
 }
 
+<<<<<<< HEAD
 int v9fs_acl_mode(struct inode *dir, umode_t *modep,
 		  struct posix_acl **dpacl, struct posix_acl **pacl)
 {
 	int retval = 0;
 	umode_t mode = *modep;
+=======
+int v9fs_acl_mode(struct inode *dir, mode_t *modep,
+		  struct posix_acl **dpacl, struct posix_acl **pacl)
+{
+	int retval = 0;
+	mode_t mode = *modep;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct posix_acl *acl = NULL;
 
 	if (!S_ISLNK(mode)) {
@@ -198,6 +246,7 @@ int v9fs_acl_mode(struct inode *dir, umode_t *modep,
 			mode &= ~current_umask();
 	}
 	if (acl) {
+<<<<<<< HEAD
 		if (S_ISDIR(mode))
 			*dpacl = posix_acl_dup(acl);
 		retval = posix_acl_create(&acl, GFP_NOFS, &mode);
@@ -210,6 +259,32 @@ int v9fs_acl_mode(struct inode *dir, umode_t *modep,
 	}
 	*modep  = mode;
 	return 0;
+=======
+		struct posix_acl *clone;
+
+		if (S_ISDIR(mode))
+			*dpacl = posix_acl_dup(acl);
+		clone = posix_acl_clone(acl, GFP_NOFS);
+		posix_acl_release(acl);
+		if (!clone)
+			return -ENOMEM;
+
+		retval = posix_acl_create_masq(clone, &mode);
+		if (retval < 0) {
+			posix_acl_release(clone);
+			goto cleanup;
+		}
+		if (retval > 0)
+			*pacl = clone;
+		else
+			posix_acl_release(clone);
+	}
+	*modep  = mode;
+	return 0;
+cleanup:
+	return retval;
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static int v9fs_remote_get_acl(struct dentry *dentry, const char *name,
@@ -320,7 +395,11 @@ static int v9fs_xattr_set_acl(struct dentry *dentry, const char *name,
 	case ACL_TYPE_ACCESS:
 		name = POSIX_ACL_XATTR_ACCESS;
 		if (acl) {
+<<<<<<< HEAD
 			umode_t mode = inode->i_mode;
+=======
+			mode_t mode = inode->i_mode;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			retval = posix_acl_equiv_mode(acl, &mode);
 			if (retval < 0)
 				goto err_out;

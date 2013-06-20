@@ -830,6 +830,10 @@ const struct address_space_operations pohmelfs_aops = {
 static void pohmelfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&inode->i_dentry);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	kmem_cache_free(pohmelfs_inode_cache, POHMELFS_I(inode));
 }
 
@@ -886,6 +890,7 @@ static struct inode *pohmelfs_alloc_inode(struct super_block *sb)
 /*
  * We want fsync() to work on POHMELFS.
  */
+<<<<<<< HEAD
 static int pohmelfs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 {
 	struct inode *inode = file->f_mapping->host;
@@ -896,6 +901,13 @@ static int pohmelfs_fsync(struct file *file, loff_t start, loff_t end, int datas
 		mutex_unlock(&inode->i_mutex);
 	}
 	return err;
+=======
+static int pohmelfs_fsync(struct file *file, int datasync)
+{
+	struct inode *inode = file->f_mapping->host;
+
+	return sync_inode_metadata(inode, 1);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 ssize_t pohmelfs_write(struct file *file, const char __user *buf,

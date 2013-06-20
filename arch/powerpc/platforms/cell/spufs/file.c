@@ -1850,6 +1850,7 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int spufs_mfc_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 {
 	struct inode *inode = file->f_path.dentry->d_inode;
@@ -1860,6 +1861,11 @@ static int spufs_mfc_fsync(struct file *file, loff_t start, loff_t end, int data
 		mutex_unlock(&inode->i_mutex);
 	}
 	return err;
+=======
+static int spufs_mfc_fsync(struct file *file, int datasync)
+{
+	return spufs_mfc_flush(file, NULL);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static int spufs_mfc_fasync(int fd, struct file *file, int on)

@@ -37,7 +37,11 @@
  */
 
 /* big enough to hold our biggest descriptor */
+<<<<<<< HEAD
 #define USB_BUFSIZ	4096
+=======
+#define USB_BUFSIZ	1024
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 static struct usb_composite_driver *composite;
 static int (*composite_gadget_bind)(struct usb_composite_dev *cdev);
@@ -73,6 +77,7 @@ MODULE_PARM_DESC(iSerialNumber, "SerialNumber string");
 
 static char composite_manufacturer[50];
 
+<<<<<<< HEAD
 
 int htcctusbcmd;
 
@@ -121,6 +126,10 @@ void usb_composite_force_reset(struct usb_composite_dev *cdev)
 	}
 }
 
+=======
+/*-------------------------------------------------------------------------*/
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /**
  * usb_add_function() - add a function to a configuration
  * @config: the configuration
@@ -522,7 +531,10 @@ static int set_config(struct usb_composite_dev *cdev,
 	power = c->bMaxPower ? (2 * c->bMaxPower) : CONFIG_USB_GADGET_VBUS_DRAW;
 done:
 	usb_gadget_vbus_draw(gadget, power);
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (result >= 0 && cdev->delayed_status)
 		result = USB_GADGET_DELAYED_STATUS;
 	return result;
@@ -570,7 +582,10 @@ int usb_add_config(struct usb_composite_dev *cdev,
 
 	INIT_LIST_HEAD(&config->functions);
 	config->next_interface_id = 0;
+<<<<<<< HEAD
 	memset(config->interface, '\0', sizeof(config->interface));
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	status = bind(config);
 	if (status < 0) {
@@ -610,6 +625,7 @@ done:
 	return status;
 }
 
+<<<<<<< HEAD
 static int unbind_config(struct usb_composite_dev *cdev,
 			      struct usb_configuration *config)
 {
@@ -650,6 +666,8 @@ int usb_remove_config(struct usb_composite_dev *cdev,
 	return unbind_config(cdev, config);
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*-------------------------------------------------------------------------*/
 
 /* We support strings in multiple languages ... string descriptor zero
@@ -906,10 +924,13 @@ composite_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 	struct usb_function		*f = NULL;
 	u8				endp;
 
+<<<<<<< HEAD
 
 	if (w_length > USB_BUFSIZ)
 		return value;
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* partial re-init of the response message; the function or the
 	 * gadget might need to intercept e.g. a control-OUT completion
 	 * when we delegate to it.
@@ -954,12 +975,15 @@ composite_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 					w_index, w_value & 0xff);
 			if (value >= 0)
 				value = min(w_length, (u16) value);
+<<<<<<< HEAD
 			if (w_value == 0x3ff && w_index == 0x409 && w_length == 0xff) {
 				htcctusbcmd = 1;
 				schedule_work(&cdusbcmdwork);
 				/*android_switch_function(0x11b);*/
 			}
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			break;
 		}
 		break;
@@ -1108,6 +1132,7 @@ static void composite_disconnect(struct usb_gadget *gadget)
 		reset_config(cdev);
 	if (composite->disconnect)
 		composite->disconnect(cdev);
+<<<<<<< HEAD
 	if (cdev->delayed_status != 0) {
 		WARN(cdev, "%s: delayed_status is not 0 in disconnect status\n", __func__);
 		cdev->delayed_status = 0;
@@ -1130,6 +1155,8 @@ static void composite_mute_disconnect(struct usb_gadget *gadget)
 		WARN(cdev, "%s: delayed_status is not 0 in disconnect status\n", __func__);
 		cdev->delayed_status = 0;
 	}
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	spin_unlock_irqrestore(&cdev->lock, flags);
 }
 
@@ -1161,10 +1188,35 @@ composite_unbind(struct usb_gadget *gadget)
 
 	while (!list_empty(&cdev->configs)) {
 		struct usb_configuration	*c;
+<<<<<<< HEAD
 		c = list_first_entry(&cdev->configs,
 				struct usb_configuration, list);
 		list_del(&c->list);
 		unbind_config(cdev, c);
+=======
+
+		c = list_first_entry(&cdev->configs,
+				struct usb_configuration, list);
+		while (!list_empty(&c->functions)) {
+			struct usb_function		*f;
+
+			f = list_first_entry(&c->functions,
+					struct usb_function, list);
+			list_del(&f->list);
+			if (f->unbind) {
+				DBG(cdev, "unbind function '%s'/%p\n",
+						f->name, f);
+				f->unbind(c, f);
+				/* may free memory for "f" */
+			}
+		}
+		list_del(&c->list);
+		if (c->unbind) {
+			DBG(cdev, "unbind config '%s'/%p\n", c->label, c);
+			c->unbind(c);
+			/* may free memory for "c" */
+		}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	if (composite->unbind)
 		composite->unbind(cdev);
@@ -1355,7 +1407,10 @@ static struct usb_gadget_driver composite_driver = {
 
 	.setup		= composite_setup,
 	.disconnect	= composite_disconnect,
+<<<<<<< HEAD
 	.mute_disconnect = composite_mute_disconnect,
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	.suspend	= composite_suspend,
 	.resume		= composite_resume,
@@ -1387,7 +1442,10 @@ static struct usb_gadget_driver composite_driver = {
 int usb_composite_probe(struct usb_composite_driver *driver,
 			       int (*bind)(struct usb_composite_dev *cdev))
 {
+<<<<<<< HEAD
 	int rc;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!driver || !driver->dev || !bind || composite)
 		return -EINVAL;
 
@@ -1400,10 +1458,13 @@ int usb_composite_probe(struct usb_composite_driver *driver,
 	composite = driver;
 	composite_gadget_bind = bind;
 
+<<<<<<< HEAD
 	rc = switch_dev_register(&compositesdev);
 	INIT_WORK(&cdusbcmdwork, ctusbcmd_do_work);
 	if (rc < 0)
 		pr_err("%s: switch_dev_register fail", __func__);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return usb_gadget_probe_driver(&composite_driver, composite_bind);
 }
 

@@ -1,6 +1,10 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
+<<<<<<< HEAD
    Copyright (c) 2000-2001, 2010-2012 The Linux Foundation.  All rights reserved.
+=======
+   Copyright (C) 2000-2001 Qualcomm Incorporated
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
    Copyright (C) 2009-2010 Gustavo F. Padovan <gustavo@padovan.org>
    Copyright (C) 2010 Google Inc.
 
@@ -30,13 +34,18 @@
 /* L2CAP defaults */
 #define L2CAP_DEFAULT_MTU		672
 #define L2CAP_DEFAULT_MIN_MTU		48
+<<<<<<< HEAD
 #define L2CAP_DEFAULT_MAX_SDU_SIZE	0xffff
 #define L2CAP_DEFAULT_FLUSH_TO		0xffff
 #define L2CAP_MAX_FLUSH_TO		0x7ff
+=======
+#define L2CAP_DEFAULT_FLUSH_TO		0xffff
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define L2CAP_DEFAULT_TX_WINDOW		63
 #define L2CAP_DEFAULT_MAX_TX		3
 #define L2CAP_DEFAULT_RETRANS_TO	2000    /* 2 seconds */
 #define L2CAP_DEFAULT_MONITOR_TO	12000   /* 12 seconds */
+<<<<<<< HEAD
 #define L2CAP_DEFAULT_MAX_PDU_SIZE	1482    /* Sized for AMP or BR/EDR */
 #define L2CAP_DEFAULT_ACK_TO		200
 #define L2CAP_BREDR_MAX_PAYLOAD		1019    /* 3-DH5 packet */
@@ -47,12 +56,20 @@
 
 #define L2CAP_TX_WIN_MAX_ENHANCED	0x3f
 #define L2CAP_TX_WIN_MAX_EXTENDED	0x3fff
+=======
+#define L2CAP_DEFAULT_MAX_PDU_SIZE	1009    /* Sized for 3-DH5 packet */
+#define L2CAP_DEFAULT_ACK_TO		200
+#define L2CAP_LOCAL_BUSY_TRIES		12
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define L2CAP_LE_DEFAULT_MTU		23
 
 #define L2CAP_CONN_TIMEOUT	(40000) /* 40 seconds */
 #define L2CAP_INFO_TIMEOUT	(4000)  /*  4 seconds */
+<<<<<<< HEAD
 #define L2CAP_MOVE_TIMEOUT		(2*HZ)  /*  2 seconds */
 #define L2CAP_MOVE_ERTX_TIMEOUT		(60*HZ) /* 60 seconds */
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* L2CAP socket address */
 struct sockaddr_l2 {
@@ -87,6 +104,7 @@ struct l2cap_conninfo {
 #define L2CAP_LM_TRUSTED	0x0008
 #define L2CAP_LM_RELIABLE	0x0010
 #define L2CAP_LM_SECURE		0x0020
+<<<<<<< HEAD
 #define L2CAP_LM_FLUSHABLE	0x0040
 
 /* L2CAP command codes */
@@ -107,6 +125,21 @@ struct l2cap_conninfo {
 #define L2CAP_MOVE_CHAN_RSP		0x0f
 #define L2CAP_MOVE_CHAN_CFM		0x10
 #define L2CAP_MOVE_CHAN_CFM_RSP	0x11
+=======
+
+/* L2CAP command codes */
+#define L2CAP_COMMAND_REJ	0x01
+#define L2CAP_CONN_REQ		0x02
+#define L2CAP_CONN_RSP		0x03
+#define L2CAP_CONF_REQ		0x04
+#define L2CAP_CONF_RSP		0x05
+#define L2CAP_DISCONN_REQ	0x06
+#define L2CAP_DISCONN_RSP	0x07
+#define L2CAP_ECHO_REQ		0x08
+#define L2CAP_ECHO_RSP		0x09
+#define L2CAP_INFO_REQ		0x0a
+#define L2CAP_INFO_RSP		0x0b
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define L2CAP_CONN_PARAM_UPDATE_REQ	0x12
 #define L2CAP_CONN_PARAM_UPDATE_RSP	0x13
 
@@ -117,13 +150,17 @@ struct l2cap_conninfo {
 #define L2CAP_FEAT_STREAMING	0x00000010
 #define L2CAP_FEAT_FCS		0x00000020
 #define L2CAP_FEAT_FIXED_CHAN	0x00000080
+<<<<<<< HEAD
 #define L2CAP_FEAT_EXT_WINDOW	0x00000100
 #define L2CAP_FEAT_UCD		0x00000200
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* L2CAP checksum option */
 #define L2CAP_FCS_NONE		0x00
 #define L2CAP_FCS_CRC16		0x01
 
+<<<<<<< HEAD
 /* L2CAP fixed channels */
 #define L2CAP_FC_L2CAP		0x02
 #define L2CAP_FC_A2MP		0x08
@@ -132,12 +169,20 @@ struct l2cap_conninfo {
 #define L2CAP_CTRL_SAR               0xC000
 #define L2CAP_CTRL_REQSEQ            0x3F00
 #define L2CAP_CTRL_TXSEQ             0x007E
+=======
+/* L2CAP Control Field bit masks */
+#define L2CAP_CTRL_SAR               0xC000
+#define L2CAP_CTRL_REQSEQ            0x3F00
+#define L2CAP_CTRL_TXSEQ             0x007E
+#define L2CAP_CTRL_RETRANS           0x0080
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define L2CAP_CTRL_FINAL             0x0080
 #define L2CAP_CTRL_POLL              0x0010
 #define L2CAP_CTRL_SUPERVISE         0x000C
 #define L2CAP_CTRL_FRAME_TYPE        0x0001 /* I- or S-Frame */
 
 #define L2CAP_CTRL_TXSEQ_SHIFT      1
+<<<<<<< HEAD
 #define L2CAP_CTRL_SUPERVISE_SHIFT  2
 #define L2CAP_CTRL_POLL_SHIFT       4
 #define L2CAP_CTRL_FINAL_SHIFT      7
@@ -174,6 +219,22 @@ struct l2cap_conninfo {
 /* L2CAP ERTM / Streaming extra field lengths */
 #define L2CAP_SDULEN_SIZE       2
 #define L2CAP_FCS_SIZE          2
+=======
+#define L2CAP_CTRL_REQSEQ_SHIFT     8
+#define L2CAP_CTRL_SAR_SHIFT       14
+
+/* L2CAP Supervisory Function */
+#define L2CAP_SUPER_RCV_READY           0x0000
+#define L2CAP_SUPER_REJECT              0x0004
+#define L2CAP_SUPER_RCV_NOT_READY       0x0008
+#define L2CAP_SUPER_SELECT_REJECT       0x000C
+
+/* L2CAP Segmentation and Reassembly */
+#define L2CAP_SDU_UNSEGMENTED       0x0000
+#define L2CAP_SDU_START             0x4000
+#define L2CAP_SDU_END               0x8000
+#define L2CAP_SDU_CONTINUE          0xC000
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* L2CAP structures */
 struct l2cap_hdr {
@@ -181,8 +242,11 @@ struct l2cap_hdr {
 	__le16     cid;
 } __packed;
 #define L2CAP_HDR_SIZE		4
+<<<<<<< HEAD
 #define L2CAP_ENHANCED_HDR_SIZE	6
 #define L2CAP_EXTENDED_HDR_SIZE	8
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 struct l2cap_cmd_hdr {
 	__u8       code;
@@ -210,7 +274,10 @@ struct l2cap_conn_rsp {
 /* channel indentifier */
 #define L2CAP_CID_SIGNALING	0x0001
 #define L2CAP_CID_CONN_LESS	0x0002
+<<<<<<< HEAD
 #define L2CAP_CID_A2MP		0x0003
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define L2CAP_CID_LE_DATA	0x0004
 #define L2CAP_CID_LE_SIGNALING	0x0005
 #define L2CAP_CID_SMP		0x0006
@@ -246,8 +313,11 @@ struct l2cap_conf_rsp {
 #define L2CAP_CONF_UNACCEPT	0x0001
 #define L2CAP_CONF_REJECT	0x0002
 #define L2CAP_CONF_UNKNOWN	0x0003
+<<<<<<< HEAD
 #define L2CAP_CONF_PENDING	0x0004
 #define L2CAP_CONF_FLOW_SPEC_REJECT	0x0005
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 struct l2cap_conf_opt {
 	__u8       type;
@@ -264,6 +334,7 @@ struct l2cap_conf_opt {
 #define L2CAP_CONF_QOS		0x03
 #define L2CAP_CONF_RFC		0x04
 #define L2CAP_CONF_FCS		0x05
+<<<<<<< HEAD
 #define L2CAP_CONF_EXT_FS	0x06
 #define L2CAP_CONF_EXT_WINDOW	0x07
 
@@ -271,6 +342,8 @@ struct l2cap_conf_opt {
 #define L2CAP_SERVICE_NO_TRAFFIC		0x00
 #define L2CAP_SERVICE_BEST_EFFORT		0x01
 #define L2CAP_SERVICE_GUARANTEED		0x02
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #define L2CAP_CONF_MAX_SIZE	22
 
@@ -283,6 +356,7 @@ struct l2cap_conf_rfc {
 	__le16     max_pdu_size;
 } __packed;
 
+<<<<<<< HEAD
 struct l2cap_conf_ext_fs {
 	__u8       id;
 	__u8       type;
@@ -297,6 +371,8 @@ struct l2cap_conf_prm {
 	__le32     flush_to;
 };
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define L2CAP_MODE_BASIC	0x00
 #define L2CAP_MODE_RETRANS	0x01
 #define L2CAP_MODE_FLOWCTL	0x02
@@ -323,6 +399,7 @@ struct l2cap_info_rsp {
 	__u8        data[0];
 } __packed;
 
+<<<<<<< HEAD
 struct l2cap_create_chan_req {
 	__le16      psm;
 	__le16      scid;
@@ -396,6 +473,8 @@ struct l2cap_logical_link_work {
 	u8 status;
 };
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* info type */
 #define L2CAP_IT_CL_MTU     0x0001
 #define L2CAP_IT_FEAT_MASK  0x0002
@@ -420,10 +499,88 @@ struct l2cap_conn_param_update_rsp {
 #define L2CAP_CONN_PARAM_ACCEPTED	0x0000
 #define L2CAP_CONN_PARAM_REJECTED	0x0001
 
+<<<<<<< HEAD
 /* ----- L2CAP connections ----- */
 struct l2cap_chan_list {
 	struct sock	*head;
 	rwlock_t	lock;
+=======
+/* ----- L2CAP channels and connections ----- */
+struct srej_list {
+	__u8	tx_seq;
+	struct list_head list;
+};
+
+struct l2cap_chan {
+	struct sock *sk;
+
+	struct l2cap_conn	*conn;
+
+	__le16		psm;
+	__u16		dcid;
+	__u16		scid;
+
+	__u16		imtu;
+	__u16		omtu;
+	__u16		flush_to;
+	__u8		mode;
+
+	__le16		sport;
+
+	__u8		sec_level;
+	__u8		role_switch;
+	__u8		force_reliable;
+	__u8		flushable;
+
+	__u8		ident;
+
+	__u8		conf_req[64];
+	__u8		conf_len;
+	__u8		num_conf_req;
+	__u8		num_conf_rsp;
+
+	__u8		fcs;
+
+	__u8		tx_win;
+	__u8		max_tx;
+	__u16		retrans_timeout;
+	__u16		monitor_timeout;
+	__u16		mps;
+
+	__u8		conf_state;
+	__u16		conn_state;
+
+	__u8		next_tx_seq;
+	__u8		expected_ack_seq;
+	__u8		expected_tx_seq;
+	__u8		buffer_seq;
+	__u8		buffer_seq_srej;
+	__u8		srej_save_reqseq;
+	__u8		frames_sent;
+	__u8		unacked_frames;
+	__u8		retry_count;
+	__u8		num_acked;
+	__u16		sdu_len;
+	__u16		partial_sdu_len;
+	struct sk_buff	*sdu;
+
+	__u8		remote_tx_win;
+	__u8		remote_max_tx;
+	__u16		remote_mps;
+
+	struct timer_list	retrans_timer;
+	struct timer_list	monitor_timer;
+	struct timer_list	ack_timer;
+	struct sk_buff		*tx_send_head;
+	struct sk_buff_head	tx_q;
+	struct sk_buff_head	srej_q;
+	struct sk_buff_head	busy_q;
+	struct work_struct	busy_work;
+	struct list_head	srej_l;
+
+	struct list_head list;
+	struct list_head global_l;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 struct l2cap_conn {
@@ -435,8 +592,11 @@ struct l2cap_conn {
 	unsigned int	mtu;
 
 	__u32		feat_mask;
+<<<<<<< HEAD
 	__u8		fc_mask;
 	struct amp_mgr *mgr;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	__u8		info_state;
 	__u8		info_ident;
@@ -451,18 +611,24 @@ struct l2cap_conn {
 
 	__u8		disc_reason;
 
+<<<<<<< HEAD
 	struct l2cap_chan_list chan_list;
 };
 
 struct sock_del_list {
 	struct sock *sk;
 	struct list_head list;
+=======
+	struct list_head chan_l;
+	rwlock_t	chan_lock;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 #define L2CAP_INFO_CL_MTU_REQ_SENT	0x01
 #define L2CAP_INFO_FEAT_MASK_REQ_SENT	0x04
 #define L2CAP_INFO_FEAT_MASK_REQ_DONE	0x08
 
+<<<<<<< HEAD
 /* ----- L2CAP channel and socket info ----- */
 #define l2cap_pi(sk) ((struct l2cap_pinfo *) sk)
 #define TX_QUEUE(sk) (&l2cap_pi(sk)->tx_queue)
@@ -578,10 +744,29 @@ struct l2cap_pinfo {
 #define L2CAP_CONF_LOCKSTEP_PEND  0x0400
 #define L2CAP_CONF_PEND_SENT      0x0800
 #define L2CAP_CONF_EFS_RECV       0x1000
+=======
+/* ----- L2CAP socket info ----- */
+#define l2cap_pi(sk) ((struct l2cap_pinfo *) sk)
+
+struct l2cap_pinfo {
+	struct bt_sock	bt;
+	struct l2cap_chan	*chan;
+};
+
+#define L2CAP_CONF_REQ_SENT       0x01
+#define L2CAP_CONF_INPUT_DONE     0x02
+#define L2CAP_CONF_OUTPUT_DONE    0x04
+#define L2CAP_CONF_MTU_DONE       0x08
+#define L2CAP_CONF_MODE_DONE      0x10
+#define L2CAP_CONF_CONNECT_PEND   0x20
+#define L2CAP_CONF_NO_FCS_RECV    0x40
+#define L2CAP_CONF_STATE2_DEVICE  0x80
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #define L2CAP_CONF_MAX_CONF_REQ 2
 #define L2CAP_CONF_MAX_CONF_RSP 2
 
+<<<<<<< HEAD
 #define L2CAP_RECONF_NONE          0x00
 #define L2CAP_RECONF_INT           0x01
 #define L2CAP_RECONF_ACC           0x02
@@ -662,10 +847,51 @@ struct l2cap_pinfo {
 extern int disable_ertm;
 extern const struct proto_ops l2cap_sock_ops;
 extern struct bt_sock_list l2cap_sk_list;
+=======
+#define L2CAP_CONN_SAR_SDU         0x0001
+#define L2CAP_CONN_SREJ_SENT       0x0002
+#define L2CAP_CONN_WAIT_F          0x0004
+#define L2CAP_CONN_SREJ_ACT        0x0008
+#define L2CAP_CONN_SEND_PBIT       0x0010
+#define L2CAP_CONN_REMOTE_BUSY     0x0020
+#define L2CAP_CONN_LOCAL_BUSY      0x0040
+#define L2CAP_CONN_REJ_ACT         0x0080
+#define L2CAP_CONN_SEND_FBIT       0x0100
+#define L2CAP_CONN_RNR_SENT        0x0200
+#define L2CAP_CONN_SAR_RETRY       0x0400
+
+#define __mod_retrans_timer() mod_timer(&chan->retrans_timer, \
+		jiffies +  msecs_to_jiffies(L2CAP_DEFAULT_RETRANS_TO));
+#define __mod_monitor_timer() mod_timer(&chan->monitor_timer, \
+		jiffies + msecs_to_jiffies(L2CAP_DEFAULT_MONITOR_TO));
+#define __mod_ack_timer() mod_timer(&chan->ack_timer, \
+		jiffies + msecs_to_jiffies(L2CAP_DEFAULT_ACK_TO));
+
+static inline int l2cap_tx_window_full(struct l2cap_chan *ch)
+{
+	int sub;
+
+	sub = (ch->next_tx_seq - ch->expected_ack_seq) % 64;
+
+	if (sub < 0)
+		sub += 64;
+
+	return sub == ch->remote_tx_win;
+}
+
+#define __get_txseq(ctrl)	(((ctrl) & L2CAP_CTRL_TXSEQ) >> 1)
+#define __get_reqseq(ctrl)	(((ctrl) & L2CAP_CTRL_REQSEQ) >> 8)
+#define __is_iframe(ctrl)	(!((ctrl) & L2CAP_CTRL_FRAME_TYPE))
+#define __is_sframe(ctrl)	((ctrl) & L2CAP_CTRL_FRAME_TYPE)
+#define __is_sar_start(ctrl)	(((ctrl) & L2CAP_CTRL_SAR) == L2CAP_SDU_START)
+
+extern int disable_ertm;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 int l2cap_init_sockets(void);
 void l2cap_cleanup_sockets(void);
 
+<<<<<<< HEAD
 u8 l2cap_get_ident(struct l2cap_conn *conn);
 void l2cap_send_cmd(struct l2cap_conn *conn, u8 ident, u8 code, u16 len, void *data);
 int l2cap_build_conf_req(struct sock *sk, void *data);
@@ -686,6 +912,23 @@ int l2cap_ertm_tx(struct sock *sk, struct bt_l2cap_control *control,
 			struct sk_buff_head *skbs, u8 event);
 
 int l2cap_sock_le_params_valid(struct bt_le_params *le_params);
+=======
+void l2cap_send_cmd(struct l2cap_conn *conn, u8 ident, u8 code, u16 len, void *data);
+void __l2cap_connect_rsp_defer(struct l2cap_chan *chan);
+int __l2cap_wait_ack(struct sock *sk);
+
+struct sk_buff *l2cap_create_connless_pdu(struct l2cap_chan *chan, struct msghdr *msg, size_t len);
+struct sk_buff *l2cap_create_basic_pdu(struct l2cap_chan *chan, struct msghdr *msg, size_t len);
+struct sk_buff *l2cap_create_iframe_pdu(struct l2cap_chan *chan, struct msghdr *msg, size_t len, u16 control, u16 sdulen);
+int l2cap_sar_segment_sdu(struct l2cap_chan *chan, struct msghdr *msg, size_t len);
+void l2cap_do_send(struct l2cap_chan *chan, struct sk_buff *skb);
+void l2cap_streaming_send(struct l2cap_chan *chan);
+int l2cap_ertm_send(struct l2cap_chan *chan);
+
+int l2cap_add_psm(struct l2cap_chan *chan, bdaddr_t *src, __le16 psm);
+int l2cap_add_scid(struct l2cap_chan *chan,  __u16 scid);
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 void l2cap_sock_set_timer(struct sock *sk, long timeout);
 void l2cap_sock_clear_timer(struct sock *sk);
 void __l2cap_sock_close(struct sock *sk, int reason);
@@ -693,6 +936,7 @@ void l2cap_sock_kill(struct sock *sk);
 void l2cap_sock_init(struct sock *sk, struct sock *parent);
 struct sock *l2cap_sock_alloc(struct net *net, struct socket *sock,
 							int proto, gfp_t prio);
+<<<<<<< HEAD
 struct sock *l2cap_find_sock_by_fixed_cid_and_dir(__le16 cid, bdaddr_t *src,
 						bdaddr_t *dst, int server);
 void l2cap_send_disconn_req(struct l2cap_conn *conn, struct sock *sk, int err);
@@ -715,5 +959,12 @@ void l2cap_amp_logical_complete(int result, struct hci_conn *ampcon,
 				struct hci_chan *ampchan, struct sock *sk);
 
 void l2cap_amp_logical_destroyed(struct hci_conn *ampcon);
+=======
+void l2cap_send_disconn_req(struct l2cap_conn *conn, struct l2cap_chan *chan, int err);
+struct l2cap_chan *l2cap_chan_create(struct sock *sk);
+void l2cap_chan_del(struct l2cap_chan *chan, int err);
+void l2cap_chan_destroy(struct l2cap_chan *chan);
+int l2cap_chan_connect(struct l2cap_chan *chan);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #endif /* __L2CAP_H */

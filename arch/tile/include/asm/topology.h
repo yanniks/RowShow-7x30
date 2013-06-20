@@ -72,7 +72,10 @@ static inline const struct cpumask *cpumask_of_node(int node)
 				| 0*SD_PREFER_LOCAL			\
 				| 0*SD_SHARE_CPUPOWER			\
 				| 0*SD_SHARE_PKG_RESOURCES		\
+<<<<<<< HEAD
 				| arch_sd_share_power_line()		\
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				| 0*SD_SERIALIZE			\
 				,					\
 	.last_balance		= jiffies,				\

@@ -1,16 +1,25 @@
 /*
  *  lzodefs.h -- architecture, OS and compiler specific defines
  *
+<<<<<<< HEAD
  *  Copyright (C) 1996-2012 Markus F.X.J. Oberhumer <markus@oberhumer.com>
+=======
+ *  Copyright (C) 1996-2005 Markus F.X.J. Oberhumer <markus@oberhumer.com>
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *
  *  The full LZO package can be found at:
  *  http://www.oberhumer.com/opensource/lzo/
  *
+<<<<<<< HEAD
  *  Changed for Linux kernel use by:
+=======
+ *  Changed for kernel use by:
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *  Nitin Gupta <nitingupta910@gmail.com>
  *  Richard Purdie <rpurdie@openedhand.com>
  */
 
+<<<<<<< HEAD
 
 #define COPY4(dst, src)	\
 		put_unaligned(get_unaligned((const u32 *)(src)), (u32 *)(dst))
@@ -32,6 +41,11 @@
 #elif defined(__arm__) && (__LINUX_ARM_ARCH__ >= 5)
 #define LZO_USE_CTZ32	1
 #endif
+=======
+#define LZO_VERSION		0x2020
+#define LZO_VERSION_STRING	"2.02"
+#define LZO_VERSION_DATE	"Oct 17 2005"
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #define M1_MAX_OFFSET	0x0400
 #define M2_MAX_OFFSET	0x0800
@@ -52,10 +66,15 @@
 #define M3_MARKER	32
 #define M4_MARKER	16
 
+<<<<<<< HEAD
 #define lzo_dict_t      unsigned short
 #define D_BITS		13
 #define D_SIZE		(1u << D_BITS)
 #define D_MASK		(D_SIZE - 1)
+=======
+#define D_BITS		14
+#define D_MASK		((1u << D_BITS) - 1)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define D_HIGH		((D_MASK >> 1) + 1)
 
 #define DX2(p, s1, s2)	(((((size_t)((p)[2]) << (s2)) ^ (p)[1]) \

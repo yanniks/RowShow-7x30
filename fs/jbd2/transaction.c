@@ -178,6 +178,7 @@ repeat:
 		if (!new_transaction)
 			goto alloc_transaction;
 		write_lock(&journal->j_state_lock);
+<<<<<<< HEAD
 		/* Wait on the journal's transaction barrier if necessary */
 		if (journal->j_barrier_count) {
 			printk(KERN_WARNING "JBD: %s: wait for transaction barrier\n", __func__);
@@ -186,6 +187,10 @@ repeat:
 		}
                 if (!journal->j_running_transaction &&
                     !journal->j_barrier_count) {
+=======
+		if (!journal->j_running_transaction &&
+		    !journal->j_barrier_count) {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			jbd2_get_transaction(journal, new_transaction);
 			new_transaction = NULL;
 		}
@@ -1056,10 +1061,13 @@ void jbd2_buffer_abort_trigger(struct journal_head *jh,
  * mark dirty metadata which needs to be journaled as part of the current
  * transaction.
  *
+<<<<<<< HEAD
  * The buffer must have previously had jbd2_journal_get_write_access()
  * called so that it has a valid journal_head attached to the buffer
  * head.
  *
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * The buffer is placed on the transaction's metadata list and is marked
  * as belonging to the transaction.
  *
@@ -1076,16 +1084,22 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
 	transaction_t *transaction = handle->h_transaction;
 	journal_t *journal = transaction->t_journal;
 	struct journal_head *jh = bh2jh(bh);
+<<<<<<< HEAD
 	int ret = 0;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	jbd_debug(5, "journal_head %p\n", jh);
 	JBUFFER_TRACE(jh, "entry");
 	if (is_handle_aborted(handle))
 		goto out;
+<<<<<<< HEAD
 	if (!buffer_jbd(bh)) {
 		ret = -EUCLEAN;
 		goto out;
 	}
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	jbd_lock_bh_state(bh);
 
@@ -1109,6 +1123,7 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
 	 */
 	if (jh->b_transaction == transaction && jh->b_jlist == BJ_Metadata) {
 		JBUFFER_TRACE(jh, "fastpath");
+<<<<<<< HEAD
 		if (unlikely(jh->b_transaction !=
 			     journal->j_running_transaction)) {
 			printk(KERN_EMERG "JBD: %s: "
@@ -1123,6 +1138,10 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
 			       journal->j_running_transaction->t_tid : 0);
 			ret = -EINVAL;
 		}
+=======
+		J_ASSERT_JH(jh, jh->b_transaction ==
+					journal->j_running_transaction);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		goto out_unlock_bh;
 	}
 
@@ -1136,6 +1155,7 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
 	 */
 	if (jh->b_transaction != transaction) {
 		JBUFFER_TRACE(jh, "already on other transaction");
+<<<<<<< HEAD
 		if (unlikely(jh->b_transaction !=
 			     journal->j_committing_transaction)) {
 			printk(KERN_EMERG "JBD: %s: "
@@ -1162,6 +1182,11 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
 			       transaction, transaction->t_tid);
 			ret = -EINVAL;
 		}
+=======
+		J_ASSERT_JH(jh, jh->b_transaction ==
+					journal->j_committing_transaction);
+		J_ASSERT_JH(jh, jh->b_next_transaction == transaction);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		/* And this case is illegal: we can't reuse another
 		 * transaction's data buffer, ever. */
 		goto out_unlock_bh;
@@ -1178,9 +1203,13 @@ out_unlock_bh:
 	jbd_unlock_bh_state(bh);
 out:
 	JBUFFER_TRACE(jh, "exit");
+<<<<<<< HEAD
 	if (ret)
 		__WARN();	/* All errors are bugs, so dump the stack */
 	return ret;
+=======
+	return 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /*

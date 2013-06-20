@@ -245,12 +245,15 @@ void tcp_select_initial_window(int __space, __u32 mss,
 		else
 			*rcv_wnd = min(*rcv_wnd, init_cwnd * mss);
 	}
+<<<<<<< HEAD
 	/* Due to CONFIG_LARGE_TCP_INITIAL_BUFFER not work, hard code first.*/
 	*rcv_wnd = 65535;
 #ifdef CONFIG_LARGE_TCP_INITIAL_BUFFER
 	/* Lock the initial TCP window size to 64K*/
 	*rcv_wnd = 65535;
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* Set the clamp no higher than max representable value */
 	(*window_clamp) = min(65535U << (*rcv_wscale), *window_clamp);
@@ -830,7 +833,10 @@ static int tcp_transmit_skb(struct sock *sk, struct sk_buff *skb, int clone_it,
 	inet = inet_sk(sk);
 	tp = tcp_sk(sk);
 	tcb = TCP_SKB_CB(skb);
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	memset(&opts, 0, sizeof(opts));
 
 	if (unlikely(tcb->flags & TCPHDR_SYN))
@@ -1807,13 +1813,20 @@ static int tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
 		tcp_event_new_data_sent(sk, skb);
 
 		tcp_minshall_update(tp, mss_now, skb);
+<<<<<<< HEAD
 		sent_pkts += tcp_skb_pcount(skb);
+=======
+		sent_pkts++;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		if (push_one)
 			break;
 	}
+<<<<<<< HEAD
 	if (inet_csk(sk)->icsk_ca_state == TCP_CA_Recovery)
 		tp->prr_out += sent_pkts;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (likely(sent_pkts)) {
 		tcp_cwnd_validate(sk);
@@ -2307,9 +2320,12 @@ begin_fwd:
 			return;
 		NET_INC_STATS_BH(sock_net(sk), mib_idx);
 
+<<<<<<< HEAD
 		if (inet_csk(sk)->icsk_ca_state == TCP_CA_Recovery)
 			tp->prr_out += tcp_skb_pcount(skb);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (skb == tcp_write_queue_head(sk))
 			inet_csk_reset_xmit_timer(sk, ICSK_TIME_RETRANS,
 						  inet_csk(sk)->icsk_rto,

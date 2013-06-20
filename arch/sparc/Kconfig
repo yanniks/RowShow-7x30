@@ -28,7 +28,10 @@ config SPARC
 	select HAVE_GENERIC_HARDIRQS
 	select GENERIC_IRQ_SHOW
 	select USE_GENERIC_SMP_HELPERS if SMP
+<<<<<<< HEAD
 	select GENERIC_STRNCPY_FROM_USER
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 config SPARC32
 	def_bool !64BIT

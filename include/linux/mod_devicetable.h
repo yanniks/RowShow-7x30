@@ -427,6 +427,7 @@ struct spi_device_id {
 			__attribute__((aligned(sizeof(kernel_ulong_t))));
 };
 
+<<<<<<< HEAD
 #define SLIMBUS_NAME_SIZE	32
 #define SLIMBUS_MODULE_PREFIX "slim:"
 
@@ -436,6 +437,8 @@ struct slim_device_id {
 			__attribute__((aligned(sizeof(kernel_ulong_t))));
 };
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* dmi */
 enum dmi_field {
 	DMI_NONE,

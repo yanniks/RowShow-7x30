@@ -935,7 +935,11 @@ static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_q *this)
 
 static int unlock_futex_pi(u32 __user *uaddr, u32 uval)
 {
+<<<<<<< HEAD
 	u32 oldval = 0;
+=======
+	u32 oldval;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/*
 	 * There is no waiter, so we unlock the futex. The owner died
@@ -1751,9 +1755,12 @@ static int fixup_owner(u32 __user *uaddr, struct futex_q *q, int locked)
 		if (!owner)
 			owner = rt_mutex_next_owner(&q->pi_state->pi_mutex);
 		raw_spin_unlock(&q->pi_state->pi_mutex.wait_lock);
+<<<<<<< HEAD
 
 		BUG_ON(!owner);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		ret = fixup_pi_state_owner(uaddr, q, owner);
 		goto out;
 	}
@@ -2761,7 +2768,11 @@ static int __init futex_init(void)
 		futex_cmpxchg_enabled = 1;
 
 	for (i = 0; i < ARRAY_SIZE(futex_queues); i++) {
+<<<<<<< HEAD
 		plist_head_init(&futex_queues[i].chain);
+=======
+		plist_head_init(&futex_queues[i].chain, &futex_queues[i].lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		spin_lock_init(&futex_queues[i].lock);
 	}
 

@@ -109,7 +109,11 @@ static int kmmpd(void *data)
 	mmp->mmp_check_interval = cpu_to_le16(mmp_check_interval);
 	bdevname(bh->b_bdev, mmp->mmp_bdevname);
 
+<<<<<<< HEAD
 	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
+=======
+	memcpy(mmp->mmp_nodename, init_utsname()->sysname,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	       sizeof(mmp->mmp_nodename));
 
 	while (!kthread_should_stop()) {
@@ -125,9 +129,14 @@ static int kmmpd(void *data)
 		 * Don't spew too many error messages. Print one every
 		 * (s_mmp_update_interval * 60) seconds.
 		 */
+<<<<<<< HEAD
 		if (retval) {
 			if ((failed_writes % 60) == 0)
 				ext4_error(sb, "Error writing to MMP block");
+=======
+		if (retval && (failed_writes % 60) == 0) {
+			ext4_error(sb, "Error writing to MMP block");
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			failed_writes++;
 		}
 
@@ -296,8 +305,12 @@ skip:
 	/*
 	 * write a new random sequence number.
 	 */
+<<<<<<< HEAD
 	seq = mmp_new_seq();
 	mmp->mmp_seq = cpu_to_le32(seq);
+=======
+	mmp->mmp_seq = seq = cpu_to_le32(mmp_new_seq());
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	retval = write_mmp_block(bh);
 	if (retval)

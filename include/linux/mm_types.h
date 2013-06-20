@@ -32,6 +32,7 @@ struct address_space;
  * who is mapping it.
  */
 struct page {
+<<<<<<< HEAD
 	/* First double word block */
 	unsigned long flags;		/* Atomic flags, some possibly
 					 * updated asynchronously */
@@ -91,6 +92,37 @@ struct page {
 
 	/* Remainder is not double word aligned */
 	union {
+=======
+	unsigned long flags;		/* Atomic flags, some possibly
+					 * updated asynchronously */
+	atomic_t _count;		/* Usage count, see below. */
+	union {
+		/*
+		 * Count of ptes mapped in
+		 * mms, to show when page is
+		 * mapped & limit reverse map
+		 * searches.
+		 *
+		 * Used also for tail pages
+		 * refcounting instead of
+		 * _count. Tail pages cannot
+		 * be mapped and keeping the
+		 * tail page _count zero at
+		 * all times guarantees
+		 * get_page_unless_zero() will
+		 * never succeed on tail
+		 * pages.
+		 */
+		atomic_t _mapcount;
+
+		struct {		/* SLUB */
+			u16 inuse;
+			u16 objects;
+		};
+	};
+	union {
+	    struct {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		unsigned long private;		/* Mapping-private opaque data:
 					 	 * usually used for buffer_heads
 						 * if PagePrivate set; used for
@@ -98,6 +130,7 @@ struct page {
 						 * indicates order in the buddy
 						 * system if PG_buddy is set.
 						 */
+<<<<<<< HEAD
 #if USE_SPLIT_PTLOCKS
 		spinlock_t ptl;
 #endif
@@ -105,6 +138,29 @@ struct page {
 		struct page *first_page;	/* Compound tail pages */
 	};
 
+=======
+		struct address_space *mapping;	/* If low bit clear, points to
+						 * inode address_space, or NULL.
+						 * If page mapped as anonymous
+						 * memory, low bit is set, and
+						 * it points to anon_vma object:
+						 * see PAGE_MAPPING_ANON below.
+						 */
+	    };
+#if USE_SPLIT_PTLOCKS
+	    spinlock_t ptl;
+#endif
+	    struct kmem_cache *slab;	/* SLUB: Pointer to slab */
+	    struct page *first_page;	/* Compound tail pages */
+	};
+	union {
+		pgoff_t index;		/* Our offset within mapping. */
+		void *freelist;		/* SLUB: freelist req. slab lock */
+	};
+	struct list_head lru;		/* Pageout list, eg. active_list
+					 * protected by zone->lru_lock !
+					 */
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/*
 	 * On machines where all RAM is mapped into kernel address space,
 	 * we can simply calculate the virtual address. On machines with
@@ -130,6 +186,7 @@ struct page {
 	 */
 	void *shadow;
 #endif
+<<<<<<< HEAD
 }
 /*
  * If another subsystem starts using the double word pairing for atomic
@@ -140,6 +197,9 @@ struct page {
 	__attribute__((__aligned__(2*sizeof(unsigned long))))
 #endif
 ;
+=======
+};
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 typedef unsigned long __nocast vm_flags_t;
 
@@ -319,6 +379,12 @@ struct mm_struct {
 	unsigned int token_priority;
 	unsigned int last_interval;
 
+<<<<<<< HEAD
+=======
+	/* How many tasks sharing this mm are OOM_DISABLE */
+	atomic_t oom_disable_count;
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	unsigned long flags; /* Must use atomic bitops to access the bits */
 
 	struct core_state *core_state; /* coredumping support */

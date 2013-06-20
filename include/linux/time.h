@@ -138,10 +138,13 @@ static inline bool timespec_valid_strict(const struct timespec *ts)
 	return true;
 }
 
+<<<<<<< HEAD
 extern struct timespec xtime;
 extern struct timespec wall_to_monotonic;
 extern seqlock_t xtime_lock;
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 extern void read_persistent_clock(struct timespec *ts);
 extern void read_boot_clock(struct timespec *ts);
 extern int update_persistent_clock(struct timespec now);
@@ -340,9 +343,12 @@ struct itimerval {
  */
 #define TIMER_ABSTIME			0x01
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM8X60_LTE
 extern void htc_timer_stats_OnOff(char OnOff);
 extern void htc_timer_stats_show(u16 water_mark);
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif

@@ -72,7 +72,16 @@ nilfs_lookup(struct inode *dir, struct dentry *dentry, struct nameidata *nd)
 		return ERR_PTR(-ENAMETOOLONG);
 
 	ino = nilfs_inode_by_name(dir, &dentry->d_name);
+<<<<<<< HEAD
 	inode = ino ? nilfs_iget(dir->i_sb, NILFS_I(dir)->i_root, ino) : NULL;
+=======
+	inode = NULL;
+	if (ino) {
+		inode = nilfs_iget(dir->i_sb, NILFS_I(dir)->i_root, ino);
+		if (IS_ERR(inode))
+			return ERR_CAST(inode);
+	}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return d_splice_alias(inode, dentry);
 }
 
@@ -84,7 +93,11 @@ nilfs_lookup(struct inode *dir, struct dentry *dentry, struct nameidata *nd)
  * If the create succeeds, we fill in the inode information
  * with d_instantiate().
  */
+<<<<<<< HEAD
 static int nilfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+=======
+static int nilfs_create(struct inode *dir, struct dentry *dentry, int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			struct nameidata *nd)
 {
 	struct inode *inode;
@@ -112,7 +125,11 @@ static int nilfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 }
 
 static int
+<<<<<<< HEAD
 nilfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t rdev)
+=======
+nilfs_mknod(struct inode *dir, struct dentry *dentry, int mode, dev_t rdev)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct inode *inode;
 	struct nilfs_transaction_info ti;

@@ -992,7 +992,15 @@ ext4_xattr_set_handle(handle_t *handle, struct inode *inode, int name_index,
 	no_expand = ext4_test_inode_state(inode, EXT4_STATE_NO_EXPAND);
 	ext4_set_inode_state(inode, EXT4_STATE_NO_EXPAND);
 
+<<<<<<< HEAD
 	error = ext4_reserve_inode_write(handle, inode, &is.iloc);
+=======
+	error = ext4_get_inode_loc(inode, &is.iloc);
+	if (error)
+		goto cleanup;
+
+	error = ext4_journal_get_write_access(handle, is.iloc.bh);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (error)
 		goto cleanup;
 

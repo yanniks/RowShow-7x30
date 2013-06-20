@@ -18,6 +18,7 @@
 #include <linux/module.h>
 #include <linux/types.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include "kstrtox.h"
 
 const char *_parse_integer_fixup_radix(const char *s, unsigned int *base)
@@ -52,6 +53,33 @@ unsigned int _parse_integer(const char *s, unsigned int base, unsigned long long
 	*res = 0;
 	rv = 0;
 	overflow = 0;
+=======
+
+static inline char _tolower(const char c)
+{
+	return c | 0x20;
+}
+
+static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
+{
+	unsigned long long acc;
+	int ok;
+
+	if (base == 0) {
+		if (s[0] == '0') {
+			if (_tolower(s[1]) == 'x' && isxdigit(s[2]))
+				base = 16;
+			else
+				base = 8;
+		} else
+			base = 10;
+	}
+	if (base == 16 && s[0] == '0' && _tolower(s[1]) == 'x')
+		s += 2;
+
+	acc = 0;
+	ok = 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	while (*s) {
 		unsigned int val;
 
@@ -59,6 +87,7 @@ unsigned int _parse_integer(const char *s, unsigned int base, unsigned long long
 			val = *s - '0';
 		else if ('a' <= _tolower(*s) && _tolower(*s) <= 'f')
 			val = _tolower(*s) - 'a' + 10;
+<<<<<<< HEAD
 		else
 			break;
 
@@ -93,6 +122,25 @@ static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
 	if (*s)
 		return -EINVAL;
 	*res = _res;
+=======
+		else if (*s == '\n' && *(s + 1) == '\0')
+			break;
+		else
+			return -EINVAL;
+
+		if (val >= base)
+			return -EINVAL;
+		if (acc > div_u64(ULLONG_MAX - val, base))
+			return -ERANGE;
+		acc = acc * base + val;
+		ok = 1;
+
+		s++;
+	}
+	if (!ok)
+		return -EINVAL;
+	*res = acc;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 

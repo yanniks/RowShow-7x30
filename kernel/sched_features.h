@@ -12,6 +12,14 @@ SCHED_FEAT(GENTLE_FAIR_SLEEPERS, 1)
 SCHED_FEAT(START_DEBIT, 1)
 
 /*
+<<<<<<< HEAD
+=======
+ * Should wakeups try to preempt running tasks.
+ */
+SCHED_FEAT(WAKEUP_PREEMPT, 1)
+
+/*
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * Based on load and program behaviour, see if it makes sense to place
  * a newly woken task on the same cpu as the task that woke it --
  * improve cache locality. Typically used with SYNC wakeups as

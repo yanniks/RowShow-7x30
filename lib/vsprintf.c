@@ -31,7 +31,24 @@
 #include <asm/div64.h>
 #include <asm/sections.h>	/* for dereference_function_descriptor() */
 
+<<<<<<< HEAD
 #include "kstrtox.h"
+=======
+/* Works only for digits and letters, but small and fast */
+#define TOLOWER(x) ((x) | 0x20)
+
+static unsigned int simple_guess_base(const char *cp)
+{
+	if (cp[0] == '0') {
+		if (TOLOWER(cp[1]) == 'x' && isxdigit(cp[2]))
+			return 16;
+		else
+			return 8;
+	} else {
+		return 10;
+	}
+}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /**
  * simple_strtoull - convert a string to an unsigned long long
@@ -41,6 +58,7 @@
  */
 unsigned long long simple_strtoull(const char *cp, char **endp, unsigned int base)
 {
+<<<<<<< HEAD
 	unsigned long long result;
 	unsigned int rv;
 
@@ -49,6 +67,25 @@ unsigned long long simple_strtoull(const char *cp, char **endp, unsigned int bas
 	/* FIXME */
 	cp += (rv & ~KSTRTOX_OVERFLOW);
 
+=======
+	unsigned long long result = 0;
+
+	if (!base)
+		base = simple_guess_base(cp);
+
+	if (base == 16 && cp[0] == '0' && TOLOWER(cp[1]) == 'x')
+		cp += 2;
+
+	while (isxdigit(*cp)) {
+		unsigned int value;
+
+		value = isdigit(*cp) ? *cp - '0' : TOLOWER(*cp) - 'a' + 10;
+		if (value >= base)
+			break;
+		result = result * base + value;
+		cp++;
+	}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (endp)
 		*endp = (char *)cp;
 
@@ -112,6 +149,7 @@ int skip_atoi(const char **s)
 /* Decimal conversion is by far the most typical, and is used
  * for /proc and /sys data. This directly impacts e.g. top performance
  * with many processes running. We optimize it for speed
+<<<<<<< HEAD
  * using ideas described at <http://www.cs.uiowa.edu/~jones/bcd/divide.html>
  * (with permission from the author, Douglas W. Jones).
  */
@@ -326,6 +364,106 @@ int num_to_str(char *buf, int size, unsigned long long num)
 	for (idx = 0; idx < len; ++idx)
 		buf[idx] = tmp[len - idx - 1];
 	return len;
+=======
+ * using code from
+ * http://www.cs.uiowa.edu/~jones/bcd/decimal.html
+ * (with permission from the author, Douglas W. Jones). */
+
+/* Formats correctly any integer in [0,99999].
+ * Outputs from one to five digits depending on input.
+ * On i386 gcc 4.1.2 -O2: ~250 bytes of code. */
+static noinline_for_stack
+char *put_dec_trunc(char *buf, unsigned q)
+{
+	unsigned d3, d2, d1, d0;
+	d1 = (q>>4) & 0xf;
+	d2 = (q>>8) & 0xf;
+	d3 = (q>>12);
+
+	d0 = 6*(d3 + d2 + d1) + (q & 0xf);
+	q = (d0 * 0xcd) >> 11;
+	d0 = d0 - 10*q;
+	*buf++ = d0 + '0'; /* least significant digit */
+	d1 = q + 9*d3 + 5*d2 + d1;
+	if (d1 != 0) {
+		q = (d1 * 0xcd) >> 11;
+		d1 = d1 - 10*q;
+		*buf++ = d1 + '0'; /* next digit */
+
+		d2 = q + 2*d2;
+		if ((d2 != 0) || (d3 != 0)) {
+			q = (d2 * 0xd) >> 7;
+			d2 = d2 - 10*q;
+			*buf++ = d2 + '0'; /* next digit */
+
+			d3 = q + 4*d3;
+			if (d3 != 0) {
+				q = (d3 * 0xcd) >> 11;
+				d3 = d3 - 10*q;
+				*buf++ = d3 + '0';  /* next digit */
+				if (q != 0)
+					*buf++ = q + '0'; /* most sign. digit */
+			}
+		}
+	}
+
+	return buf;
+}
+/* Same with if's removed. Always emits five digits */
+static noinline_for_stack
+char *put_dec_full(char *buf, unsigned q)
+{
+	/* BTW, if q is in [0,9999], 8-bit ints will be enough, */
+	/* but anyway, gcc produces better code with full-sized ints */
+	unsigned d3, d2, d1, d0;
+	d1 = (q>>4) & 0xf;
+	d2 = (q>>8) & 0xf;
+	d3 = (q>>12);
+
+	/*
+	 * Possible ways to approx. divide by 10
+	 * gcc -O2 replaces multiply with shifts and adds
+	 * (x * 0xcd) >> 11: 11001101 - shorter code than * 0x67 (on i386)
+	 * (x * 0x67) >> 10:  1100111
+	 * (x * 0x34) >> 9:    110100 - same
+	 * (x * 0x1a) >> 8:     11010 - same
+	 * (x * 0x0d) >> 7:      1101 - same, shortest code (on i386)
+	 */
+	d0 = 6*(d3 + d2 + d1) + (q & 0xf);
+	q = (d0 * 0xcd) >> 11;
+	d0 = d0 - 10*q;
+	*buf++ = d0 + '0';
+	d1 = q + 9*d3 + 5*d2 + d1;
+		q = (d1 * 0xcd) >> 11;
+		d1 = d1 - 10*q;
+		*buf++ = d1 + '0';
+
+		d2 = q + 2*d2;
+			q = (d2 * 0xd) >> 7;
+			d2 = d2 - 10*q;
+			*buf++ = d2 + '0';
+
+			d3 = q + 4*d3;
+				q = (d3 * 0xcd) >> 11; /* - shorter code */
+				/* q = (d3 * 0x67) >> 10; - would also work */
+				d3 = d3 - 10*q;
+				*buf++ = d3 + '0';
+					*buf++ = q + '0';
+
+	return buf;
+}
+/* No inlining helps gcc to use registers better */
+static noinline_for_stack
+char *put_dec(char *buf, unsigned long long num)
+{
+	while (1) {
+		unsigned rem;
+		if (num < 100000)
+			return put_dec_trunc(buf, num);
+		rem = do_div(num, 100000);
+		buf = put_dec_full(buf, rem);
+	}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 #define ZEROPAD	1		/* pad with zero */
@@ -380,7 +518,10 @@ char *number(char *buf, char *end, unsigned long long num,
 	char locase;
 	int need_pfx = ((spec.flags & SPECIAL) && spec.base != 10);
 	int i;
+<<<<<<< HEAD
 	bool is_zero = num == 0LL;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* locase = 0 or 0x20. ORing digits or letters with 'locase'
 	 * produces same digits or (maybe lowercased) letters */
@@ -402,16 +543,26 @@ char *number(char *buf, char *end, unsigned long long num,
 		}
 	}
 	if (need_pfx) {
+<<<<<<< HEAD
 		if (spec.base == 16)
 			spec.field_width -= 2;
 		else if (!is_zero)
+=======
+		spec.field_width--;
+		if (spec.base == 16)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			spec.field_width--;
 	}
 
 	/* generate full string in tmp[], in reverse order */
 	i = 0;
+<<<<<<< HEAD
 	if (num < spec.base)
 		tmp[i++] = digits[num] | locase;
+=======
+	if (num == 0)
+		tmp[i++] = '0';
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* Generic code, for any base:
 	else do {
 		tmp[i++] = (digits[do_div(num,base)] | locase);
@@ -451,11 +602,17 @@ char *number(char *buf, char *end, unsigned long long num,
 	}
 	/* "0x" / "0" prefix */
 	if (need_pfx) {
+<<<<<<< HEAD
 		if (spec.base == 16 || !is_zero) {
 			if (buf < end)
 				*buf = '0';
 			++buf;
 		}
+=======
+		if (buf < end)
+			*buf = '0';
+		++buf;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (spec.base == 16) {
 			if (buf < end)
 				*buf = ('X' | locase);
@@ -667,7 +824,11 @@ char *mac_address_string(char *buf, char *end, u8 *addr,
 	}
 
 	for (i = 0; i < 6; i++) {
+<<<<<<< HEAD
 		p = hex_byte_pack(p, addr[i]);
+=======
+		p = pack_hex_byte(p, addr[i]);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (fmt[0] == 'M' && i != 5)
 			*p++ = separator;
 	}
@@ -707,7 +868,11 @@ char *ip4_string(char *p, const u8 *addr, const char *fmt)
 	}
 	for (i = 0; i < 4; i++) {
 		char temp[3];	/* hold each IP quad in reverse order */
+<<<<<<< HEAD
 		int digits = put_dec_trunc8(temp, addr[index]) - temp;
+=======
+		int digits = put_dec_trunc(temp, addr[index]) - temp;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (leading_zeros) {
 			if (digits < 3)
 				*p++ = '0';
@@ -787,6 +952,7 @@ char *ip6_compressed_string(char *p, const char *addr)
 		lo = word & 0xff;
 		if (hi) {
 			if (hi > 0x0f)
+<<<<<<< HEAD
 				p = hex_byte_pack(p, hi);
 			else
 				*p++ = hex_asc_lo(hi);
@@ -794,6 +960,15 @@ char *ip6_compressed_string(char *p, const char *addr)
 		}
 		else if (lo > 0x0f)
 			p = hex_byte_pack(p, lo);
+=======
+				p = pack_hex_byte(p, hi);
+			else
+				*p++ = hex_asc_lo(hi);
+			p = pack_hex_byte(p, lo);
+		}
+		else if (lo > 0x0f)
+			p = pack_hex_byte(p, lo);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		else
 			*p++ = hex_asc_lo(lo);
 		needcolon = true;
@@ -815,8 +990,13 @@ char *ip6_string(char *p, const char *addr, const char *fmt)
 	int i;
 
 	for (i = 0; i < 8; i++) {
+<<<<<<< HEAD
 		p = hex_byte_pack(p, *addr++);
 		p = hex_byte_pack(p, *addr++);
+=======
+		p = pack_hex_byte(p, *addr++);
+		p = pack_hex_byte(p, *addr++);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (fmt[0] == 'I' && i != 7)
 			*p++ = ':';
 	}
@@ -874,7 +1054,11 @@ char *uuid_string(char *buf, char *end, const u8 *addr,
 	}
 
 	for (i = 0; i < 16; i++) {
+<<<<<<< HEAD
 		p = hex_byte_pack(p, addr[index[i]]);
+=======
+		p = pack_hex_byte(p, addr[index[i]]);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		switch (i) {
 		case 3:
 		case 5:
@@ -953,15 +1137,22 @@ static noinline_for_stack
 char *pointer(const char *fmt, char *buf, char *end, void *ptr,
 	      struct printf_spec spec)
 {
+<<<<<<< HEAD
 	int default_width = 2 * sizeof(void *) + (spec.flags & SPECIAL ? 2 : 0);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!ptr && *fmt != 'K') {
 		/*
 		 * Print (null) with the same width as a pointer so it makes
 		 * tabular output look nice.
 		 */
 		if (spec.field_width == -1)
+<<<<<<< HEAD
 			spec.field_width = default_width;
+=======
+			spec.field_width = 2 * sizeof(void *);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return string(buf, end, "(null)", spec);
 	}
 
@@ -1000,6 +1191,7 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
 	case 'U':
 		return uuid_string(buf, end, ptr, spec, fmt);
 	case 'V':
+<<<<<<< HEAD
 		{
 			va_list va;
 
@@ -1009,15 +1201,26 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
 			va_end(va);
 			return buf;
 		}
+=======
+		return buf + vsnprintf(buf, end > buf ? end - buf : 0,
+				       ((struct va_format *)ptr)->fmt,
+				       *(((struct va_format *)ptr)->va));
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	case 'K':
 		/*
 		 * %pK cannot be used in IRQ context because its test
 		 * for CAP_SYSLOG would be meaningless.
 		 */
+<<<<<<< HEAD
 		if (kptr_restrict && (in_irq() || in_serving_softirq() ||
 				      in_nmi())) {
 			if (spec.field_width == -1)
 				spec.field_width = default_width;
+=======
+		if (in_irq() || in_serving_softirq() || in_nmi()) {
+			if (spec.field_width == -1)
+				spec.field_width = 2 * sizeof(void *);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			return string(buf, end, "pK-error", spec);
 		}
 		if (!((kptr_restrict == 0) ||
@@ -1028,7 +1231,11 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
 	}
 	spec.flags |= SMALL;
 	if (spec.field_width == -1) {
+<<<<<<< HEAD
 		spec.field_width = default_width;
+=======
+		spec.field_width = 2 * sizeof(void *);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		spec.flags |= ZEROPAD;
 	}
 	spec.base = 16;
@@ -1143,8 +1350,13 @@ precision:
 qualifier:
 	/* get the conversion qualifier */
 	spec->qualifier = -1;
+<<<<<<< HEAD
 	if (*fmt == 'h' || _tolower(*fmt) == 'l' ||
 	    _tolower(*fmt) == 'z' || *fmt == 't') {
+=======
+	if (*fmt == 'h' || TOLOWER(*fmt) == 'l' ||
+	    TOLOWER(*fmt) == 'z' || *fmt == 't') {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		spec->qualifier = *fmt++;
 		if (unlikely(spec->qualifier == *fmt)) {
 			if (spec->qualifier == 'l') {
@@ -1211,7 +1423,11 @@ qualifier:
 			spec->type = FORMAT_TYPE_LONG;
 		else
 			spec->type = FORMAT_TYPE_ULONG;
+<<<<<<< HEAD
 	} else if (_tolower(spec->qualifier) == 'z') {
+=======
+	} else if (TOLOWER(spec->qualifier) == 'z') {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		spec->type = FORMAT_TYPE_SIZE_T;
 	} else if (spec->qualifier == 't') {
 		spec->type = FORMAT_TYPE_PTRDIFF;
@@ -1251,21 +1467,33 @@ qualifier:
  * %pR output the address range in a struct resource with decoded flags
  * %pr output the address range in a struct resource with raw flags
  * %pM output a 6-byte MAC address with colons
+<<<<<<< HEAD
  * %pMR output a 6-byte MAC address with colons in reversed order
  * %pMF output a 6-byte MAC address with dashes
  * %pm output a 6-byte MAC address without colons
  * %pmR output a 6-byte MAC address without colons in reversed order
+=======
+ * %pm output a 6-byte MAC address without colons
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * %pI4 print an IPv4 address without leading zeros
  * %pi4 print an IPv4 address with leading zeros
  * %pI6 print an IPv6 address with colons
  * %pi6 print an IPv6 address without colons
+<<<<<<< HEAD
  * %pI6c print an IPv6 address as specified by RFC 5952
+=======
+ * %pI6c print an IPv6 address as specified by
+ *   http://tools.ietf.org/html/draft-ietf-6man-text-addr-representation-00
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * %pU[bBlL] print a UUID/GUID in big or little endian using lower or upper
  *   case.
  * %n is ignored
  *
+<<<<<<< HEAD
  * ** Please update Documentation/printk-formats.txt when making changes **
  *
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * The return value is the number of characters which would
  * be generated for the given input, excluding the trailing
  * '\0', as per ISO C99. If you want to have the exact
@@ -1374,7 +1602,11 @@ int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
 			if (qualifier == 'l') {
 				long *ip = va_arg(args, long *);
 				*ip = (str - buf);
+<<<<<<< HEAD
 			} else if (_tolower(qualifier) == 'z') {
+=======
+			} else if (TOLOWER(qualifier) == 'z') {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				size_t *ip = va_arg(args, size_t *);
 				*ip = (str - buf);
 			} else {
@@ -1661,7 +1893,11 @@ do {									\
 			void *skip_arg;
 			if (qualifier == 'l')
 				skip_arg = va_arg(args, long *);
+<<<<<<< HEAD
 			else if (_tolower(qualifier) == 'z')
+=======
+			else if (TOLOWER(qualifier) == 'z')
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				skip_arg = va_arg(args, size_t *);
 			else
 				skip_arg = va_arg(args, int *);
@@ -1928,7 +2164,11 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
 	s16 field_width;
 	bool is_sign;
 
+<<<<<<< HEAD
 	while (*fmt) {
+=======
+	while (*fmt && *str) {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		/* skip any white space in format */
 		/* white space in format matchs any amount of
 		 * white space, including none, in the input.
@@ -1953,8 +2193,11 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
 		 * advance both strings to next white space
 		 */
 		if (*fmt == '*') {
+<<<<<<< HEAD
 			if (!*str)
 				break;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			while (!isspace(*fmt) && *fmt != '%' && *fmt)
 				fmt++;
 			while (!isspace(*str) && *str)
@@ -1969,8 +2212,13 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
 
 		/* get conversion qualifier */
 		qualifier = -1;
+<<<<<<< HEAD
 		if (*fmt == 'h' || _tolower(*fmt) == 'l' ||
 		    _tolower(*fmt) == 'z') {
+=======
+		if (*fmt == 'h' || TOLOWER(*fmt) == 'l' ||
+		    TOLOWER(*fmt) == 'z') {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			qualifier = *fmt++;
 			if (unlikely(qualifier == *fmt)) {
 				if (qualifier == 'h') {
@@ -1983,6 +2231,7 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
 			}
 		}
 
+<<<<<<< HEAD
 		if (!*fmt)
 			break;
 
@@ -1994,6 +2243,9 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
 		}
 
 		if (!*str)
+=======
+		if (!*fmt || !*str)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			break;
 
 		base = 10;
@@ -2026,6 +2278,16 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
 			num++;
 		}
 		continue;
+<<<<<<< HEAD
+=======
+		case 'n':
+			/* return number of characters read so far */
+		{
+			int *i = (int *)va_arg(args, int*);
+			*i = str - buf;
+		}
+		continue;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		case 'o':
 			base = 8;
 			break;
@@ -2126,6 +2388,19 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
 		str = next;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Now we've come all the way through so either the input string or the
+	 * format ended. In the former case, there can be a %n at the current
+	 * position in the format that needs to be filled.
+	 */
+	if (*fmt == '%' && *(fmt + 1) == 'n') {
+		int *p = (int *)va_arg(args, int *);
+		*p = str - buf;
+	}
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return num;
 }
 EXPORT_SYMBOL(vsscanf);

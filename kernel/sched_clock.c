@@ -74,7 +74,11 @@
  */
 unsigned long long __attribute__((weak)) sched_clock(void)
 {
+<<<<<<< HEAD
 	return (unsigned long long)(get_jiffies_64() - INITIAL_JIFFIES)
+=======
+	return (unsigned long long)(jiffies - INITIAL_JIFFIES)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 					* (NSEC_PER_SEC / HZ);
 }
 EXPORT_SYMBOL_GPL(sched_clock);

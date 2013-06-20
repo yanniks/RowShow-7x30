@@ -33,8 +33,11 @@
 static void spidev_release(struct device *dev)
 {
 	struct spi_device	*spi = to_spi_device(dev);
+<<<<<<< HEAD
 	if (!spi)
 		return;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* spi masters may cleanup for released devices */
 	if (spi->master->cleanup)
@@ -76,10 +79,14 @@ const struct spi_device_id *spi_get_device_id(const struct spi_device *sdev)
 {
 	const struct spi_driver *sdrv = to_spi_driver(sdev->dev.driver);
 
+<<<<<<< HEAD
 	if (sdrv)
 		return spi_match_id(sdrv->id_table, sdev);
 	else
 		return NULL;
+=======
+	return spi_match_id(sdrv->id_table, sdev);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL_GPL(spi_get_device_id);
 
@@ -92,7 +99,11 @@ static int spi_match_device(struct device *dev, struct device_driver *drv)
 	if (of_driver_match_device(dev, drv))
 		return 1;
 
+<<<<<<< HEAD
 	if (sdrv && sdrv->id_table)
+=======
+	if (sdrv->id_table)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return !!spi_match_id(sdrv->id_table, spi);
 
 	return strcmp(spi->modalias, drv->name) == 0;
@@ -233,28 +244,40 @@ static int spi_drv_probe(struct device *dev)
 {
 	const struct spi_driver		*sdrv = to_spi_driver(dev->driver);
 
+<<<<<<< HEAD
 	if (sdrv)
 		return sdrv->probe(to_spi_device(dev));
 	else
 		return -ENODEV;
+=======
+	return sdrv->probe(to_spi_device(dev));
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static int spi_drv_remove(struct device *dev)
 {
 	const struct spi_driver		*sdrv = to_spi_driver(dev->driver);
 
+<<<<<<< HEAD
 	if (sdrv)
 		return sdrv->remove(to_spi_device(dev));
 	else
 		return -ENODEV;
+=======
+	return sdrv->remove(to_spi_device(dev));
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static void spi_drv_shutdown(struct device *dev)
 {
 	const struct spi_driver		*sdrv = to_spi_driver(dev->driver);
 
+<<<<<<< HEAD
 	if (sdrv)
 		sdrv->shutdown(to_spi_device(dev));
+=======
+	sdrv->shutdown(to_spi_device(dev));
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /**
@@ -1113,6 +1136,7 @@ int spi_write_then_read(struct spi_device *spi,
 }
 EXPORT_SYMBOL_GPL(spi_write_then_read);
 
+<<<<<<< HEAD
 /**
  * spi_write_and_read - SPI synchronous write and read in full duplex
  * @spi: device with which data will be exchanged
@@ -1228,6 +1252,8 @@ spi_read_write_lock(struct spi_device *spidev, struct spi_msg *msg, char *buf, i
 	return err;
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*-------------------------------------------------------------------------*/
 
 static int __init spi_init(void)

@@ -557,8 +557,12 @@ extern ssize_t compat_rw_copy_check_uvector(int type,
 		const struct compat_iovec __user *uvector,
 		unsigned long nr_segs,
 		unsigned long fast_segs, struct iovec *fast_pointer,
+<<<<<<< HEAD
 		struct iovec **ret_pointer,
 		int check_access);
+=======
+		struct iovec **ret_pointer);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 extern void __user *compat_alloc_user_space(unsigned long len);
 

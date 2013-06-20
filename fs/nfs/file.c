@@ -55,7 +55,11 @@ static ssize_t nfs_file_splice_write(struct pipe_inode_info *pipe,
 static ssize_t nfs_file_write(struct kiocb *, const struct iovec *iov,
 				unsigned long nr_segs, loff_t pos);
 static int  nfs_file_flush(struct file *, fl_owner_t id);
+<<<<<<< HEAD
 static int  nfs_file_fsync(struct file *, loff_t, loff_t, int datasync);
+=======
+static int  nfs_file_fsync(struct file *, int datasync);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static int nfs_check_flags(int flags);
 static int nfs_lock(struct file *filp, int cmd, struct file_lock *fl);
 static int nfs_flock(struct file *filp, int cmd, struct file_lock *fl);
@@ -187,23 +191,36 @@ static loff_t nfs_file_llseek(struct file *filp, loff_t offset, int origin)
 			filp->f_path.dentry->d_name.name,
 			offset, origin);
 
+<<<<<<< HEAD
 	/*
 	 * origin == SEEK_END || SEEK_DATA || SEEK_HOLE => we must revalidate
 	 * the cached file length
 	 */
 	if (origin != SEEK_SET || origin != SEEK_CUR) {
+=======
+	/* origin == SEEK_END => we must revalidate the cached file length */
+	if (origin == SEEK_END) {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		struct inode *inode = filp->f_mapping->host;
 
 		int retval = nfs_revalidate_file_size(inode, filp);
 		if (retval < 0)
 			return (loff_t)retval;
 
+<<<<<<< HEAD
 		/* AK: should drop this lock. Unlikely to be needed. */
 		spin_lock(&inode->i_lock);
 		loff = generic_file_llseek(filp, offset, origin);
 		spin_unlock(&inode->i_lock);
 	} else
 		loff = generic_file_llseek(filp, offset, origin);
+=======
+		spin_lock(&inode->i_lock);
+		loff = generic_file_llseek_unlocked(filp, offset, origin);
+		spin_unlock(&inode->i_lock);
+	} else
+		loff = generic_file_llseek_unlocked(filp, offset, origin);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return loff;
 }
 
@@ -309,7 +326,11 @@ nfs_file_mmap(struct file * file, struct vm_area_struct * vma)
  * fall back to doing a synchronous write.
  */
 static int
+<<<<<<< HEAD
 nfs_file_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+=======
+nfs_file_fsync(struct file *file, int datasync)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	struct dentry *dentry = file->f_path.dentry;
 	struct nfs_open_context *ctx = nfs_file_open_context(file);
@@ -317,15 +338,22 @@ nfs_file_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 	int have_error, status;
 	int ret = 0;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	dprintk("NFS: fsync file(%s/%s) datasync %d\n",
 			dentry->d_parent->d_name.name, dentry->d_name.name,
 			datasync);
 
+<<<<<<< HEAD
 	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
 	if (ret)
 		return ret;
 	mutex_lock(&inode->i_mutex);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	nfs_inc_stats(inode, NFSIOS_VFSFSYNC);
 	have_error = test_and_clear_bit(NFS_CONTEXT_ERROR_WRITE, &ctx->flags);
 	status = nfs_commit_inode(inode, FLUSH_SYNC);
@@ -337,7 +365,10 @@ nfs_file_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 	if (!ret && !datasync)
 		/* application has asked for meta-data sync */
 		ret = pnfs_layoutcommit_inode(inode, true);
+<<<<<<< HEAD
 	mutex_unlock(&inode->i_mutex);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return ret;
 }
 

@@ -1147,15 +1147,21 @@ static struct proc_dir_entry *rndis_connect_state [RNDIS_MAX_CONFIGS];
 
 #endif /* CONFIG_USB_GADGET_DEBUG_FILES */
 
+<<<<<<< HEAD
 static bool rndis_initialized;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 int rndis_init(void)
 {
 	u8 i;
 
+<<<<<<< HEAD
 	if (rndis_initialized)
 		return 0;
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	for (i = 0; i < RNDIS_MAX_CONFIGS; i++) {
 #ifdef	CONFIG_USB_GADGET_DEBUG_FILES
 		char name [20];
@@ -1182,7 +1188,10 @@ int rndis_init(void)
 		INIT_LIST_HEAD(&(rndis_per_dev_params[i].resp_queue));
 	}
 
+<<<<<<< HEAD
 	rndis_initialized = true;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 
@@ -1191,6 +1200,7 @@ void rndis_exit(void)
 #ifdef CONFIG_USB_GADGET_DEBUG_FILES
 	u8 i;
 	char name[20];
+<<<<<<< HEAD
 #endif
 
 	if (!rndis_initialized)
@@ -1198,6 +1208,9 @@ void rndis_exit(void)
 	rndis_initialized = false;
 
 #ifdef CONFIG_USB_GADGET_DEBUG_FILES
+=======
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	for (i = 0; i < RNDIS_MAX_CONFIGS; i++) {
 		sprintf(name, NAME_TEMPLATE, i);
 		remove_proc_entry(name, NULL);

@@ -60,6 +60,10 @@ struct files_struct {
 
 #define rcu_dereference_check_fdtable(files, fdtfd) \
 	(rcu_dereference_check((fdtfd), \
+<<<<<<< HEAD
+=======
+			       rcu_read_lock_held() || \
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			       lockdep_is_held(&(files)->file_lock) || \
 			       atomic_read(&(files)->count) == 1 || \
 			       rcu_my_thread_group_empty()))

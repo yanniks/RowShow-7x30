@@ -157,8 +157,13 @@ __cacheline_aligned_in_smp DEFINE_SEQLOCK(xtime_lock);
  * - wall_to_monotonic is no longer the boot time, getboottime must be
  * used instead.
  */
+<<<<<<< HEAD
 struct timespec xtime __attribute__ ((aligned(16)));
 struct timespec wall_to_monotonic __attribute__ ((aligned(16)));
+=======
+static struct timespec xtime __attribute__ ((aligned (16)));
+static struct timespec wall_to_monotonic __attribute__ ((aligned (16)));
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static struct timespec total_sleep_time;
 
 /* Offset clock monotonic -> clock realtime */
@@ -649,9 +654,15 @@ static void update_sleep_time(struct timespec t)
  */
 static void __timekeeping_inject_sleeptime(struct timespec *delta)
 {
+<<<<<<< HEAD
 	if (!timespec_valid(delta)) {
 		printk(KERN_WARNING "__timekeeping_inject_sleeptime: Invalid "
 			"sleep delta value!\n");
+=======
+	if (!timespec_valid_strict(delta)) {
+		printk(KERN_WARNING "__timekeeping_inject_sleeptime: Invalid "
+					"sleep delta value!\n");
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return;
 	}
 
@@ -884,7 +895,11 @@ static cycle_t logarithmic_accumulation(cycle_t offset, int shift)
 	}
 
 	/* Accumulate raw time */
+<<<<<<< HEAD
 	raw_nsecs = (u64)timekeeper.raw_interval << shift;
+=======
+	raw_nsecs = timekeeper.raw_interval << shift;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	raw_nsecs += raw_time.tv_nsec;
 	if (raw_nsecs >= NSEC_PER_SEC) {
 		u64 raw_secs = raw_nsecs;
@@ -1053,7 +1068,11 @@ void get_monotonic_boottime(struct timespec *ts)
 	} while (read_seqretry(&xtime_lock, seq));
 
 	set_normalized_timespec(ts, ts->tv_sec + tomono.tv_sec + sleep.tv_sec,
+<<<<<<< HEAD
 		(s64)ts->tv_nsec + tomono.tv_nsec + sleep.tv_nsec + nsecs);
+=======
+			ts->tv_nsec + tomono.tv_nsec + sleep.tv_nsec + nsecs);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL_GPL(get_monotonic_boottime);
 
@@ -1137,7 +1156,10 @@ void do_timer(unsigned long ticks)
 	jiffies_64 += ticks;
 	update_wall_time();
 	calc_global_load(ticks);
+<<<<<<< HEAD
 	prepare_idle_mask(ticks);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /**

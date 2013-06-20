@@ -38,7 +38,10 @@
 #include <linux/uaccess.h>
 #include <linux/io.h>
 #include <linux/kdebug.h>
+<<<<<<< HEAD
 #include <linux/cpuidle.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #include <asm/pgtable.h>
 #include <asm/system.h>
@@ -99,7 +102,10 @@ void cpu_idle(void)
 	/* endless idle loop with no priority at all */
 	while (1) {
 		tick_nohz_stop_sched_tick(1);
+<<<<<<< HEAD
 		idle_notifier_call_chain(IDLE_START);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		while (!need_resched()) {
 
 			check_pgt_cache();
@@ -111,11 +117,17 @@ void cpu_idle(void)
 			local_irq_disable();
 			/* Don't trace irqs off for idle */
 			stop_critical_timings();
+<<<<<<< HEAD
 			if (cpuidle_idle_call())
 				pm_idle();
 			start_critical_timings();
 		}
 		idle_notifier_call_chain(IDLE_END);
+=======
+			pm_idle();
+			start_critical_timings();
+		}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		tick_nohz_restart_sched_tick();
 		preempt_enable_no_resched();
 		schedule();

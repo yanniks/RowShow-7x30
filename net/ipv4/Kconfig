@@ -224,12 +224,15 @@ config IP_MROUTE
 	  <file:Documentation/networking/multicast.txt>. If you haven't heard
 	  about it, you don't need it.
 
+<<<<<<< HEAD
 config LARGE_TCP_INITIAL_BUFFER
 	bool "TCP: initial TCP buffer size 5K:64K"
 	default y
 	help
 	 yes means TCP buffer size 5K
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config IP_MROUTE_MULTIPLE_TABLES
 	bool "IP: multicast policy routing"
 	depends on IP_MROUTE && IP_ADVANCED_ROUTER

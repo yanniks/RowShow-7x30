@@ -129,9 +129,12 @@ struct input_keymap_entry {
 
 #define EVIOCGRAB		_IOW('E', 0x90, int)			/* Grab/Release device */
 
+<<<<<<< HEAD
 #define EVIOCGSUSPENDBLOCK	_IOR('E', 0x91, int)			/* get suspend block enable */
 #define EVIOCSSUSPENDBLOCK	_IOW('E', 0x91, int)			/* set suspend block enable */
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * Device properties and quirks
  */
@@ -441,9 +444,12 @@ struct input_keymap_entry {
 #define KEY_WIMAX		246
 #define KEY_RFKILL		247	/* Key that controls all radios */
 
+<<<<<<< HEAD
 #define KEY_CAMCORDER		248	/* key that control Camera recorder */
 #define KEY_APP_SWITCH		249	/* key for list app*/
 #define KEY_WEIBO		250	/* key for weibo, customize*/
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* Code 255 is reserved for special needs of AT keyboard driver */
 
 #define BTN_MISC		0x100
@@ -664,7 +670,11 @@ struct input_keymap_entry {
 #define KEY_NUMERIC_9		0x209
 #define KEY_NUMERIC_STAR	0x20a
 #define KEY_NUMERIC_POUND	0x20b
+<<<<<<< HEAD
 #define KEY_CAMERA_SNAPSHOT	0x2fe
+=======
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define KEY_CAMERA_FOCUS	0x210
 #define KEY_WPS_BUTTON		0x211	/* WiFi Protected Setup key */
 
@@ -776,8 +786,11 @@ struct input_keymap_entry {
 
 #define ABS_MISC		0x28
 
+<<<<<<< HEAD
 #define ABS_MT_POSITION		0x2a    /* Group a set of X and Y */
 #define ABS_MT_AMPLITUDE	0x2b    /* Group a set of Z and W */
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define ABS_MT_SLOT		0x2f	/* MT slot being modified */
 #define ABS_MT_TOUCH_MAJOR	0x30	/* Major axis of touching ellipse */
 #define ABS_MT_TOUCH_MINOR	0x31	/* Minor axis (omit if circular) */
@@ -820,7 +833,10 @@ struct input_keymap_entry {
 #define SW_KEYPAD_SLIDE		0x0a  /* set = keypad slide out */
 #define SW_FRONT_PROXIMITY	0x0b  /* set = front proximity sensor active */
 #define SW_ROTATE_LOCK		0x0c  /* set = rotate locked/disabled */
+<<<<<<< HEAD
 #define SW_CAM			0x0e  /* set = 3D/Video mode for camera */
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define SW_MAX			0x0f
 #define SW_CNT			(SW_MAX+1)
 
@@ -1144,6 +1160,7 @@ struct ff_effect {
 #include <linux/mod_devicetable.h>
 
 /**
+<<<<<<< HEAD
  * struct input_value - input value representation
  * @type: type of value (EV_KEY, EV_ABS, etc)
  * @code: the value code
@@ -1156,6 +1173,8 @@ struct input_value {
 };
 
 /**
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * struct input_dev - represents an input device
  * @name: name of the device
  * @phys: physical path to the device in the system hierarchy
@@ -1231,6 +1250,10 @@ struct input_value {
  *	last user closes the device
  * @going_away: marks devices that are in a middle of unregistering and
  *	causes input_open_device*() fail with -ENODEV.
+<<<<<<< HEAD
+=======
+ * @sync: set to %true when there were no new events since last EV_SYN
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * @dev: driver model's view of this device
  * @h_list: list of input handles associated with the device. When
  *	accessing the list dev->mutex must be held
@@ -1298,14 +1321,22 @@ struct input_dev {
 	unsigned int users;
 	bool going_away;
 
+<<<<<<< HEAD
+=======
+	bool sync;
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	struct device dev;
 
 	struct list_head	h_list;
 	struct list_head	node;
+<<<<<<< HEAD
 
 	unsigned int num_vals;
 	unsigned int max_vals;
 	struct input_value *vals;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 #define to_input_dev(d) container_of(d, struct input_dev, dev)
 
@@ -1366,9 +1397,12 @@ struct input_handle;
  * @event: event handler. This method is being called by input core with
  *	interrupts disabled and dev->event_lock spinlock held and so
  *	it may not sleep
+<<<<<<< HEAD
  * @events: event sequence handler. This method is being called by
  *	input core with interrupts disabled and dev->event_lock
  *	spinlock held and so it may not sleep
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * @filter: similar to @event; separates normal event handlers from
  *	"filters".
  * @match: called after comparing device's id with handler's id_table
@@ -1405,8 +1439,11 @@ struct input_handler {
 	void *private;
 
 	void (*event)(struct input_handle *handle, unsigned int type, unsigned int code, int value);
+<<<<<<< HEAD
 	void (*events)(struct input_handle *handle,
 		       const struct input_value *vals, unsigned int count);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	bool (*filter)(struct input_handle *handle, unsigned int type, unsigned int code, int value);
 	bool (*match)(struct input_handler *handler, struct input_dev *dev);
 	int (*connect)(struct input_handler *handler, struct input_dev *dev, const struct input_device_id *id);

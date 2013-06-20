@@ -353,7 +353,11 @@ struct mdk_personality
 	int level;
 	struct list_head list;
 	struct module *owner;
+<<<<<<< HEAD
 	void (*make_request)(mddev_t *mddev, struct bio *bio);
+=======
+	int (*make_request)(mddev_t *mddev, struct bio *bio);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int (*run)(mddev_t *mddev);
 	int (*stop)(mddev_t *mddev);
 	void (*status)(struct seq_file *seq, mddev_t *mddev);

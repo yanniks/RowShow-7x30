@@ -8,6 +8,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+<<<<<<< HEAD
+=======
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  */
 
 #ifndef MSM_IOMMU_H
@@ -15,7 +23,10 @@
 
 #include <linux/interrupt.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
 #include <mach/socinfo.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* Sharability attributes of MSM IOMMU mappings */
 #define MSM_IOMMU_ATTR_NON_SH		0x0
@@ -27,9 +38,12 @@
 #define MSM_IOMMU_ATTR_CACHED_WB_NWA	0x2
 #define MSM_IOMMU_ATTR_CACHED_WT	0x3
 
+<<<<<<< HEAD
 /* Domain attributes */
 #define MSM_IOMMU_DOMAIN_PT_CACHEABLE	0x1
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* Mask for the cache policy attribute */
 #define MSM_IOMMU_CP_MASK		0x03
 
@@ -84,7 +98,10 @@ struct msm_iommu_drvdata {
 	int ncb;
 	struct clk *clk;
 	struct clk *pclk;
+<<<<<<< HEAD
 	const char *name;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 /**
@@ -104,6 +121,7 @@ struct msm_iommu_ctx_drvdata {
 };
 
 /*
+<<<<<<< HEAD
  * Interrupt handler for the IOMMU context fault interrupt. Hooking the
  * interrupt is not supported in the API yet, but this will print an error
  * message and dump useful IOMMU registers.
@@ -112,11 +130,14 @@ irqreturn_t msm_iommu_fault_handler(int irq, void *dev_id);
 
 #ifdef CONFIG_MSM_IOMMU
 /*
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * Look up an IOMMU context device by its context name. NULL if none found.
  * Useful for testing and drivers that do not yet fully have IOMMU stuff in
  * their platform devices.
  */
 struct device *msm_iommu_get_ctx(const char *ctx_name);
+<<<<<<< HEAD
 #else
 static inline struct device *msm_iommu_get_ctx(const char *ctx_name)
 {
@@ -139,3 +160,14 @@ static inline int msm_soc_version_supports_iommu(void)
 	}
 	return 1;
 }
+=======
+
+/*
+ * Interrupt handler for the IOMMU context fault interrupt. Hooking the
+ * interrupt is not supported in the API yet, but this will print an error
+ * message and dump useful IOMMU registers.
+ */
+irqreturn_t msm_iommu_fault_handler(int irq, void *dev_id);
+
+#endif
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

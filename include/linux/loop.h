@@ -74,8 +74,13 @@ struct loop_device {
  */
 enum {
 	LO_FLAGS_READ_ONLY	= 1,
+<<<<<<< HEAD
 	LO_FLAGS_AUTOCLEAR	= 4,
 	LO_FLAGS_PARTSCAN	= 8,
+=======
+	LO_FLAGS_USE_AOPS	= 2,
+	LO_FLAGS_AUTOCLEAR	= 4,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 #include <asm/posix_types.h>	/* for __kernel_old_dev_t */

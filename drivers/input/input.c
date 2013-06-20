@@ -47,8 +47,11 @@ static DEFINE_MUTEX(input_mutex);
 
 static struct input_handler *input_table[8];
 
+<<<<<<< HEAD
 static const struct input_value input_value_sync = { EV_SYN, SYN_REPORT, 1 };
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static inline int is_event_supported(unsigned int code,
 				     unsigned long *bm, unsigned int max)
 {
@@ -71,6 +74,7 @@ static int input_defuzz_abs_event(int value, int old_val, int fuzz)
 	return value;
 }
 
+<<<<<<< HEAD
 static void input_start_autorepeat(struct input_dev *dev, int code)
 {
 	if (test_bit(EV_REP, dev->evbit) &&
@@ -87,11 +91,14 @@ static void input_stop_autorepeat(struct input_dev *dev)
 	del_timer(&dev->timer);
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * Pass event first through all filters and then, if event has not been
  * filtered out, through all open handles. This function is called with
  * dev->event_lock held and interrupts disabled.
  */
+<<<<<<< HEAD
 static unsigned int input_to_handler(struct input_handle *handle,
 			struct input_value *vals, unsigned int count)
 {
@@ -134,10 +141,18 @@ static void input_pass_values(struct input_dev *dev,
 
 	if (!count)
 		return;
+=======
+static void input_pass_event(struct input_dev *dev,
+			     unsigned int type, unsigned int code, int value)
+{
+	struct input_handler *handler;
+	struct input_handle *handle;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	rcu_read_lock();
 
 	handle = rcu_dereference(dev->grab);
+<<<<<<< HEAD
 	if (handle) {
 		count = input_to_handler(handle, vals, count);
 	} else {
@@ -167,6 +182,30 @@ static void input_pass_event(struct input_dev *dev,
 	struct input_value vals[] = { { type, code, value } };
 
 	input_pass_values(dev, vals, ARRAY_SIZE(vals));
+=======
+	if (handle)
+		handle->handler->event(handle, type, code, value);
+	else {
+		bool filtered = false;
+
+		list_for_each_entry_rcu(handle, &dev->h_list, d_node) {
+			if (!handle->open)
+				continue;
+
+			handler = handle->handler;
+			if (!handler->filter) {
+				if (filtered)
+					break;
+
+				handler->event(handle, type, code, value);
+
+			} else if (handler->filter(handle, type, code, value))
+				filtered = true;
+		}
+	}
+
+	rcu_read_unlock();
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /*
@@ -183,12 +222,27 @@ static void input_repeat_key(unsigned long data)
 
 	if (test_bit(dev->repeat_key, dev->key) &&
 	    is_event_supported(dev->repeat_key, dev->keybit, KEY_MAX)) {
+<<<<<<< HEAD
 		struct input_value vals[] =  {
 			{ EV_KEY, dev->repeat_key, 2 },
 			input_value_sync
 		};
 
 		input_pass_values(dev, vals, ARRAY_SIZE(vals));
+=======
+
+		input_pass_event(dev, EV_KEY, dev->repeat_key, 2);
+
+		if (dev->sync) {
+			/*
+			 * Only send SYN_REPORT if we are not in a middle
+			 * of driver parsing a new hardware packet.
+			 * Otherwise assume that the driver will send
+			 * SYN_REPORT once it's done.
+			 */
+			input_pass_event(dev, EV_SYN, SYN_REPORT, 1);
+		}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		if (dev->rep[REP_PERIOD])
 			mod_timer(&dev->timer, jiffies +
@@ -198,11 +252,33 @@ static void input_repeat_key(unsigned long data)
 	spin_unlock_irqrestore(&dev->event_lock, flags);
 }
 
+<<<<<<< HEAD
 #define INPUT_IGNORE_EVENT	0
 #define INPUT_PASS_TO_HANDLERS	1
 #define INPUT_PASS_TO_DEVICE	2
 #define INPUT_SLOT		4
 #define INPUT_FLUSH		8
+=======
+static void input_start_autorepeat(struct input_dev *dev, int code)
+{
+	if (test_bit(EV_REP, dev->evbit) &&
+	    dev->rep[REP_PERIOD] && dev->rep[REP_DELAY] &&
+	    dev->timer.data) {
+		dev->repeat_key = code;
+		mod_timer(&dev->timer,
+			  jiffies + msecs_to_jiffies(dev->rep[REP_DELAY]));
+	}
+}
+
+static void input_stop_autorepeat(struct input_dev *dev)
+{
+	del_timer(&dev->timer);
+}
+
+#define INPUT_IGNORE_EVENT	0
+#define INPUT_PASS_TO_HANDLERS	1
+#define INPUT_PASS_TO_DEVICE	2
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define INPUT_PASS_TO_ALL	(INPUT_PASS_TO_HANDLERS | INPUT_PASS_TO_DEVICE)
 
 static int input_handle_abs_event(struct input_dev *dev,
@@ -249,14 +325,23 @@ static int input_handle_abs_event(struct input_dev *dev,
 	/* Flush pending "slot" event */
 	if (is_mt_event && dev->slot != input_abs_get_val(dev, ABS_MT_SLOT)) {
 		input_abs_set_val(dev, ABS_MT_SLOT, dev->slot);
+<<<<<<< HEAD
 		return INPUT_PASS_TO_HANDLERS | INPUT_SLOT;
+=======
+		input_pass_event(dev, EV_ABS, ABS_MT_SLOT, dev->slot);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	return INPUT_PASS_TO_HANDLERS;
 }
 
+<<<<<<< HEAD
 static int input_get_disposition(struct input_dev *dev,
 			  unsigned int type, unsigned int code, int value)
+=======
+static void input_handle_event(struct input_dev *dev,
+			       unsigned int type, unsigned int code, int value)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	int disposition = INPUT_IGNORE_EVENT;
 
@@ -269,9 +354,19 @@ static int input_get_disposition(struct input_dev *dev,
 			break;
 
 		case SYN_REPORT:
+<<<<<<< HEAD
 			disposition = INPUT_PASS_TO_HANDLERS | INPUT_FLUSH;
 			break;
 		case SYN_MT_REPORT:
+=======
+			if (!dev->sync) {
+				dev->sync = true;
+				disposition = INPUT_PASS_TO_HANDLERS;
+			}
+			break;
+		case SYN_MT_REPORT:
+			dev->sync = false;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			disposition = INPUT_PASS_TO_HANDLERS;
 			break;
 		}
@@ -355,6 +450,7 @@ static int input_get_disposition(struct input_dev *dev,
 		break;
 	}
 
+<<<<<<< HEAD
 	return disposition;
 }
 
@@ -364,10 +460,15 @@ static void input_handle_event(struct input_dev *dev,
 	int disposition;
 
 	disposition = input_get_disposition(dev, type, code, value);
+=======
+	if (disposition != INPUT_IGNORE_EVENT && type != EV_SYN)
+		dev->sync = false;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if ((disposition & INPUT_PASS_TO_DEVICE) && dev->event)
 		dev->event(dev, type, code, value);
 
+<<<<<<< HEAD
 	if (!dev->vals)
 		return;
 
@@ -397,6 +498,10 @@ static void input_handle_event(struct input_dev *dev,
 		dev->num_vals = 0;
 	}
 
+=======
+	if (disposition & INPUT_PASS_TO_HANDLERS)
+		input_pass_event(dev, type, code, value);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 /**
@@ -424,6 +529,10 @@ void input_event(struct input_dev *dev,
 	if (is_event_supported(type, dev->evbit, EV_MAX)) {
 
 		spin_lock_irqsave(&dev->event_lock, flags);
+<<<<<<< HEAD
+=======
+		add_input_randomness(type, code, value);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		input_handle_event(dev, type, code, value);
 		spin_unlock_irqrestore(&dev->event_lock, flags);
 	}
@@ -902,12 +1011,19 @@ int input_set_keycode(struct input_dev *dev,
 	if (test_bit(EV_KEY, dev->evbit) &&
 	    !is_event_supported(old_keycode, dev->keybit, KEY_MAX) &&
 	    __test_and_clear_bit(old_keycode, dev->key)) {
+<<<<<<< HEAD
 		struct input_value vals[] =  {
 			{ EV_KEY, old_keycode, 0 },
 			input_value_sync
 		};
 
 		input_pass_values(dev, vals, ARRAY_SIZE(vals));
+=======
+
+		input_pass_event(dev, EV_KEY, old_keycode, 0);
+		if (dev->sync)
+			input_pass_event(dev, EV_SYN, SYN_REPORT, 1);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
  out:
@@ -1489,7 +1605,10 @@ static void input_dev_release(struct device *device)
 	input_ff_destroy(dev);
 	input_mt_destroy_slots(dev);
 	kfree(dev->absinfo);
+<<<<<<< HEAD
 	kfree(dev->vals);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	kfree(dev);
 
 	module_put(THIS_MODULE);
@@ -1643,8 +1762,12 @@ void input_reset_device(struct input_dev *dev)
 
 	if (dev->users) {
 		input_dev_toggle(dev, true);
+<<<<<<< HEAD
 	/* Disable suspend release for fastboot feature */
 #if 0
+=======
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		/*
 		 * Keys that have been pressed at suspend time are unlikely
 		 * to be still pressed when we resume.
@@ -1652,7 +1775,10 @@ void input_reset_device(struct input_dev *dev)
 		spin_lock_irq(&dev->event_lock);
 		input_dev_release_keys(dev);
 		spin_unlock_irq(&dev->event_lock);
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 
 	mutex_unlock(&dev->mutex);
@@ -1854,9 +1980,12 @@ static unsigned int input_estimate_events_per_packet(struct input_dev *dev)
 		if (test_bit(i, dev->relbit))
 			events++;
 
+<<<<<<< HEAD
 	/* Make room for KEY and MSC events */
 	events += 7;
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return events;
 }
 
@@ -1895,7 +2024,10 @@ int input_register_device(struct input_dev *dev)
 {
 	static atomic_t input_no = ATOMIC_INIT(0);
 	struct input_handler *handler;
+<<<<<<< HEAD
 	unsigned int packet_size;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	const char *path;
 	int error;
 
@@ -1908,6 +2040,7 @@ int input_register_device(struct input_dev *dev)
 	/* Make sure that bitmasks not mentioned in dev->evbit are clean. */
 	input_cleanse_bitmasks(dev);
 
+<<<<<<< HEAD
 	packet_size = input_estimate_events_per_packet(dev);
 	if (dev->hint_events_per_packet < packet_size)
 		dev->hint_events_per_packet = packet_size;
@@ -1916,6 +2049,11 @@ int input_register_device(struct input_dev *dev)
 	dev->vals = kcalloc(dev->max_vals, sizeof(*dev->vals), GFP_KERNEL);
 	if (!dev->vals)
 		return -ENOMEM;
+=======
+	if (!dev->hint_events_per_packet)
+		dev->hint_events_per_packet =
+				input_estimate_events_per_packet(dev);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/*
 	 * If delay and period are pre-set by the driver, then autorepeating

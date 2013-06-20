@@ -36,6 +36,30 @@
 
 static int ehci_get_frame (struct usb_hcd *hcd);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PCI
+
+static unsigned ehci_read_frame_index(struct ehci_hcd *ehci)
+{
+	unsigned uf;
+
+	/*
+	 * The MosChip MCS9990 controller updates its microframe counter
+	 * a little before the frame counter, and occasionally we will read
+	 * the invalid intermediate value.  Avoid problems by checking the
+	 * microframe number (the low-order 3 bits); if they are 0 then
+	 * re-read the register to get the correct value.
+	 */
+	uf = ehci_readl(ehci, &ehci->regs->frame_index);
+	if (unlikely(ehci->frame_index_bug && ((uf & 7) == 0)))
+		uf = ehci_readl(ehci, &ehci->regs->frame_index);
+	return uf;
+}
+
+#endif
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*-------------------------------------------------------------------------*/
 
 /*
@@ -482,7 +506,11 @@ static int enable_periodic (struct ehci_hcd *ehci)
 	ehci_to_hcd(ehci)->state = HC_STATE_RUNNING;
 
 	/* make sure ehci_work scans these */
+<<<<<<< HEAD
 	ehci->next_uframe = ehci_readl(ehci, &ehci->regs->frame_index)
+=======
+	ehci->next_uframe = ehci_read_frame_index(ehci)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		% (ehci->periodic_size << 3);
 	if (unlikely(ehci->broken_periodic))
 		ehci->last_periodic_enable = ktime_get_real();
@@ -1412,7 +1440,11 @@ iso_stream_schedule (
 		goto fail;
 	}
 
+<<<<<<< HEAD
 	now = ehci_readl(ehci, &ehci->regs->frame_index) & (mod - 1);
+=======
+	now = ehci_read_frame_index(ehci) & (mod - 1);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* Typical case: reuse current schedule, stream is still active.
 	 * Hopefully there are no gaps from the host falling behind
@@ -2285,7 +2317,11 @@ scan_periodic (struct ehci_hcd *ehci)
 	 */
 	now_uframe = ehci->next_uframe;
 	if (HC_IS_RUNNING(ehci_to_hcd(ehci)->state)) {
+<<<<<<< HEAD
 		clock = ehci_readl(ehci, &ehci->regs->frame_index);
+=======
+		clock = ehci_read_frame_index(ehci);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		clock_frame = (clock >> 3) & (ehci->periodic_size - 1);
 	} else  {
 		clock = now_uframe + mod - 1;
@@ -2464,8 +2500,12 @@ restart:
 					|| ehci->periodic_sched == 0)
 				break;
 			ehci->next_uframe = now_uframe;
+<<<<<<< HEAD
 			now = ehci_readl(ehci, &ehci->regs->frame_index) &
 					(mod - 1);
+=======
+			now = ehci_read_frame_index(ehci) & (mod - 1);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			if (now_uframe == now)
 				break;
 

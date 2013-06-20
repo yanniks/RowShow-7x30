@@ -14,7 +14,10 @@
 #define __LINUX_POWER_SUPPLY_H__
 
 #include <linux/device.h>
+<<<<<<< HEAD
 #include <linux/wakelock.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <linux/workqueue.h>
 #include <linux/leds.h>
 
@@ -47,6 +50,7 @@ enum {
 };
 
 enum {
+<<<<<<< HEAD
 	POWER_SUPPLY_DISABLE_CHARGE = 0,
 	POWER_SUPPLY_ENABLE_SLOW_CHARGE,
 	POWER_SUPPLY_ENABLE_FAST_CHARGE,
@@ -58,6 +62,8 @@ enum {
 };
 
 enum {
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	POWER_SUPPLY_HEALTH_UNKNOWN = 0,
 	POWER_SUPPLY_HEALTH_GOOD,
 	POWER_SUPPLY_HEALTH_OVERHEAT,
@@ -139,7 +145,10 @@ enum power_supply_type {
 	POWER_SUPPLY_TYPE_UPS,
 	POWER_SUPPLY_TYPE_MAINS,
 	POWER_SUPPLY_TYPE_USB,		/* Standard Downstream Port */
+<<<<<<< HEAD
 	POWER_SUPPLY_TYPE_WIRELESS,
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	POWER_SUPPLY_TYPE_USB_DCP,	/* Dedicated Charging Port */
 	POWER_SUPPLY_TYPE_USB_CDP,	/* Charging Downstream Port */
 	POWER_SUPPLY_TYPE_USB_ACA,	/* Accessory Charger Adapters */
@@ -169,8 +178,11 @@ struct power_supply {
 				     enum power_supply_property psp);
 	void (*external_power_changed)(struct power_supply *psy);
 	void (*set_charged)(struct power_supply *psy);
+<<<<<<< HEAD
 	int (*set_current_limit)(struct power_supply *psy, int limit);
 	int (*set_charging_by)(struct power_supply *psy, bool enable);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* For APM emulation, think legacy userspace. */
 	int use_for_apm;
@@ -178,9 +190,12 @@ struct power_supply {
 	/* private */
 	struct device *dev;
 	struct work_struct changed_work;
+<<<<<<< HEAD
 	spinlock_t changed_lock;
 	bool changed;
 	struct wake_lock work_wake_lock;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #ifdef CONFIG_LEDS_TRIGGERS
 	struct led_trigger *charging_full_trig;
@@ -219,8 +234,11 @@ extern struct power_supply *power_supply_get_by_name(char *name);
 extern void power_supply_changed(struct power_supply *psy);
 extern int power_supply_am_i_supplied(struct power_supply *psy);
 extern int power_supply_set_battery_charged(struct power_supply *psy);
+<<<<<<< HEAD
 extern int power_supply_set_current_limit(struct power_supply *psy, int limit);
 extern int power_supply_set_charging_by(struct power_supply *psy, bool enable);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #if defined(CONFIG_POWER_SUPPLY) || defined(CONFIG_POWER_SUPPLY_MODULE)
 extern int power_supply_is_system_supplied(void);

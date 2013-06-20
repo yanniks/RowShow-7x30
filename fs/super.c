@@ -38,6 +38,7 @@
 LIST_HEAD(super_blocks);
 DEFINE_SPINLOCK(sb_lock);
 
+<<<<<<< HEAD
 /*
  * One thing we have to be careful of with a per-sb shrinker is that we don't
  * drop the last active reference to the superblock from within the shrinker.
@@ -80,6 +81,8 @@ static int prune_super(struct shrinker *shrink, struct shrink_control *sc)
 	return count;
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /**
  *	alloc_super	-	create new superblock
  *	@type:	filesystem type superblock should belong to
@@ -119,8 +122,11 @@ static struct super_block *alloc_super(struct file_system_type *type)
 		INIT_HLIST_BL_HEAD(&s->s_anon);
 		INIT_LIST_HEAD(&s->s_inodes);
 		INIT_LIST_HEAD(&s->s_dentry_lru);
+<<<<<<< HEAD
 		INIT_LIST_HEAD(&s->s_inode_lru);
 		spin_lock_init(&s->s_inode_lru_lock);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		init_rwsem(&s->s_umount);
 		mutex_init(&s->s_lock);
 		lockdep_set_class(&s->s_umount, &type->s_umount_key);
@@ -158,9 +164,12 @@ static struct super_block *alloc_super(struct file_system_type *type)
 		s->s_op = &default_op;
 		s->s_time_gran = 1000000000;
 		s->cleancache_poolid = -1;
+<<<<<<< HEAD
 
 		s->s_shrink.seeks = DEFAULT_SEEKS;
 		s->s_shrink.shrink = prune_super;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 out:
 	return s;
@@ -188,7 +197,11 @@ static inline void destroy_super(struct super_block *s)
 /*
  * Drop a superblock's refcount.  The caller must hold sb_lock.
  */
+<<<<<<< HEAD
 static void __put_super(struct super_block *sb)
+=======
+void __put_super(struct super_block *sb)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	if (!--sb->s_count) {
 		list_del_init(&sb->s_list);
@@ -203,7 +216,11 @@ static void __put_super(struct super_block *sb)
  *	Drops a temporary reference, frees superblock if there's no
  *	references left.
  */
+<<<<<<< HEAD
 static void put_super(struct super_block *sb)
+=======
+void put_super(struct super_block *sb)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	spin_lock(&sb_lock);
 	__put_super(sb);
@@ -226,12 +243,17 @@ void deactivate_locked_super(struct super_block *s)
 {
 	struct file_system_type *fs = s->s_type;
 	if (atomic_dec_and_test(&s->s_active)) {
+<<<<<<< HEAD
 		cleancache_invalidate_fs(s);
 		fs->kill_sb(s);
 
 		/* caches are now gone, we can safely kill the shrinker now */
 		unregister_shrinker(&s->s_shrink);
 
+=======
+		cleancache_flush_fs(s);
+		fs->kill_sb(s);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		/*
 		 * We need to call rcu_barrier so all the delayed rcu free
 		 * inodes are flushed before we release the fs module.
@@ -292,6 +314,7 @@ static int grab_super(struct super_block *s) __releases(sb_lock)
 }
 
 /*
+<<<<<<< HEAD
  *	grab_super_passive - acquire a passive reference
  *	@s: reference we are trying to grab
  *
@@ -325,15 +348,25 @@ bool grab_super_passive(struct super_block *sb)
 }
 
 /*
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  * Superblock locking.  We really ought to get rid of these two.
  */
 void lock_super(struct super_block * sb)
 {
+<<<<<<< HEAD
+=======
+	get_fs_excl();
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	mutex_lock(&sb->s_lock);
 }
 
 void unlock_super(struct super_block * sb)
 {
+<<<<<<< HEAD
+=======
+	put_fs_excl();
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	mutex_unlock(&sb->s_lock);
 }
 
@@ -358,9 +391,17 @@ void generic_shutdown_super(struct super_block *sb)
 {
 	const struct super_operations *sop = sb->s_op;
 
+<<<<<<< HEAD
 	if (sb->s_root) {
 		shrink_dcache_for_umount(sb);
 		sync_filesystem(sb);
+=======
+
+	if (sb->s_root) {
+		shrink_dcache_for_umount(sb);
+		sync_filesystem(sb);
+		get_fs_excl();
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		sb->s_flags &= ~MS_ACTIVE;
 
 		fsnotify_unmount_inodes(&sb->s_inodes);
@@ -375,6 +416,10 @@ void generic_shutdown_super(struct super_block *sb)
 			   "Self-destruct in 5 seconds.  Have a nice day...\n",
 			   sb->s_id);
 		}
+<<<<<<< HEAD
+=======
+		put_fs_excl();
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	spin_lock(&sb_lock);
 	/* should be initialized for __put_super_and_need_restart() */
@@ -443,7 +488,10 @@ retry:
 	list_add(&s->s_instances, &type->fs_supers);
 	spin_unlock(&sb_lock);
 	get_filesystem(type);
+<<<<<<< HEAD
 	register_shrinker(&s->s_shrink);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return s;
 }
 
@@ -532,6 +580,7 @@ void iterate_supers(void (*f)(struct super_block *, void *), void *arg)
 }
 
 /**
+<<<<<<< HEAD
  *	iterate_supers_type - call function for superblocks of given type
  *	@type: fs type
  *	@f: function to call
@@ -568,6 +617,8 @@ void iterate_supers_type(struct file_system_type *type,
 EXPORT_SYMBOL(iterate_supers_type);
 
 /**
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  *	get_super - get the superblock of a device
  *	@bdev: device to get the superblock for
  *	
@@ -773,7 +824,11 @@ static DEFINE_IDA(unnamed_dev_ida);
 static DEFINE_SPINLOCK(unnamed_dev_lock);/* protects the above */
 static int unnamed_dev_start = 0; /* don't bother trying below it */
 
+<<<<<<< HEAD
 int get_anon_bdev(dev_t *p)
+=======
+int set_anon_super(struct super_block *s, void *data)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	int dev;
 	int error;
@@ -800,6 +855,7 @@ int get_anon_bdev(dev_t *p)
 		spin_unlock(&unnamed_dev_lock);
 		return -EMFILE;
 	}
+<<<<<<< HEAD
 	*p = MKDEV(0, dev & MINORMASK);
 	return 0;
 }
@@ -808,12 +864,27 @@ EXPORT_SYMBOL(get_anon_bdev);
 void free_anon_bdev(dev_t dev)
 {
 	int slot = MINOR(dev);
+=======
+	s->s_dev = MKDEV(0, dev & MINORMASK);
+	s->s_bdi = &noop_backing_dev_info;
+	return 0;
+}
+
+EXPORT_SYMBOL(set_anon_super);
+
+void kill_anon_super(struct super_block *sb)
+{
+	int slot = MINOR(sb->s_dev);
+
+	generic_shutdown_super(sb);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	spin_lock(&unnamed_dev_lock);
 	ida_remove(&unnamed_dev_ida, slot);
 	if (slot < unnamed_dev_start)
 		unnamed_dev_start = slot;
 	spin_unlock(&unnamed_dev_lock);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(free_anon_bdev);
 
 int set_anon_super(struct super_block *s, void *data)
@@ -832,6 +903,8 @@ void kill_anon_super(struct super_block *sb)
 	generic_shutdown_super(sb);
 	free_anon_bdev(dev);
 }
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 EXPORT_SYMBOL(kill_anon_super);
 

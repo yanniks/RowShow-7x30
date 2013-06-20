@@ -19,7 +19,10 @@
 #include <linux/pipe_fs_i.h>
 #include <linux/swap.h>
 #include <linux/splice.h>
+<<<<<<< HEAD
 #include <linux/freezer.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 MODULE_ALIAS_MISCDEV(FUSE_MINOR);
 MODULE_ALIAS("devname:fuse");
@@ -388,10 +391,14 @@ __acquires(fc->lock)
 	 * Wait it out.
 	 */
 	spin_unlock(&fc->lock);
+<<<<<<< HEAD
 
 	while (req->state != FUSE_REQ_FINISHED)
 		wait_event_freezable(req->waitq,
 				     req->state == FUSE_REQ_FINISHED);
+=======
+	wait_event(req->waitq, req->state == FUSE_REQ_FINISHED);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	spin_lock(&fc->lock);
 
 	if (!req->aborted)
@@ -854,9 +861,15 @@ static int fuse_copy_page(struct fuse_copy_state *cs, struct page **pagep,
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Start from addr(pages[0]) + page_offset. No holes in the middle. */
 static int fuse_copy_pages_for_buf(struct fuse_copy_state *cs, unsigned nbytes,
 				   int zeroing)
+=======
+/* Copy pages in the request to/from userspace buffer */
+static int fuse_copy_pages(struct fuse_copy_state *cs, unsigned nbytes,
+			   int zeroing)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 {
 	unsigned i;
 	struct fuse_req *req = cs->req;
@@ -878,6 +891,7 @@ static int fuse_copy_pages_for_buf(struct fuse_copy_state *cs, unsigned nbytes,
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Take iov_offset as offset in iovec[0]. Iterate based on iovec[].iov_len */
 static int fuse_copy_pages_for_iovec(struct fuse_copy_state *cs,
 				     unsigned nbytes, int zeroing)
@@ -924,6 +938,8 @@ static int fuse_copy_pages(struct fuse_copy_state *cs, unsigned nbytes,
 		return fuse_copy_pages_for_buf(cs, nbytes, zeroing);
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* Copy a single argument in the request to/from userspace buffer */
 static int fuse_copy_one(struct fuse_copy_state *cs, void *val, unsigned size)
 {
@@ -1428,6 +1444,7 @@ static int fuse_notify_inval_entry(struct fuse_conn *fc, unsigned int size,
 	down_read(&fc->killsb);
 	err = -ENOENT;
 	if (fc->sb)
+<<<<<<< HEAD
 		err = fuse_reverse_inval_entry(fc->sb, outarg.parent, 0, &name);
 	up_read(&fc->killsb);
 	kfree(buf);
@@ -1481,6 +1498,9 @@ static int fuse_notify_delete(struct fuse_conn *fc, unsigned int size,
 	if (fc->sb)
 		err = fuse_reverse_inval_entry(fc->sb, outarg.parent,
 					       outarg.child, &name);
+=======
+		err = fuse_reverse_inval_entry(fc->sb, outarg.parent, &name);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	up_read(&fc->killsb);
 	kfree(buf);
 	return err;
@@ -1700,9 +1720,12 @@ static int fuse_notify(struct fuse_conn *fc, enum fuse_notify_code code,
 	case FUSE_NOTIFY_RETRIEVE:
 		return fuse_notify_retrieve(fc, size, cs);
 
+<<<<<<< HEAD
 	case FUSE_NOTIFY_DELETE:
 		return fuse_notify_delete(fc, size, cs);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	default:
 		fuse_copy_finish(cs);
 		return -EINVAL;

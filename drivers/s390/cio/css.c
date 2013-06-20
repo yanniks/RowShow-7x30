@@ -814,8 +814,13 @@ static int css_power_event(struct notifier_block *this, unsigned long event,
 				mutex_unlock(&css->mutex);
 				continue;
 			}
+<<<<<<< HEAD
 			ret = __chsc_do_secm(css, 0);
 			ret = notifier_from_errno(ret);
+=======
+			if (__chsc_do_secm(css, 0))
+				ret = NOTIFY_BAD;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			mutex_unlock(&css->mutex);
 		}
 		break;
@@ -831,8 +836,13 @@ static int css_power_event(struct notifier_block *this, unsigned long event,
 				mutex_unlock(&css->mutex);
 				continue;
 			}
+<<<<<<< HEAD
 			ret = __chsc_do_secm(css, 1);
 			ret = notifier_from_errno(ret);
+=======
+			if (__chsc_do_secm(css, 1))
+				ret = NOTIFY_BAD;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			mutex_unlock(&css->mutex);
 		}
 		/* search for subchannels, which appeared during hibernation */

@@ -99,6 +99,7 @@ const char *otg_state_string(enum usb_otg_state state)
 	}
 }
 EXPORT_SYMBOL(otg_state_string);
+<<<<<<< HEAD
 
 int otg_send_event(enum usb_otg_event event)
 {
@@ -114,3 +115,5 @@ int otg_send_event(enum usb_otg_event event)
 	return ret;
 }
 EXPORT_SYMBOL(otg_send_event);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

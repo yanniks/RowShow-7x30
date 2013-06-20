@@ -100,6 +100,7 @@ struct async_submit_bio {
 	struct btrfs_work work;
 };
 
+<<<<<<< HEAD
 /*
  * Lockdep class keys for extent_buffer->lock's in this root.  For a given
  * eb, the lockdep key is determined by the btrfs_root it belongs to and
@@ -122,11 +123,27 @@ struct async_submit_bio {
  * We also add a check to make sure the highest level of the tree is the
  * same as our lockdep setup here.  If BTRFS_MAX_LEVEL changes, this code
  * needs update as well.
+=======
+/* These are used to set the lockdep class on the extent buffer locks.
+ * The class is set by the readpage_end_io_hook after the buffer has
+ * passed csum validation but before the pages are unlocked.
+ *
+ * The lockdep class is also set by btrfs_init_new_buffer on freshly
+ * allocated blocks.
+ *
+ * The class is based on the level in the tree block, which allows lockdep
+ * to know that lower nodes nest inside the locks of higher nodes.
+ *
+ * We also add a check to make sure the highest level of the tree is
+ * the same as our lockdep setup here.  If BTRFS_MAX_LEVEL changes, this
+ * code needs update as well.
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  */
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
 # if BTRFS_MAX_LEVEL != 8
 #  error
 # endif
+<<<<<<< HEAD
 
 static struct btrfs_lockdep_keyset {
 	u64			id;		/* root objectid */
@@ -177,6 +194,22 @@ void btrfs_set_buffer_lockdep_class(u64 objectid, struct extent_buffer *eb,
 				   &ks->keys[level], ks->names[level]);
 }
 
+=======
+static struct lock_class_key btrfs_eb_class[BTRFS_MAX_LEVEL + 1];
+static const char *btrfs_eb_name[BTRFS_MAX_LEVEL + 1] = {
+	/* leaf */
+	"btrfs-extent-00",
+	"btrfs-extent-01",
+	"btrfs-extent-02",
+	"btrfs-extent-03",
+	"btrfs-extent-04",
+	"btrfs-extent-05",
+	"btrfs-extent-06",
+	"btrfs-extent-07",
+	/* highest possible level */
+	"btrfs-extent-08",
+};
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 
 /*
@@ -262,6 +295,10 @@ static int csum_tree_block(struct btrfs_root *root, struct extent_buffer *buf,
 	unsigned long len;
 	unsigned long cur_len;
 	unsigned long offset = BTRFS_CSUM_SIZE;
+<<<<<<< HEAD
+=======
+	char *map_token = NULL;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	char *kaddr;
 	unsigned long map_start;
 	unsigned long map_len;
@@ -272,7 +309,12 @@ static int csum_tree_block(struct btrfs_root *root, struct extent_buffer *buf,
 	len = buf->len - offset;
 	while (len > 0) {
 		err = map_private_extent_buffer(buf, offset, 32,
+<<<<<<< HEAD
 					&kaddr, &map_start, &map_len);
+=======
+					&map_token, &kaddr,
+					&map_start, &map_len, KM_USER0);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		if (err)
 			return 1;
 		cur_len = min(len, map_len - (offset - map_start));
@@ -280,6 +322,10 @@ static int csum_tree_block(struct btrfs_root *root, struct extent_buffer *buf,
 				      crc, cur_len);
 		len -= cur_len;
 		offset += cur_len;
+<<<<<<< HEAD
+=======
+		unmap_extent_buffer(buf, map_token, KM_USER0);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	if (csum_size > sizeof(inline_result)) {
 		result = kzalloc(csum_size * sizeof(char), GFP_NOFS);
@@ -536,6 +582,18 @@ static noinline int check_leaf(struct btrfs_root *root,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_DEBUG_LOCK_ALLOC
+void btrfs_set_buffer_lockdep_class(struct extent_buffer *eb, int level)
+{
+	lockdep_set_class_and_name(&eb->lock,
+			   &btrfs_eb_class[level],
+			   btrfs_eb_name[level]);
+}
+#endif
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static int btree_readpage_end_io_hook(struct page *page, u64 start, u64 end,
 			       struct extent_state *state)
 {
@@ -586,8 +644,12 @@ static int btree_readpage_end_io_hook(struct page *page, u64 start, u64 end,
 	}
 	found_level = btrfs_header_level(eb);
 
+<<<<<<< HEAD
 	btrfs_set_buffer_lockdep_class(btrfs_header_owner(eb),
 				       eb, found_level);
+=======
+	btrfs_set_buffer_lockdep_class(eb, found_level);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	ret = csum_tree_block(root, eb, 1);
 	if (ret) {
@@ -1112,7 +1174,16 @@ static int __setup_root(u32 nodesize, u32 leafsize, u32 sectorsize,
 	init_completion(&root->kobj_unregister);
 	root->defrag_running = 0;
 	root->root_key.objectid = objectid;
+<<<<<<< HEAD
 	root->anon_dev = 0;
+=======
+	root->anon_super.s_root = NULL;
+	root->anon_super.s_dev = 0;
+	INIT_LIST_HEAD(&root->anon_super.s_list);
+	INIT_LIST_HEAD(&root->anon_super.s_instances);
+	init_rwsem(&root->anon_super.s_umount);
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 
@@ -1341,7 +1412,11 @@ again:
 	spin_lock_init(&root->cache_lock);
 	init_waitqueue_head(&root->cache_wait);
 
+<<<<<<< HEAD
 	ret = get_anon_bdev(&root->anon_dev);
+=======
+	ret = set_anon_super(&root->anon_super, NULL);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (ret)
 		goto fail;
 
@@ -1633,7 +1708,11 @@ struct btrfs_root *open_ctree(struct super_block *sb,
 		goto fail_bdi;
 	}
 
+<<<<<<< HEAD
 	mapping_set_gfp_mask(fs_info->btree_inode->i_mapping, GFP_NOFS);
+=======
+	fs_info->btree_inode->i_mapping->flags &= ~__GFP_FS;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	INIT_RADIX_TREE(&fs_info->fs_roots_radix, GFP_ATOMIC);
 	INIT_LIST_HEAD(&fs_info->trans_list);
@@ -1837,9 +1916,12 @@ struct btrfs_root *open_ctree(struct super_block *sb,
 			   fs_info->thread_pool_size),
 			   &fs_info->generic_worker);
 
+<<<<<<< HEAD
 	btrfs_init_workers(&fs_info->caching_workers, "cache",
 			   2, &fs_info->generic_worker);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* a higher idle thresh on the submit workers makes it much more
 	 * likely that bios will be send down in a sane order to the
 	 * devices
@@ -1893,7 +1975,10 @@ struct btrfs_root *open_ctree(struct super_block *sb,
 	btrfs_start_workers(&fs_info->endio_write_workers, 1);
 	btrfs_start_workers(&fs_info->endio_freespace_worker, 1);
 	btrfs_start_workers(&fs_info->delayed_workers, 1);
+<<<<<<< HEAD
 	btrfs_start_workers(&fs_info->caching_workers, 1);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	fs_info->bdi.ra_pages *= btrfs_super_num_devices(disk_super);
 	fs_info->bdi.ra_pages = max(fs_info->bdi.ra_pages,
@@ -2151,7 +2236,10 @@ fail_sb_buffer:
 	btrfs_stop_workers(&fs_info->endio_freespace_worker);
 	btrfs_stop_workers(&fs_info->submit_workers);
 	btrfs_stop_workers(&fs_info->delayed_workers);
+<<<<<<< HEAD
 	btrfs_stop_workers(&fs_info->caching_workers);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 fail_alloc:
 	kfree(fs_info->delayed_root);
 fail_iput:
@@ -2428,8 +2516,15 @@ static void free_fs_root(struct btrfs_root *root)
 {
 	iput(root->cache_inode);
 	WARN_ON(!RB_EMPTY_ROOT(&root->inode_tree));
+<<<<<<< HEAD
 	if (root->anon_dev)
 		free_anon_bdev(root->anon_dev);
+=======
+	if (root->anon_super.s_dev) {
+		down_write(&root->anon_super.s_umount);
+		kill_anon_super(&root->anon_super);
+	}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	free_extent_buffer(root->node);
 	free_extent_buffer(root->commit_root);
 	kfree(root->free_ino_ctl);
@@ -2617,7 +2712,10 @@ int close_ctree(struct btrfs_root *root)
 	btrfs_stop_workers(&fs_info->endio_freespace_worker);
 	btrfs_stop_workers(&fs_info->submit_workers);
 	btrfs_stop_workers(&fs_info->delayed_workers);
+<<<<<<< HEAD
 	btrfs_stop_workers(&fs_info->caching_workers);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	btrfs_close_devices(fs_info->fs_devices);
 	btrfs_mapping_tree_free(&fs_info->mapping_tree);

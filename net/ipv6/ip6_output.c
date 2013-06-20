@@ -452,9 +452,14 @@ int ip6_forward(struct sk_buff *skb)
 	}
 
 	/* XXX: idev->cnf.proxy_ndp? */
+<<<<<<< HEAD
 	if ((net->ipv6.devconf_all->proxy_ndp == 1 &&
 	    pneigh_lookup(&nd_tbl, net, &hdr->daddr, skb->dev, 0))
 	    || net->ipv6.devconf_all->proxy_ndp >= 2) {
+=======
+	if (net->ipv6.devconf_all->proxy_ndp &&
+	    pneigh_lookup(&nd_tbl, net, &hdr->daddr, skb->dev, 0)) {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		int proxied = ip6_forward_proxy_check(skb);
 		if (proxied > 0)
 			return ip6_input(skb);

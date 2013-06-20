@@ -484,6 +484,7 @@ static int bnep_session(void *arg)
 
 	init_waitqueue_entry(&wait, current);
 	add_wait_queue(sk_sleep(sk), &wait);
+<<<<<<< HEAD
 	while (1) {
 		set_current_state(TASK_INTERRUPTIBLE);
 
@@ -496,6 +497,15 @@ static int bnep_session(void *arg)
 				bnep_rx_frame(s, skb);
 			else
 				kfree_skb(skb);
+=======
+	while (!kthread_should_stop()) {
+		set_current_state(TASK_INTERRUPTIBLE);
+
+		/* RX */
+		while ((skb = skb_dequeue(&sk->sk_receive_queue))) {
+			skb_orphan(skb);
+			bnep_rx_frame(s, skb);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		}
 
 		if (sk->sk_state != BT_CONNECTED)
@@ -645,10 +655,16 @@ int bnep_del_connection(struct bnep_conndel_req *req)
 	down_read(&bnep_session_sem);
 
 	s = __bnep_get_session(req->dst);
+<<<<<<< HEAD
 	if (s) {
 		atomic_inc(&s->terminate);
 		wake_up_process(s->task);
 	} else
+=======
+	if (s)
+		kthread_stop(s->task);
+	else
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		err = -ENOENT;
 
 	up_read(&bnep_session_sem);

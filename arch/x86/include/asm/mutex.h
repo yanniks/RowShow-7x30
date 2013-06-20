@@ -3,6 +3,7 @@
 #else
 # include "mutex_64.h"
 #endif
+<<<<<<< HEAD
 
 #ifndef	__ASM_MUTEX_H
 #define	__ASM_MUTEX_H
@@ -19,3 +20,5 @@
  */
 #define MUTEX_SHOULD_XCHG_COUNT(mutex)	(atomic_read(&(mutex)->count) >= 0)
 #endif
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

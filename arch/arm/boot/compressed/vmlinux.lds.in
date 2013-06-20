@@ -43,9 +43,12 @@ SECTIONS
 
   _etext = .;
 
+<<<<<<< HEAD
   /* Assume size of decompressed image is 4x the compressed image */
   _image_size = (_etext - _text) * 4;
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
   _got_start = .;
   .got			: { *(.got) }
   _got_end = .;
@@ -57,7 +60,12 @@ SECTIONS
   .bss			: { *(.bss) }
   _end = .;
 
+<<<<<<< HEAD
   .stack (NOLOAD)	: { *(.stack) }
+=======
+  . = ALIGN(8);		/* the stack must be 64-bit aligned */
+  .stack		: { *(.stack) }
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
   .stab 0		: { *(.stab) }
   .stabstr 0		: { *(.stabstr) }

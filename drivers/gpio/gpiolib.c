@@ -11,7 +11,10 @@
 #include <linux/of_gpio.h>
 #include <linux/idr.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/sched.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/gpio.h>
@@ -59,7 +62,10 @@ struct gpio_desc {
 #define FLAG_TRIG_FALL	5	/* trigger on falling edge */
 #define FLAG_TRIG_RISE	6	/* trigger on rising edge */
 #define FLAG_ACTIVE_LOW	7	/* sysfs value has active low */
+<<<<<<< HEAD
 #define FLAG_WAITING	8	/* Some initcall is waiting for this gpio */
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #define ID_SHIFT	16	/* add new flags before this one */
 
@@ -72,6 +78,7 @@ struct gpio_desc {
 };
 static struct gpio_desc gpio_desc[ARCH_NR_GPIOS];
 
+<<<<<<< HEAD
 struct gpio_waiter {
 	struct list_head list;
 	int gpio;
@@ -79,6 +86,8 @@ struct gpio_waiter {
 };
 static LIST_HEAD(waiters);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_GPIO_SYSFS
 static DEFINE_IDR(dirent_idr);
 #endif
@@ -1074,6 +1083,7 @@ int gpiochip_add(struct gpio_chip *chip)
 		for (id = base; id < base + chip->ngpio; id++) {
 			gpio_desc[id].chip = chip;
 
+<<<<<<< HEAD
 			if (test_bit(FLAG_WAITING, &gpio_desc[id].flags)) {
 				struct gpio_waiter *w;
 				list_for_each_entry(w, &waiters, list)
@@ -1081,6 +1091,8 @@ int gpiochip_add(struct gpio_chip *chip)
 						wake_up(&w->queue);
 			}
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			/* REVISIT:  most hardware initializes GPIOs as
 			 * inputs (often with pullups enabled) so power
 			 * usage is minimized.  Linux code should set the
@@ -1195,13 +1207,17 @@ int gpio_request(unsigned gpio, const char *label)
 	struct gpio_chip	*chip;
 	int			status = -EINVAL;
 	unsigned long		flags;
+<<<<<<< HEAD
 	int			can_wait = !in_atomic();
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	spin_lock_irqsave(&gpio_lock, flags);
 
 	if (!gpio_is_valid(gpio))
 		goto done;
 	desc = &gpio_desc[gpio];
+<<<<<<< HEAD
 	if (desc->chip == NULL) {
 		/* possibly need to wait for the chip to appear */
 		struct gpio_waiter w;
@@ -1230,6 +1246,11 @@ int gpio_request(unsigned gpio, const char *label)
 			goto done;
 	}
 	chip = desc->chip;
+=======
+	chip = desc->chip;
+	if (chip == NULL)
+		goto done;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (!try_module_get(chip->owner))
 		goto done;

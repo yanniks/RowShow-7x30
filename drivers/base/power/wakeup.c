@@ -101,17 +101,26 @@ EXPORT_SYMBOL_GPL(wakeup_source_destroy);
  */
 void wakeup_source_add(struct wakeup_source *ws)
 {
+<<<<<<< HEAD
 	unsigned long flags;
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (WARN_ON(!ws))
 		return;
 
 	setup_timer(&ws->timer, pm_wakeup_timer_fn, (unsigned long)ws);
 	ws->active = false;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&events_lock, flags);
 	list_add_rcu(&ws->entry, &wakeup_sources);
 	spin_unlock_irqrestore(&events_lock, flags);
+=======
+	spin_lock_irq(&events_lock);
+	list_add_rcu(&ws->entry, &wakeup_sources);
+	spin_unlock_irq(&events_lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL_GPL(wakeup_source_add);
 
@@ -121,6 +130,7 @@ EXPORT_SYMBOL_GPL(wakeup_source_add);
  */
 void wakeup_source_remove(struct wakeup_source *ws)
 {
+<<<<<<< HEAD
 	unsigned long flags;
 
 	if (WARN_ON(!ws))
@@ -129,6 +139,14 @@ void wakeup_source_remove(struct wakeup_source *ws)
 	spin_lock_irqsave(&events_lock, flags);
 	list_del_rcu(&ws->entry);
 	spin_unlock_irqrestore(&events_lock, flags);
+=======
+	if (WARN_ON(!ws))
+		return;
+
+	spin_lock_irq(&events_lock);
+	list_del_rcu(&ws->entry);
+	spin_unlock_irq(&events_lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	synchronize_rcu();
 }
 EXPORT_SYMBOL_GPL(wakeup_source_remove);
@@ -652,16 +670,26 @@ bool pm_get_wakeup_count(unsigned int *count)
 bool pm_save_wakeup_count(unsigned int count)
 {
 	unsigned int cnt, inpr;
+<<<<<<< HEAD
 	unsigned long flags;
 
 	events_check_enabled = false;
 	spin_lock_irqsave(&events_lock, flags);
+=======
+
+	events_check_enabled = false;
+	spin_lock_irq(&events_lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	split_counters(&cnt, &inpr);
 	if (cnt == count && inpr == 0) {
 		saved_count = count;
 		events_check_enabled = true;
 	}
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&events_lock, flags);
+=======
+	spin_unlock_irq(&events_lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!events_check_enabled)
 		pm_wakeup_update_hit_counts();
 	return events_check_enabled;

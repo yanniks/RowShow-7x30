@@ -56,6 +56,7 @@
 
 #define PPP_VERSION	"2.4.2"
 
+<<<<<<< HEAD
 #include <mach/board_htc.h>
 static int ppp_debug_mask;
 #define MODULE_NAME "[PPP]" /* HTC version */
@@ -67,6 +68,8 @@ static int ppp_debug_mask;
                         printk(KERN_DEBUG MODULE_NAME " "x);            \
         } while (0)
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * Network protocols we support.
  */
@@ -465,6 +468,7 @@ static ssize_t ppp_read(struct file *file, char __user *buf,
 		goto outf;
 	ret = skb->len;
 
+<<<<<<< HEAD
 	if (ppp_debug_mask)
 	{
 		int i=0;
@@ -475,6 +479,8 @@ static ssize_t ppp_read(struct file *file, char __user *buf,
 		printk("\n");
 	}
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
  outf:
 	kfree_skb(skb);
  out:
@@ -488,6 +494,7 @@ static ssize_t ppp_write(struct file *file, const char __user *buf,
 	struct sk_buff *skb;
 	ssize_t ret;
 
+<<<<<<< HEAD
 	if (ppp_debug_mask)
 	{
 		int i=0;
@@ -498,6 +505,8 @@ static ssize_t ppp_write(struct file *file, const char __user *buf,
 		printk("\n");
 	}
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!pf)
 		return -ENXIO;
 	ret = -ENOMEM;
@@ -930,6 +939,7 @@ static int __init ppp_init(void)
 {
 	int err;
 
+<<<<<<< HEAD
 	if (get_kernel_flag() & BIT(22)){
 		ppp_debug_mask = 1;
 		printk(KERN_DEBUG MODULE_NAME " %s enable ppp debug msg\n", __func__);
@@ -939,6 +949,8 @@ static int __init ppp_init(void)
 		printk(KERN_DEBUG MODULE_NAME " %s disable ppp debug msg\n", __func__);
 	}
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	pr_info("PPP generic driver version " PPP_VERSION "\n");
 
 	err = register_pernet_device(&ppp_net_ops);
@@ -1274,7 +1286,10 @@ ppp_send_frame(struct ppp *ppp, struct sk_buff *skb)
 
  drop:
 	kfree_skb(skb);
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	++ppp->dev->stats.tx_errors;
 }
 

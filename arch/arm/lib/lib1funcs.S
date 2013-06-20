@@ -351,7 +351,11 @@ ENDPROC(__aeabi_idivmod)
 
 #endif
 
+<<<<<<< HEAD
 ENTRY(Ldiv0)
+=======
+Ldiv0:
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 UNWIND(.fnstart)
 UNWIND(.pad #4)
 UNWIND(.save {lr})

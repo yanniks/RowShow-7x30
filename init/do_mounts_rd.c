@@ -120,6 +120,7 @@ identify_ramdisk_image(int fd, int start_block, decompress_fn *decompressor)
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Read 512 bytes further to check if cramfs is padded
 	 */
 	sys_lseek(fd, start_block * BLOCK_SIZE + 0x200, 0);
@@ -134,6 +135,8 @@ identify_ramdisk_image(int fd, int start_block, decompress_fn *decompressor)
 	}
 
 	/*
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	 * Read block 1 to test for minix and ext2 superblock
 	 */
 	sys_lseek(fd, (start_block+1) * BLOCK_SIZE, 0);

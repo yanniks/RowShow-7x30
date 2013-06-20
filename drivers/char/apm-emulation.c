@@ -606,7 +606,11 @@ static int apm_suspend_notifier(struct notifier_block *nb,
 			return NOTIFY_OK;
 
 		/* interrupted by signal */
+<<<<<<< HEAD
 		return notifier_from_errno(err);
+=======
+		return NOTIFY_BAD;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	case PM_POST_SUSPEND:
 		/*

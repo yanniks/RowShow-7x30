@@ -467,7 +467,11 @@ static struct socket *sock_alloc(void)
 	struct inode *inode;
 	struct socket *sock;
 
+<<<<<<< HEAD
 	inode = new_inode_pseudo(sock_mnt->mnt_sb);
+=======
+	inode = new_inode(sock_mnt->mnt_sb);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (!inode)
 		return NULL;
 
@@ -509,6 +513,7 @@ const struct file_operations bad_sock_fops = {
  *	an inode not a file.
  */
 
+<<<<<<< HEAD
 int add_or_remove_port(struct sock *sk, int add_or_remove);	/* SSD_RIL: Garbage_Filter_TCP */
 
 void sock_release(struct socket *sock)
@@ -518,6 +523,10 @@ void sock_release(struct socket *sock)
 		add_or_remove_port(sock->sk, 0);
 	/* --SSD_RIL: Garbage_Filter_TCP */
 
+=======
+void sock_release(struct socket *sock)
+{
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (sock->ops) {
 		struct module *owner = sock->ops->owner;
 
@@ -1447,6 +1456,7 @@ SYSCALL_DEFINE3(bind, int, fd, struct sockaddr __user *, umyaddr, int, addrlen)
 						      &address, addrlen);
 		}
 		fput_light(sock->file, fput_needed);
+<<<<<<< HEAD
 		/* ++SSD_RIL: Garbage_Filter_UDP */
 		#ifdef CONFIG_ARCH_MSM8960
 		if (sock->sk != NULL) {
@@ -1455,6 +1465,8 @@ SYSCALL_DEFINE3(bind, int, fd, struct sockaddr __user *, umyaddr, int, addrlen)
 		}
 		#endif
 		/* --SSD_RIL: Garbage_Filter_UDP */
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	return err;
 }
@@ -1482,10 +1494,13 @@ SYSCALL_DEFINE2(listen, int, fd, int, backlog)
 			err = sock->ops->listen(sock, backlog);
 
 		fput_light(sock->file, fput_needed);
+<<<<<<< HEAD
 		/* ++SSD_RIL: Garbage_Filter_TCP */
 		if (sock->sk != NULL)
 			add_or_remove_port(sock->sk, 1);
 		/* --SSD_RIL: Garbage_Filter_TCP */
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	return err;
 }
@@ -2903,7 +2918,11 @@ static int bond_ioctl(struct net *net, unsigned int cmd,
 
 		return dev_ioctl(net, cmd, uifr);
 	default:
+<<<<<<< HEAD
 		return -ENOIOCTLCMD;
+=======
+		return -EINVAL;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 }
 
@@ -3230,6 +3249,23 @@ static int compat_sock_ioctl_trans(struct file *file, struct socket *sock,
 		return sock_do_ioctl(net, sock, cmd, arg);
 	}
 
+<<<<<<< HEAD
+=======
+	/* Prevent warning from compat_sys_ioctl, these always
+	 * result in -EINVAL in the native case anyway. */
+	switch (cmd) {
+	case SIOCRTMSG:
+	case SIOCGIFCOUNT:
+	case SIOCSRARP:
+	case SIOCGRARP:
+	case SIOCDRARP:
+	case SIOCSIFLINK:
+	case SIOCGIFSLAVE:
+	case SIOCSIFSLAVE:
+		return -EINVAL;
+	}
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return -ENOIOCTLCMD;
 }
 

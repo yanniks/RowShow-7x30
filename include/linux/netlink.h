@@ -26,7 +26,10 @@
 #define NETLINK_ECRYPTFS	19
 #define NETLINK_RDMA		20
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define MAX_LINKS 32		
 
 struct sockaddr_nl {

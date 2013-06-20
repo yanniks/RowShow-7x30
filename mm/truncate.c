@@ -52,7 +52,11 @@ void do_invalidatepage(struct page *page, unsigned long offset)
 static inline void truncate_partial_page(struct page *page, unsigned partial)
 {
 	zero_user_segment(page, partial, PAGE_CACHE_SIZE);
+<<<<<<< HEAD
 	cleancache_invalidate_page(page->mapping, page);
+=======
+	cleancache_flush_page(page->mapping, page);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (page_has_private(page))
 		do_invalidatepage(page, partial);
 }
@@ -216,7 +220,11 @@ void truncate_inode_pages_range(struct address_space *mapping,
 	pgoff_t next;
 	int i;
 
+<<<<<<< HEAD
 	cleancache_invalidate_inode(mapping);
+=======
+	cleancache_flush_inode(mapping);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (mapping->nrpages == 0)
 		return;
 
@@ -294,7 +302,11 @@ void truncate_inode_pages_range(struct address_space *mapping,
 		pagevec_release(&pvec);
 		mem_cgroup_uncharge_end();
 	}
+<<<<<<< HEAD
 	cleancache_invalidate_inode(mapping);
+=======
+	cleancache_flush_inode(mapping);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL(truncate_inode_pages_range);
 
@@ -450,7 +462,11 @@ int invalidate_inode_pages2_range(struct address_space *mapping,
 	int did_range_unmap = 0;
 	int wrapped = 0;
 
+<<<<<<< HEAD
 	cleancache_invalidate_inode(mapping);
+=======
+	cleancache_flush_inode(mapping);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	pagevec_init(&pvec, 0);
 	next = start;
 	while (next <= end && !wrapped &&
@@ -509,7 +525,11 @@ int invalidate_inode_pages2_range(struct address_space *mapping,
 		mem_cgroup_uncharge_end();
 		cond_resched();
 	}
+<<<<<<< HEAD
 	cleancache_invalidate_inode(mapping);
+=======
+	cleancache_flush_inode(mapping);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return ret;
 }
 EXPORT_SYMBOL_GPL(invalidate_inode_pages2_range);
@@ -623,11 +643,19 @@ int vmtruncate_range(struct inode *inode, loff_t offset, loff_t end)
 		return -ENOSYS;
 
 	mutex_lock(&inode->i_mutex);
+<<<<<<< HEAD
 	inode_dio_wait(inode);
+=======
+	down_write(&inode->i_alloc_sem);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	unmap_mapping_range(mapping, offset, (end - offset), 1);
 	inode->i_op->truncate_range(inode, offset, end);
 	/* unmap again to remove racily COWed private pages */
 	unmap_mapping_range(mapping, offset, (end - offset), 1);
+<<<<<<< HEAD
+=======
+	up_write(&inode->i_alloc_sem);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	mutex_unlock(&inode->i_mutex);
 
 	return 0;

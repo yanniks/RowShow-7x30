@@ -1341,10 +1341,18 @@ static int netlink_sendmsg(struct kiocb *kiocb, struct socket *sock,
 	if (msg->msg_flags&MSG_OOB)
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
 	if (NULL == siocb->scm)
 		siocb->scm = &scm;
 
 	err = scm_send(sock, msg, siocb->scm, true);
+=======
+	if (NULL == siocb->scm) {
+		siocb->scm = &scm;
+		memset(&scm, 0, sizeof(scm));
+	}
+	err = scm_send(sock, msg, siocb->scm);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (err < 0)
 		return err;
 

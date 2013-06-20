@@ -69,6 +69,7 @@ do {							\
 	__this_cpu_inc(*(DESC)->kstat_irqs);		\
 	__this_cpu_inc(kstat.irqs_sum);			\
 } while (0)
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_ARCH_MSM8X60
@@ -80,6 +81,9 @@ do {							\
 	(handle_irq[smp_processor_id()].last_served_irq = irqno); \
 	mb(); \
 	} while (0);
+=======
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 
 static inline void kstat_incr_softirqs_this_cpu(unsigned int irq)

@@ -55,11 +55,24 @@ static struct dentry *exofs_lookup(struct inode *dir, struct dentry *dentry,
 		return ERR_PTR(-ENAMETOOLONG);
 
 	ino = exofs_inode_by_name(dir, dentry);
+<<<<<<< HEAD
 	inode = ino ? exofs_iget(dir->i_sb, ino) : NULL;
 	return d_splice_alias(inode, dentry);
 }
 
 static int exofs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+=======
+	inode = NULL;
+	if (ino) {
+		inode = exofs_iget(dir->i_sb, ino);
+		if (IS_ERR(inode))
+			return ERR_CAST(inode);
+	}
+	return d_splice_alias(inode, dentry);
+}
+
+static int exofs_create(struct inode *dir, struct dentry *dentry, int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			 struct nameidata *nd)
 {
 	struct inode *inode = exofs_new_inode(dir, mode);
@@ -74,7 +87,11 @@ static int exofs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 	return err;
 }
 
+<<<<<<< HEAD
 static int exofs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
+=======
+static int exofs_mknod(struct inode *dir, struct dentry *dentry, int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		       dev_t rdev)
 {
 	struct inode *inode;

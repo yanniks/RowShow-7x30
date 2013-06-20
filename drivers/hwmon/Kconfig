@@ -28,6 +28,7 @@ config HWMON_VID
 	tristate
 	default n
 
+<<<<<<< HEAD
 config SENSORS_WPCE775X
 	bool "Winbond WPCE775X"
 	depends on I2C
@@ -36,6 +37,8 @@ config SENSORS_WPCE775X
 	  This driver provides support for the Winbond WPCE775XX Embedded
 	  Controller, which provides lcd backlight, LEDs, and Battery control.
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config HWMON_DEBUG_CHIP
 	bool "Hardware Monitoring Chip debugging messages"
 	default n
@@ -776,6 +779,7 @@ config SENSORS_MAX6650
 	  This driver can also be built as a module.  If so, the module
 	  will be called max6650.
 
+<<<<<<< HEAD
 config SENSORS_MSM_ADC
 	tristate "MSM ADC Driver for current measurement"
 	depends on ARCH_MSM7X30 || ARCH_MSM8X60 || ARCH_FSM9XXX
@@ -798,6 +802,8 @@ config SENSORS_PM8XXX_ADC
 	  The driver supports reading the HKADC, XOADC and support to set and receive
 	  temperature threshold notifications using the Battery temperature module.
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 config SENSORS_PC87360
 	tristate "National Semiconductor PC87360 family"
 	select HWMON_VID

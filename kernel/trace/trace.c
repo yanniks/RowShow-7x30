@@ -4585,13 +4585,20 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
 		printk(KERN_TRACE "---------------------------------\n");
 
  out_enable:
+<<<<<<< HEAD
 	/* Re-enable tracing if requested */
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	trace_flags |= old_userobj;
 
 	for_each_tracing_cpu(cpu) {
 		atomic_dec(&iter.tr->data[cpu]->disabled);
 	}
+<<<<<<< HEAD
 	atomic_dec(&dump_running);
+=======
+ 	atomic_dec(&dump_running);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	local_irq_restore(flags);
 }
 EXPORT_SYMBOL_GPL(ftrace_dump);

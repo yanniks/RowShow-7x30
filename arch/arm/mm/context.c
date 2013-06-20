@@ -16,7 +16,11 @@
 #include <asm/mmu_context.h>
 #include <asm/tlbflush.h>
 
+<<<<<<< HEAD
 static DEFINE_RAW_SPINLOCK(cpu_asid_lock);
+=======
+static DEFINE_SPINLOCK(cpu_asid_lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 unsigned int cpu_last_asid = ASID_FIRST_VERSION;
 #ifdef CONFIG_SMP
 DEFINE_PER_CPU(struct mm_struct *, current_mm);
@@ -31,7 +35,11 @@ DEFINE_PER_CPU(struct mm_struct *, current_mm);
 void __init_new_context(struct task_struct *tsk, struct mm_struct *mm)
 {
 	mm->context.id = 0;
+<<<<<<< HEAD
 	raw_spin_lock_init(&mm->context.id_lock);
+=======
+	spin_lock_init(&mm->context.id_lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 
 static void flush_context(void)
@@ -58,7 +66,11 @@ static void set_mm_context(struct mm_struct *mm, unsigned int asid)
 	 * the broadcast. This function is also called via IPI so the
 	 * mm->context.id_lock has to be IRQ-safe.
 	 */
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&mm->context.id_lock, flags);
+=======
+	spin_lock_irqsave(&mm->context.id_lock, flags);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (likely((mm->context.id ^ cpu_last_asid) >> ASID_BITS)) {
 		/*
 		 * Old version of ASID found. Set the new one and
@@ -67,7 +79,11 @@ static void set_mm_context(struct mm_struct *mm, unsigned int asid)
 		mm->context.id = asid;
 		cpumask_clear(mm_cpumask(mm));
 	}
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&mm->context.id_lock, flags);
+=======
+	spin_unlock_irqrestore(&mm->context.id_lock, flags);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/*
 	 * Set the mm_cpumask(mm) bit for the current CPU.
@@ -117,7 +133,11 @@ void __new_context(struct mm_struct *mm)
 {
 	unsigned int asid;
 
+<<<<<<< HEAD
 	raw_spin_lock(&cpu_asid_lock);
+=======
+	spin_lock(&cpu_asid_lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_SMP
 	/*
 	 * Check the ASID again, in case the change was broadcast from
@@ -125,7 +145,11 @@ void __new_context(struct mm_struct *mm)
 	 */
 	if (unlikely(((mm->context.id ^ cpu_last_asid) >> ASID_BITS) == 0)) {
 		cpumask_set_cpu(smp_processor_id(), mm_cpumask(mm));
+<<<<<<< HEAD
 		raw_spin_unlock(&cpu_asid_lock);
+=======
+		spin_unlock(&cpu_asid_lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		return;
 	}
 #endif
@@ -153,5 +177,9 @@ void __new_context(struct mm_struct *mm)
 	}
 
 	set_mm_context(mm, asid);
+<<<<<<< HEAD
 	raw_spin_unlock(&cpu_asid_lock);
+=======
+	spin_unlock(&cpu_asid_lock);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }

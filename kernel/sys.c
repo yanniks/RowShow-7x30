@@ -336,9 +336,15 @@ void kernel_restart(char *cmd)
 	disable_nonboot_cpus();
 	syscore_shutdown();
 	if (!cmd)
+<<<<<<< HEAD
 		printk(KERN_EMERG "%s(parent:%s): Restarting system.\n", current->comm, current->parent->comm);
 	else
 		printk(KERN_EMERG "%s(parent:%s): Restarting system with command '%s'.\n", current->comm, current->parent->comm, cmd);
+=======
+		printk(KERN_EMERG "Restarting system.\n");
+	else
+		printk(KERN_EMERG "Restarting system with command '%s'.\n", cmd);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	kmsg_dump(KMSG_DUMP_RESTART);
 	machine_restart(cmd);
 }
@@ -402,6 +408,10 @@ SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
 {
 	char buffer[256];
 	int ret = 0;
+<<<<<<< HEAD
+=======
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* We only trust the superuser with rebooting the system. */
 	if (!capable(CAP_SYS_BOOT))
 		return -EPERM;
@@ -604,7 +614,10 @@ static int set_user(struct cred *new)
 
 	free_uid(new->user);
 	new->user = new_user;
+<<<<<<< HEAD
 	sched_autogroup_create_attach(current);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 
@@ -1114,7 +1127,11 @@ out:
 	write_unlock_irq(&tasklist_lock);
 	if (err > 0) {
 		proc_sid_connector(group_leader);
+<<<<<<< HEAD
 		
+=======
+		sched_autogroup_create_attach(group_leader);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	return err;
 }

@@ -703,7 +703,11 @@ static int validate_hardware_logical_block_alignment(struct dm_table *table,
 	while (i < dm_table_get_num_targets(table)) {
 		ti = dm_table_get_target(table, i++);
 
+<<<<<<< HEAD
 		blk_set_stacking_limits(&ti_limits);
+=======
+		blk_set_default_limits(&ti_limits);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		/* combine all target devices' limits */
 		if (ti->type->iterate_devices)
@@ -1124,10 +1128,17 @@ int dm_calculate_queue_limits(struct dm_table *table,
 	struct queue_limits ti_limits;
 	unsigned i = 0;
 
+<<<<<<< HEAD
 	blk_set_stacking_limits(limits);
 
 	while (i < dm_table_get_num_targets(table)) {
 		blk_set_stacking_limits(&ti_limits);
+=======
+	blk_set_default_limits(limits);
+
+	while (i < dm_table_get_num_targets(table)) {
+		blk_set_default_limits(&ti_limits);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 		ti = dm_table_get_target(table, i++);
 
@@ -1179,14 +1190,21 @@ combine_limits:
 static void dm_table_set_integrity(struct dm_table *t)
 {
 	struct gendisk *template_disk = NULL;
+<<<<<<< HEAD
 	int rc;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (!blk_get_integrity(dm_disk(t->md)))
 		return;
 
 	template_disk = dm_table_get_integrity_disk(t, true);
 	if (template_disk)
+<<<<<<< HEAD
 		rc = blk_integrity_register(dm_disk(t->md),
+=======
+		blk_integrity_register(dm_disk(t->md),
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 				       blk_get_integrity(template_disk));
 	else if (blk_integrity_is_initialized(dm_disk(t->md)))
 		DMWARN("%s: device no longer has a valid integrity profile",

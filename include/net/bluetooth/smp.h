@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
    BlueZ - Bluetooth protocol stack for Linux
    Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
@@ -20,6 +21,8 @@
    SOFTWARE IS DISCLAIMED.
 */
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifndef __SMP_H
 #define __SMP_H
 
@@ -38,6 +41,7 @@ struct smp_cmd_pairing {
 	__u8	resp_key_dist;
 } __packed;
 
+<<<<<<< HEAD
 #define SMP_IO_DISPLAY_ONLY	0x00
 #define SMP_IO_DISPLAY_YESNO	0x01
 #define SMP_IO_KEYBOARD_ONLY	0x02
@@ -62,6 +66,8 @@ struct smp_cmd_pairing {
 #define SMP_REQ_OOB		0x04
 #define SMP_OVERLAP		0xFF
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #define SMP_CMD_PAIRING_CONFIRM	0x03
 struct smp_cmd_pairing_confirm {
 	__u8	confirm_val[16];
@@ -119,6 +125,7 @@ struct smp_cmd_security_req {
 #define SMP_UNSPECIFIED		0x08
 #define SMP_REPEATED_ATTEMPTS		0x09
 
+<<<<<<< HEAD
 #define SMP_MIN_ENC_KEY_SIZE		7
 #define SMP_MAX_ENC_KEY_SIZE		16
 
@@ -128,4 +135,6 @@ int smp_sig_channel(struct l2cap_conn *conn, struct sk_buff *skb);
 int smp_link_encrypt_cmplt(struct l2cap_conn *conn, __u8 status, __u8 encrypt);
 void smp_timeout(unsigned long l2cap_conn);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif /* __SMP_H */

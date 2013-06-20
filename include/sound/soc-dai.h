@@ -172,8 +172,11 @@ struct snd_soc_dai_ops {
 		struct snd_soc_dai *);
 	int (*trigger)(struct snd_pcm_substream *, int,
 		struct snd_soc_dai *);
+<<<<<<< HEAD
 	int (*bespoke_trigger)(struct snd_pcm_substream *, int,
 		struct snd_soc_dai *);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/*
 	 * For hardware based FIFO caused delay reporting.
 	 * Optional.
@@ -211,10 +214,13 @@ struct snd_soc_dai_driver {
 	struct snd_soc_pcm_stream capture;
 	struct snd_soc_pcm_stream playback;
 	unsigned int symmetric_rates:1;
+<<<<<<< HEAD
 
 	/* probe ordering - for components with runtime dependencies */
 	int probe_order;
 	int remove_order;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 /*
@@ -283,6 +289,7 @@ static inline void *snd_soc_dai_get_drvdata(struct snd_soc_dai *dai)
 	return dev_get_drvdata(dai->dev);
 }
 
+<<<<<<< HEAD
 /* Backend DAI PCM ops */
 static inline int snd_soc_dai_startup(struct snd_pcm_substream *substream,
 	struct snd_soc_dai *dai)
@@ -377,4 +384,6 @@ static inline int snd_soc_dai_trigger(struct snd_pcm_substream *substream,
 		return dai->driver->ops->trigger(substream, cmd, dai);
 	return 0;
 }
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif

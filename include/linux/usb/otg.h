@@ -35,6 +35,7 @@ enum usb_otg_state {
 	OTG_STATE_A_VBUS_ERR,
 };
 
+<<<<<<< HEAD
 enum usb_otg_event {
 	/* Device is not connected within
 	 * TA_WAIT_BCON or not responding.
@@ -63,6 +64,8 @@ enum usb_otg_event {
 	OTG_EVENT_NO_RESP_FOR_SRP,
 };
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 enum usb_xceiv_events {
 	USB_EVENT_NONE,         /* no events or cable disconnected */
 	USB_EVENT_VBUS,         /* vbus valid event */
@@ -139,12 +142,15 @@ struct otg_transceiver {
 	/* start or continue HNP role switch */
 	int	(*start_hnp)(struct otg_transceiver *otg);
 
+<<<<<<< HEAD
 	/* send events to user space */
 	int	(*send_event)(struct otg_transceiver *otg,
 			enum usb_otg_event event);
 
 	void	(*notify_charger)(int connect_type);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 };
 
 
@@ -198,10 +204,13 @@ otg_shutdown(struct otg_transceiver *otg)
 		otg->shutdown(otg);
 }
 
+<<<<<<< HEAD
 /* for USB core, host and peripheral controller drivers */
 /* Context: can sleep */
 extern int otg_send_event(enum usb_otg_event event);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* for usb host and peripheral controller drivers */
 #ifdef CONFIG_USB_OTG_UTILS
 extern struct otg_transceiver *otg_get_transceiver(void);
@@ -258,6 +267,10 @@ otg_set_power(struct otg_transceiver *otg, unsigned mA)
 {
 	return otg->set_power(otg, mA);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /* Context: can sleep */
 static inline int
 otg_set_suspend(struct otg_transceiver *otg, int suspend)

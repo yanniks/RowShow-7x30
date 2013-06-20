@@ -44,6 +44,7 @@
 
 #include "workqueue_sched.h"
 
+<<<<<<< HEAD
 #define WQ_NAME			"events"
 #define WQ_HIST_LEN			(20)
 
@@ -66,6 +67,8 @@ int print_workqueue(void)
 	return 0;
 }
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 enum {
 	/* global_cwq flags */
 	GCWQ_MANAGE_WORKERS	= 1 << 0,	/* need to manage workers */
@@ -1058,10 +1061,14 @@ static void __queue_work(unsigned int cpu, struct workqueue_struct *wq,
 	cwq = get_cwq(gcwq->cpu, wq);
 	trace_workqueue_queue_work(cpu, cwq, work);
 
+<<<<<<< HEAD
 	if (WARN_ON(!list_empty(&work->entry))) {
 		spin_unlock_irqrestore(&gcwq->lock, flags);
 		return;
 	}
+=======
+	BUG_ON(!list_empty(&work->entry));
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	cwq->nr_in_flight[cwq->work_color]++;
 	work_flags = work_color_to_flags(cwq->work_color);
@@ -1844,9 +1851,13 @@ __acquires(&gcwq->lock)
 	 * lock freed" warnings as well as problems when looking into
 	 * work->lockdep_map, make a copy and use that here.
 	 */
+<<<<<<< HEAD
 	struct lockdep_map lockdep_map;
 
 	lockdep_copy_map(&lockdep_map, &work->lockdep_map);
+=======
+	struct lockdep_map lockdep_map = work->lockdep_map;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif
 	/*
 	 * A single work shouldn't be executed concurrently by
@@ -2493,9 +2504,12 @@ bool flush_work(struct work_struct *work)
 {
 	struct wq_barrier barr;
 
+<<<<<<< HEAD
 	lock_map_acquire(&work->lockdep_map);
 	lock_map_release(&work->lockdep_map);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (start_flush_work(work, &barr, true)) {
 		wait_for_completion(&barr.done);
 		destroy_work_on_stack(&barr.work);

@@ -1770,6 +1770,7 @@ free_interfaces:
 		goto free_interfaces;
 	}
 
+<<<<<<< HEAD
 	dev->actconfig = cp;
 	if (cp)
 		usb_notify_config_device(dev);
@@ -1795,6 +1796,10 @@ free_interfaces:
 	usb_set_device_state(dev, USB_STATE_CONFIGURED);
 
 	/* Initialize the new interface structures and the
+=======
+	/*
+	 * Initialize the new interface structures and the
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	 * hc/hcd/usbcore interface/endpoint state.
 	 */
 	for (i = 0; i < nintf; ++i) {

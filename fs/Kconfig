@@ -4,11 +4,14 @@
 
 menu "File systems"
 
+<<<<<<< HEAD
 config VFS_CACHE_PRESSURE
 	int "vfs Cache Pressure"
 	default 100
 	help
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 if BLOCK
 
 source "fs/ext2/Kconfig"
@@ -197,10 +200,13 @@ source "fs/hfsplus/Kconfig"
 source "fs/befs/Kconfig"
 source "fs/bfs/Kconfig"
 source "fs/efs/Kconfig"
+<<<<<<< HEAD
 
 # Patched by YAFFS
 source "fs/yaffs2/Kconfig"
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 source "fs/jffs2/Kconfig"
 # UBIFS File system configuration
 source "fs/ubifs/Kconfig"
@@ -279,10 +285,13 @@ endif
 source "fs/nls/Kconfig"
 source "fs/dlm/Kconfig"
 
+<<<<<<< HEAD
 config DYNAMIC_FSYNC
 	bool "dynamic file sync control"
 	default n
 	help
 	  An experimental file sync control using Android's early suspend / late resume drivers
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 endmenu

@@ -41,7 +41,10 @@ struct inet6_ifaddr {
 	struct in6_addr		addr;
 	__u32			prefix_len;
 	
+<<<<<<< HEAD
 	/* In seconds, relative to tstamp. Expiry is at tstamp + HZ * lft. */
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	__u32			valid_lft;
 	__u32			prefered_lft;
 	atomic_t		refcnt;

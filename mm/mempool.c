@@ -10,7 +10,11 @@
 
 #include <linux/mm.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/export.h>
+=======
+#include <linux/module.h>
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <linux/mempool.h>
 #include <linux/blkdev.h>
 #include <linux/writeback.h>

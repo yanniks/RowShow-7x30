@@ -8,10 +8,14 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 #include <stdlib.h>
 #ifndef __UCLIBC__
 #include <libio.h>
 #endif
+=======
+#include <libio.h>
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #include <dwarf-regs.h>
 
 struct pt_regs_dwarfnum {

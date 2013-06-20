@@ -71,6 +71,10 @@ const struct file_operations ext3_file_operations = {
 };
 
 const struct inode_operations ext3_file_inode_operations = {
+<<<<<<< HEAD
+=======
+	.truncate	= ext3_truncate,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	.setattr	= ext3_setattr,
 #ifdef CONFIG_EXT3_FS_XATTR
 	.setxattr	= generic_setxattr,
@@ -78,7 +82,11 @@ const struct inode_operations ext3_file_inode_operations = {
 	.listxattr	= ext3_listxattr,
 	.removexattr	= generic_removexattr,
 #endif
+<<<<<<< HEAD
 	.get_acl	= ext3_get_acl,
+=======
+	.check_acl	= ext3_check_acl,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	.fiemap		= ext3_fiemap,
 };
 

@@ -1,6 +1,10 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
+<<<<<<< HEAD
    Copyright (c) 2000-2001, 2011, The Linux Foundation. All rights reserved.
+=======
+   Copyright (C) 2000-2001 Qualcomm Incorporated
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -49,7 +53,11 @@
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
 
+<<<<<<< HEAD
 static int enable_mgmt = 1;
+=======
+static int enable_mgmt;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 /* ----- HCI socket interface ----- */
 
@@ -297,9 +305,12 @@ static inline int hci_sock_bound_ioctl(struct sock *sk, unsigned int cmd, unsign
 			return -EACCES;
 		return hci_blacklist_del(hdev, (void __user *) arg);
 
+<<<<<<< HEAD
 	case HCISETAUTHINFO:
 		return hci_set_auth_info(hdev, (void __user *) arg);
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	default:
 		if (hdev->ioctl)
 			return hdev->ioctl(hdev, cmd, arg);
@@ -328,12 +339,16 @@ static int hci_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long a
 	case HCIDEVUP:
 		if (!capable(CAP_NET_ADMIN))
 			return -EACCES;
+<<<<<<< HEAD
 
 		err =  hci_dev_open(arg);
 		if (!err || err == -EALREADY)
 			return 0;
 		else
 			return err;
+=======
+		return hci_dev_open(arg);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	case HCIDEVDOWN:
 		if (!capable(CAP_NET_ADMIN))
@@ -440,6 +455,10 @@ static int hci_sock_getname(struct socket *sock, struct sockaddr *addr, int *add
 	*addr_len = sizeof(*haddr);
 	haddr->hci_family = AF_BLUETOOTH;
 	haddr->hci_dev    = hdev->id;
+<<<<<<< HEAD
+=======
+	haddr->hci_channel= 0;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	release_sock(sk);
 	return 0;
@@ -523,7 +542,10 @@ static int hci_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 	struct sock *sk = sock->sk;
 	struct hci_dev *hdev;
 	struct sk_buff *skb;
+<<<<<<< HEAD
 	int reserve = 0;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	int err;
 
 	BT_DBG("sock %p sk %p", sock, sk);
@@ -561,6 +583,7 @@ static int hci_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 		goto done;
 	}
 
+<<<<<<< HEAD
 	/* Allocate extra headroom for Qualcomm PAL */
 	if (hdev->dev_type == HCI_AMP && hdev->manufacturer == 0x001d)
 		reserve = BT_SKB_RESERVE_80211;
@@ -573,6 +596,12 @@ static int hci_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 	if (reserve)
 		skb_reserve(skb, reserve);
 
+=======
+	skb = bt_skb_send_alloc(sk, len, msg->msg_flags & MSG_DONTWAIT, &err);
+	if (!skb)
+		goto done;
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	if (memcpy_fromiovec(skb_put(skb, len), msg->msg_iov, len)) {
 		err = -EFAULT;
 		goto drop;
@@ -661,6 +690,10 @@ static int hci_sock_setsockopt(struct socket *sock, int level, int optname, char
 		{
 			struct hci_filter *f = &hci_pi(sk)->filter;
 
+<<<<<<< HEAD
+=======
+			memset(&uf, 0, sizeof(uf));
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			uf.type_mask = f->type_mask;
 			uf.opcode    = f->opcode;
 			uf.event_mask[0] = *((u32 *) f->event_mask + 0);

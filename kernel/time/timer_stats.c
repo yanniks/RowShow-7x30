@@ -338,6 +338,7 @@ static int tstats_show(struct seq_file *m, void *v)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM8X60_LTE
 void htc_prink_name_offset(unsigned long addr)
 {
@@ -404,6 +405,8 @@ void htc_timer_stats_show(u16 water_mark)
 }
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 /*
  * After a state change, make sure all concurrent lookup/update
  * activities have stopped:
@@ -458,6 +461,7 @@ static ssize_t tstats_write(struct file *file, const char __user *buf,
 	return count;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM8X60_LTE
 void htc_timer_stats_OnOff(char OnOff)
 {
@@ -485,6 +489,8 @@ void htc_timer_stats_OnOff(char OnOff)
 }
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 static int tstats_open(struct inode *inode, struct file *filp)
 {
 	return single_open(filp, tstats_show, NULL);

@@ -1,6 +1,9 @@
 config ARM_GIC
 	bool
+<<<<<<< HEAD
 	select MSM_SHOW_RESUME_IRQ
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 config ARM_VIC
 	bool
@@ -40,6 +43,7 @@ config SHARP_PARAM
 
 config SHARP_SCOOP
 	bool
+<<<<<<< HEAD
 
 config FIQ_GLUE
 	bool
@@ -90,3 +94,5 @@ config FIQ_DEBUGGER_CONSOLE_DEFAULT_ENABLE
 	help
 	  If enabled, this puts the fiq debugger into console mode by default.
 	  Otherwise, the fiq debugger will start out in debug mode.
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

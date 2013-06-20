@@ -425,6 +425,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
 		goto error3;
 
 	new->rq->queuedata = new;
+<<<<<<< HEAD
 
 	/*
 	 * Empirical measurements revealed that read ahead values larger than
@@ -432,6 +433,8 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
 	 */
 	new->rq->backing_dev_info.ra_pages = (4 * 1024) / PAGE_CACHE_SIZE;
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	blk_queue_logical_block_size(new->rq, tr->blksize);
 
 	if (tr->discard) {

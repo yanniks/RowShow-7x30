@@ -729,7 +729,11 @@ static struct fb_info *file_fb_info(struct file *file)
 {
 	struct inode *inode = file->f_path.dentry->d_inode;
 	int fbidx = iminor(inode);
+<<<<<<< HEAD
 	struct fb_info *info = (fbidx < FB_MAX) ? registered_fb[fbidx] : NULL;
+=======
+	struct fb_info *info = registered_fb[fbidx];
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	if (info != file->private_data)
 		info = NULL;
@@ -1143,7 +1147,11 @@ static long do_fb_ioctl(struct fb_info *info, unsigned int cmd,
 			return -EFAULT;
 		if (con2fb.console < 1 || con2fb.console > MAX_NR_CONSOLES)
 			return -EINVAL;
+<<<<<<< HEAD
 		if (/*con2fb.framebuffer < 0 || */con2fb.framebuffer >= FB_MAX)
+=======
+		if (con2fb.framebuffer < 0 || con2fb.framebuffer >= FB_MAX)
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 			return -EINVAL;
 		if (!registered_fb[con2fb.framebuffer])
 			request_module("fb%d", con2fb.framebuffer);
@@ -1171,11 +1179,20 @@ static long do_fb_ioctl(struct fb_info *info, unsigned int cmd,
 		unlock_fb_info(info);
 		break;
 	default:
+<<<<<<< HEAD
+=======
+		if (!lock_fb_info(info))
+			return -ENODEV;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		fb = info->fbops;
 		if (fb->fb_ioctl)
 			ret = fb->fb_ioctl(info, cmd, arg);
 		else
 			ret = -ENOTTY;
+<<<<<<< HEAD
+=======
+		unlock_fb_info(info);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	return ret;
 }
@@ -1573,9 +1590,12 @@ static int do_register_framebuffer(struct fb_info *fb_info)
 	for (i = 0 ; i < FB_MAX; i++)
 		if (!registered_fb[i])
 			break;
+<<<<<<< HEAD
 	if (i == FB_MAX)
 		return -ENXIO;
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	fb_info->node = i;
 	atomic_set(&fb_info->count, 1);
 	mutex_init(&fb_info->lock);

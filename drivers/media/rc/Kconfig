@@ -1,7 +1,11 @@
 menuconfig RC_CORE
 	tristate "Remote Controller adapters"
 	depends on INPUT
+<<<<<<< HEAD
 	default n
+=======
+	default INPUT
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	---help---
 	  Enable support for Remote Controllers on Linux. This is
 	  needed in order to support several video capture adapters.

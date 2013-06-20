@@ -23,7 +23,10 @@
 #include <linux/string.h>
 #include <linux/ctype.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/memcopy.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #ifndef __HAVE_ARCH_STRNICMP
 /**
@@ -361,6 +364,10 @@ char *strim(char *s)
 	size_t size;
 	char *end;
 
+<<<<<<< HEAD
+=======
+	s = skip_spaces(s);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	size = strlen(s);
 	if (!size)
 		return s;
@@ -370,7 +377,11 @@ char *strim(char *s)
 		end--;
 	*(end + 1) = '\0';
 
+<<<<<<< HEAD
 	return skip_spaces(s);
+=======
+	return s;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL(strim);
 
@@ -596,11 +607,19 @@ EXPORT_SYMBOL(memset);
  */
 void *memcpy(void *dest, const void *src, size_t count)
 {
+<<<<<<< HEAD
 	unsigned long dstp = (unsigned long)dest; 
 	unsigned long srcp = (unsigned long)src; 
 
 	/* Copy from the beginning to the end */ 
 	mem_copy_fwd(dstp, srcp, count); 
+=======
+	char *tmp = dest;
+	const char *s = src;
+
+	while (count--)
+		*tmp++ = *s++;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return dest;
 }
 EXPORT_SYMBOL(memcpy);
@@ -617,6 +636,7 @@ EXPORT_SYMBOL(memcpy);
  */
 void *memmove(void *dest, const void *src, size_t count)
 {
+<<<<<<< HEAD
 	unsigned long dstp = (unsigned long)dest; 
 	unsigned long srcp = (unsigned long)src; 
 
@@ -626,6 +646,23 @@ void *memmove(void *dest, const void *src, size_t count)
 	} else {
 		/* Copy from the end to the beginning */ 
 		mem_copy_bwd(dstp, srcp, count); 
+=======
+	char *tmp;
+	const char *s;
+
+	if (dest <= src) {
+		tmp = dest;
+		s = src;
+		while (count--)
+			*tmp++ = *s++;
+	} else {
+		tmp = dest;
+		tmp += count;
+		s = src;
+		s += count;
+		while (count--)
+			*--tmp = *--s;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	}
 	return dest;
 }
@@ -750,6 +787,7 @@ void *memchr(const void *s, int c, size_t n)
 }
 EXPORT_SYMBOL(memchr);
 #endif
+<<<<<<< HEAD
 
 static void *check_bytes8(const u8 *start, u8 value, unsigned int bytes)
 {
@@ -804,3 +842,5 @@ void *memchr_inv(const void *start, int c, size_t bytes)
 	return check_bytes8(start, value, bytes % 8);
 }
 EXPORT_SYMBOL(memchr_inv);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d

@@ -224,7 +224,11 @@ static int gfs2_read_super(struct gfs2_sbd *sdp, sector_t sector, int silent)
 
 	bio->bi_end_io = end_bio_io_page;
 	bio->bi_private = page;
+<<<<<<< HEAD
 	submit_bio(READ_SYNC | REQ_META | REQ_PRIO, bio);
+=======
+	submit_bio(READ_SYNC | REQ_META, bio);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	wait_on_page_locked(page);
 	bio_put(bio);
 	if (!PageUptodate(page)) {

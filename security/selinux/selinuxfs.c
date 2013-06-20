@@ -1985,7 +1985,10 @@ __initcall(init_sel_fs);
 void exit_sel_fs(void)
 {
 	kobject_put(selinuxfs_kobj);
+<<<<<<< HEAD
 	kern_unmount(selinuxfs_mount);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	unregister_filesystem(&sel_fs_type);
 }
 #endif

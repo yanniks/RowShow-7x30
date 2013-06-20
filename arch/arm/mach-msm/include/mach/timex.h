@@ -18,8 +18,11 @@
 
 #define CLOCK_TICK_RATE		1000000
 
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_SMP
 #define ARCH_HAS_READ_CURRENT_TIMER
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #endif

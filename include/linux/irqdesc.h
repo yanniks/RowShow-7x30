@@ -52,7 +52,10 @@ struct irq_desc {
 	unsigned long		last_unhandled;	/* Aging timer for unhandled count */
 	unsigned int		irqs_unhandled;
 	raw_spinlock_t		lock;
+<<<<<<< HEAD
 	struct cpumask		*percpu_enabled;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_SMP
 	const struct cpumask	*affinity_hint;
 	struct irq_affinity_notify *affinity_notify;
@@ -66,7 +69,10 @@ struct irq_desc {
 #ifdef CONFIG_PROC_FS
 	struct proc_dir_entry	*dir;
 #endif
+<<<<<<< HEAD
 	struct module		*owner;
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	const char		*name;
 } ____cacheline_internodealigned_in_smp;
 
@@ -128,7 +134,10 @@ static inline void __irq_set_handler_locked(unsigned int irq,
 	struct irq_desc *desc;
 
 	desc = irq_to_desc(irq);
+<<<<<<< HEAD
 	BUG_ON(!desc);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	desc->handle_irq = handler;
 }
 

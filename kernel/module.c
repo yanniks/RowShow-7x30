@@ -2558,7 +2558,11 @@ static int move_module(struct module *mod, struct load_info *info)
 	 * after the module is initialized.
 	 */
 	kmemleak_ignore(ptr);
+<<<<<<< HEAD
 	if (!ptr) {
+=======
+	if (!ptr && mod->init_size) {
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		module_free(mod, mod->module_core);
 		return -ENOMEM;
 	}
@@ -3412,6 +3416,7 @@ void print_modules(void)
 	printk("\n");
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_WIMAX
 bool find_wimax_modules(void)
 {
@@ -3432,6 +3437,8 @@ bool find_wimax_modules(void)
 }
 #endif
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 #ifdef CONFIG_MODVERSIONS
 /* Generate the signature for all relevant module structures here.
  * If these change, we don't want to try to parse the module. */

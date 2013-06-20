@@ -297,7 +297,11 @@ static struct scsi_device *scsi_alloc_sdev(struct scsi_target *starget,
 		kfree(sdev);
 		goto out;
 	}
+<<<<<<< HEAD
 	WARN_ON_ONCE(!blk_get_queue(sdev->request_queue));
+=======
+	blk_get_queue(sdev->request_queue);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	sdev->request_queue->queuedata = sdev;
 	scsi_adjust_queue_depth(sdev, 0, sdev->host->cmd_per_lun);
 

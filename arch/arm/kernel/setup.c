@@ -49,8 +49,11 @@
 #include <asm/mach/time.h>
 #include <asm/traps.h>
 #include <asm/unwind.h>
+<<<<<<< HEAD
 #include <asm/memblock.h>
 #include <mach/board_htc.h>
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #if defined(CONFIG_DEPRECATED_PARAM_STRUCT)
 #include "compat.h"
@@ -88,12 +91,17 @@ EXPORT_SYMBOL(cacheid);
 unsigned int __atags_pointer __initdata;
 
 unsigned int system_rev;
+<<<<<<< HEAD
 unsigned int system_rev2;
 EXPORT_SYMBOL(system_rev);
 
 char microp_ver[4];
 EXPORT_SYMBOL(microp_ver);
 
+=======
+EXPORT_SYMBOL(system_rev);
+
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 unsigned int system_serial_low;
 EXPORT_SYMBOL(system_serial_low);
 
@@ -103,8 +111,11 @@ EXPORT_SYMBOL(system_serial_high);
 unsigned int elf_hwcap __read_mostly;
 EXPORT_SYMBOL(elf_hwcap);
 
+<<<<<<< HEAD
 unsigned int boot_reason;
 EXPORT_SYMBOL(boot_reason);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 #ifdef MULTI_CPU
 struct processor processor __read_mostly;
@@ -663,6 +674,7 @@ __tagtable(ATAG_SERIAL, parse_tag_serialnr);
 static int __init parse_tag_revision(const struct tag *tag)
 {
 	system_rev = tag->u.revision.rev;
+<<<<<<< HEAD
 	system_rev2 = system_rev;
 	if(tag->hdr.size > 3) {
 		system_rev = tag->u.revision.rev2;
@@ -670,6 +682,8 @@ static int __init parse_tag_revision(const struct tag *tag)
 		if((tag->u.revision.rev >= 0x80))  /* get MFG revision for driver use. */
 			system_rev = tag->u.revision.rev;
 	}
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return 0;
 }
 
@@ -916,9 +930,12 @@ void __init setup_arch(char **cmdline_p)
 
 	parse_early_param();
 
+<<<<<<< HEAD
 	if (mdesc->init_very_early)
 		mdesc->init_very_early();
 
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	sanity_check_meminfo();
 	arm_memblock_init(&meminfo, mdesc);
 
@@ -997,10 +1014,13 @@ static const char *hwcap_str[] = {
 	"neon",
 	"vfpv3",
 	"vfpv3d16",
+<<<<<<< HEAD
 	"tls",
 	"vfpv4",
 	"idiva",
 	"idivt",
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	NULL
 };
 
@@ -1060,8 +1080,12 @@ static int c_show(struct seq_file *m, void *v)
 	seq_puts(m, "\n");
 
 	seq_printf(m, "Hardware\t: %s\n", machine_name);
+<<<<<<< HEAD
 	seq_printf(m, "Revision\t: %04x\n", system_rev2);
 	seq_printf(m, "EngineerID\t: %04x\n", get_engineerid());
+=======
+	seq_printf(m, "Revision\t: %04x\n", system_rev);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	seq_printf(m, "Serial\t\t: %08x%08x\n",
 		   system_serial_high, system_serial_low);
 

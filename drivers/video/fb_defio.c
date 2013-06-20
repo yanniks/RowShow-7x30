@@ -66,6 +66,7 @@ static int fb_deferred_io_fault(struct vm_area_struct *vma,
 	return 0;
 }
 
+<<<<<<< HEAD
 int fb_deferred_io_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 {
 	struct fb_info *info = file->private_data;
@@ -73,19 +74,31 @@ int fb_deferred_io_fsync(struct file *file, loff_t start, loff_t end, int datasy
 	int err = filemap_write_and_wait_range(inode->i_mapping, start, end);
 	if (err)
 		return err;
+=======
+int fb_deferred_io_fsync(struct file *file, int datasync)
+{
+	struct fb_info *info = file->private_data;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 
 	/* Skip if deferred io is compiled-in but disabled on this fbdev */
 	if (!info->fbdefio)
 		return 0;
 
+<<<<<<< HEAD
 	mutex_lock(&inode->i_mutex);
+=======
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	/* Kill off the delayed work */
 	cancel_delayed_work_sync(&info->deferred_work);
 
 	/* Run it immediately */
+<<<<<<< HEAD
 	err = schedule_delayed_work(&info->deferred_work, 0);
 	mutex_unlock(&inode->i_mutex);
 	return err;
+=======
+	return schedule_delayed_work(&info->deferred_work, 0);
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 }
 EXPORT_SYMBOL_GPL(fb_deferred_io_fsync);
 

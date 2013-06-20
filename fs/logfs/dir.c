@@ -197,7 +197,11 @@ static int logfs_remove_inode(struct inode *inode)
 {
 	int ret;
 
+<<<<<<< HEAD
 	drop_nlink(inode);
+=======
+	inode->i_nlink--;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	ret = write_inode(inode);
 	LOGFS_BUG_ON(ret, inode->i_sb);
 	return ret;
@@ -371,9 +375,17 @@ static struct dentry *logfs_lookup(struct inode *dir, struct dentry *dentry,
 	page_cache_release(page);
 
 	inode = logfs_iget(dir->i_sb, ino);
+<<<<<<< HEAD
 	if (IS_ERR(inode))
 		printk(KERN_ERR"LogFS: Cannot read inode #%llx for dentry (%lx, %lx)n",
 				ino, dir->i_ino, index);
+=======
+	if (IS_ERR(inode)) {
+		printk(KERN_ERR"LogFS: Cannot read inode #%llx for dentry (%lx, %lx)n",
+				ino, dir->i_ino, index);
+		return ERR_CAST(inode);
+	}
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	return d_splice_alias(inode, dentry);
 }
 
@@ -433,7 +445,11 @@ static int __logfs_create(struct inode *dir, struct dentry *dentry,
 
 	ta = kzalloc(sizeof(*ta), GFP_KERNEL);
 	if (!ta) {
+<<<<<<< HEAD
 		drop_nlink(inode);
+=======
+		inode->i_nlink--;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		iput(inode);
 		return -ENOMEM;
 	}
@@ -456,7 +472,11 @@ static int __logfs_create(struct inode *dir, struct dentry *dentry,
 		abort_transaction(inode, ta);
 		li->li_flags |= LOGFS_IF_STILLBORN;
 		/* FIXME: truncate symlink */
+<<<<<<< HEAD
 		drop_nlink(inode);
+=======
+		inode->i_nlink--;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		iput(inode);
 		goto out;
 	}
@@ -501,7 +521,11 @@ static int logfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 	return __logfs_create(dir, dentry, inode, NULL, 0);
 }
 
+<<<<<<< HEAD
 static int logfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+=======
+static int logfs_create(struct inode *dir, struct dentry *dentry, int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		struct nameidata *nd)
 {
 	struct inode *inode;
@@ -517,7 +541,11 @@ static int logfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 	return __logfs_create(dir, dentry, inode, NULL, 0);
 }
 
+<<<<<<< HEAD
 static int logfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
+=======
+static int logfs_mknod(struct inode *dir, struct dentry *dentry, int mode,
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 		dev_t rdev)
 {
 	struct inode *inode;
@@ -563,7 +591,11 @@ static int logfs_link(struct dentry *old_dentry, struct inode *dir,
 
 	inode->i_ctime = dir->i_ctime = dir->i_mtime = CURRENT_TIME;
 	ihold(inode);
+<<<<<<< HEAD
 	inc_nlink(inode);
+=======
+	inode->i_nlink++;
+>>>>>>> ae02c5a7cd1ed15da0976a44b8d0da4ad5c0975d
 	mark_inode_dirty_sync(inode);
 
 	return __logfs_create(dir, dentry, inode, NULL, 0);
