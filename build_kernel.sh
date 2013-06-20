@@ -7,19 +7,24 @@ export ARCH=arm
 echo done!
 echo cleaning...
 make clean
+check_result "Cleaning failed."
 echo done!
 echo start compiling for $DEFCONFIG ...
 make $DEFCONFIG_defconfig
+check_result "Setting defconfig failed."
 make
+check_result "Build failed."
 echo done!
 echo creating update zip...
 bash zip
+check_result "Creating zip failed."
 echo done!
 if [ "$RELEASE" = "true" ]
 then
   echo releasing...
   mv /var/lib/jenkins/kernel-*.zip /var/www/kernel
   echo released new kernel binary under http://yauniks.homeunix.net/
+  check_result "Release failed."
 else
   echo everything done!
 fi
