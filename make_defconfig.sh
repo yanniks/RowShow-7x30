@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 DEFCONFIG_FILE=$1
 LOADMENU=$2
