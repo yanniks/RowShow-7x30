@@ -1607,15 +1607,12 @@ static void intel_sdvo_get_lvds_modes(struct drm_connector *connector)
 	 */
 	intel_ddc_get_modes(connector, &intel_sdvo->ddc);
 
-<<<<<<< HEAD
-=======
 	/*
 	 * Fetch modes from VBT. For SDVO prefer the VBT mode since some
 	 * SDVO->LVDS transcoders can't cope with the EDID mode. Since
 	 * drm_mode_probed_add adds the mode at the head of the list we add it
 	 * last.
 	 */
->>>>>>> 9df762c4a0efbe630f591f840005745e1e05d63c
 	if (dev_priv->sdvo_lvds_vbt_mode != NULL) {
 		newmode = drm_mode_duplicate(connector->dev,
 					     dev_priv->sdvo_lvds_vbt_mode);
