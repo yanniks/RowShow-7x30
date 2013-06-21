@@ -180,7 +180,11 @@ static void remove_migration_ptes(struct page *old, struct page *new)
  * get to the page and wait until migration is finished.
  * When we return from this function the fault will be retried.
  */
+<<<<<<< HEAD
 static void __migration_entry_wait(struct mm_struct *mm, pte_t *ptep,
+=======
+static void __migration_entry_wait(struct mm_struct *mm, pte_t * ptep,
+>>>>>>> 9df762c4a0efbe630f591f840005745e1e05d63c
 				spinlock_t *ptl)
 {
 	pte_t pte;
