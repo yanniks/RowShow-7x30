@@ -455,7 +455,7 @@ static void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 	 */
 	if (p->flags & PF_EXITING) {
 		set_tsk_thread_flag(p, TIF_MEMDIE);
-		return 0;
+		return;
 	}
 
 	if (__ratelimit(&oom_rs))
@@ -735,15 +735,10 @@ void out_of_memory(struct zonelist *zonelist, gfp_t gfp_mask,
 	if (sysctl_oom_kill_allocating_task && current->mm &&
 	    !oom_unkillable_task(current, NULL, nodemask) &&
 	    current->signal->oom_score_adj != OOM_SCORE_ADJ_MIN) {
-		/*
-		 * oom_kill_process() needs tasklist_lock held.  If it returns
-		 * non-zero, current could not be killed so we must fallback to
-		 * the tasklist scan.
-		 */
-		if (!oom_kill_process(current, gfp_mask, order, 0, totalpages,
-				NULL, nodemask,
-				"Out of memory (oom_kill_allocating_task)"))
-			goto out;
+		oom_kill_process(current, gfp_mask, order, 0, totalpages, NULL,
+						 nodemask,
+						 "Out of memory (oom_kill_allocating_task)");
+		goto out;
 	}
 
 	p = select_bad_process(&points, totalpages, NULL, mpol_mask,
@@ -755,10 +750,11 @@ void out_of_memory(struct zonelist *zonelist, gfp_t gfp_mask,
 		panic("Out of memory and no killable processes...\n");
 	}
 
-	if (oom_kill_process(p, gfp_mask, order, points, totalpages, NULL,
-				nodemask, "Out of memory"))
-		goto retry;
-	killed = 1;
+	if (PTR_ERR(p) != -1UL) {
+		oom_kill_process(p, gfp_mask, order, points, totalpages, NULL,
+						 nodemask, "Out of memory");
+		killed = 1;
+	}
 out:
 	read_unlock(&tasklist_lock);
 
