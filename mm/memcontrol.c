@@ -975,6 +975,19 @@ struct lruvec *mem_cgroup_lru_add_list(struct zone *zone, struct page *page,
 
 	pc = lookup_page_cgroup(page);
 	memcg = pc->mem_cgroup;
+
+	/*
+	 * Surreptitiously switch any uncharged page to root:
+	 * an uncharged page off lru does nothing to secure
+	 * its former mem_cgroup from sudden removal.
+	 *
+	 * Our caller holds lru_lock, and PageCgroupUsed is updated
+	 * under page_cgroup lock: between them, they make all uses
+	 * of pc->mem_cgroup safe.
+	 */
+	if (!PageCgroupUsed(pc) && memcg != root_mem_cgroup)
+		pc->mem_cgroup = memcg = root_mem_cgroup;
+
 	mz = page_cgroup_zoneinfo(memcg, page);
 	/* compound_order() is stabilized through lru_lock */
 	MEM_CGROUP_ZSTAT(mz, lru) += 1 << compound_order(page);
