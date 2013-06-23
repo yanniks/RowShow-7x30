@@ -488,7 +488,7 @@ static struct inode *dlmfs_get_inode(struct inode *parent,
 /* SMP-safe */
 static int dlmfs_mkdir(struct inode * dir,
 		       struct dentry * dentry,
-		       umode_t mode)
+		       int mode)
 {
 	int status;
 	struct inode *inode = NULL;

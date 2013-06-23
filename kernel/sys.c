@@ -334,7 +334,7 @@ void kernel_restart(char *cmd)
 {
 	kernel_restart_prepare(cmd);
 	disable_nonboot_cpus();
-	syscore_shutdown();
+    syscore_shutdown();
 	if (!cmd)
 		printk(KERN_EMERG "%s(parent:%s): Restarting system.\n", current->comm, current->parent->comm);
 	else

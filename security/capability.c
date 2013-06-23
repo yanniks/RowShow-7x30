@@ -168,7 +168,7 @@ static int cap_inode_symlink(struct inode *inode, struct dentry *dentry,
 }
 
 static int cap_inode_mkdir(struct inode *inode, struct dentry *dentry,
-			   umode_t mask)
+			   int mask)
 {
 	return 0;
 }

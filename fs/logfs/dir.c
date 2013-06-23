@@ -482,7 +482,7 @@ out:
 	return ret;
 }
 
-static int logfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+static int logfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 {
 	struct inode *inode;
 
