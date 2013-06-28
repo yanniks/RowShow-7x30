@@ -8,6 +8,16 @@ function check_result {
   fi
 }
 
+if [ -z "$DEFCONFIG" ]
+then
+  if [ -z "$1" ]
+  then
+    echo DEFCONFIG not specified
+    exit 1
+  fi
+  export DEFCONFIG=$1
+fi
+
 echo cloning AnyKernel...
 rm -rf ~/AnyKernel
 git clone git://github.com/yanniks/AnyKernel.git ~/AnyKernel
