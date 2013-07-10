@@ -263,6 +263,10 @@ static ssize_t synaptics_sweep2wake_store(struct device *dev,
 		printk(KERN_INFO "[TP] [sweep2wake]: set s2w_switch failed %s\n", buf);
 		return count;
 	}
+	if (scr_suspended) {
+		printk(KERN_INFO "[TP] [sweep2wake]: turn on the screen to toggle s2w\n");
+		return count;
+	}
 	if (value == 0 || value == 1) {
 		s2w_switch = (bool)value;
 		printk(KERN_INFO "[TP] [sweep2wake]: s2w_switch=%d\n", s2w_switch);
@@ -379,6 +383,10 @@ static ssize_t synaptics_dt2w_switch_store(struct device *dev,
 
 	if (ret < 0) {
 		printk(KERN_INFO "[TP] [sweep2wake]: set dt2w_switch failed - %s\n", buf);
+		return count;
+	}
+	if (scr_suspended) {
+		printk(KERN_INFO "[TP] [sweep2wake]: turn on the screen to toggle dt2w\n");
 		return count;
 	}
 	if (value == 0 || value == 1) {
