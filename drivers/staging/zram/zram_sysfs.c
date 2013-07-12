@@ -34,7 +34,7 @@ static struct zram *dev_to_zram(struct device *dev)
 	int i;
 	struct zram *zram = NULL;
 
-	for (i = 0; i < zram_num_devices; i++) {
+	for (i = 0; i < zram_get_num_devices(); i++) {
 		zram = &zram_devices[i];
 		if (disk_to_dev(zram->disk) == dev)
 			break;
@@ -71,6 +71,7 @@ static ssize_t disksize_store(struct device *dev,
 
 	zram->disksize = PAGE_ALIGN(disksize);
 	set_capacity(zram->disk, zram->disksize >> SECTOR_SHIFT);
+	zram_init_device(zram);
 	up_write(&zram->init_lock);
 
 	return len;
@@ -110,11 +111,7 @@ static ssize_t reset_store(struct device *dev,
 	if (bdev)
 		fsync_bdev(bdev);
 
-	down_write(&zram->init_lock);
-	if (zram->init_done)
-		__zram_reset_device(zram);
-	up_write(&zram->init_lock);
-
+	zram_reset_device(zram);
 	return len;
 }
 
@@ -186,10 +183,8 @@ static ssize_t mem_used_total_show(struct device *dev,
 	u64 val = 0;
 	struct zram *zram = dev_to_zram(dev);
 
-	if (zram->init_done) {
-		val = xv_get_total_size_bytes(zram->mem_pool) +
-			((u64)(zram->stats.pages_expand) << PAGE_SHIFT);
-	}
+	if (zram->init_done)
+		val = zs_get_total_size_bytes(zram->mem_pool);
 
 	return sprintf(buf, "%llu\n", val);
 }
