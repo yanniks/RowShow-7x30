@@ -39,11 +39,12 @@ echo creating update zip...
 bash zip
 check_result "Creating zip failed."
 echo done!
+rm -rf 
 if [ "$RELEASE" = "true" ]
 then
   echo releasing...
   mv /var/lib/jenkins/kernel-*.zip /var/www/kernel
-  echo released new kernel binary under http://yauniks.homeunix.net/
+  echo released new kernel binary: http://yauniks.suroot.com/$ZIPFILENAME
   check_result "Release failed."
 else
   echo everything done!
