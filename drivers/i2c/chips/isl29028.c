@@ -36,7 +36,6 @@
 #include <linux/rtc.h>
 #include <linux/slab.h>
 #include <mach/board.h>
-#include <linux/synaptics_i2c_rmi.h>
 
 #define DPS(x...) printk(KERN_DEBUG "[PS][ISL29028] " x)
 #define DLS(x...) printk(KERN_DEBUG "[LS][ISL29028] " x)
@@ -441,7 +440,6 @@ static void report_psensor_input_event(struct isl29028_info *lpi,
 	}
 
 	IPS("proximity %s\n", val ? "FAR" : "NEAR");
-	synaptics_proximity_status(val ? true : false);
 
 	if (lpi->debounce == 1) {
 		if (val == 0) {
@@ -1039,9 +1037,6 @@ static int psensor_disable(struct isl29028_info *lpi)
 #ifdef DEBUG_PROXIMITY
 	cancel_delayed_work(&info_work);
 #endif
-
-	/* tell synaptics status is far */
-	synaptics_proximity_status(true);
 
 	lpi->ps_irq_flag = 0;
 	lpi->ps_pocket_mode = 0;
