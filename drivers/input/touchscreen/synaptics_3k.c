@@ -60,7 +60,7 @@ static struct synaptics_ts_data *gl_ts;
 static const char SYNAPTICSNAME[]	= "Synaptics_3K";
 static uint32_t syn_panel_version;
 
-static bool proximity_status = true; // psensor; true = far, false = near
+static bool scr_suspended = false;
 
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 /* S2W starts */
@@ -78,7 +78,6 @@ static cputime64_t dt2w_start = 0;
 static bool dt2w_screen = false; /* true if last touch was on display area */
 /* DT2W ends */
 
-static bool scr_suspended = false;
 static bool exec_count = true;
 static bool barrier = false;
 static bool mode = true;
@@ -114,11 +113,6 @@ void sweep2wake_syn_pwrtrigger(void) {
 		schedule_work(&sweep2wake_presspwr_work);
 }
 #endif
-
-extern void synaptics_proximity_status(bool val) {
-	proximity_status = val;
-	printk(KERN_INFO "[TP] proximity: %d", proximity_status ? 1 : 0);
-}
 
 static int i2c_syn_read(struct i2c_client *client, uint16_t addr, uint8_t *data, uint16_t length)
 {
@@ -559,9 +553,6 @@ static void synaptics_ts_work_func(struct work_struct *work)
 	struct synaptics_ts_data *ts = container_of(work, struct synaptics_ts_data, work);
 	uint8_t buf[(ts->finger_support * 21 + 11) / 4];
 
-	if (!proximity_status)
-		goto psensor_near;
-
 	start_reg = ts->page_table[9].value;
 	ret = i2c_syn_read(ts->client, start_reg, buf, sizeof(buf));
 	if (ret < 0 || ((buf[0] & 0x0F))) {
@@ -613,6 +604,7 @@ static void synaptics_ts_work_func(struct work_struct *work)
 			ts->finger_pressed = finger_pressed;
 		}
 		if (finger_pressed == 0) {
+			if (!scr_suspended) {
 #ifdef CONFIG_TOUCHSCREEN_COMPATIBLE_REPORT
                   //			input_report_abs(ts->input_dev, ABS_MT_PRESSURE, 0);
 			input_report_key(ts->input_dev, BTN_TOUCH, 0);
@@ -620,6 +612,7 @@ static void synaptics_ts_work_func(struct work_struct *work)
 			input_report_abs(ts->input_dev, ABS_MT_AMPLITUDE, 0);
 			input_report_abs(ts->input_dev, ABS_MT_POSITION, 1 << 31);
 #endif
+			}
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 			/* if finger released, reset count & barriers */
 			if ((((finger_count > 0)?1:0) == 0) && s2w_active()) {
@@ -685,9 +678,7 @@ static void synaptics_ts_work_func(struct work_struct *work)
 					}
 					if (((finger_pressed >> loop_i) & 1) == 1) {
 						finger_pressed &= ~(1 << loop_i);
-#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
-						if (!s2w_active() || (s2w_active() & !scr_suspended)) {
-#endif
+						if (!scr_suspended) {
 #ifdef CONFIG_TOUCHSCREEN_COMPATIBLE_REPORT
 						input_report_abs(ts->input_dev, ABS_MT_PRESSURE,
 							finger_data[loop_i][3]);
@@ -707,9 +698,7 @@ static void synaptics_ts_work_func(struct work_struct *work)
 							(finger_pressed == 0) << 31 |
 							finger_data[loop_i][0] << 16 | finger_data[loop_i][1]);
 #endif
-#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 						}
-#endif
 						if (ts->pre_finger_data[0][0] < 2) {
 							if ((finger_press_changed >> loop_i) & 0x1) {
 								ts->pre_finger_data[loop_i + 1][0] = finger_data[loop_i][0];
@@ -889,7 +878,6 @@ static void synaptics_ts_work_func(struct work_struct *work)
 		}
 	}
 
-psensor_near:
 #ifdef CONFIG_TOUCHSCREEN_COMPATIBLE_REPORT
 	input_sync(ts->input_dev);
 #endif
@@ -1166,10 +1154,10 @@ static int synaptics_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 	if (s2w_active()) {
-		scr_suspended = true;
 		mode = false;
 	}
 #endif
+	scr_suspended = true;
 
 	if (ts->debug_log_level > 0)
 		printk(KERN_INFO "[TP] %s: leave\n", __func__);
@@ -1226,10 +1214,10 @@ static int synaptics_ts_resume(struct i2c_client *client)
 
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 	if (s2w_active()) {
-		scr_suspended = false;
 		mode = true;
 	}
 #endif
+	scr_suspended = false;
 
 	if (ts->debug_log_level > 0)
 		printk(KERN_INFO "[TP] %s: leave\n", __func__);
