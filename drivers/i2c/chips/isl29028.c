@@ -1040,9 +1040,6 @@ static int psensor_disable(struct isl29028_info *lpi)
 	cancel_delayed_work(&info_work);
 #endif
 
-	/* tell synaptics status is far */
-	synaptics_proximity_status(true);
-
 	lpi->ps_irq_flag = 0;
 	lpi->ps_pocket_mode = 0;
 
