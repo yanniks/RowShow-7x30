@@ -39,7 +39,7 @@ echo creating update zip...
 bash zip
 check_result "Creating zip failed."
 echo done!
-rm -rf 
+echo ""
 if [ "$RELEASE" = "true" ]
 then
   echo releasing...
