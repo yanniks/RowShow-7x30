@@ -1,6 +1,6 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 3.0.86 Kernel Configuration
+# Linux/arm 3.0.85 Kernel Configuration
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -182,13 +182,13 @@ CONFIG_IOSCHED_FIOPS=y
 CONFIG_IOSCHED_BFQ=y
 CONFIG_CGROUP_BFQIO=y
 # CONFIG_DEFAULT_DEADLINE is not set
-CONFIG_DEFAULT_ROW=y
+# CONFIG_DEFAULT_ROW is not set
 # CONFIG_DEFAULT_CFQ is not set
-# CONFIG_DEFAULT_SIO is not set
+CONFIG_DEFAULT_SIO=y
 # CONFIG_DEFAULT_FIOPS is not set
 # CONFIG_DEFAULT_BFQ is not set
 # CONFIG_DEFAULT_NOOP is not set
-CONFIG_DEFAULT_IOSCHED="row"
+CONFIG_DEFAULT_IOSCHED="sio"
 # CONFIG_INLINE_SPIN_TRYLOCK is not set
 # CONFIG_INLINE_SPIN_TRYLOCK_BH is not set
 # CONFIG_INLINE_SPIN_LOCK is not set
