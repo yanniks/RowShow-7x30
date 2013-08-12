@@ -44,7 +44,7 @@ if [ "$RELEASE" = "true" ]
 then
   echo releasing...
   mv /var/lib/jenkins/kernel-*.zip /var/www/kernel
-  echo released new kernel binary: http://yauniks.suroot.com/$ZIPFILENAME
+  echo released new kernel binary: http://yauniks.dynvpn.de/$ZIPFILENAME
   check_result "Release failed."
 else
   echo everything done!
