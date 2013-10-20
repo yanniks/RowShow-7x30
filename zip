@@ -7,7 +7,17 @@ rm -v ~/AnyKernel/{kernel/zImage,system/lib/modules/*}
 find . -name "*.ko" -exec cp -v {} ~/AnyKernel/system/lib/modules/ \;
 cp -v arch/arm/boot/zImage ~/AnyKernel/kernel/zImage
 # zip it
-cd ~/AnyKernel
-zip -r9 /media/glooms/kernel-$DATE.zip *
+if [ -z "$EXTRAVERSION" ]
+then
+  cd ~/AnyKernel
+  export ZIPFILENAME=kernel-$DATE.zip
+  zip -r9 ~/kernel-$DATE.zip *
+  export UPDATEZIP=~/$ZIPFILENAME
+else
+  cd ~/AnyKernel
+  export ZIPFILENAME=kernel-$DATE-$EXTRAVERSION.zip
+  zip -r9 ~/$ZIPFILENAME *
+  export UPDATEZIP=~/$ZIPFILENAME
+fi
 # return
 cd $PWD
